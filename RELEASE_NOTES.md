@@ -2,6 +2,7 @@
 
 **Yayın Tarihi:** 19 Kasım 2025  
 **Platform:** Windows x64  
+**Dosya Boyutu:** 83 MB (Release build with LLVM statically linked)
 
 ## Özellikler
 
@@ -62,10 +63,23 @@ BERK-lang merhaba.berk -o merhaba.exe
 .\merhaba.exe
 ```
 
+## Dosya Boyutu Hakkında
+
+BERK-lang.exe **83 MB** boyutundadır. Bu büyüklüğün nedenleri:
+
+1. **LLVM Statik Linking** (~60 MB): Native kod üretimi için gerekli
+2. **Tüm Optimizasyon Geçişleri**: O0-O3 arası tam optimizasyon desteği
+3. **Standard Library v1.4**: 18 modül, 600+ fonksiyon gömülü
+4. **Runtime Kütüphaneleri**: JSON, Crypto, HTTP kütüphaneleri dahil
+5. **Debug Sembolleri**: Hata ayıklama için semboller korunmuş
+
+**Not:** Tek bir executable olarak tüm bağımlılıklar dahil - harici DLL gerekmez!
+
 ## Bilinen Sorunlar
 
-- Release build henüz test edilmemiştir (debug build dahil edilmiştir)
+- Dosya boyutu GitHub'ın önerilen 50 MB limitinin üzerinde (ancak çalışıyor)
 - Linux/macOS için kaynak koddan derleme gereklidir
+- UPX sıkıştırması ile boyut ~30-40 MB'a indirilebilir (opsiyonel)
 
 ## Gelecek Sürümler
 
