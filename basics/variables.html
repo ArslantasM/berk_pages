@@ -1,0 +1,480 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Değişkenler ve Sabitler - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/basics/variables.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="değişkenler-ve-sabitler"><a class="header" href="#değişkenler-ve-sabitler">Değişkenler ve Sabitler</a></h1>
+<p>BERK'te değerler saklamak için <strong>değişkenler</strong> (variables) ve <strong>sabitler</strong> (constants) kullanılır.</p>
+<h2 id="değişken-tanımlama"><a class="header" href="#değişken-tanımlama">Değişken Tanımlama</a></h2>
+<h3 id="türkçe-syntax"><a class="header" href="#türkçe-syntax">Türkçe Syntax</a></h3>
+<pre><code class="language-berk">değişken x = 10
+değişken isim = "Ahmet"
+değişken pi = 3.14159
+</code></pre>
+<h3 id="İngilizce-syntax"><a class="header" href="#İngilizce-syntax">İngilizce Syntax</a></h3>
+<pre><code class="language-berk">var x = 10
+var name = "John"
+var pi = 3.14159
+</code></pre>
+<h2 id="tip-belirtme"><a class="header" href="#tip-belirtme">Tip Belirtme</a></h2>
+<p>BERK statik tipli bir dildir. Tip çıkarımı (type inference) desteklenir:</p>
+<pre><code class="language-berk">// Tip çıkarımı (önerilen)
+değişken sayı = 42          // Sayı tipi
+değişken metin = "Hello"    // Yazı tipi
+değişken gerçek = 3.14      // Sayı tipi (float)
+
+// Açık tip belirtimi
+değişken sayı: Sayı = 42
+değişken metin: Yazı = "Hello"
+değişken liste: Liste&lt;Sayı&gt; = [1, 2, 3]
+</code></pre>
+<h2 id="değişken-değiştirme"><a class="header" href="#değişken-değiştirme">Değişken Değiştirme</a></h2>
+<p>Değişkenler tanımlandıktan sonra değerleri değiştirilebilir:</p>
+<pre><code class="language-berk">değişken sayaç = 0
+yazdır(sayaç)  // 0
+
+sayaç = sayaç + 1
+yazdır(sayaç)  // 1
+
+sayaç += 5
+yazdır(sayaç)  // 6
+</code></pre>
+<h2 id="sabitler-constants"><a class="header" href="#sabitler-constants">Sabitler (Constants)</a></h2>
+<p>Sabitler bir kez atandıktan sonra değiştirilemez:</p>
+<pre><code class="language-berk">sabit PI = 3.14159
+sabit MAX_KULLANICI = 100
+sabit UYGULAMA_ADI = "BERK App"
+
+// Hata! Sabit değiştirilemez
+// PI = 3.14  // Derleme hatası
+</code></pre>
+<h3 id="İngilizce-syntax-1"><a class="header" href="#İngilizce-syntax-1">İngilizce Syntax</a></h3>
+<pre><code class="language-berk">const PI = 3.14159
+const MAX_USERS = 100
+</code></pre>
+<h2 id="İsimlendirme-kuralları"><a class="header" href="#İsimlendirme-kuralları">İsimlendirme Kuralları</a></h2>
+<h3 id="değişkenler"><a class="header" href="#değişkenler">Değişkenler</a></h3>
+<ul>
+<li><strong>snake_case</strong> kullanın (önerilen)</li>
+<li>Türkçe karakterler desteklenir</li>
+<li>Sayı ile başlayamaz</li>
+<li>Anahtar kelime olamaz</li>
+</ul>
+<pre><code class="language-berk">// Geçerli değişken isimleri
+değişken kullanıcı_adı = "Ayşe"
+değişken toplam_fiyat = 99.99
+değişken öğrenci_numarası = 12345
+değişken değer1 = 10
+değişken _private = "gizli"
+
+// Geçersiz değişken isimleri
+// değişken 1değer = 10      // Sayı ile başlıyor
+// değişken işlev = 5        // Anahtar kelime
+// değişken user-name = ""   // Tire kullanılamaz
+</code></pre>
+<h3 id="sabitler"><a class="header" href="#sabitler">Sabitler</a></h3>
+<ul>
+<li><strong>SCREAMING_SNAKE_CASE</strong> kullanın</li>
+<li>Tümü büyük harf</li>
+<li>Kelimeler alt çizgi ile ayrılır</li>
+</ul>
+<pre><code class="language-berk">sabit MAX_DEĞER = 1000
+sabit VERSİYON_NUMARASI = "0.8.0"
+sabit HATA_MESAJI = "Geçersiz giriş"
+</code></pre>
+<h2 id="kapsam-scope"><a class="header" href="#kapsam-scope">Kapsam (Scope)</a></h2>
+<h3 id="global-değişkenler"><a class="header" href="#global-değişkenler">Global Değişkenler</a></h3>
+<p>Fonksiyon dışında tanımlanan değişkenler global'dir:</p>
+<pre><code class="language-berk">değişken global_sayaç = 0  // Global
+
+işlev artır() {
+    global_sayaç += 1
+}
+
+işlev ana() {
+    yazdır(global_sayaç)  // 0
+    artır()
+    yazdır(global_sayaç)  // 1
+}
+</code></pre>
+<h3 id="yerel-değişkenler"><a class="header" href="#yerel-değişkenler">Yerel Değişkenler</a></h3>
+<p>Fonksiyon içinde tanımlanan değişkenler yerel'dir:</p>
+<pre><code class="language-berk">işlev hesapla() {
+    değişken yerel = 10  // Sadece bu fonksiyonda erişilebilir
+    yazdır(yerel)
+}
+
+işlev ana() {
+    hesapla()
+    // yazdır(yerel)  // Hata! yerel burada tanımlı değil
+}
+</code></pre>
+<h3 id="blok-kapsamı"><a class="header" href="#blok-kapsamı">Blok Kapsamı</a></h3>
+<p>Her blok kendi kapsamını oluşturur:</p>
+<pre><code class="language-berk">işlev ana() {
+    değişken x = 10
+    
+    eğer x &gt; 5 {
+        değişken y = 20  // Bu blokta geçerli
+        yazdır(x, y)     // 10, 20
+    }
+    
+    yazdır(x)     // 10
+    // yazdır(y)  // Hata! y bu kapsamda yok
+}
+</code></pre>
+<h2 id="shadowing"><a class="header" href="#shadowing">Shadowing</a></h2>
+<p>İç kapsamda aynı isimli değişken tanımlanabilir:</p>
+<pre><code class="language-berk">işlev ana() {
+    değişken x = 5
+    yazdır(x)  // 5
+    
+    {
+        değişken x = 10  // Farklı değişken
+        yazdır(x)        // 10
+    }
+    
+    yazdır(x)  // 5 (dış kapsam)
+}
+</code></pre>
+<h2 id="destructuring"><a class="header" href="#destructuring">Destructuring</a></h2>
+<p>Tuple ve listelerden değer çıkarma:</p>
+<pre><code class="language-berk">// Tuple destructuring
+değişken (x, y) = (10, 20)
+yazdır(x)  // 10
+yazdır(y)  // 20
+
+// Liste destructuring
+değişken [ilk, ikinci, ...geri_kalan] = [1, 2, 3, 4, 5]
+yazdır(ilk)         // 1
+yazdır(ikinci)      // 2
+yazdır(geri_kalan)  // [3, 4, 5]
+</code></pre>
+<h2 id="Çoklu-atama"><a class="header" href="#Çoklu-atama">Çoklu Atama</a></h2>
+<p>Birden fazla değişkeni aynı anda tanımlama:</p>
+<pre><code class="language-berk">değişken a, b, c = 1, 2, 3
+yazdır(a, b, c)  // 1 2 3
+
+// Değer takası (swap)
+değişken x = 10
+değişken y = 20
+x, y = y, x
+yazdır(x, y)  // 20 10
+</code></pre>
+<h2 id="nullable-değişkenler"><a class="header" href="#nullable-değişkenler">Nullable Değişkenler</a></h2>
+<p>Değişkenler null olabilir:</p>
+<pre><code class="language-berk">değişken değer: Sayı? = null  // Nullable tip
+
+eğer değer != null {
+    yazdır("Değer: ", değer)
+} değilse {
+    yazdır("Değer yok")
+}
+
+// Varsayılan değer ile
+değişken sonuç = değer ?: 0  // Eğer null ise 0 kullan
+</code></pre>
+<h2 id="type-aliasing"><a class="header" href="#type-aliasing">Type Aliasing</a></h2>
+<p>Tip takma adları:</p>
+<pre><code class="language-berk">tip KullanıcıID = Sayı
+tip Eposta = Yazı
+
+değişken id: KullanıcıID = 12345
+değişken email: Eposta = "user@example.com"
+</code></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Yapılması Gerekenler</a></h3>
+<pre><code class="language-berk">// Anlamlı isimler kullanın
+değişken öğrenci_sayısı = 30
+değişken toplam_fiyat = 199.99
+
+// Sabitler için büyük harf
+sabit MAX_RETRY = 3
+sabit API_URL = "https://api.example.com"
+
+// Tip belirtimi gerektiğinde
+değişken liste: Liste&lt;Yazı&gt; = []
+değişken harita: Harita&lt;Yazı, Sayı&gt; = {}
+</code></pre>
+<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Kaçınılması Gerekenler</a></h3>
+<pre><code class="language-berk">// Çok kısa veya anlamsız isimler
+değişken x = 30
+değişken tmp = 199.99
+değişken a1, a2, a3 = 1, 2, 3
+
+// Tutarsız isimlendirme
+değişken UserName = ""    // PascalCase değişkende kullanılmaz
+değişken user-name = ""   // Tire kullanılamaz
+
+// Gereksiz tip belirtimi (tip çıkarımı yeterli)
+değişken sayı: Sayı = 10  // Gereksiz, "değişken sayı = 10" yeter
+</code></pre>
+<h2 id="Örnek-program"><a class="header" href="#Örnek-program">Örnek Program</a></h2>
+<pre><code class="language-berk">import math
+
+// Global sabitler
+sabit YERÇEKIMI = 9.81  // m/s²
+sabit PI = 3.14159
+
+işlev dairesel_hareket(yarıçap: Sayı, hız: Sayı) -&gt; Sayı {
+    // Merkezcil ivme hesaplama
+    değişken ivme = (hız * hız) / yarıçap
+    geri dön ivme
+}
+
+işlev serbest_düşüş(yükseklik: Sayı) -&gt; Sayı {
+    // v = sqrt(2 * g * h)
+    değişken hız = math.sqrt(2.0 * YERÇEKIMI * yükseklik)
+    geri dön hız
+}
+
+işlev ana() {
+    // Değişkenler
+    değişken yarıçap = 5.0   // metre
+    değişken hız = 10.0      // m/s
+    
+    değişken ivme = dairesel_hareket(yarıçap, hız)
+    yazdır("Merkezcil ivme: ", ivme, " m/s²")
+    
+    // Sabit değer
+    sabit YÜKSEKLİK = 50.0  // metre
+    değişken düşüş_hızı = serbest_düşüş(YÜKSEKLİK)
+    yazdır("Düşüş hızı: ", düşüş_hızı, " m/s")
+}
+</code></pre>
+<h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Bir Sonraki</a></h2>
+<ul>
+<li><a href="./data-types.html">Veri Tipleri</a></li>
+<li><a href="./operators.html">Operatörler</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../basics/syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../basics/data-types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../basics/syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../basics/data-types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

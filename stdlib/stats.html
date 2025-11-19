@@ -1,0 +1,614 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>stats - İstatistik - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/stats.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="stats---İstatistik-ve-olasılık"><a class="header" href="#stats---İstatistik-ve-olasılık">stats - İstatistik ve Olasılık</a></h1>
+<p><strong>Modül:</strong> <code>stats.berk</code> (24.5 KB)<br />
+<strong>Kategori:</strong> Bilimsel Hesaplama<br />
+<strong>Inspiration:</strong> Julia Statistics, SciPy.stats, R</p>
+<h2 id="-genel-bakış"><a class="header" href="#-genel-bakış">📋 Genel Bakış</a></h2>
+<p><code>stats</code> modülü, modern istatistiksel analiz için kapsamlı fonksiyonlar sunar. Veri bilimi, makine öğrenmesi ve bilimsel araştırma için tasarlanmıştır.</p>
+<p><strong>Özellikler:</strong></p>
+<ul>
+<li>✅ Tanımlayıcı istatistikler (mean, median, std dev, moments)</li>
+<li>✅ Quantile ve percentile hesaplama</li>
+<li>✅ Korelasyon ve kovaryans</li>
+<li>✅ Hipotez testleri (t-test, chi-square, ANOVA)</li>
+<li>✅ Olasılık dağılımları (PDF, CDF)</li>
+<li>✅ Doğrusal regresyon</li>
+<li>✅ Yeniden örnekleme (bootstrap, jackknife)</li>
+<li>✅ Non-parametric testler</li>
+</ul>
+<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🎯 Hızlı Başlangıç</a></h2>
+<h3 id="temel-İstatistikler"><a class="header" href="#temel-İstatistikler">Temel İstatistikler</a></h3>
+<pre><code class="language-berk">kullan stats
+
+değişken data = [2.5, 3.1, 4.8, 5.2, 6.0, 7.3, 8.1]
+değişken n = 7
+
+// Merkez eğilimi ölçüleri
+değişken mean = stats_ortalama(data, n)           // 5.29
+değişken median = stats_medyan(data, n)           // 5.2
+değişken mode = stats_mod(data, n, 0.1)          // En sık değer
+
+// Yayılım ölçüleri
+değişken variance = stats_varyans(data, n)        // 3.68
+değişken std_dev = stats_standart_sapma(data, n) // 1.92
+değişken range = stats_aralık(data, n)           // 5.6
+</code></pre>
+<h2 id="-api-referansı"><a class="header" href="#-api-referansı">📚 API Referansı</a></h2>
+<h3 id="tanımlayıcı-İstatistikler"><a class="header" href="#tanımlayıcı-İstatistikler">Tanımlayıcı İstatistikler</a></h3>
+<h4 id="merkez-eğilimi"><a class="header" href="#merkez-eğilimi">Merkez Eğilimi</a></h4>
+<h5 id="stats_ortalamadata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_ortalamadata-ondalık-n-tam_sayı---ondalık"><code>stats_ortalama(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Aritmetik ortalama: x̄ = (Σxᵢ) / n</p>
+<h5 id="stats_ağırlıklı_ortalamadata-ondalık-weights-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_ağırlıklı_ortalamadata-ondalık-weights-ondalık-n-tam_sayı---ondalık"><code>stats_ağırlıklı_ortalama(data: [ondalık], weights: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Ağırlıklı ortalama: x̄ = (Σwᵢxᵢ) / (Σwᵢ)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken notlar = [70.0, 80.0, 90.0]
+değişken ağırlıklar = [0.2, 0.3, 0.5]  // %20, %30, %50
+değişken ort = stats_ağırlıklı_ortalama(notlar, ağırlıklar, 3)  // 82.0
+</code></pre>
+<h5 id="stats_geometrik_ortalamadata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_geometrik_ortalamadata-ondalık-n-tam_sayı---ondalık"><code>stats_geometrik_ortalama(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Geometrik ortalama: ⁿ√(x₁ × x₂ × ... × xₙ)</p>
+<p><strong>Kullanım:</strong> Büyüme oranları, indeksler</p>
+<h5 id="stats_harmonik_ortalamadata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_harmonik_ortalamadata-ondalık-n-tam_sayı---ondalık"><code>stats_harmonik_ortalama(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Harmonik ortalama: n / (Σ(1/xᵢ))</p>
+<p><strong>Kullanım:</strong> Hızlar, oranlar</p>
+<h5 id="stats_medyandata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_medyandata-ondalık-n-tam_sayı---ondalık"><code>stats_medyan(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Ortanca değer (50. percentile)</p>
+<h5 id="stats_moddata-ondalık-n-tam_sayı-tolerans-ondalık---ondalık"><a class="header" href="#stats_moddata-ondalık-n-tam_sayı-tolerans-ondalık---ondalık"><code>stats_mod(data: [ondalık], n: tam_sayı, tolerans: ondalık) -&gt; ondalık</code></a></h5>
+<p>En sık görülen değer</p>
+<h4 id="yayılım-Ölçüleri"><a class="header" href="#yayılım-Ölçüleri">Yayılım Ölçüleri</a></h4>
+<h5 id="stats_varyansdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_varyansdata-ondalık-n-tam_sayı---ondalık"><code>stats_varyans(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Örneklem varyansı: s² = Σ(xᵢ - x̄)² / (n-1)</p>
+<h5 id="stats_popülasyon_varyansıdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_popülasyon_varyansıdata-ondalık-n-tam_sayı---ondalık"><code>stats_popülasyon_varyansı(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Popülasyon varyansı: σ² = Σ(xᵢ - μ)² / n</p>
+<h5 id="stats_standart_sapmadata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_standart_sapmadata-ondalık-n-tam_sayı---ondalık"><code>stats_standart_sapma(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Standart sapma: s = √(varyans)</p>
+<h5 id="stats_ortalama_mutlak_sapmadata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_ortalama_mutlak_sapmadata-ondalık-n-tam_sayı---ondalık"><code>stats_ortalama_mutlak_sapma(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>MAD = (Σ|xᵢ - x̄|) / n</p>
+<h5 id="stats_aralıkdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_aralıkdata-ondalık-n-tam_sayı---ondalık"><code>stats_aralık(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Değişim aralığı: max - min</p>
+<h3 id="quantile-ve-percentile"><a class="header" href="#quantile-ve-percentile">Quantile ve Percentile</a></h3>
+<h5 id="stats_quantiledata-ondalık-n-tam_sayı-p-ondalık---ondalık"><a class="header" href="#stats_quantiledata-ondalık-n-tam_sayı-p-ondalık---ondalık"><code>stats_quantile(data: [ondalık], n: tam_sayı, p: ondalık) -&gt; ondalık</code></a></h5>
+<p>p-quantile değerini hesaplar (0 ≤ p ≤ 1)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken data = [1.0, 2.0, 3.0, 4.0, 5.0]
+değişken q1 = stats_quantile(data, 5, 0.25)  // 2.0 (1. çeyrek)
+değişken q2 = stats_quantile(data, 5, 0.50)  // 3.0 (medyan)
+değişken q3 = stats_quantile(data, 5, 0.75)  // 4.0 (3. çeyrek)
+</code></pre>
+<h5 id="stats_percentiledata-ondalık-n-tam_sayı-p-tam_sayı---ondalık"><a class="header" href="#stats_percentiledata-ondalık-n-tam_sayı-p-tam_sayı---ondalık"><code>stats_percentile(data: [ondalık], n: tam_sayı, p: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>p-percentile (0-100 arası)</p>
+<h5 id="stats_iqrdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_iqrdata-ondalık-n-tam_sayı---ondalık"><code>stats_iqr(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Çeyrekler arası aralık: IQR = Q3 - Q1</p>
+<p><strong>Kullanım:</strong> Outlier tespiti</p>
+<h3 id="momentler"><a class="header" href="#momentler">Momentler</a></h3>
+<h5 id="stats_skewnessdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_skewnessdata-ondalık-n-tam_sayı---ondalık"><code>stats_skewness(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Çarpıklık (skewness): Dağılımın asimetrisi</p>
+<ul>
+<li>&lt; 0: Sola çarpık</li>
+<li>= 0: Simetrik</li>
+<li>
+<blockquote>
+<p>0: Sağa çarpık</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="stats_kurtosisdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_kurtosisdata-ondalık-n-tam_sayı---ondalık"><code>stats_kurtosis(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Basıklık (kurtosis): Kuyruk kalınlığı</p>
+<ul>
+<li>&lt; 0: Düz (platykurtic)</li>
+<li>= 0: Normal (mesokurtic)</li>
+<li>
+<blockquote>
+<p>0: Sivri (leptokurtic)</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+değişken skew = stats_skewness(data, 7)  // ≈ 0 (simetrik)
+değişken kurt = stats_kurtosis(data, 7)  // Basıklık
+</code></pre>
+<h3 id="korelasyon-ve-kovaryans"><a class="header" href="#korelasyon-ve-kovaryans">Korelasyon ve Kovaryans</a></h3>
+<h5 id="stats_covariancex-ondalık-y-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_covariancex-ondalık-y-ondalık-n-tam_sayı---ondalık"><code>stats_covariance(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Kovaryans: cov(X,Y) = Σ(xᵢ - x̄)(yᵢ - ȳ) / (n-1)</p>
+<h5 id="stats_correlationx-ondalık-y-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_correlationx-ondalık-y-ondalık-n-tam_sayı---ondalık"><code>stats_correlation(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Pearson korelasyon katsayısı: r = cov(X,Y) / (σₓσᵧ)</p>
+<ul>
+<li>-1: Mükemmel negatif korelasyon</li>
+<li>0: Korelasyon yok</li>
+<li>+1: Mükemmel pozitif korelasyon</li>
+</ul>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken boy = [160.0, 165.0, 170.0, 175.0, 180.0]
+değişken kilo = [55.0, 60.0, 65.0, 75.0, 80.0]
+değişken r = stats_correlation(boy, kilo, 5)  // ≈ 0.98 (güçlü pozitif)
+</code></pre>
+<h5 id="stats_r_squaredx-ondalık-y-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_r_squaredx-ondalık-y-ondalık-n-tam_sayı---ondalık"><code>stats_r_squared(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Determinasyon katsayısı: R² = r²</p>
+<p><strong>Yorum:</strong> Varyansın açıklanan oranı</p>
+<h3 id="doğrusal-regresyon"><a class="header" href="#doğrusal-regresyon">Doğrusal Regresyon</a></h3>
+<h5 id="stats_linear_regressionx-ondalık-y-ondalık-n-tam_sayı---ondalık-ondalık-ondalık"><a class="header" href="#stats_linear_regressionx-ondalık-y-ondalık-n-tam_sayı---ondalık-ondalık-ondalık"><code>stats_linear_regression(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; (ondalık, ondalık, ondalık)</code></a></h5>
+<p>Basit doğrusal regresyon: y = a + bx</p>
+<p><strong>Döndürür:</strong> (a, b, R²)</p>
+<ul>
+<li>a: Y-kesim noktası (intercept)</li>
+<li>b: Eğim (slope)</li>
+<li>R²: Belirlilik katsayısı</li>
+</ul>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken X = [1.0, 2.0, 3.0, 4.0, 5.0]
+değişken y = [2.1, 3.9, 6.2, 8.1, 9.8]
+
+değişken (a, b, r2) = stats_linear_regression(X, y, 5)
+yazdır("y = " + a + " + " + b + "x")
+yazdır("R² = " + r2)
+// y = 0.2 + 1.96x
+// R² = 0.997
+</code></pre>
+<h5 id="stats_predict_linearx-ondalık-a-ondalık-b-ondalık---ondalık"><a class="header" href="#stats_predict_linearx-ondalık-a-ondalık-b-ondalık---ondalık"><code>stats_predict_linear(x: ondalık, a: ondalık, b: ondalık) -&gt; ondalık</code></a></h5>
+<p>Modelden tahmin: ŷ = a + bx</p>
+<h3 id="hipotez-testleri"><a class="header" href="#hipotez-testleri">Hipotez Testleri</a></h3>
+<h5 id="stats_t_scoredata-ondalık-n-tam_sayı-μ0-ondalık---ondalık"><a class="header" href="#stats_t_scoredata-ondalık-n-tam_sayı-μ0-ondalık---ondalık"><code>stats_t_score(data: [ondalık], n: tam_sayı, μ0: ondalık) -&gt; ondalık</code></a></h5>
+<p>Tek örneklem t-skoru: t = (x̄ - μ₀) / (s / √n)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">// H₀: μ = 100
+değişken scores = [105.0, 110.0, 95.0, 108.0, 102.0]
+değişken t = stats_t_score(scores, 5, 100.0)
+
+eğer (math_mutlak(t) &gt; 2.776) ise yap  // α = 0.05, df = 4
+    yazdır("H₀ reddedildi!")
+son
+</code></pre>
+<h5 id="stats_t_test_independentx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><a class="header" href="#stats_t_test_independentx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><code>stats_t_test_independent(x: [ondalık], nx: tam_sayı, y: [ondalık], ny: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>İki bağımsız örneklem t-testi</p>
+<p><strong>Kullanım:</strong> İki grubun ortalamalarını karşılaştırma</p>
+<h5 id="stats_t_test_pairedx-ondalık-y-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_t_test_pairedx-ondalık-y-ondalık-n-tam_sayı---ondalık"><code>stats_t_test_paired(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Eşleştirilmiş t-testi</p>
+<p><strong>Kullanım:</strong> Önce-sonra karşılaştırmaları</p>
+<h5 id="stats_chi_squareobserved-ondalık-expected-ondalık-k-tam_sayı---ondalık"><a class="header" href="#stats_chi_squareobserved-ondalık-expected-ondalık-k-tam_sayı---ondalık"><code>stats_chi_square(observed: [ondalık], expected: [ondalık], k: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Ki-kare testi: χ² = Σ((O - E)² / E)</p>
+<p><strong>Kullanım:</strong> Kategorik veri analizi, uyum iyiliği</p>
+<h5 id="stats_f_statisticbetween_var-ondalık-within_var-ondalık---ondalık"><a class="header" href="#stats_f_statisticbetween_var-ondalık-within_var-ondalık---ondalık"><code>stats_f_statistic(between_var: ondalık, within_var: ondalık) -&gt; ondalık</code></a></h5>
+<p>F-istatistiği (ANOVA için)</p>
+<h3 id="güven-aralıkları"><a class="header" href="#güven-aralıkları">Güven Aralıkları</a></h3>
+<h5 id="stats_confidence_intervaldata-ondalık-n-tam_sayı-t_critical-ondalık---ondalık-ondalık"><a class="header" href="#stats_confidence_intervaldata-ondalık-n-tam_sayı-t_critical-ondalık---ondalık-ondalık"><code>stats_confidence_interval(data: [ondalık], n: tam_sayı, t_critical: ondalık) -&gt; (ondalık, ondalık)</code></a></h5>
+<p>Ortalama için güven aralığı</p>
+<p><strong>Döndürür:</strong> (alt_sınır, üst_sınır)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken data = [23.0, 25.0, 27.0, 24.0, 26.0]
+değişken t_crit = 2.776  // %95 güven, df=4
+değişken (lower, upper) = stats_confidence_interval(data, 5, t_crit)
+yazdır("95% CI: [" + lower + ", " + upper + "]")
+</code></pre>
+<h5 id="stats_standard_errordata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_standard_errordata-ondalık-n-tam_sayı---ondalık"><code>stats_standard_error(data: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Standart hata: SE = s / √n</p>
+<h3 id="olasılık-dağılımları"><a class="header" href="#olasılık-dağılımları">Olasılık Dağılımları</a></h3>
+<h4 id="pdf-probability-density-function"><a class="header" href="#pdf-probability-density-function">PDF (Probability Density Function)</a></h4>
+<h5 id="stats_normal_pdfx-ondalık-μ-ondalık-σ-ondalık---ondalık"><a class="header" href="#stats_normal_pdfx-ondalık-μ-ondalık-σ-ondalık---ondalık"><code>stats_normal_pdf(x: ondalık, μ: ondalık, σ: ondalık) -&gt; ondalık</code></a></h5>
+<p>Normal dağılım PDF: f(x) = (1/(σ√(2π))) exp(-(x-μ)²/(2σ²))</p>
+<h5 id="stats_standard_normal_pdfz-ondalık---ondalık"><a class="header" href="#stats_standard_normal_pdfz-ondalık---ondalık"><code>stats_standard_normal_pdf(z: ondalık) -&gt; ondalık</code></a></h5>
+<p>Standart normal (μ=0, σ=1)</p>
+<h5 id="stats_exponential_pdfx-ondalık-λ-ondalık---ondalık"><a class="header" href="#stats_exponential_pdfx-ondalık-λ-ondalık---ondalık"><code>stats_exponential_pdf(x: ondalık, λ: ondalık) -&gt; ondalık</code></a></h5>
+<p>Üstel dağılım: f(x) = λe^(-λx)</p>
+<h5 id="stats_uniform_pdfx-ondalık-a-ondalık-b-ondalık---ondalık"><a class="header" href="#stats_uniform_pdfx-ondalık-a-ondalık-b-ondalık---ondalık"><code>stats_uniform_pdf(x: ondalık, a: ondalık, b: ondalık) -&gt; ondalık</code></a></h5>
+<p>Uniform dağılım</p>
+<h4 id="cdf-cumulative-distribution-function"><a class="header" href="#cdf-cumulative-distribution-function">CDF (Cumulative Distribution Function)</a></h4>
+<h5 id="stats_normal_cdfx-ondalık-μ-ondalık-σ-ondalık---ondalık"><a class="header" href="#stats_normal_cdfx-ondalık-μ-ondalık-σ-ondalık---ondalık"><code>stats_normal_cdf(x: ondalık, μ: ondalık, σ: ondalık) -&gt; ondalık</code></a></h5>
+<p>Normal dağılım CDF: P(X ≤ x)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">// IQ testinde 110'dan düşük olma olasılığı
+// IQ ~ N(100, 15)
+değişken p = stats_normal_cdf(110.0, 100.0, 15.0)  // ≈ 0.747
+yazdır("P(IQ ≤ 110) = " + (p * 100.0) + "%")
+</code></pre>
+<h5 id="stats_standard_normal_cdfz-ondalık---ondalık"><a class="header" href="#stats_standard_normal_cdfz-ondalık---ondalık"><code>stats_standard_normal_cdf(z: ondalık) -&gt; ondalık</code></a></h5>
+<p>Standart normal CDF</p>
+<h5 id="stats_exponential_cdfx-ondalık-λ-ondalık---ondalık"><a class="header" href="#stats_exponential_cdfx-ondalık-λ-ondalık---ondalık"><code>stats_exponential_cdf(x: ondalık, λ: ondalık) -&gt; ondalık</code></a></h5>
+<p>Üstel dağılım CDF</p>
+<h3 id="yeniden-Örnekleme"><a class="header" href="#yeniden-Örnekleme">Yeniden Örnekleme</a></h3>
+<h5 id="stats_bootstrap_sampledata-ondalık-n-tam_sayı-tohum-tam_sayı---ondalık"><a class="header" href="#stats_bootstrap_sampledata-ondalık-n-tam_sayı-tohum-tam_sayı---ondalık"><code>stats_bootstrap_sample(data: [ondalık], n: tam_sayı, tohum: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Bootstrap yeniden örnekleme (replacement ile)</p>
+<p><strong>Kullanım:</strong></p>
+<pre><code class="language-berk">// Bootstrap güven aralığı
+değişken data = [...]
+değişken n_bootstrap = 1000
+değişken means = yeni_dizi(n_bootstrap)
+
+değişken i = 0
+iken (i &lt; n_bootstrap) yap
+    değişken sample = stats_bootstrap_sample(data, n, i)
+    means[i] = stats_ortalama(sample, n)
+    i = i + 1
+son
+
+// %95 bootstrap CI
+değişken ci_lower = stats_quantile(means, n_bootstrap, 0.025)
+değişken ci_upper = stats_quantile(means, n_bootstrap, 0.975)
+</code></pre>
+<h5 id="stats_jackknife_sampledata-ondalık-n-tam_sayı-exclude_index-tam_sayı---ondalık"><a class="header" href="#stats_jackknife_sampledata-ondalık-n-tam_sayı-exclude_index-tam_sayı---ondalık"><code>stats_jackknife_sample(data: [ondalık], n: tam_sayı, exclude_index: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Jackknife yeniden örnekleme (bir eleman çıkarılmış)</p>
+<h3 id="non-parametric-testler"><a class="header" href="#non-parametric-testler">Non-Parametric Testler</a></h3>
+<h5 id="stats_mann_whitney_ux-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><a class="header" href="#stats_mann_whitney_ux-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><code>stats_mann_whitney_u(x: [ondalık], nx: tam_sayı, y: [ondalık], ny: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Mann-Whitney U testi (rank-sum test)</p>
+<p><strong>Kullanım:</strong> Normal dağılmayan iki grup karşılaştırması</p>
+<h5 id="stats_wilcoxon_signed_rankx-ondalık-y-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_wilcoxon_signed_rankx-ondalık-y-ondalık-n-tam_sayı---ondalık"><code>stats_wilcoxon_signed_rank(x: [ondalık], y: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Wilcoxon signed-rank testi</p>
+<p><strong>Kullanım:</strong> Eşleştirilmiş non-parametric karşılaştırma</p>
+<h3 id="histogram-ve-binning"><a class="header" href="#histogram-ve-binning">Histogram ve Binning</a></h3>
+<h5 id="stats_histogramdata-ondalık-n-tam_sayı-bin_sayısı-tam_sayı---tam_sayı"><a class="header" href="#stats_histogramdata-ondalık-n-tam_sayı-bin_sayısı-tam_sayı---tam_sayı"><code>stats_histogram(data: [ondalık], n: tam_sayı, bin_sayısı: tam_sayı) -&gt; [tam_sayı]</code></a></h5>
+<p>Histogram oluşturur (eşit genişlikte binler)</p>
+<h5 id="stats_sturges_binsn-tam_sayı---tam_sayı"><a class="header" href="#stats_sturges_binsn-tam_sayı---tam_sayı"><code>stats_sturges_bins(n: tam_sayı) -&gt; tam_sayı</code></a></h5>
+<p>Sturges kuralı ile optimal bin sayısı: k = ⌈log₂(n) + 1⌉</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken data = [1.2, 2.3, 1.8, 3.5, 2.1, ...]
+değişken n = 100
+değişken k = stats_sturges_bins(n)  // ≈ 8
+değişken hist = stats_histogram(data, n, k)
+</code></pre>
+<h3 id="entropi"><a class="header" href="#entropi">Entropi</a></h3>
+<h5 id="stats_entropyprobabilities-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_entropyprobabilities-ondalık-n-tam_sayı---ondalık"><code>stats_entropy(probabilities: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Shannon entropisi: H = -Σ(pᵢ log₂(pᵢ))</p>
+<h5 id="stats_kl_divergencep-ondalık-q-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_kl_divergencep-ondalık-q-ondalık-n-tam_sayı---ondalık"><code>stats_kl_divergence(p: [ondalık], q: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Kullback-Leibler divergence: D_KL(P||Q) = Σ pᵢ log(pᵢ/qᵢ)</p>
+<h3 id="effect-sizes"><a class="header" href="#effect-sizes">Effect Sizes</a></h3>
+<h5 id="stats_cohens_dx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><a class="header" href="#stats_cohens_dx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><code>stats_cohens_d(x: [ondalık], nx: tam_sayı, y: [ondalık], ny: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Cohen's d effect size: d = (x̄ - ȳ) / s_pooled</p>
+<p><strong>Yorum:</strong></p>
+<ul>
+<li>|d| &lt; 0.2: Küçük</li>
+<li>|d| ≈ 0.5: Orta</li>
+<li>|d| &gt; 0.8: Büyük</li>
+</ul>
+<h5 id="stats_hedges_gx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><a class="header" href="#stats_hedges_gx-ondalık-nx-tam_sayı-y-ondalık-ny-tam_sayı---ondalık"><code>stats_hedges_g(x: [ondalık], nx: tam_sayı, y: [ondalık], ny: tam_sayı) -&gt; ondalık</code></a></h5>
+<p>Hedge's g (düzeltilmiş Cohen's d)</p>
+<h3 id="veri-normalizasyonu"><a class="header" href="#veri-normalizasyonu">Veri Normalizasyonu</a></h3>
+<h5 id="stats_normalizedata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_normalizedata-ondalık-n-tam_sayı---ondalık"><code>stats_normalize(data: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Z-score standardization: z = (x - μ) / σ</p>
+<h5 id="stats_min_max_normalizedata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_min_max_normalizedata-ondalık-n-tam_sayı---ondalık"><code>stats_min_max_normalize(data: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Min-max normalizasyonu: x' = (x - min) / (max - min)</p>
+<h3 id="outlier-tespiti"><a class="header" href="#outlier-tespiti">Outlier Tespiti</a></h3>
+<h5 id="stats_is_outlierx-ondalık-data-ondalık-n-tam_sayı-multiplier-ondalık---mantıksal"><a class="header" href="#stats_is_outlierx-ondalık-data-ondalık-n-tam_sayı-multiplier-ondalık---mantıksal"><code>stats_is_outlier(x: ondalık, data: [ondalık], n: tam_sayı, multiplier: ondalık) -&gt; mantıksal</code></a></h5>
+<p>IQR metoduyla outlier tespiti</p>
+<p><strong>Kural:</strong> x &lt; Q1 - k·IQR veya x &gt; Q3 + k·IQR (genellikle k=1.5)</p>
+<h3 id="utilities"><a class="header" href="#utilities">Utilities</a></h3>
+<h5 id="stats_cumsumdata-ondalık-n-tam_sayı---ondalık"><a class="header" href="#stats_cumsumdata-ondalık-n-tam_sayı---ondalık"><code>stats_cumsum(data: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Kümülatif toplam</p>
+<h5 id="stats_moving_averagedata-ondalık-n-tam_sayı-pencere-tam_sayı---ondalık"><a class="header" href="#stats_moving_averagedata-ondalık-n-tam_sayı-pencere-tam_sayı---ondalık"><code>stats_moving_average(data: [ondalık], n: tam_sayı, pencere: tam_sayı) -&gt; [ondalık]</code></a></h5>
+<p>Hareketli ortalama</p>
+<h2 id="-kullanım-Örnekleri"><a class="header" href="#-kullanım-Örnekleri">🔬 Kullanım Örnekleri</a></h2>
+<h3 id="Örnek-1-ab-testi"><a class="header" href="#Örnek-1-ab-testi">Örnek 1: A/B Testi</a></h3>
+<pre><code class="language-berk">kullan stats
+
+// Versiyon A ve B'nin conversion rate'lerini karşılaştır
+değişken groupA = [0.12, 0.15, 0.11, 0.13, 0.14]
+değişken groupB = [0.18, 0.20, 0.17, 0.19, 0.21]
+
+// t-testi
+değişken t = stats_t_test_independent(groupA, 5, groupB, 5)
+yazdır("t-istatistiği: " + t)
+
+// Effect size
+değişken d = stats_cohens_d(groupA, 5, groupB, 5)
+yazdır("Cohen's d: " + d)
+
+eğer (math_mutlak(t) &gt; 2.306) ise yap  // α=0.05, df=8
+    yazdır("Versiyon B anlamlı derecede daha iyi!")
+son
+</code></pre>
+<h3 id="Örnek-2-veri-kalite-kontrolü"><a class="header" href="#Örnek-2-veri-kalite-kontrolü">Örnek 2: Veri Kalite Kontrolü</a></h3>
+<pre><code class="language-berk">kullan stats
+
+fonksiyon quality_check(data: [ondalık], n: tam_sayı): hiçbir yap
+    // Tanımlayıcı istatistikler
+    değişken mean = stats_ortalama(data, n)
+    değişken std = stats_standart_sapma(data, n)
+    değişken median = stats_medyan(data, n)
+    
+    yazdır("Ortalama: " + mean)
+    yazdır("Std Dev: " + std)
+    yazdır("Medyan: " + median)
+    
+    // Dağılım özellikleri
+    değişken skew = stats_skewness(data, n)
+    değişken kurt = stats_kurtosis(data, n)
+    
+    eğer (math_mutlak(skew) &gt; 1.0) ise yap
+        yazdır("UYARI: Yüksek çarpıklık tespit edildi!")
+    son
+    
+    // Outlier tespiti
+    değişken outlier_count = 0
+    değişken i = 0
+    iken (i &lt; n) yap
+        eğer (stats_is_outlier(data[i], data, n, 1.5)) ise yap
+            outlier_count = outlier_count + 1
+        son
+        i = i + 1
+    son
+    
+    eğer (outlier_count &gt; 0) ise yap
+        yazdır("Outlier sayısı: " + outlier_count)
+    son
+son
+</code></pre>
+<h3 id="Örnek-3-regresyon-analizi"><a class="header" href="#Örnek-3-regresyon-analizi">Örnek 3: Regresyon Analizi</a></h3>
+<pre><code class="language-berk">kullan stats
+kullan fmt
+
+fonksiyon regression_analysis(X: [ondalık], y: [ondalık], n: tam_sayı): hiçbir yap
+    // Regresyon modelini fit et
+    değişken (a, b, r2) = stats_linear_regression(X, y, n)
+    
+    yazdır("\n=== REGRESYON ANALİZİ ===")
+    yazdır("Model: y = " + fmt_float_precision(a, 3) + " + " + 
+           fmt_float_precision(b, 3) + "x")
+    yazdır("R² = " + fmt_percent(r2))
+    
+    // Model kalitesi
+    eğer (r2 &gt; 0.9) ise yap
+        yazdır("Model kalitesi: MÜKEMMELyazdır("Model kalitesi: ORTA")
+    son
+    
+    // Tahminler ve residual'lar
+    değişken residuals = yeni_dizi(n)
+    değişken i = 0
+    iken (i &lt; n) yap
+        değişken y_pred = stats_predict_linear(X[i], a, b)
+        residuals[i] = y[i] - y_pred
+        i = i + 1
+    son
+    
+    // Residual analizi
+    değişken residual_mean = stats_ortalama(residuals, n)
+    eğer (math_mutlak(residual_mean) &gt; 0.1) ise yap
+        yazdır("UYARI: Residual ortalaması sıfırdan farklı!")
+    son
+son
+</code></pre>
+<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 İlgili Modüller</a></h2>
+<ul>
+<li><a href="./math.html">math</a> - Matematik fonksiyonları</li>
+<li><a href="./linalg.html">linalg</a> - Matris işlemleri</li>
+<li><a href="./random.html">random</a> - Rastgele sayı üretimi</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 Daha Fazla Bilgi</a></h2>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/stdlib/Statistics/">Julia Statistics</a></li>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html">SciPy.stats</a></li>
+<li><a href="https://www.r-project.org/">R Statistical Functions</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/linalg.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/optim.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/linalg.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/optim.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>linalg - Doğrusal Cebir - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/linalg.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="linalg---doğrusal-cebir"><a class="header" href="#linalg---doğrusal-cebir">linalg - Doğrusal Cebir</a></h1>
+<p><strong>Modül:</strong> <code>linalg.berk</code> (25.4 KB)<br />
+<strong>Kategori:</strong> Bilimsel Hesaplama<br />
+<strong>Inspiration:</strong> Julia LinearAlgebra, NumPy, Rust nalgebra, BLAS/LAPACK</p>
+<h2 id="-genel-bakış"><a class="header" href="#-genel-bakış">📋 Genel Bakış</a></h2>
+<p><code>linalg</code> modülü, matris ve vektör işlemleri için kapsamlı bir doğrusal cebir kütüphanesidir. Üniversite seviyesinde matematik ve mühendislik uygulamaları için tasarlanmıştır.</p>
+<p><strong>Özellikler:</strong></p>
+<ul>
+<li>✅ Matris oluşturma ve temel işlemler</li>
+<li>✅ Matris aritmetiği (toplama, çarpma, transpoze)</li>
+<li>✅ Vektör işlemleri (dot, cross, norm)</li>
+<li>✅ Matris ayrıştırmaları (LU, QR, Cholesky)</li>
+<li>✅ Özdeğer/özvektör hesaplama</li>
+<li>✅ Doğrusal sistem çözücüler</li>
+<li>✅ Matris normları ve özellikleri</li>
+</ul>
+<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🎯 Hızlı Başlangıç</a></h2>
+<h3 id="matris-oluşturma"><a class="header" href="#matris-oluşturma">Matris Oluşturma</a></h3>
+<pre><code class="language-berk">kullan linalg
+
+// 3×3 birim matris
+değişken I = linalg_birim_mat(3)
+
+// Sıfır matrisi
+değişken Z = linalg_sıfır_mat(2, 3)
+
+// Birler matrisi
+değişken O = linalg_birler_mat(4, 4)
+
+// Diyagonal matris
+değişken d = [1.0, 2.0, 3.0]
+değişken D = linalg_diyagonal_mat(d, 3)
+
+// Rastgele matris
+değişken R = linalg_rastgele_mat(3, 3, 12345)
+</code></pre>
+<h3 id="matris-İşlemleri"><a class="header" href="#matris-İşlemleri">Matris İşlemleri</a></h3>
+<pre><code class="language-berk">// Transpoze
+değişken A = [1.0, 2.0, 3.0, 4.0]  // 2×2
+değişken AT = linalg_transpoz(A, 2, 2)
+
+// Matris toplama
+değişken C = linalg_mat_topla(A, B, 2, 2)
+
+// Skaler çarpma
+değişken D = linalg_mat_skaler(2.0, A, 2, 2)
+
+// Matris çarpımı (A: 2×3, B: 3×2 → C: 2×2)
+değişken C = linalg_mat_çarp(A, B, 2, 3, 2)
+</code></pre>
+<h2 id="-api-referansı"><a class="header" href="#-api-referansı">📚 API Referansı</a></h2>
+<h3 id="matris-oluşturma-1"><a class="header" href="#matris-oluşturma-1">Matris Oluşturma</a></h3>
+<h4 id="linalg_birim_matn-tam_sayı---ondalık"><a class="header" href="#linalg_birim_matn-tam_sayı---ondalık"><code>linalg_birim_mat(n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>n×n boyutunda birim (identity) matris oluşturur.</p>
+<p><strong>Parametre:</strong></p>
+<ul>
+<li><code>n</code>: Matris boyutu</li>
+</ul>
+<p><strong>Döndürür:</strong> Birim matris (düz dizi formatında)</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken I3 = linalg_birim_mat(3)
+// I3 = [1, 0, 0,
+//       0, 1, 0,
+//       0, 0, 1]
+</code></pre>
+<h4 id="linalg_sıfır_matm-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_sıfır_matm-tam_sayı-n-tam_sayı---ondalık"><code>linalg_sıfır_mat(m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>m×n boyutunda sıfır matrisi oluşturur.</p>
+<h4 id="linalg_birler_matm-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_birler_matm-tam_sayı-n-tam_sayı---ondalık"><code>linalg_birler_mat(m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>m×n boyutunda tüm elemanları 1 olan matris oluşturur.</p>
+<h4 id="linalg_diyagonal_matd-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_diyagonal_matd-ondalık-n-tam_sayı---ondalık"><code>linalg_diyagonal_mat(d: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Köşegen elemanları <code>d</code> dizisi olan n×n matris oluşturur.</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken d = [2.0, 3.0, 5.0]
+değişken D = linalg_diyagonal_mat(d, 3)
+// D = [2, 0, 0,
+//      0, 3, 0,
+//      0, 0, 5]
+</code></pre>
+<h3 id="matris-aritmetiği"><a class="header" href="#matris-aritmetiği">Matris Aritmetiği</a></h3>
+<h4 id="linalg_mat_toplaa-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_mat_toplaa-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_mat_topla(A: [ondalık], B: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>İki m×n matrisini toplar: C = A + B</p>
+<h4 id="linalg_mat_çıkara-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_mat_çıkara-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_mat_çıkar(A: [ondalık], B: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>İki m×n matrisini çıkarır: C = A - B</p>
+<h4 id="linalg_mat_skalerα-ondalık-a-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_mat_skalerα-ondalık-a-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_mat_skaler(α: ondalık, A: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Matrisi skaler ile çarpar: B = α · A</p>
+<h4 id="linalg_mat_çarpa-ondalık-b-ondalık-m-tam_sayı-k-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_mat_çarpa-ondalık-b-ondalık-m-tam_sayı-k-tam_sayı-n-tam_sayı---ondalık"><code>linalg_mat_çarp(A: [ondalık], B: [ondalık], m: tam_sayı, k: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Matris çarpımı: C = A × B</p>
+<ul>
+<li>A: m×k</li>
+<li>B: k×n</li>
+<li>C: m×n</li>
+</ul>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">// 2×2 matris çarpımı
+değişken A = [1.0, 2.0,
+              3.0, 4.0]
+değişken B = [5.0, 6.0,
+              7.0, 8.0]
+değişken C = linalg_mat_çarp(A, B, 2, 2, 2)
+// C = [19, 22,
+//      43, 50]
+</code></pre>
+<h4 id="linalg_mat_hadamarda-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_mat_hadamarda-ondalık-b-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_mat_hadamard(A: [ondalık], B: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Element-wise çarpım (Hadamard product): C[i,j] = A[i,j] × B[i,j]</p>
+<h3 id="vektör-İşlemleri"><a class="header" href="#vektör-İşlemleri">Vektör İşlemleri</a></h3>
+<h4 id="linalg_iç_çarpımu-ondalık-v-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_iç_çarpımu-ondalık-v-ondalık-n-tam_sayı---ondalık"><code>linalg_iç_çarpım(u: [ondalık], v: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>İç çarpım (dot product): u · v = Σ(u[i] × v[i])</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken u = [1.0, 2.0, 3.0]
+değişken v = [4.0, 5.0, 6.0]
+değişken dot = linalg_iç_çarpım(u, v, 3)  // 32.0
+</code></pre>
+<h4 id="linalg_norm2v-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_norm2v-ondalık-n-tam_sayı---ondalık"><code>linalg_norm2(v: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>L2 norm (Euclidean norm): ||v|| = √(Σv[i]²)</p>
+<h4 id="linalg_norm1v-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_norm1v-ondalık-n-tam_sayı---ondalık"><code>linalg_norm1(v: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>L1 norm (Manhattan norm): ||v||₁ = Σ|v[i]|</p>
+<h4 id="linalg_norm_infv-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_norm_infv-ondalık-n-tam_sayı---ondalık"><code>linalg_norm_inf(v: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>L∞ norm (maximum norm): ||v||∞ = max(|v[i]|)</p>
+<h4 id="linalg_normalizev-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_normalizev-ondalık-n-tam_sayı---ondalık"><code>linalg_normalize(v: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Vektörü normalize eder: v̂ = v / ||v||</p>
+<h4 id="linalg_dış_çarpımu-ondalık-v-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_dış_çarpımu-ondalık-v-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_dış_çarpım(u: [ondalık], v: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Dış çarpım (outer product): A[i,j] = u[i] × v[j]</p>
+<h4 id="linalg_cross_3du-ondalık-v-ondalık---ondalık"><a class="header" href="#linalg_cross_3du-ondalık-v-ondalık---ondalık"><code>linalg_cross_3d(u: [ondalık], v: [ondalık]) -&gt; [ondalık]</code></a></h4>
+<p>3D vektör cross product (vektörel çarpım): w = u × v</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken u = [1.0, 0.0, 0.0]
+değişken v = [0.0, 1.0, 0.0]
+değişken w = linalg_cross_3d(u, v)  // [0, 0, 1]
+</code></pre>
+<h3 id="matris-Özellikleri"><a class="header" href="#matris-Özellikleri">Matris Özellikleri</a></h3>
+<h4 id="linalg_iza-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_iza-ondalık-n-tam_sayı---ondalık"><code>linalg_iz(A: [ondalık], n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>İz (trace): tr(A) = Σ A[i,i]</p>
+<h4 id="linalg_frobenius_norma-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><a class="header" href="#linalg_frobenius_norma-ondalık-m-tam_sayı-n-tam_sayı---ondalık"><code>linalg_frobenius_norm(A: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; ondalık</code></a></h4>
+<p>Frobenius norm: ||A||_F = √(Σ Σ A[i,j]²)</p>
+<h4 id="linalg_determinant_2x2a-ondalık---ondalık"><a class="header" href="#linalg_determinant_2x2a-ondalık---ondalık"><code>linalg_determinant_2x2(A: [ondalık]) -&gt; ondalık</code></a></h4>
+<p>2×2 matris determinantı: det(A) = a₁₁a₂₂ - a₁₂a₂₁</p>
+<h4 id="linalg_determinant_3x3a-ondalık---ondalık"><a class="header" href="#linalg_determinant_3x3a-ondalık---ondalık"><code>linalg_determinant_3x3(A: [ondalık]) -&gt; ondalık</code></a></h4>
+<p>3×3 matris determinantı (Sarrus kuralı)</p>
+<h3 id="matris-tersi"><a class="header" href="#matris-tersi">Matris Tersi</a></h3>
+<h4 id="linalg_inverse_2x2a-ondalık---ondalık"><a class="header" href="#linalg_inverse_2x2a-ondalık---ondalık"><code>linalg_inverse_2x2(A: [ondalık]) -&gt; [ondalık]</code></a></h4>
+<p>2×2 matris tersini hesaplar: A⁻¹</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken A = [4.0, 7.0,
+              2.0, 6.0]
+değişken A_inv = linalg_inverse_2x2(A)
+// det(A) = 10
+// A_inv = [0.6, -0.7,
+//         -0.2,  0.4]
+</code></pre>
+<h4 id="linalg_inverse_3x3a-ondalık---ondalık"><a class="header" href="#linalg_inverse_3x3a-ondalık---ondalık"><code>linalg_inverse_3x3(A: [ondalık]) -&gt; [ondalık]</code></a></h4>
+<p>3×3 matris tersini hesaplar (cofactor expansion)</p>
+<h3 id="doğrusal-sistemler"><a class="header" href="#doğrusal-sistemler">Doğrusal Sistemler</a></h3>
+<h4 id="linalg_gauss_çöza-ondalık-b-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_gauss_çöza-ondalık-b-ondalık-n-tam_sayı---ondalık"><code>linalg_gauss_çöz(A: [ondalık], b: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Ax = b doğrusal sistemini Gauss eliminasyonu ile çözer.</p>
+<p><strong>Özellikler:</strong></p>
+<ul>
+<li>Partial pivoting</li>
+<li>Forward elimination</li>
+<li>Back substitution</li>
+</ul>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">// 3x + 2y = 7
+// 2x + 5y = 12
+değişken A = [3.0, 2.0,
+              2.0, 5.0]
+değişken b = [7.0, 12.0]
+değişken x = linalg_gauss_çöz(A, b, 2)
+// x = [1, 2]
+</code></pre>
+<h3 id="matris-ayrıştırmaları"><a class="header" href="#matris-ayrıştırmaları">Matris Ayrıştırmaları</a></h3>
+<h4 id="linalg_lu_decomposea-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_lu_decomposea-ondalık-n-tam_sayı---ondalık"><code>linalg_lu_decompose(A: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>LU ayrıştırması: A = L × U</p>
+<ul>
+<li>L: Alt üçgen matris (köşegeni 1)</li>
+<li>U: Üst üçgen matris</li>
+</ul>
+<p><strong>Kullanım:</strong> Doğrusal sistemleri hızlı çözmek için</p>
+<h4 id="linalg_qr_gram_schmidta-ondalık-m-tam_sayı-n-tam_sayı---ondalık-ondalık"><a class="header" href="#linalg_qr_gram_schmidta-ondalık-m-tam_sayı-n-tam_sayı---ondalık-ondalık"><code>linalg_qr_gram_schmidt(A: [ondalık], m: tam_sayı, n: tam_sayı) -&gt; ([ondalık], [ondalık])</code></a></h4>
+<p>QR ayrıştırması: A = Q × R</p>
+<ul>
+<li>Q: Ortogonal matris</li>
+<li>R: Üst üçgen matris</li>
+</ul>
+<p><strong>Algoritma:</strong> Gram-Schmidt orthogonalization</p>
+<p><strong>Döndürür:</strong> (Q, R) tuple'ı</p>
+<h4 id="linalg_choleskya-ondalık-n-tam_sayı---ondalık"><a class="header" href="#linalg_choleskya-ondalık-n-tam_sayı---ondalık"><code>linalg_cholesky(A: [ondalık], n: tam_sayı) -&gt; [ondalık]</code></a></h4>
+<p>Cholesky ayrıştırması: A = L × Lᵀ</p>
+<p><strong>Gereksinim:</strong> A pozitif tanımlı simetrik matris olmalı</p>
+<p><strong>Kullanım:</strong> Kovaryans matrisleri, optimization</p>
+<h3 id="ÖzdeğerÖzvektör"><a class="header" href="#ÖzdeğerÖzvektör">Özdeğer/Özvektör</a></h3>
+<h4 id="linalg_power_iterationa-ondalık-n-tam_sayı-max_iter-tam_sayı-tolerans-ondalık---ondalık-ondalık"><a class="header" href="#linalg_power_iterationa-ondalık-n-tam_sayı-max_iter-tam_sayı-tolerans-ondalık---ondalık-ondalık"><code>linalg_power_iteration(A: [ondalık], n: tam_sayı, max_iter: tam_sayı, tolerans: ondalık) -&gt; ([ondalık], ondalık)</code></a></h4>
+<p>Güç iterasyonu ile dominant eigenvector bulma.</p>
+<p><strong>Döndürür:</strong> (eigenvector, eigenvalue) tuple'ı</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken A = [4.0, 1.0,
+              1.0, 3.0]
+değişken (v, λ) = linalg_power_iteration(A, 2, 100, 1e-6)
+// λ ≈ 4.618 (dominant eigenvalue)
+// v: karşılık gelen eigenvector
+</code></pre>
+<h3 id="matris-testleri"><a class="header" href="#matris-testleri">Matris Testleri</a></h3>
+<h4 id="linalg_simetrik_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><a class="header" href="#linalg_simetrik_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><code>linalg_simetrik_mi(A: [ondalık], n: tam_sayı, tolerans: ondalık) -&gt; mantıksal</code></a></h4>
+<p>Matrisin simetrik olup olmadığını kontrol eder: Aᵢⱼ = Aⱼᵢ</p>
+<h4 id="linalg_diagonal_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><a class="header" href="#linalg_diagonal_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><code>linalg_diagonal_mi(A: [ondalık], n: tam_sayı, tolerans: ondalık) -&gt; mantıksal</code></a></h4>
+<p>Diyagonal matris kontrolü</p>
+<h4 id="linalg_üst_üçgen_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><a class="header" href="#linalg_üst_üçgen_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><code>linalg_üst_üçgen_mi(A: [ondalık], n: tam_sayı, tolerans: ondalık) -&gt; mantıksal</code></a></h4>
+<p>Üst üçgen matris kontrolü</p>
+<h4 id="linalg_alt_üçgen_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><a class="header" href="#linalg_alt_üçgen_mia-ondalık-n-tam_sayı-tolerans-ondalık---mantıksal"><code>linalg_alt_üçgen_mi(A: [ondalık], n: tam_sayı, tolerans: ondalık) -&gt; mantıksal</code></a></h4>
+<p>Alt üçgen matris kontrolü</p>
+<h3 id="matris-rankı"><a class="header" href="#matris-rankı">Matris Rankı</a></h3>
+<h4 id="linalg_ranka-ondalık-m-tam_sayı-n-tam_sayı-tolerans-ondalık---tam_sayı"><a class="header" href="#linalg_ranka-ondalık-m-tam_sayı-n-tam_sayı-tolerans-ondalık---tam_sayı"><code>linalg_rank(A: [ondalık], m: tam_sayı, n: tam_sayı, tolerans: ondalık) -&gt; tam_sayı</code></a></h4>
+<p>Matris rankını Gaussian elimination ile hesaplar.</p>
+<p><strong>Örnek:</strong></p>
+<pre><code class="language-berk">değişken A = [1.0, 2.0, 3.0,
+              2.0, 4.0, 6.0,
+              3.0, 6.0, 9.0]
+değişken r = linalg_rank(A, 3, 3, 1e-10)  // r = 1
+</code></pre>
+<h2 id="-kullanım-Örnekleri"><a class="header" href="#-kullanım-Örnekleri">🔬 Kullanım Örnekleri</a></h2>
+<h3 id="Örnek-1-doğrusal-regresyon"><a class="header" href="#Örnek-1-doğrusal-regresyon">Örnek 1: Doğrusal Regresyon</a></h3>
+<pre><code class="language-berk">kullan linalg
+kullan stats
+
+// y = ax + b modelini fit et
+fonksiyon linear_fit(X: [ondalık], y: [ondalık], n: tam_sayı): (ondalık, ondalık) yap
+    // X matrix: [ones, x_values]
+    değişken A = yeni_dizi(n * 2)
+    değişken i = 0
+    iken (i &lt; n) yap
+        A[i * 2] = 1.0
+        A[i * 2 + 1] = X[i]
+        i = i + 1
+    son
+    
+    // Normal equations: (A^T A) β = A^T y
+    değişken params = linalg_least_squares(A, y, n, 2)
+    dön (params[0], params[1])  // (b, a)
+son
+</code></pre>
+<h3 id="Örnek-2-pca-principal-component-analysis"><a class="header" href="#Örnek-2-pca-principal-component-analysis">Örnek 2: PCA (Principal Component Analysis)</a></h3>
+<pre><code class="language-berk">kullan linalg
+
+// Veriyi merkeze al
+fonksiyon center_data(data: [ondalık], m: tam_sayı, n: tam_sayı): [ondalık] yap
+    değişken centered = linalg_mat_kopyala(data, m, n)
+    
+    // Her sütun için ortalamayı çıkar
+    değişken j = 0
+    iken (j &lt; n) yap
+        değişken ortalama = 0.0
+        değişken i = 0
+        iken (i &lt; m) yap
+            ortalama = ortalama + linalg_mat_al(data, i, j, n)
+            i = i + 1
+        son
+        ortalama = ortalama / m
+        
+        i = 0
+        iken (i &lt; m) yap
+            değişken değer = linalg_mat_al(centered, i, j, n) - ortalama
+            linalg_mat_yaz(centered, i, j, n, değer)
+            i = i + 1
+        son
+        
+        j = j + 1
+    son
+    
+    dön centered
+son
+
+// Kovaryans matrisini hesapla
+fonksiyon covariance_matrix(data: [ondalık], m: tam_sayı, n: tam_sayı): [ondalık] yap
+    değişken centered = center_data(data, m, n)
+    değişken CT = linalg_transpoz(centered, m, n)
+    değişken cov = linalg_mat_çarp(CT, centered, n, m, n)
+    
+    // (n-1) ile böl
+    değişken i = 0
+    iken (i &lt; n * n) yap
+        cov[i] = cov[i] / (m - 1)
+        i = i + 1
+    son
+    
+    dön cov
+son
+</code></pre>
+<h3 id="Örnek-3-matris-normu-ve-condition-number"><a class="header" href="#Örnek-3-matris-normu-ve-condition-number">Örnek 3: Matris Normu ve Condition Number</a></h3>
+<pre><code class="language-berk">kullan linalg
+
+fonksiyon analyze_matrix(A: [ondalık], n: tam_sayı): hiçbir yap
+    // Frobenius norm
+    değişken norm = linalg_frobenius_norm(A, n, n)
+    yazdır("||A||_F = " + norm)
+    
+    // Determinant
+    eğer (n == 2) ise yap
+        değişken det = linalg_determinant_2x2(A)
+        yazdır("det(A) = " + det)
+        
+        // Inverse ve condition number
+        eğer (math_mutlak(det) &gt; 1e-10) ise yap
+            değişken A_inv = linalg_inverse_2x2(A)
+            değişken κ = linalg_condition_frobenius(A, A_inv, n)
+            yazdır("κ(A) = " + κ)
+            
+            eğer (κ &gt; 100.0) ise yap
+                yazdır("UYARI: Matris kötü koşullu!")
+            son
+        son
+    son
+    
+    // Simetri kontrolü
+    eğer (linalg_simetrik_mi(A, n, 1e-10)) ise yap
+        yazdır("Matris simetriktir")
+    son
+son
+</code></pre>
+<h2 id="-performans-notları"><a class="header" href="#-performans-notları">⚡ Performans Notları</a></h2>
+<h3 id="kompleksite"><a class="header" href="#kompleksite">Kompleksite</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Operasyon</th><th>Kompleksite</th><th>Notlar</th></tr></thead><tbody>
+<tr><td>Matris çarpımı</td><td>O(n³)</td><td>Naive algoritma</td></tr>
+<tr><td>LU decomposition</td><td>O(n³)</td><td>Gaussian elimination</td></tr>
+<tr><td>QR decomposition</td><td>O(mn²)</td><td>Gram-Schmidt</td></tr>
+<tr><td>Cholesky</td><td>O(n³/3)</td><td>Simetrik pozitif tanımlı</td></tr>
+<tr><td>Determinant (n×n)</td><td>O(n³)</td><td>LU kullanılarak</td></tr>
+<tr><td>Linear solve</td><td>O(n³)</td><td>Gauss elimination</td></tr>
+</tbody></table>
+</div>
+<h3 id="optimizasyon-İpuçları"><a class="header" href="#optimizasyon-İpuçları">Optimizasyon İpuçları</a></h3>
+<ol>
+<li>
+<p><strong>BLAS/LAPACK Kullanın</strong> (gelecek sürüm):</p>
+<pre><code class="language-berk">// Native BLAS matris çarpımı
+değişken C = linalg_gemm_blas(A, B, m, k, n)
+</code></pre>
+</li>
+<li>
+<p><strong>Seyrek Matrisler</strong> için özel algoritmalar (v1.5):</p>
+<pre><code class="language-berk">kullan sparse
+değişken A_sparse = sparse_csr(A, m, n)
+</code></pre>
+</li>
+<li>
+<p><strong>GPU Acceleration</strong> (planlanan):</p>
+<pre><code class="language-berk">kullan cuda
+değişken C = cuda_matmul(A, B, m, k, n)
+</code></pre>
+</li>
+</ol>
+<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 İlgili Modüller</a></h2>
+<ul>
+<li><a href="./stats.html">stats</a> - İstatistiksel hesaplamalar için linalg kullanır</li>
+<li><a href="./optim.html">optim</a> - Optimizasyon algoritmaları için matris işlemleri</li>
+<li><a href="./math.html">math</a> - Temel matematik fonksiyonları</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 Daha Fazla Bilgi</a></h2>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/">Julia LinearAlgebra</a></li>
+<li><a href="https://numpy.org/doc/stable/reference/routines.linalg.html">NumPy Linear Algebra</a></li>
+<li><a href="https://nalgebra.org/">Rust nalgebra</a></li>
+<li><a href="http://www.netlib.org/lapack/lug/">LAPACK User Guide</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/random.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/stats.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/random.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/stats.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

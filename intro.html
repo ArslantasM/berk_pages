@@ -1,0 +1,569 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Giriş - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/intro.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="berk-programlama-dili"><a class="header" href="#berk-programlama-dili">BERK Programlama Dili</a></h1>
+<p><strong>BERK</strong>, dünyada ilk kez gerçek çift dilli syntax (Türkçe/İngilizce) ile tasarlanmış, modern, güvenli ve yüksek performanslı bir sistem programlama dilidir. 19 farklı hedef platformda (masaüstü, mobil, gömülü, WebAssembly) üretkenlik sağlar.</p>
+<h2 id="-neden-berk-adı-seçilmiştir"><a class="header" href="#-neden-berk-adı-seçilmiştir">📖 Neden BERK Adı Seçilmiştir?</a></h2>
+<h3 id="Öztürkçe-kökeni-güçlü-muhkem-sağlam"><a class="header" href="#Öztürkçe-kökeni-güçlü-muhkem-sağlam">Öztürkçe Kökeni: "Güçlü, Muhkem, Sağlam"</a></h3>
+<p><strong>BERK</strong> kelimesi, Öztürkçe'de <strong>"güçlü, dayanıklı, muhkem ve sağlam"</strong> anlamlarına gelir. Bu nitelikler, programlama dilinin teknik hedefleriyle doğrudan örtüşmektedir: bellek güvenliği, tip sistemi doğruluğu, güçlü derleyici mimarisi ve kararlı performans.</p>
+<h3 id="arapçadan-gelen-anlamı-Şimşek"><a class="header" href="#arapçadan-gelen-anlamı-Şimşek">Arapçadan Gelen Anlamı: "Şimşek"</a></h3>
+<p>Türkçe'de karşılık bulan bir diğer anlam **"şimşek"**tir. Bu anlam, BERK dilinin hız, performans ve çeviklik vizyonunu temsil eder: LLVM tabanlı hızlı derleme, C++ seviyesinde performans ve optimize edilmiş çekirdek mimarisi.</p>
+<h3 id="anlamların-birleşimi"><a class="header" href="#anlamların-birleşimi">Anlamların Birleşimi</a></h3>
+<p>BERK, hem Türkçe kökenli <strong>sağlamlık</strong> kavramını hem de modern teknoloji dünyasındaki <strong>hız ve çeviklik</strong> kavramlarını birleştirerek güçlü bir marka kimliği oluşturur.</p>
+<h3 id="uluslararası-alanda"><a class="header" href="#uluslararası-alanda">Uluslararası Alanda</a></h3>
+<p>BERK, <strong>Beyond-Efficient Runtime Kernel</strong> (Verimliliğin Ötesinde Çalışma Zamanı Çekirdeği) olarak tanımlanacaktır.</p>
+<hr />
+<h2 id="-İndirme-ve-kurulum"><a class="header" href="#-İndirme-ve-kurulum">📥 İndirme ve Kurulum</a></h2>
+<h3 id="windows-x64-v080"><a class="header" href="#windows-x64-v080">Windows x64 (v0.8.0)</a></h3>
+<p><strong>Son Sürüm:</strong> BERK v0.8.0 (19 Kasım 2025)<br />
+<strong>Boyut:</strong> ~25 MB<br />
+<strong>Platform:</strong> Windows 10/11 (64-bit)</p>
+<h4 id="-İndirme-linkleri"><a class="header" href="#-İndirme-linkleri">🔗 İndirme Linkleri</a></h4>
+<ul>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v0.8.0/BERK-lang.exe">⬇️ BERK-lang.exe İndir</a></strong> - Derleyici</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📚 Dokümantasyon (PDF)</a></strong> - Tam Rehber</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📖 Çevrimiçi Kitapçık</a></strong> - Etkileşimli Dokümantasyon</li>
+</ul>
+<h4 id="kurulum"><a class="header" href="#kurulum">Kurulum</a></h4>
+<pre><code class="language-powershell"># 1. BERK-lang.exe'yi indirin
+# 2. İstediğiniz bir klasöre kopyalayın (örn: C:\BERK)
+# 3. PATH'e ekleyin:
+$env:PATH += ";C:\BERK"
+
+# Test edin
+BERK-lang --version
+</code></pre>
+<h4 id="hızlı-başlangıç"><a class="header" href="#hızlı-başlangıç">Hızlı Başlangıç</a></h4>
+<pre><code class="language-bash"># İlk programınızı yazın (merhaba.berk)
+fonksiyon ana() -&gt; tamsayı
+yap
+    yazdır("Merhaba, BERK!")
+    dön 0
+son
+
+# Derleyin ve çalıştırın
+BERK-lang merhaba.berk -o merhaba.exe
+.\merhaba.exe
+</code></pre>
+<h3 id="diğer-platformlar"><a class="header" href="#diğer-platformlar">Diğer Platformlar</a></h3>
+<p><strong>Linux ve macOS:</strong> Kaynak koddan derleme gereklidir.</p>
+<pre><code class="language-bash"># Rust toolchain kurulumu
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derleyin
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+</code></pre>
+<hr />
+<h2 id="-berki-Özel-kılan-Özellikler"><a class="header" href="#-berki-Özel-kılan-Özellikler">🌟 BERK'i Özel Kılan Özellikler</a></h2>
+<h3 id="-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#-dünyada-İlk-gerçek-Çift-dilli-syntax">🌍 Dünyada İlk: Gerçek Çift Dilli Syntax</a></h3>
+<p>Programlama dillerinde ilk kez, <strong>aynı derleyicide</strong> hem Türkçe hem İngilizce anahtar kelimelerle kod yazabilirsiniz. Bu sadece bir çeviri değil, dilin özünde bulunan bir özelliktir.</p>
+<h3 id="-ccrust-seviyesinde-performans"><a class="header" href="#-ccrust-seviyesinde-performans">⚡ C/C++/Rust Seviyesinde Performans</a></h3>
+<ul>
+<li><strong>LLVM Backend</strong>: Native kod üretimi ile sıfır maliyet abstraksiyonlar</li>
+<li><strong>Benchmark Sonuçları</strong>: C++ ile %98-100 performans eşitliği</li>
+<li><strong>Memory Efficiency</strong>: Manuel kontrol + güvenlik garantileri</li>
+<li><strong>Optimizasyon Seviyeleri</strong>: O0-O3 arası agresif optimizasyon</li>
+</ul>
+<h3 id="-rules-based-ai-yaklaşımı"><a class="header" href="#-rules-based-ai-yaklaşımı">🧠 Rules-Based AI Yaklaşımı</a></h3>
+<p>Derleyici, <strong>kural tabanlı yapay zeka</strong> teknikleri kullanarak:</p>
+<ul>
+<li>Akıllı hata tespiti ve öneriler</li>
+<li>Kod optimizasyon kararları</li>
+<li>Tip çıkarımı ve analiz</li>
+<li>Semantic analysis ile kalite garantisi</li>
+</ul>
+<h3 id="-bilimsel-hesaplama-kütüphaneleri-stdlib-v14"><a class="header" href="#-bilimsel-hesaplama-kütüphaneleri-stdlib-v14">🔬 Bilimsel Hesaplama Kütüphaneleri (stdlib v1.4)</a></h3>
+<p><strong>18 modül</strong>, <strong>600+ fonksiyon</strong>, <strong>285 KB</strong> kod:</p>
+<ul>
+<li><strong>linalg</strong>: Matrix işlemleri, LU/QR/Cholesky decomposition, eigenvalue</li>
+<li><strong>stats</strong>: İstatistik, regresyon, hipotez testleri, dağılımlar</li>
+<li><strong>optim</strong>: Gradient descent, BFGS, simulated annealing</li>
+<li><strong>NumPy/SciPy/Julia</strong> seviyesinde bilimsel hesaplama</li>
+</ul>
+<h3 id="-19-farklı-hedef-platform"><a class="header" href="#-19-farklı-hedef-platform">🚀 19 Farklı Hedef Platform</a></h3>
+<p>Cross-compilation desteği:</p>
+<ul>
+<li><strong>Desktop</strong>: Windows (x64/ARM), Linux (x64/ARM), macOS (Intel/Apple Silicon)</li>
+<li><strong>Embedded</strong>: ARM Cortex-M, RISC-V, AVR, ESP32</li>
+<li><strong>Mobile</strong>: Android (ARM/x86), iOS (ARM64)</li>
+<li><strong>WebAssembly</strong>: Tarayıcı ve sunucu</li>
+<li><strong>Cloud</strong>: AWS Lambda, Azure Functions uyumlu</li>
+</ul>
+<h3 id="-son-derece-kolay-Öğrenme"><a class="header" href="#-son-derece-kolay-Öğrenme">📚 Son Derece Kolay Öğrenme</a></h3>
+<ul>
+<li><strong>Sezgisel Syntax</strong>: Python'un basitliği + Rust'ın gücü</li>
+<li><strong>Türkçe Dokümantasyon</strong>: 70+ sayfa kapsamlı rehber</li>
+<li><strong>Anlaşılır Hata Mesajları</strong>: Çözüm önerileriyle</li>
+<li><strong>Öğrenme Eğrisi</strong>: 1-2 hafta ile productive olma</li>
+</ul>
+<h3 id="-gömülü-sistem-kabiliyeti"><a class="header" href="#-gömülü-sistem-kabiliyeti">🔧 Gömülü Sistem Kabiliyeti</a></h3>
+<ul>
+<li><strong>Bare-metal</strong> programlama desteği</li>
+<li><strong>RTOS</strong> entegrasyonu (FreeRTOS, Zephyr)</li>
+<li><strong>Low-level</strong> donanım erişimi</li>
+<li><strong>Interrupt handling</strong> ve DMA desteği</li>
+<li><strong>Minimal runtime</strong>: 2-5 KB overhead</li>
+</ul>
+<h2 id="neden-berk"><a class="header" href="#neden-berk">Neden BERK?</a></h2>
+<h3 id="-akademisyenler-ve-araştırmacılar-İçin"><a class="header" href="#-akademisyenler-ve-araştırmacılar-İçin">🎯 Akademisyenler ve Araştırmacılar İçin</a></h3>
+<ul>
+<li><strong>Bilimsel Hesaplama</strong>: NumPy/SciPy/MATLAB seviyesinde kütüphaneler</li>
+<li><strong>Performans</strong>: C++ hızında, Python kolaylığında</li>
+<li><strong>Reproducibility</strong>: Deterministik derleme, reproducible builds</li>
+<li><strong>Publishing</strong>: Türkçe akademik yayınlar için ideal</li>
+</ul>
+<h3 id="-sektör-profesyonelleri-İçin"><a class="header" href="#-sektör-profesyonelleri-İçin">💼 Sektör Profesyonelleri İçin</a></h3>
+<ul>
+<li><strong>Production-Ready</strong>: C/C++/Rust ile yarışabilir performans</li>
+<li><strong>Cross-Platform</strong>: Tek kod tabanı, 19 platform</li>
+<li><strong>Maintainability</strong>: Okunabilir kod, kolay refactoring</li>
+<li><strong>Interoperability</strong>: C/C++ FFI, mevcut sistemlere entegrasyon</li>
+<li><strong>Cost-Effective</strong>: Daha az bug, daha hızlı development</li>
+</ul>
+<h3 id="-eğitimciler-ve-Öğrenciler-İçin"><a class="header" href="#-eğitimciler-ve-Öğrenciler-İçin">🎓 Eğitimciler ve Öğrenciler İçin</a></h3>
+<ul>
+<li><strong>Türkçe İçerik</strong>: Anadilde programlama öğrenimi</li>
+<li><strong>Modern Kavramlar</strong>: Type safety, pattern matching, error handling</li>
+<li><strong>Kolay Geçiş</strong>: Python'dan gelen için doğal, C++'a geçiş için köprü</li>
+<li><strong>Pratik Örnekler</strong>: Gerçek dünya uygulamaları</li>
+</ul>
+<h3 id="1-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#1-dünyada-İlk-gerçek-Çift-dilli-syntax">1. <strong>Dünyada İlk: Gerçek Çift Dilli Syntax</strong></a></h3>
+<pre><code class="language-berk">// Türkçe
+fonksiyon selamla(isim: yazı) -&gt; yazı
+yap
+    dön "Merhaba, " + isim + "!"
+son
+
+// English (aynı derleyici!)
+function greet(name: string) -&gt; string
+do
+    return "Hello, " + name + "!"
+end
+
+// Karışık kullanım bile mümkün
+function hesapla(sayı: tamsayı) -&gt; tamsayı
+yap
+    eğer sayı &gt; 0
+        return sayı * 2
+    değilse
+        dön 0
+    son
+son
+</code></pre>
+<h3 id="2-modern-ve-güvenli"><a class="header" href="#2-modern-ve-güvenli">2. <strong>Modern ve Güvenli</strong></a></h3>
+<ul>
+<li>✅ Güçlü tip sistemi</li>
+<li>✅ Bellek güvenliği</li>
+<li>✅ Null safety</li>
+<li>✅ Pattern matching</li>
+<li>✅ Error handling</li>
+</ul>
+<h3 id="3-yüksek-performans--llvm-backend"><a class="header" href="#3-yüksek-performans--llvm-backend">3. <strong>Yüksek Performans + LLVM Backend</strong></a></h3>
+<ul>
+<li>Native kod üretimi - <strong>C++ ile %98-100 performans eşitliği</strong></li>
+<li>19 farklı mimari desteği (x64, ARM, RISC-V, WebAssembly, ...)</li>
+<li>Optimizasyon seviyeleri (O0-O3)</li>
+<li>Cross-compilation - <strong>tek kod, 19 platform</strong></li>
+<li>Zero-cost abstractions</li>
+<li>Inline assembly desteği</li>
+</ul>
+<h3 id="4-bilimsel-hesaplama-stdlib-v14"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v14">4. <strong>Bilimsel Hesaplama (stdlib v1.4)</strong></a></h3>
+<pre><code class="language-berk">import linalg, stats, optim
+
+// Linear Algebra
+değişken A = linalg.matris_oluştur([[1, 2], [3, 4]])
+değişken B = linalg.matris_çarp(A, linalg.transpose(A))
+değişken (L, U) = linalg.lu_ayrıştır(A)
+
+// İstatistik
+değişken veri = [1.2, 2.3, 3.4, 4.5, 5.6]
+değişken ort = stats.ortalama(veri)
+değişken std = stats.standart_sapma(veri)
+değişken (r, p) = stats.korelasyon(x, y)
+
+// Optimizasyon
+değişken minimum = optim.gradient_descent(fonksiyon, x0, öğrenme=0.01)
+değişken sonuç = optim.bfgs(maliyet, başlangıç)
+</code></pre>
+<h3 id="4-geliştirici-dostu"><a class="header" href="#4-geliştirici-dostu">4. <strong>Geliştirici Dostu</strong></a></h3>
+<ul>
+<li>Kapsamlı dokümantasyon (<strong>70+ sayfa, Türkçe</strong>)</li>
+<li>Anlaşılır hata mesajları (çözüm önerileriyle)</li>
+<li>VS Code eklentisi (syntax highlighting, autocomplete, debugging)</li>
+<li>REPL (etkileşimli kabuk) - anında test</li>
+<li>Zengin test altyapısı</li>
+<li><strong>Kolay öğrenme</strong>: 1-2 hafta ile productive</li>
+</ul>
+<h2 id="hızlı-başlangıç-1"><a class="header" href="#hızlı-başlangıç-1">Hızlı Başlangıç</a></h2>
+<h3 id="kurulum-1"><a class="header" href="#kurulum-1">Kurulum</a></h3>
+<pre><code class="language-bash"># Rust toolchain gerekli
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derle
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+
+# PATH'e ekle
+export PATH="$PWD/target/release:$PATH"
+</code></pre>
+<h3 id="İlk-programınız"><a class="header" href="#İlk-programınız">İlk Programınız</a></h3>
+<pre><code class="language-berk">// merhaba.berk
+fonksiyon ana() -&gt; tamsayı
+yap
+    yazdır("Merhaba, BERK!")
+    dön 0
+son
+</code></pre>
+<pre><code class="language-bash"># Derle ve çalıştır
+BERK-lang merhaba.berk -o merhaba.exe
+./merhaba.exe
+# Çıktı: Merhaba, BERK!
+</code></pre>
+<h2 id="bu-kitap-hakkında"><a class="header" href="#bu-kitap-hakkında">Bu Kitap Hakkında</a></h2>
+<p>Bu kitap, BERK programlama dilini öğrenmek için kapsamlı bir kaynaktır. <a href="https://doc.rust-lang.org/book/">Rust Book</a> ve <a href="https://docs.python.org/">Python Documentation</a> gibi kaynakların en iyi yanlarını bir araya getirerek hazırlanmıştır.</p>
+<h3 id="hedef-kitle"><a class="header" href="#hedef-kitle">Hedef Kitle</a></h3>
+<ul>
+<li>Programlamaya yeni başlayanlar</li>
+<li>Deneyimli geliştiriciler</li>
+<li>Sistem programcıları</li>
+<li>Türkçe içerik arayan geliştiriciler</li>
+</ul>
+<h3 id="kitabı-nasıl-kullanmalısınız"><a class="header" href="#kitabı-nasıl-kullanmalısınız">Kitabı Nasıl Kullanmalısınız?</a></h3>
+<ol>
+<li><strong>Sıralı Okuma</strong>: Baştan sona sırayla okumanızı öneririz</li>
+<li><strong>Örnekleri Deneyin</strong>: Her örneği kendi bilgisayarınızda çalıştırın</li>
+<li><strong>Alıştırmalar</strong>: Her bölümün sonundaki alıştırmaları yapın</li>
+<li><strong>Referans</strong>: İhtiyaç duyduğunuzda referans bölümlerine dönün</li>
+</ol>
+<h2 id="dil-felsefesi"><a class="header" href="#dil-felsefesi">Dil Felsefesi</a></h2>
+<p>BERK'un temel tasarım ilkeleri:</p>
+<h3 id="1-erişilebilirlik"><a class="header" href="#1-erişilebilirlik">1. <strong>Erişilebilirlik</strong></a></h3>
+<p>Türkçe anahtar kelimeler sayesinde, İngilizce bilmeyenler için programlamaya giriş kolaylaştırılmıştır.</p>
+<h3 id="2-güvenlik"><a class="header" href="#2-güvenlik">2. <strong>Güvenlik</strong></a></h3>
+<p>Bellek hatalarını derleme zamanında yakalar. Runtime hatalarını minimize eder.</p>
+<h3 id="3-performans"><a class="header" href="#3-performans">3. <strong>Performans</strong></a></h3>
+<p>LLVM backend sayesinde C/C++ seviyesinde performans sunar.</p>
+<h3 id="4-okunabilirlik"><a class="header" href="#4-okunabilirlik">4. <strong>Okunabilirlik</strong></a></h3>
+<p>Açık ve anlaşılır syntax. Kod yazmaktan çok kod okumaya optimize edilmiştir.</p>
+<h3 id="5-İnterop"><a class="header" href="#5-İnterop">5. <strong>İnterop</strong></a></h3>
+<p>C/C++ kütüphaneleriyle uyumlu. Mevcut ekosistemlere entegre olabilir.</p>
+<h2 id="Öne-Çıkan-Özellikler"><a class="header" href="#Öne-Çıkan-Özellikler">Öne Çıkan Özellikler</a></h2>
+<h3 id="modern-type-system"><a class="header" href="#modern-type-system">Modern Type System</a></h3>
+<pre><code class="language-berk">değişken x: tamsayı = 42
+değişken isim: yazı = "Ahmet"
+değişken aktif: mantıksal = doğru
+değişken sayılar: liste&lt;tamsayı&gt; = [1, 2, 3]
+değişken nokta: demet&lt;tamsayı, tamsayı&gt; = (10, 20)
+</code></pre>
+<h3 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h3>
+<pre><code class="language-berk">seç durum mesaj
+    durum "başarılı":
+        yazdır("İşlem tamamlandı!")
+    durum "hata":
+        yazdır("Bir hata oluştu!")
+    durum _:
+        yazdır("Bilinmeyen durum")
+son
+</code></pre>
+<h3 id="string-İşlemleri-utf-8"><a class="header" href="#string-İşlemleri-utf-8">String İşlemleri (UTF-8)</a></h3>
+<pre><code class="language-berk">değişken mesaj = "Merhaba Dünya! 🌍"
+değişken uzunluk = uzunluk(mesaj)
+değişken birleşik = "Hello " + "World"
+</code></pre>
+<h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">Hata Yönetimi</a></h3>
+<pre><code class="language-berk">dene
+    değişken dosya = aç("data.txt")
+    yazdır(oku(dosya))
+yakala hata
+    yazdır("Dosya açılamadı: " + hata)
+son
+</code></pre>
+<h2 id="derleyici-mimarisi"><a class="header" href="#derleyici-mimarisi">Derleyici Mimarisi</a></h2>
+<p>BERK derleyicisi modern bir yapıya sahiptir:</p>
+<pre><code>Kaynak Kod (.berk)
+    ↓
+Lexer (Token Üretimi)
+    ↓
+Parser (AST Oluşturma)
+    ↓
+Semantic Analysis (Tip Kontrolü)
+    ↓
+CFG Analysis (Dataflow Analysis)
+    ↓
+IR Generation (BERK IR)
+    ↓
+IR Optimization (O0-O3)
+    ↓
+LLVM IR Generation
+    ↓
+Machine Code (.exe/.o)
+</code></pre>
+<h2 id="proje-durumu"><a class="header" href="#proje-durumu">Proje Durumu</a></h2>
+<p><strong>Mevcut Sürüm:</strong> v0.8.0-dev<br />
+<strong>Son Güncelleme:</strong> 18 Kasım 2025<br />
+<strong>Durum:</strong> Active Development</p>
+<h3 id="tamamlanan-Özellikler-"><a class="header" href="#tamamlanan-Özellikler-">Tamamlanan Özellikler ✅</a></h3>
+<ul>
+<li>Lexer &amp; Parser (100%)</li>
+<li>Type System (100%)</li>
+<li>LLVM Backend (100%)</li>
+<li>CFG Analysis (100%)</li>
+<li>IR Optimizer (100%)</li>
+<li>REPL (100%)</li>
+<li>VS Code Extension (100%)</li>
+</ul>
+<h3 id="devam-eden-Çalışmalar"><a class="header" href="#devam-eden-Çalışmalar">Devam Eden Çalışmalar</a></h3>
+<ul>
+<li>Runtime Library</li>
+<li>Standard Library</li>
+<li>Package Manager</li>
+<li>Debugger Integration</li>
+</ul>
+<p>Detaylı yol haritası için <a href="./roadmap.html">Roadmap</a> sayfasına bakın.</p>
+<h2 id="topluluk-ve-katkı"><a class="header" href="#topluluk-ve-katkı">Topluluk ve Katkı</a></h2>
+<p>BERK açık kaynak bir projedir ve katkılara açıktır!</p>
+<ul>
+<li><strong>GitHub:</strong> <a href="https://github.com/ArslantasM/berk">ArslantasM/berk</a></li>
+<li><strong>Issues:</strong> Bug raporları ve özellik istekleri</li>
+<li><strong>Discussions:</strong> Topluluk tartışmaları</li>
+<li><strong>Contributing:</strong> <a href="./contributing/code.html">Katkıda bulunma rehberi</a></li>
+</ul>
+<h2 id="ek-kaynaklar"><a class="header" href="#ek-kaynaklar">Ek Kaynaklar</a></h2>
+<ul>
+<li><a href="https://github.com/ArslantasM/berk">GitHub Repository</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=BERK.berk-lang">VS Code Extension</a></li>
+<li><a href="./changelog.html">CHANGELOG</a></li>
+<li><a href="./faq.html">FAQ</a></li>
+</ul>
+<hr />
+<p><strong>Hazır mısınız?</strong> <a href="./installation.html">Kurulum</a> bölümünden başlayalım!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
