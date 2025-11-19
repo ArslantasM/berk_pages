@@ -299,7 +299,52 @@ source ~/.zshrc
 echo 'export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17' &gt;&gt; ~/.bashrc
 </code></pre>
 <h2 id="berk-kurulumu"><a class="header" href="#berk-kurulumu">BERK Kurulumu</a></h2>
-<h3 id="method-1-kaynak-koddan-Önerilen"><a class="header" href="#method-1-kaynak-koddan-Önerilen">Method 1: Kaynak Koddan (Önerilen)</a></h3>
+<h3 id="method-1-pre-built-binary-windows---Önerilen-"><a class="header" href="#method-1-pre-built-binary-windows---Önerilen-">Method 1: Pre-built Binary (Windows - Önerilen) ⚡</a></h3>
+<p><strong>Windows x64 kullanıcıları için en hızlı yol:</strong></p>
+<ol>
+<li>
+<p><strong>İndir:</strong></p>
+<ul>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/BERK-lang.exe">BERK-lang.exe (83 MB)</a></li>
+<li>Tek dosya, tüm bağımlılıklar dahil (LLVM statik linkli)</li>
+</ul>
+</li>
+<li>
+<p><strong>Kur:</strong></p>
+<pre><code class="language-powershell"># İstediğiniz bir klasöre kopyalayın
+New-Item -ItemType Directory -Path C:\BERK -Force
+Move-Item .\BERK-lang.exe C:\BERK\
+
+# PATH'e ekleyin
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", "User") + ";C:\BERK",
+    "User"
+)
+
+# Yeni terminal açın ve test edin
+BERK-lang --version
+</code></pre>
+</li>
+<li>
+<p><strong>Hızlı Test:</strong></p>
+<pre><code class="language-powershell"># REPL ile anında test
+BERK-lang repl
+&gt;&gt;&gt; yazdır("Merhaba!")
+Merhaba!
+</code></pre>
+</li>
+</ol>
+<p><strong>Özellikler:</strong></p>
+<ul>
+<li>✅ LLVM 17 statik linkli - harici bağımlılık yok</li>
+<li>✅ Tüm 19 hedef platform desteği</li>
+<li>✅ REPL, JIT run, ve native compile modu</li>
+<li>✅ Runtime kütüphaneleri dahil (JSON, Crypto, HTTP)</li>
+</ul>
+<p><strong>Not:</strong> LLVM statik linking nedeniyle dosya 83 MB'tır.</p>
+<h3 id="method-2-kaynak-koddan-tüm-platformlar"><a class="header" href="#method-2-kaynak-koddan-tüm-platformlar">Method 2: Kaynak Koddan (Tüm Platformlar)</a></h3>
+<p><strong>Linux/macOS veya özelleştirme isteyenler için:</strong></p>
 <pre><code class="language-bash"># Repository'yi klonla
 git clone https://github.com/ArslantasM/berk.git
 cd berk/berk-lang
@@ -316,16 +361,10 @@ sudo ln -s $(pwd)/target/release/BERK-lang /usr/local/bin/BERK-lang
 # Binary'yi PATH'e ekle (Windows)
 # target\release\BERK-lang.exe dosyasını PATH'teki bir dizine kopyalayın
 </code></pre>
-<h3 id="method-2-pre-built-binary-yakında"><a class="header" href="#method-2-pre-built-binary-yakında">Method 2: Pre-built Binary (Yakında)</a></h3>
-<pre><code class="language-bash"># GitHub Releases'ten indir
-curl -LO https://github.com/ArslantasM/berk/releases/latest/download/BERK-lang-x86_64-linux.tar.gz
-
-# Aç ve kur
-tar -xzf BERK-lang-x86_64-linux.tar.gz
-sudo mv BERK-lang /usr/local/bin/
-</code></pre>
-<h3 id="method-3-cargo-install-yakında"><a class="header" href="#method-3-cargo-install-yakında">Method 3: Cargo Install (Yakında)</a></h3>
-<pre><code class="language-bash">cargo install BERK-lang --features llvm
+<p><strong>Derleme Süresi:</strong> ~40 saniye (release build)</p>
+<h3 id="method-3-cargo-install-gelecek"><a class="header" href="#method-3-cargo-install-gelecek">Method 3: Cargo Install (Gelecek)</a></h3>
+<pre><code class="language-bash"># Planlanan özellik
+cargo install BERK-lang --features llvm
 </code></pre>
 <h2 id="kurulum-doğrulama"><a class="header" href="#kurulum-doğrulama">Kurulum Doğrulama</a></h2>
 <p>Kurulumun başarılı olduğunu doğrulayın:</p>
@@ -333,11 +372,28 @@ sudo mv BERK-lang /usr/local/bin/
 BERK-lang --version
 </code></pre>
 <p>Çıktı:</p>
-<pre><code>🚀 BERK Derleyici v0.8.0-dev
+<pre><code>🚀 BERK Derleyici v0.8.0
    LLVM 17.0.6 (19 Target Support)
 </code></pre>
-<h3 id="test-programı"><a class="header" href="#test-programı">Test Programı</a></h3>
-<p>Basit bir test programı oluşturun:</p>
+<h3 id="hızlı-test-repl"><a class="header" href="#hızlı-test-repl">Hızlı Test: REPL</a></h3>
+<p><strong>En hızlı yol - REPL kullanın:</strong></p>
+<pre><code class="language-bash">BERK-lang repl
+</code></pre>
+<p>REPL'de test edin:</p>
+<pre><code class="language-berk">&gt;&gt;&gt; yazdır("Kurulum başarılı! 🎉")
+Kurulum başarılı! 🎉
+
+&gt;&gt;&gt; değişken x = 42
+&gt;&gt;&gt; yazdır(x * 2)
+84
+
+&gt;&gt;&gt; fonksiyon kare(n: tamsayı) -&gt; tamsayı { dön n * n }
+&gt;&gt;&gt; yazdır(kare(5))
+25
+</code></pre>
+<p>Çıkmak için: <code>:quit</code> veya Ctrl+C</p>
+<h3 id="test-programı-derleme"><a class="header" href="#test-programı-derleme">Test Programı (Derleme)</a></h3>
+<p><strong>Dosyadan çalıştırma:</strong></p>
 <p><strong>test.berk:</strong></p>
 <pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
 yap
@@ -345,12 +401,15 @@ yap
     dön 0
 son
 </code></pre>
-<p>Derleyin ve çalıştırın:</p>
-<pre><code class="language-bash">BERK-lang test.berk -o test.exe
+<p><strong>Seçenek 1: JIT çalıştırma (hızlı)</strong></p>
+<pre><code class="language-bash">BERK-lang run test.berk
+</code></pre>
+<p><strong>Seçenek 2: Native derleme</strong></p>
+<pre><code class="language-bash">BERK-lang compile test.berk -o test.exe
 ./test.exe
 </code></pre>
-<p>Çıktı:</p>
-<pre><code>Kurulum başarılı!
+<p>Her iki durumda çıktı:</p>
+<pre><code>Kurulum başarılı! 🎉
 </code></pre>
 <h2 id="vs-code-eklentisi-opsiyonel"><a class="header" href="#vs-code-eklentisi-opsiyonel">VS Code Eklentisi (Opsiyonel)</a></h2>
 <p>VS Code kullanıyorsanız, BERK eklentisini kurun:</p>
@@ -371,28 +430,50 @@ code --install-extension BERK-lang-0.1.0.vsix
 <li>Run/Debug commands</li>
 <li>Status bar integration</li>
 </ul>
-<h2 id="repl-kurulumu-opsiyonel"><a class="header" href="#repl-kurulumu-opsiyonel">REPL Kurulumu (Opsiyonel)</a></h2>
-<p>Etkileşimli kabuk için:</p>
-<pre><code class="language-bash">cd berk/berk-lang
-cargo build --release --bin BERK-repl
-
-# Çalıştır
-./target/release/BERK-repl
+<h2 id="repl-kullanımı"><a class="header" href="#repl-kullanımı">REPL Kullanımı</a></h2>
+<p>REPL (Read-Eval-Print Loop) ana derleyici ile birlikte gelir:</p>
+<pre><code class="language-bash"># REPL'i başlat
+BERK-lang repl
 </code></pre>
-<p>REPL kullanımı:</p>
-<pre><code class="language-berk">BERK&gt; değişken x = 42
-=&gt; x: Integer = 42
+<h3 id="repl-komutları"><a class="header" href="#repl-komutları">REPL Komutları</a></h3>
+<pre><code class="language-berk">BERK&gt; :help
 
-BERK&gt; x + 8
-=&gt; Result: Integer = 50
+Kullanılabilir komutlar:
+  :quit, :q      - REPL'den çık
+  :help, :h      - Yardım göster
+  :clear, :c     - Ekranı temizle
+  :history       - Komut geçmişi
+  :lang &lt;tr|en&gt;  - Dil değiştir (Türkçe/English)
+  :type &lt;expr&gt;   - İfadenin tipini göster
+</code></pre>
+<h3 id="repl-Örnekleri"><a class="header" href="#repl-Örnekleri">REPL Örnekleri</a></h3>
+<p><strong>Basit hesaplamalar:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; 5 + 3
+8
 
-BERK&gt; :help
-Available commands:
-  :quit, :q     - Exit REPL
-  :help, :h     - Show help
-  :clear, :c    - Clear screen
-  :history      - Show history
-  :lang &lt;tr|en&gt; - Switch language
+&gt;&gt;&gt; 10 * 2.5
+25.0
+</code></pre>
+<p><strong>Değişkenler:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; değişken isim = "BERK"
+&gt;&gt;&gt; yazdır("Merhaba, " + isim)
+Merhaba, BERK
+</code></pre>
+<p><strong>Fonksiyonlar:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; fonksiyon topla(a: tamsayı, b: tamsayı) -&gt; tamsayı { dön a + b }
+&gt;&gt;&gt; topla(10, 20)
+30
+</code></pre>
+<p><strong>Dil değiştirme:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; :lang en
+Language switched to English
+
+&gt;&gt;&gt; function hello(name: string) { print("Hello, " + name) }
+&gt;&gt;&gt; hello("World")
+Hello, World
+
+&gt;&gt;&gt; :lang tr
+Dil Türkçe'ye değiştirildi
 </code></pre>
 <h2 id="sorun-giderme"><a class="header" href="#sorun-giderme">Sorun Giderme</a></h2>
 <h3 id="llvm-bulunamıyor"><a class="header" href="#llvm-bulunamıyor">LLVM Bulunamıyor</a></h3>
