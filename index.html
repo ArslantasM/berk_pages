@@ -214,6 +214,19 @@ $env:PATH += ";C:\BERK"
 BERK-lang --version
 </code></pre>
 <h4 id="hızlı-başlangıç"><a class="header" href="#hızlı-başlangıç">Hızlı Başlangıç</a></h4>
+<p><strong>Seçenek 1: Etkileşimli REPL (Anında Test)</strong></p>
+<pre><code class="language-bash"># REPL'i başlatın
+BERK-lang repl
+
+# Kod yazın ve Enter'a basın - anında çalışır!
+&gt;&gt;&gt; yazdır("Merhaba, BERK!")
+Merhaba, BERK!
+
+&gt;&gt;&gt; değişken x = 5 + 3
+&gt;&gt;&gt; yazdır(x * 2)
+16
+</code></pre>
+<p><strong>Seçenek 2: Derleme (Native Executable)</strong></p>
 <pre><code class="language-bash"># İlk programınızı yazın (merhaba.berk)
 fonksiyon ana() -&gt; tamsayı
 yap
@@ -221,9 +234,15 @@ yap
     dön 0
 son
 
-# Derleyin ve çalıştırın
-BERK-lang merhaba.berk -o merhaba.exe
+# LLVM ile native kod üretin
+BERK-lang compile merhaba.berk -o merhaba.exe
+
+# Çalıştırın (artık bağımsız executable)
 .\merhaba.exe
+</code></pre>
+<p><strong>Seçenek 3: JIT Çalıştırma (Derleme + Çalıştırma)</strong></p>
+<pre><code class="language-bash"># Direkt çalıştır (arka planda LLVM JIT)
+BERK-lang run merhaba.berk
 </code></pre>
 <h3 id="diğer-platformlar"><a class="header" href="#diğer-platformlar">Diğer Platformlar</a></h3>
 <p><strong>Linux ve macOS:</strong> Kaynak koddan derleme gereklidir.</p>

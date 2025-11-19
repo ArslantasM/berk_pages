@@ -22,19 +22,29 @@ Tam dokümantasyon için GitHub Pages'i ziyaret edin:
 
 ## 🚀 Hızlı Başlangıç
 
+### Kurulum
 ```bash
 # 1. BERK-lang.exe'yi indirin
 # 2. PATH'e ekleyin
+```
 
-# İlk programınız
-fonksiyon ana() -> tamsayı
-yap
-    yazdır("Merhaba, BERK!")
-    dön 0
-son
+### Kullanım
 
-# Derleyin ve çalıştırın
-BERK-lang merhaba.berk -o merhaba.exe
+**REPL (Etkileşimli):**
+```bash
+BERK-lang repl
+>>> yazdır("Merhaba!")
+```
+
+**Direkt Çalıştırma:**
+```bash
+BERK-lang run program.berk
+```
+
+**Native Derleme:**
+```bash
+BERK-lang compile program.berk -o program.exe
+.\program.exe
 ```
 
 ## 📖 İçerik

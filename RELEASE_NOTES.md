@@ -49,6 +49,26 @@ BERK-lang --version
 
 ## Hızlı Başlangıç
 
+### Yöntem 1: REPL (Etkileşimli, Anında Test)
+```bash
+# REPL'i başlat
+BERK-lang repl
+
+# Kod yaz, Enter'a bas - anında çalışır!
+>>> yazdır("Merhaba, BERK!")
+Merhaba, BERK!
+```
+
+### Yöntem 2: JIT Çalıştırma
+```bash
+# Dosya yaz
+echo 'fonksiyon ana() { yazdır("Test!") }' > test.berk
+
+# Direkt çalıştır (derleme gerekmez)
+BERK-lang run test.berk
+```
+
+### Yöntem 3: Native Executable Derleme
 ```berk
 // merhaba.berk
 fonksiyon ana() -> tamsayı
@@ -59,7 +79,10 @@ son
 ```
 
 ```bash
-BERK-lang merhaba.berk -o merhaba.exe
+# LLVM ile native kod üret
+BERK-lang compile merhaba.berk -o merhaba.exe
+
+# Bağımsız çalıştırılabilir dosya
 .\merhaba.exe
 ```
 
