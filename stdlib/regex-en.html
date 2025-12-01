@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>regex - Regular Expressions | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔍 regex - Regular Expressions</h1>
+<p>Pattern Matching, Capture Groups, Replace</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">38</div><div>Functions</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">645</div><div>Lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">20 KB</div><div>Size</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>içe_aktar regex
+
+// Compile pattern
+değişken re = regex.compile(r"\d+")
+
+// Match
+eğer regex.is_match(re, "42") ise yap
+    yazdır("Eşleşti!")
+son
+
+// Find
+değişken match = regex.find(re, "Yaşım 25, senin 30")
+yazdır(match.text())  // "25"
+
+// Find all
+değişken tüm_eşleşmeler = regex.find_all(re, "10, 20, 30")
+her m içinde tüm_eşleşmeler için yap
+    yazdır(m.text())  // "10", "20", "30"
+son
+
+// Capture groups
+değişken email_re = regex.compile(r"(\w+)@(\w+\.\w+)")
+değişken cap = regex.captures(email_re, "ali@example.com")
+yazdır(cap.get(1))  // "ali"
+yazdır(cap.get(2))  // "example.com"
+
+// Replace
+değişken yeni = regex.replace(re, "Yaşım 25", "XX")
+yazdır(yeni)  // "Yaşım XX"</code></pre>
+<h2>📚 Features</h2>
+<ul>
+<li>PCRE (Perl Compatible Regular Expressions)</li>
+<li>Capture groups, named groups</li>
+<li>Lookahead, lookbehind</li>
+<li>Flags: case-insensitive, multiline, dotall</li>
+<li>Unicode support</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Email Validation and Parsing</h3>
+<pre><code>içe_aktar regex
+
+değişken email_pattern = regex.compile(r"^(?P<user>[a-zA-Z0-9._%+-]+)@(?P<domain>[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$")
+
+fonksiyon email_geçerli_mi(email: yazı) -> bool yap
+    dön regex.is_match(email_pattern, email)
+son
+
+fonksiyon email_parse(email: yazı) -> Seçenek yap
+    değişken caps = regex.captures(email_pattern, email)
+    
+    eğer caps ise yap
+        dön Bazı(yap
+            "user": caps.name("user"),
+            "domain": caps.name("domain")
+        son)
+    son değilse yap
+        dön Hiç
+    son
+son
+
+// Test
+değişken emails = [
+    "ali@example.com",
+    "invalid.email",
+    "test@sub.domain.com"
+]
+
+her email içinde emails için yap
+    eğer email_geçerli_mi(email) ise yap
+        değişken parsed = email_parse(email)
+        yazdır(email + " -> " + parsed.değer()["user"] + " @ " + parsed.değer()["domain"])
+    son değilse yap
+        yazdır(email + " -> Geçersiz")
+    son
+son</code></pre>
+</div>
+<div class="example-box">
+<h3>Markdown Parser (Simple)</h3>
+<pre><code>içe_aktar regex
+
+fonksiyon markdown_to_html(markdown: yazı) -> yazı yap
+    değişken html = markdown
+    
+    // Headers (# Header -> <h1>Header</h1>)
+    html = regex.replace_all(
+        regex.compile(r"^### (.+)$", MULTILINE),
+        html,
+        "<h3>$1</h3>"
+    )
+    html = regex.replace_all(
+        regex.compile(r"^## (.+)$", MULTILINE),
+        html,
+        "<h2>$1</h2>"
+    )
+    html = regex.replace_all(
+        regex.compile(r"^# (.+)$", MULTILINE),
+        html,
+        "<h1>$1</h1>"
+    )
+    
+    // Bold (**bold** -> <strong>bold</strong>)
+    html = regex.replace_all(
+        regex.compile(r"\*\*(.+?)\*\*"),
+        html,
+        "<strong>$1</strong>"
+    )
+    
+    // Italic (*italic* -> <em>italic</em>)
+    html = regex.replace_all(
+        regex.compile(r"\*(.+?)\*"),
+        html,
+        "<em>$1</em>"
+    )
+    
+    // Links ([text](url) -> <a href="url">text</a>)
+    html = regex.replace_all(
+        regex.compile(r"\[([^\]]+)\]\(([^\)]+)\)"),
+        html,
+        "<a href=\"$2\">$1</a>"
+    )
+    
+    // Code (`code` -> <code>code</code>)
+    html = regex.replace_all(
+        regex.compile(r"`([^`]+)`"),
+        html,
+        "<code>$1</code>"
+    )
+    
+    // Paragraphs
+    html = regex.replace_all(
+        regex.compile(r"\n\n"),
+        html,
+        "</p><p>"
+    )
+    html = "<p>" + html + "</p>"
+    
+    dön html
+son
+
+değişken md = "# BERK
+## Modern Sistem Programlama
+
+**BERK** *çok hızlı* bir dildir.
+
+Daha fazla bilgi için [dokümantasyon](https://berk-lang.org) sayfasına bakın.
+
+`yazdır(\"Merhaba Dünya!\")` komutu ile başlayın."
+
+değişken html = markdown_to_html(md)
+yazdır(html)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

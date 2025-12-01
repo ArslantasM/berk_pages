@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::can - Controller Area Network | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#d35400 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#d35400;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🚗 hal::can</h1>
+<p>Controller Area Network - Automotive Communication</p>
+<div style="margin-top:15px">
+<span class="stat-badge">383 satır</span>
+<span class="stat-badge">~14 fonksiyon</span>
+<span class="stat-badge">Automotive</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>CAN (Controller Area Network) otomotiv ve endüstriyel uygulamalarda kullanılan güvenilir haberleşme protokolüdür. ECU (Engine Control Unit), sensörler ve aktüatörler arası iletişim sağlar.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>CAN 2.0A (11-bit ID) / 2.0B (29-bit ID)</li>
+<li>Up to 1 Mbps bitrate</li>
+<li>Error detection/correction</li>
+<li>Message filtering (28 filters)</li>
+<li>3 TX mailboxes</li>
+<li>2 RX FIFOs</li>
+<li>Priority-based arbitration</li>
+<li>Automatic retransmission</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::can, hal::gpio
+
+// CAN pins: PB8=RX, PB9=TX
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 8, yap mode: gpio.MODE_AF, af: 9 son)
+gpio.pin_init(gpio.PORT_B, 9, yap mode: gpio.MODE_AF, af: 9 son)
+
+// Initialize CAN (500 kbps)
+değişken can1 = can.init(can.CAN1, yap
+    bitrate: 500_000,
+    mode: can.MODE_NORMAL
+son)
+
+// Send message
+can.send(can1, yap
+    id: 0x123,
+    data: [0x01, 0x02, 0x03],
+    extended_id: yanlış
+son)
+
+// Receive message
+eğer msg = can.receive(can1, 100) ise yap
+    io.println("Received ID: 0x{:X}".formatla(msg.id))
+son</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: ECU Simulator</h3>
+<pre><code>içe_aktar hal::can, hal::core
+
+sabit ENGINE_RPM = 0x100
+sabit VEHICLE_SPEED = 0x101
+sabit COOLANT_TEMP = 0x102
+sabit THROTTLE_POS = 0x103
+
+fonksiyon send_rpm(can1: can.Handle, rpm: sayı) yap
+    değişken data = [
+        (rpm >> 8) & 0xFF,
+        rpm & 0xFF
+    ]
+    
+    can.send(can1, yap
+        id: ENGINE_RPM,
+        data: data,
+        extended_id: yanlış
+    son)
+son
+
+fonksiyon send_speed(can1: can.Handle, speed: sayı) yap
+    can.send(can1, yap
+        id: VEHICLE_SPEED,
+        data: [speed & 0xFF],
+        extended_id: yanlış
+    son)
+son
+
+fonksiyon send_temp(can1: can.Handle, temp: sayı) yap
+    // Temperature in Celsius + 40
+    değişken temp_byte = (temp + 40) & 0xFF
+    
+    can.send(can1, yap
+        id: COOLANT_TEMP,
+        data: [temp_byte],
+        extended_id: yanlış
+    son)
+son
+
+fonksiyon ana() yap
+    core.system_init()
+    
+    // Setup CAN
+    değişken can1 = can.init(can.CAN1, yap
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    son)
+    
+    // Configure filter (accept all)
+    can.filter_config(can1, yap
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,  // Accept all IDs
+        fifo: can.FIFO0
+    son)
+    
+    // Simulate ECU data
+    değişken rpm = 800  // Idle RPM
+    değişken speed = 0
+    değişken temp = 20
+    
+    döngü yap
+        // Send telemetry at 10Hz
+        send_rpm(can1, rpm)
+        send_speed(can1, speed)
+        send_temp(can1, temp)
+        
+        // Simulate acceleration
+        eğer rpm < 6000 ise yap
+            rpm += 100
+            speed = (rpm / 100)  // Simplified
+            temp += 1  // Engine heats up
+        değilse yap
+            rpm = 800  // Back to idle
+            speed = 0
+            temp = 20
+        son
+        
+        core.delay_ms(100)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: CAN Bus Monitor</h3>
+<pre><code>içe_aktar hal::can
+
+fonksiyon message_name(id: u32) -> yazı yap
+    dön eşle id yap
+        0x100 => "Engine RPM",
+        0x101 => "Vehicle Speed",
+        0x102 => "Coolant Temp",
+        0x103 => "Throttle Pos",
+        0x200 => "Brake Status",
+        0x300 => "Door Status",
+        _ => "Unknown"
+    son
+son
+
+fonksiyon parse_data(msg: can.Message) yap
+    io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
+    
+    // Print data bytes
+    her byte içinde msg.data[0..msg.dlc] için yap
+        io.print("{:02X} ".formatla(byte))
+    son
+    
+    // Interpret known messages
+    değişken name = message_name(msg.id)
+    io.print(" // {}", name)
+    
+    eşle msg.id yap
+        0x100 => yap  // RPM
+            değişken rpm = (msg.data[0] << 8) | msg.data[1]
+            io.print(" = {} RPM", rpm)
+        son,
+        0x101 => yap  // Speed
+            io.print(" = {} km/h", msg.data[0])
+        son,
+        0x102 => yap  // Temp
+            değişken temp = msg.data[0].sayı() - 40
+            io.print(" = {}°C", temp)
+        son,
+        _ => yap son
+    son
+    
+    io.println()
+son
+
+fonksiyon ana() yap
+    değişken can1 = can.init(can.CAN1, yap
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    son)
+    
+    // Accept all messages
+    can.filter_config(can1, yap
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,
+        fifo: can.FIFO0
+    son)
+    
+    io.println("CAN Bus Monitor Started (500 kbps)")
+    io.println("Press Ctrl+C to exit\n")
+    
+    döngü yap
+        // Check for messages (non-blocking)
+        eğer msg = can.receive(can1, 10) ise yap
+            parse_data(msg)
+        son
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 3: OBD-II Diagnostics</h3>
+<pre><code>içe_aktar hal::can
+
+sabit OBD_REQUEST = 0x7DF
+sabit OBD_RESPONSE = 0x7E8
+sabit PID_ENGINE_RPM = 0x0C
+sabit PID_VEHICLE_SPEED = 0x0D
+
+fonksiyon obd_request(can1: can.Handle, pid: u8) -> Sonuç[sayı, Hata] yap
+    can.send(can1, yap
+        id: OBD_REQUEST,
+        data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
+        dlc: 8
+    son)?
+    
+    eğer response = can.receive(can1, 100) ise yap
+        eğer response.id == OBD_RESPONSE ise yap
+            dön Tamam(eşle pid yap
+                PID_ENGINE_RPM => ((response.data[3] << 8) | response.data[4]) / 4,
+                PID_VEHICLE_SPEED => response.data[3].sayı(),
+                _ => 0
+            son)
+        son
+    son
+    
+    dön Hata("Timeout")
+son
+
+fonksiyon ana() yap
+    değişken can1 = can.init(can.CAN1, yap bitrate: 500_000 son)
+    
+    döngü yap
+        eğer rpm = obd_request(can1, PID_ENGINE_RPM)? ise yap
+            io.println("RPM: {}", rpm)
+        son
+        core.delay_ms(500)
+    son
+son</code></pre>
+</div>
+
+<h2>📦 Tipler</h2>
+<pre><code>yapı Message yap
+    id: u32,
+    data: [u8; 8],
+    dlc: u8,
+    extended_id: mantıksal
+son
+
+yapı Config yap
+    bitrate: sayı,
+    mode: Mode
+son</code></pre>
+
+<h2>⚙️ Fonksiyonlar</h2>
+<pre><code>fonksiyon init(instance: Instance, config: Config) -> Handle
+fonksiyon send(handle: Handle, msg: Message) -> Sonuç[Hiçbir, Hata]
+fonksiyon receive(handle: Handle, timeout_ms: sayı) -> İsteğe_Bağlı[Message]
+fonksiyon filter_config(handle: Handle, config: FilterConfig)</code></pre>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>CAN transceiver (TJA1050, MCP2551) gereklidir</li>
+<li>120Ω termination resistors gerekir (bus'ın her iki ucunda)</li>
+<li>Max bus length: 40m (1 Mbps), 500m (125 kbps)</li>
+<li>Twisted-pair kablo kullanın (CAN_H, CAN_L)</li>
+<li>Filter configuration önemli (yüksek trafikte)</li>
+<li>ISO 11898 standardı kullanılır</li>
+</ul>
+
+<h2>🎯 Uygulama Senaryoları</h2>
+<ul>
+<li>Otomotiv ECU iletişimi</li>
+<li>OBD-II diagnostics</li>
+<li>Endüstriyel otomasyon (CANopen)</li>
+<li>Denizcilik (NMEA 2000)</li>
+</ul>
+
+<h2>📚 Platform Desteği</h2>
+<ul>
+<li><strong>STM32 F1/F4:</strong> bxCAN (2x CAN)</li>
+<li><strong>STM32 H7:</strong> CAN-FD</li>
+<li><strong>ESP32:</strong> TWAI</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>hal::gpio</code> - CAN TX/RX pins</li>
+<li><code>hal::int</code> - CAN interrupts</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="index-tr.html">Tüm Modüller</a> | 
+<a href="../index-tr.html">Ana Sayfa</a>
+</p>
+</main>
+</div>
+</body>
+</html>

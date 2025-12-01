@@ -181,13 +181,14 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standart Kütüphane v1.4</a></h1>
-<p>BERK Standart Kütüphanesi, modern yazılım geliştirme için gerekli tüm temel fonksiyonları sağlar. <strong>v1.4</strong> sürümü ile <strong>bilimsel hesaplama</strong> odaklı önemli bir güncelleme yapılmıştır.</p>
+                        <h1 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standart Kütüphane v0.9.4</a></h1>
+<p>BERK Standart Kütüphanesi, modern yazılım geliştirme için gerekli tüm temel fonksiyonları sağlar. <strong>v0.9.4</strong> sürümü ile <strong>75 modül</strong> (42 stdlib + 33 HAL) ve <strong>4100+ fonksiyon</strong> sunarak kapsamlı bir ekosistem sağlar.</p>
 <h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊 İstatistikler</a></h2>
 <ul>
-<li><strong>18 modül</strong> - Kapsamlı fonksiyonellik</li>
-<li><strong>286 KB</strong> - Optimize edilmiş boyut</li>
-<li><strong>600+ fonksiyon</strong> - Zengin API</li>
+<li><strong>75 modül</strong> - 42 stdlib + 33 HAL (gömülü sistemler)</li>
+<li><strong>1140 KB</strong> - Stdlib kod boyutu</li>
+<li><strong>4100+ fonksiyon</strong> - Kapsamlı API</li>
+<li><strong>7 embedded platform</strong> - ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
 <li><strong>Sıfır bağımlılık</strong> - Sadece BERK ile yazılmış</li>
 </ul>
 <h2 id="-modül-kategorileri"><a class="header" href="#-modül-kategorileri">🎯 Modül Kategorileri</a></h2>
@@ -225,10 +226,32 @@
 <tr><td><strong>complex</strong></td><td>15.9 KB</td><td>Kompleks sayı aritmetiği</td><td>Julia complex.jl</td></tr>
 <tr><td><strong>random</strong></td><td>15.1 KB</td><td>Xoshiro256++, 20+ dağılım</td><td>Julia Random</td></tr>
 <tr><td><strong>linalg</strong></td><td>25.4 KB</td><td>Matris işlemleri, decompositions</td><td>Julia LinearAlgebra, nalgebra</td></tr>
-<tr><td><strong>stats</strong></td><td>24.5 KB</td><td>İstatistik ve olasılık</td><td>Julia Statistics, SciPy.stats</td></tr>
+<tr><td><strong>stats</strong></td><td>29.8 KB</td><td>İstatistik ve makine öğrenme</td><td>Julia Statistics, SciPy.stats</td></tr>
+<tr><td><strong>plot</strong></td><td>56.3 KB</td><td>Veri görselleştirme</td><td>matplotlib, plotly</td></tr>
 <tr><td><strong>optim</strong></td><td>26.6 KB</td><td>Optimizasyon algoritmaları</td><td>SciPy.optimize, Optim.jl</td></tr>
 </tbody></table>
 </div>
+<h3 id="5-gömülü-sistemler-hal-hardware-abstraction-layer"><a class="header" href="#5-gömülü-sistemler-hal-hardware-abstraction-layer">5. Gömülü Sistemler - HAL (Hardware Abstraction Layer) ⚡</a></h3>
+<p><strong>33 HAL modülü</strong> ile 7 farklı platformu destekler:</p>
+<div class="table-wrapper"><table><thead><tr><th>Kategori</th><th>Modüller</th><th>Desteklenen Platformlar</th></tr></thead><tbody>
+<tr><td><strong>Temel Periferaller</strong></td><td>GPIO, UART, SPI, I2C, ADC, DAC, PWM</td><td>Tüm platformlar</td></tr>
+<tr><td><strong>Zamanlayıcılar</strong></td><td>Timer, WDT, RTC</td><td>Tüm platformlar</td></tr>
+<tr><td><strong>DMA & Bellek</strong></td><td>DMA, Flash, EEPROM</td><td>STM32F4, ESP32, nRF52</td></tr>
+<tr><td><strong>Ağ</strong></td><td>WiFi, Bluetooth, Ethernet, CAN</td><td>ESP32, STM32F4 (Ethernet)</td></tr>
+<tr><td><strong>Güç Yönetimi</strong></td><td>Power, Sleep modes</td><td>Tüm platformlar</td></tr>
+<tr><td><strong>Ekran</strong></td><td>LCD, OLED, TFT</td><td>SPI/I2C üzerinden</td></tr>
+</tbody></table>
+</div>
+<p><strong>Desteklenen Platformlar:</strong></p>
+<ul>
+<li>✅ <strong>ESP32</strong> - WiFi/BT, 240 MHz dual-core</li>
+<li>✅ <strong>STM32F4</strong> - 168 MHz ARM Cortex-M4, FPU</li>
+<li>✅ <strong>RP2040</strong> - Raspberry Pi Pico, 133 MHz dual-core</li>
+<li>✅ <strong>nRF52</strong> - Nordic BLE, ultra-low power</li>
+<li>✅ <strong>GD32</strong> - Gigadevice ARM Cortex-M</li>
+<li>✅ <strong>Nuvoton</strong> - Industrial MCUs</li>
+<li>✅ <strong>Arduino</strong> - AVR/ARM compatible</li>
+</ul>
 <h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🚀 Hızlı Başlangıç</a></h2>
 <h3 id="basit-kullanım"><a class="header" href="#basit-kullanım">Basit Kullanım</a></h3>
 <pre><code class="language-berk">// Matematik
@@ -305,6 +328,39 @@ değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 <li><a href="./linalg.html">linalg - Doğrusal Cebir</a></li>
 <li><a href="./stats.html">stats - İstatistik</a></li>
 <li><a href="./optim.html">optim - Optimizasyon</a></li>
+</ul>
+<h3 id="web-ve-veri"><a class="header" href="#web-ve-veri">Web ve Veri</a></h3>
+<ul>
+<li><a href="./http.html">http - HTTP İstemci/Sunucu</a></li>
+<li><a href="./json.html">json - JSON İşleme</a></li>
+<li><a href="./regex.html">regex - Düzenli İfadeler</a></li>
+<li><a href="./testing.html">testing - Test Framework</a></li>
+<li><a href="./logging.html">logging - Loglama</a></li>
+<li><a href="./network.html">network - Ağ İşlemleri</a></li>
+<li><a href="./async.html">async - Asenkron Programlama</a></li>
+<li><a href="./xml.html">xml - XML İşlemleri</a></li>
+<li><a href="./yaml.html">yaml - YAML İşlemleri</a></li>
+<li><a href="./csv.html">csv - CSV Dosya İşlemleri</a></li>
+<li><a href="./encoding.html">encoding - Kodlama Dönüşümleri</a></li>
+<li><a href="./compression.html">compression - Veri Sıkıştırma</a></li>
+<li><a href="./crypto.html">crypto - Kriptografi</a></li>
+<li><a href="./sqlite.html">sqlite - SQLite Veritabanı</a></li>
+</ul>
+<h3 id="grafik-ve-oyun"><a class="header" href="#grafik-ve-oyun">Grafik ve Oyun</a></h3>
+<ul>
+<li><a href="./gui.html">gui - Grafik Kullanıcı Arayüzü</a></li>
+<li><a href="./graphics.html">graphics - 2D Grafik</a></li>
+<li><a href="./audio.html">audio - Ses İşleme</a></li>
+<li><a href="./image.html">image - Görüntü İşleme</a></li>
+<li><a href="./physics2d.html">physics2d - 2D Fizik Motoru</a></li>
+<li><a href="./cad3d.html">cad3d - 3D CAD Modelleme</a></li>
+<li><a href="./mesh.html">mesh - 3D Mesh İşlemleri</a></li>
+<li><a href="./math_3d.html">math_3d - 3D Matematik</a></li>
+<li><a href="./color.html">color - Renk İşlemleri</a></li>
+</ul>
+<h3 id="ileri-seviye"><a class="header" href="#ileri-seviye">İleri Seviye</a></h3>
+<ul>
+<li><a href="./rules.html">rules - Kural Tabanlı Sistemler</a></li>
 </ul>
 <h2 id="-kullanım-senaryoları"><a class="header" href="#-kullanım-senaryoları">🎓 Kullanım Senaryoları</a></h2>
 <h3 id="bilimsel-araştırma"><a class="header" href="#bilimsel-araştırma">Bilimsel Araştırma</a></h3>
@@ -396,15 +452,23 @@ yazdır("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
 <li>⏳ Backend implementasyonu devam ediyor</li>
 <li>🔄 Aktif geliştirme</li>
 </ul>
-<h2 id="-v15-roadmap"><a class="header" href="#-v15-roadmap">🎯 v1.5 Roadmap</a></h2>
-<p>Gelecek sürümde planlanan geliştirmeler:</p>
+<h2 id="-v10-roadmap"><a class="header" href="#-v10-roadmap">🎯 v1.0 Roadmap (Ocak 2026)</a></h2>
+<p>v1.0 için kalan geliştirmeler:</p>
 <ol>
+<li><strong>Macro System</strong> - Compile-time code generation</li>
+<li><strong>dataframe</strong> - Pandas-like columnar data structures</li>
+<li><strong>Public Registry</strong> - berk.dev package registry launch</li>
+<li><strong>Package Verification</strong> - Digital signatures for security</li>
+<li><strong>Linux & macOS</strong> - Cross-platform support</li>
+</ol>
+<h3 id="gelecek-sürümler-v15-v20"><a class="header" href="#gelecek-sürümler-v15-v20">Gelecek Sürümler (v1.5, v2.0+)</a></h3>
+<ul>
 <li><strong>signal</strong> - Sinyal işleme (FFT, filtering, spectral analysis)</li>
-<li><strong>ml</strong> - Makine öğrenmesi (neural networks, gradient descent)</li>
-<li><strong>plot</strong> - Veri görselleştirme (2D/3D plotting)</li>
 <li><strong>sparse</strong> - Seyrek matrisler (COO, CSR, CSC formats)</li>
 <li><strong>ode</strong> - Diferansiyel denklemler (RK4, BDF, adaptive)</li>
-</ol>
+<li><strong>FPGA synthesis</strong> - Hardware description, Verilog/VHDL generation</li>
+<li><strong>Formal verification</strong> - Proof assistants integration</li>
+</ul>
 <h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 Daha Fazla Bilgi</a></h2>
 <ul>
 <li><a href="https://github.com/ArslantasM/berk">GitHub Repository</a></li>

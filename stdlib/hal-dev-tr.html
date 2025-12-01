@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::dev - Device Management | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#27ae60 0%,#2ecc71 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 hal::dev</h1>
+<p>Device Management & Resource Allocation</p>
+<div style="margin-top:15px">
+<span class="stat-badge">371 satır</span>
+<span class="stat-badge">Device Tree</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Device management, resource allocation ve device tree fonksiyonları.</p>
+
+<h2>🚀 Kullanım</h2>
+<pre><code>içe_aktar hal::dev
+
+// Register device
+değişken led_dev = dev.register(yap
+    name: "led0",
+    type: dev.TYPE_GPIO,
+    resource: gpio_handle
+son)
+
+// Get device by name
+değişken dev_handle = dev.get("led0")?
+
+// List all devices
+değişken devices = dev.list()
+her d içinde devices için yap
+    io.println("Device: {}", d.name)
+son
+
+// Unregister
+dev.unregister(led_dev)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

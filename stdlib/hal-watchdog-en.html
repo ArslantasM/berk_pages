@@ -1,0 +1,365 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>hal::watchdog - Watchdog Timer | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🐕 hal::watchdog</h1>
+<p>Watchdog Timer - Sistem Güvenilirliği ve Reset Yönetimi</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~280 lines</span>
+<span class="stat-badge">~8 function</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Watchdog timer, yazılım hatalarından kaynaklanan sistem donmalarını otomatik olarak tespit edip sistemi resetler. Mikrokontrolcü beklenmedik bir duruma girerse (sonsuz loop, kilitlenme), watchdog sayacı sıfırlanmadığı for timeout olur ve sistem yeniden başlatılır.</p>
+
+<p>İki tip watchdog vardır: <strong>IWDG</strong> (Independent Watchdog - LSI saatle çalışır, düşük güç modlarında bile aktif) ve <strong>WWDG</strong> (Window Watchdog - pencere kontrolü ile daha hassas zamanlama).</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Independent watchdog (IWDG) - LSI clock (32 kHz)</li>
+<li>Window watchdog (WWDG) - APB1 clock</li>
+<li>Konfigüre edilebilir timeout (ms - saniyeler)</li>
+<li>Early warning interrupt (WWDG)</li>
+<li>Reset source detection</li>
+<li>Debug mode freeze desteği</li>
+<li>Sleep/Stop mode'da çalışma</li>
+<li>Prescaler ayarları (4 - 256)</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::watchdog, hal::core
+
+// Independent watchdog (4 saniye timeout)
+let wdg = watchdog.init_iwdg(do
+    timeout_ms: 4000,
+    window_mode: yanlış
+end)
+
+// Ana loop
+loop do
+    // Normal işlemler
+    core.delay_ms(500)
+    
+    // Watchdog'u besle (refresh)
+    watchdog.refresh(wdg)
+    
+    // Eğer bu satır çalışmazsa sistem 4 saniye in resetlenir
+end</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Watchdog Tipi
+enum WatchdogType {
+    IWDG,  // Independent watchdog
+    WWDG   // Window watchdog
+}
+
+// Prescaler değerleri
+enum Prescaler {
+    DIV_4,
+    DIV_8,
+    DIV_16,
+    DIV_32,
+    DIV_64,
+    DIV_128,
+    DIV_256
+}
+
+// Reset Source
+enum ResetSource {
+    POWER_ON,      // Power-on reset
+    PIN_RESET,     // External pin reset
+    SOFTWARE,      // Software reset
+    IWDG_RESET,    // Independent watchdog
+    WWDG_RESET,    // Window watchdog
+    LOW_POWER,     // Low-power reset
+    BROWNOUT       // Brown-out reset
+}
+
+struct WatchdogConfig do
+    type: WatchdogType,
+    timeout_ms: int,       // Milliseconds
+    window_mode: bool,    // Window watchdog only
+    prescaler: Prescaler,
+    reload_value: int
+end</code></pre>
+
+<h2>💡 Example 1: Basic IWDG Kullanımı</h2>
+<div class="example-box">
+<h3>2 saniyelik watchdog ile sistem koruması</h3>
+<pre><code>import hal::watchdog, hal::gpio, hal::core
+
+let led_green = gpio.pin_init(gpio.PORT_C, 13, gpio.MODE_OUTPUT)
+let led_red = gpio.pin_init(gpio.PORT_C, 14, gpio.MODE_OUTPUT)
+
+function ana() do
+    // Check reset source
+    let reset_cause = watchdog.get_reset_source()
+    
+    if reset_cause == watchdog.IWDG_RESET  do
+        // Watchdog reset occurred!
+        gpio.pin_write(led_red, gpio.HIGH)
+        core.delay_ms(2000)
+        gpio.pin_write(led_red, gpio.LOW)
+    end
+    
+    // Initialize watchdog (2 second timeout)
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 2000,
+        window_mode: yanlış
+    end)
+    
+    // Main loop
+    loop do
+        // Normal operation
+        gpio.pin_toggle(led_green)
+        core.delay_ms(100)
+        
+        // Feed watchdog every 100ms (well before 2s timeout)
+        watchdog.refresh(wdg)
+    end
+end</code></pre>
+</div>
+
+<h2>💡 Example 2: Task Monitor ile Watchdog</h2>
+<div class="example-box">
+<h3>Çoklu task izleme ve watchdog besleme</h3>
+<pre><code>import hal::watchdog, hal::time
+
+let son_beslenme_zamani: Zaman
+let watchdog_aktif = doğru
+
+function kritik_gorev_1() do
+    // Kritik işlemler
+    core.delay_ms(50)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+end
+
+function kritik_gorev_2() do
+    // Başka kritik işlemler
+    core.delay_ms(75)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+end
+
+function watchdog_besleme_istegi() do
+    son_beslenme_zamani = time.now()
+end
+
+function watchdog_yonetici(wdg: WatchdogHandle) do
+    loop do
+        // Check if tasks are healthy
+        let elapsed = time.now() - son_beslenme_zamani
+        
+        if elapsed < time.milliseconds(500)  do
+            // Tasks are running OK, feed watchdog
+            watchdog.refresh(wdg)
+        else do
+            // Tasks hung! Let watchdog reset the system
+            io.println("UYARI: Görevler askıda! Watchdog resetleyecek...")
+        end
+        
+        core.delay_ms(100)
+    end
+end
+
+function ana() do
+    // 1 saniye watchdog timeout
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 1000,
+        window_mode: yanlış
+    end)
+    
+    son_beslenme_zamani = time.now()
+    
+    // Start tasks
+    thread.spawn(|| kritik_gorev_1())
+    thread.spawn(|| kritik_gorev_2())
+    thread.spawn(|| watchdog_yonetici(wdg))
+    
+    thread.join_all()
+end</code></pre>
+</div>
+
+<h2>💡 Example 3: Window Watchdog (WWDG)</h2>
+<div class="example-box">
+<h3>Pencere kontrolü ile hassas zamanlama</h3>
+<pre><code>import hal::watchdog
+
+// WWDG: Hem çok erken hem çok geç beslemeyi engeller
+function wwdg_demo() do
+    // Window: 50-100ms aralığında beslenmeli
+    let wwdg = watchdog.init_wwdg(do
+        timeout_ms: 100,
+        window_ms: 50,  // Pencere başlangıcı
+        early_wakeup_interrupt: doğru
+    end)
+    
+    // Early warning interrupt handler
+    watchdog.set_interrupt_handler(wwdg, || do
+        io.println("Watchdog erken uyarı!")
+        // Burası early wakeup interrupt (zamanında besle)
+    end)
+    
+    let sayac = 0
+    loop do
+        // İşlemler
+        core.delay_ms(30)
+        
+        // 30ms + 30ms = 60ms (pencere in: 50-100ms ✓)
+        core.delay_ms(30)
+        
+        // Watchdog'u besle
+        watchdog.refresh(wwdg)
+        
+        sayac += 1
+        
+        // Simulate hang every 10 iterations
+        if sayac % 10 == 0  do
+            io.println("Simüle edilen gecikme...")
+            core.delay_ms(150)  // Too late! WWDG will reset
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 Example 4: Watchdog + Backup Register</h2>
+<div class="example-box">
+<h3>Reset nedeni kaydetme ve analiz</h3>
+<pre><code>import hal::watchdog, hal::rtc
+
+struct ResetInfo do
+    count: int,
+    last_reason: ResetSource,
+    timestamp: int
+end
+
+function reset_bilgisi_kaydet() do
+    let reason = watchdog.get_reset_source()
+    
+    // Backup register'dan önceki bilgiyi oku
+    let reset_count = rtc.backup_read(0)
+    reset_count += 1
+    
+    // Yeni bilgiyi kaydet
+    rtc.backup_write(0, reset_count)
+    rtc.backup_write(1, reason.to_int())
+    rtc.backup_write(2, time.timestamp())
+    
+    io.println("Reset sayısı: " + reset_count.yazıya())
+    io.println("Reset nedeni: " + reason.to_string())
+end
+
+function ana() do
+    // Initialize RTC for backup registers
+    rtc.init()
+    
+    // Log reset information
+    reset_bilgisi_kaydet()
+    
+    // Check for excessive resets
+    let reset_count = rtc.backup_read(0)
+    if reset_count > 10  do
+        io.println("HATA: Çok fazla reset! Sistem unstable.")
+        // Enter safe mode or disable some features
+        rtc.backup_write(0, 0)  // Reset counter
+    end
+    
+    // Initialize watchdog
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 3000,
+        window_mode: yanlış
+    end)
+    
+    // Normal operation
+    loop do
+        // Your code here
+        watchdog.refresh(wdg)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Initialization</h3>
+<pre><code>function init_iwdg(config: WatchdogConfig) -> WatchdogHandle
+function init_wwdg(config: WatchdogConfig) -> WatchdogHandle
+function deinit(handle: WatchdogHandle)</code></pre>
+
+<h3>Control</h3>
+<pre><code>function refresh(handle: WatchdogHandle)
+function start(handle: WatchdogHandle)
+function is_running(handle: WatchdogHandle) -> bool</code></pre>
+
+<h3>Reset Information</h3>
+<pre><code>function get_reset_source() -> ResetSource
+function clear_reset_flags()
+function software_reset()</code></pre>
+
+<h3>Window Watchdog (WWDG Only)</h3>
+<pre><code>function set_interrupt_handler(handle: WatchdogHandle, callback: Fonksiyon)
+function get_counter(handle: WatchdogHandle) -> int</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>IWDG</th><th>WWDG</th><th>Max Timeout</th></tr>
+<tr><td>STM32F4</td><td>✓</td><td>✓</td><td>32 saniye</td></tr>
+<tr><td>STM32F1</td><td>✓</td><td>✓</td><td>26 saniye</td></tr>
+<tr><td>ESP32</td><td>✓</td><td>✗</td><td>configurable</td></tr>
+<tr><td>GD32VF103</td><td>✓</td><td>✓</td><td>26 saniye</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Timeout seçimi:</strong> En uzun task süresinin 2-3 katı olmalı</li>
+<li><strong>Beslenme sıklığı:</strong> Timeout süresinin %50-75'i aralıklarla besleyin</li>
+<li><strong>Debug mode:</strong> Geliştirme sırasında watchdog'u freeze edin (debugger breakpoint'lerde)</li>
+<li><strong>Critical sections:</strong> Interrupt disable edilen yerlerde watchdog timeout'u hesaplayın</li>
+<li><strong>Reset logging:</strong> Reset nedenlerini backup register'da saklayın</li>
+<li><strong>IWDG vs WWDG:</strong> Production'da IWDG (LSI bağımsız), critical timing for WWDG</li>
+<li><strong>Power modes:</strong> IWDG low-power modlarda çalışır, WWDG durur</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>IWDG bir kez başlatıldı mı durdurulamaz (hardware restriction)</li>
+<li>Debug sırasında watchdog reset'lerini önlemek for DBGMCU_APB1_FZ register'ını ayarlayın</li>
+<li>LSI clock toleransı %40'a kadar olabilir - timeout hesaplamalarında dikkate alın</li>
+<li>Flash programming sırasında watchdog'u disable edin (erase uzun sürebilir)</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="hal-rtc-en.html">hal::rtc</a> - Backup register for reset logging</li>
+<li><a href="hal-power-en.html">hal::power</a> - Low-power modes and watchdog</li>
+<li><a href="hal-clock-en.html">hal::clock</a> - LSI clock configuration</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-en.html">← HAL Modules</a> | 
+<a href="hal-watchdog-en.html">🇬🇧 Turkish</a>
+</p>
+</main>
+</div>
+</body>
+</html>
+

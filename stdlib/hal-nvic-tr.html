@@ -1,0 +1,371 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::nvic - Interrupt Controller | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1> hal::nvic</h1>
+<p>Nested Vectored Interrupt Controller - ARM Cortex-M</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~380 satır</span>
+<span class="stat-badge">~18 fonksiyon</span>
+<span class="stat-badge">ARM Cortex-M</span>
+</div>
+</div>
+
+<h2> Genel Bakış</h2>
+<p>NVIC modülü, ARM Cortex-M serisi işlemcilerde interrupt yönetimini sağlar. 240+ interrupt kaynağını 16 öncelik seviyesi ile yönetir, nested interrupts destekler ve kritik bölgeleri koruma mekanizmaları sunar. Gerçek zamanlı embedded sistemlerin omurgasıdır.</p>
+
+<h2> Temel Özellikler</h2>
+<ul>
+<li><strong>240+ Interrupt:</strong> STM32F4'te 82, F7'de 97, H7'de 150+ IRQ</li>
+<li><strong>16 Priority Level:</strong> 4-bit öncelik (0=en yüksek)</li>
+<li><strong>Preemption:</strong> Yüksek öncelikli interrupt düşük öncelikliye girebilir</li>
+<li><strong>Sub-Priority:</strong> Aynı öncelikte kuyruk sıralaması</li>
+<li><strong>Masking:</strong> PRIMASK, FAULTMASK, BASEPRI ile kesme kapatma</li>
+<li><strong>Tail-Chaining:</strong> Interrupt geçişlerinde state save/restore yok</li>
+<li><strong>Late Arrival:</strong> Stack sürecinde daha yüksek öncelikli interrupt gelirse hemen çalışır</li>
+<li><strong>Vector Table:</strong> Flash/RAM'den relocatable interrupt vektörleri</li>
+</ul>
+
+<h2> Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::nvic
+
+// Simple interrupt enable
+nvic.enable_irq(nvic.USART1_IRQn, yap
+    priority: 5  // 0-15 range
+son)
+
+// Priority grouping (preemption vs sub-priority)
+nvic.set_priority_grouping(nvic.PRIGROUP_4_4)  // 4 bit preempt, 4 bit sub
+
+// Preemption priority 2, sub-priority 1
+nvic.set_priority(nvic.TIM2_IRQn, yap
+    preempt: 2,
+    sub: 1
+son)
+
+// Disable interrupt
+nvic.disable_irq(nvic.USART1_IRQn)
+
+// Software trigger interrupt
+nvic.set_pending_irq(nvic.EXTI0_IRQn)</code></pre>
+
+<h2> Tipler ve Enum'lar</h2>
+<pre><code>// Priority Grouping
+enum PriorityGroup {
+    PRIGROUP_0_4,  // 0 bit preempt, 4 bit sub
+    PRIGROUP_1_3,  // 1 bit preempt, 3 bit sub
+    PRIGROUP_2_2,  // 2 bit preempt, 2 bit sub
+    PRIGROUP_3_1,  // 3 bit preempt, 1 bit sub
+    PRIGROUP_4_0   // 4 bit preempt, 0 bit sub (default)
+}
+
+// IRQ Numbers (platform-specific)
+enum IRQn {
+    // Cortex-M core exceptions
+    NMI_IRQn = -14,
+    HardFault_IRQn = -13,
+    MemManage_IRQn = -12,
+    BusFault_IRQn = -11,
+    UsageFault_IRQn = -10,
+    SVCall_IRQn = -5,
+    PendSV_IRQn = -2,
+    SysTick_IRQn = -1,
+    
+    // STM32-specific interrupts (0+)
+    WWDG_IRQn = 0,
+    PVD_IRQn = 1,
+    TAMP_STAMP_IRQn = 2,
+    RTC_WKUP_IRQn = 3,
+    FLASH_IRQn = 4,
+    RCC_IRQn = 5,
+    EXTI0_IRQn = 6,
+    EXTI1_IRQn = 7,
+    // ... 80+ more
+    USART1_IRQn = 37,
+    TIM2_IRQn = 28,
+    DMA1_Stream0_IRQn = 11
+}
+
+yapı NVICConfig yap
+    irq: IRQn,
+    priority: sayı,        // Combined or preemption priority
+    sub_priority: sayı = 0, // Sub-priority (if grouping allows)
+    enabled: mantık = doğru
+son</code></pre>
+
+<h2> Örnek 1: Priority Grouping & Preemption</h2>
+<div class="example-box">
+<h3>Problem: USART ve Timer interrupt'larının öncelik yönetimi</h3>
+<pre><code>içe_aktar hal::nvic, hal::usart, hal::timer
+
+fonksiyon interrupt_sistemi_init() yap
+    // Set priority grouping: 3-bit preempt, 1-bit sub
+    nvic.set_priority_grouping(nvic.PRIGROUP_3_1)
+    
+    // USART1 (high priority, preempt=1, sub=0)
+    nvic.enable_irq(nvic.USART1_IRQn, yap
+        priority: 1,      // Preemption priority
+        sub_priority: 0
+    son)
+    
+    // Timer2 (medium priority, preempt=3, sub=0)
+    nvic.enable_irq(nvic.TIM2_IRQn, yap
+        priority: 3,
+        sub_priority: 0
+    son)
+    
+    // ADC (low priority, preempt=5, sub=1)
+    nvic.enable_irq(nvic.ADC_IRQn, yap
+        priority: 5,
+        sub_priority: 1
+    son)
+son
+
+// USART handler (can preempt TIM2 and ADC)
+fonksiyon USART1_IRQHandler() yap
+    eğer usart.get_flag(usart.USART1, usart.FLAG_RXNE) yap
+        değişken data = usart.receive_data(usart.USART1)
+        buffer_yaz(data)
+        usart.clear_flag(usart.USART1, usart.FLAG_RXNE)
+    son
+son
+
+// Timer handler (can preempt ADC, but NOT USART)
+fonksiyon TIM2_IRQHandler() yap
+    eğer timer.get_flag(timer.TIM2, timer.FLAG_UPDATE) yap
+        // Timer tick processing
+        systick_emulate()
+        timer.clear_flag(timer.TIM2, timer.FLAG_UPDATE)
+    son
+son
+
+// ADC handler (lowest priority, cannot preempt anyone)
+fonksiyon ADC_IRQHandler() yap
+    eğer adc.get_flag(adc.ADC1, adc.FLAG_EOC) yap
+        değişken value = adc.read_value(adc.ADC1)
+        sensor_buffer[buffer_idx] = value
+        buffer_idx = (buffer_idx + 1) % 32
+        adc.clear_flag(adc.ADC1, adc.FLAG_EOC)
+    son
+son</code></pre>
+<p><strong>Çıktı:</strong> USART interrupt'ı TIM2'ye girebilir (preempt), ama TIM2 USART'a giremez. ADC her ikisi tarafından preempt edilebilir.</p>
+</div>
+
+<h2> Örnek 2: Critical Section (Disable All Interrupts)</h2>
+<div class="example-box">
+<h3>Problem: Paylaşımlı değişkeni koruma (thread-safe erişim)</h3>
+<pre><code>içe_aktar hal::nvic
+
+değişken paylasilanOlan sayac: sayı = 0
+
+fonksiyon kritik_islem() yap
+    // Disable all interrupts (PRIMASK = 1)
+    nvic.disable_all_interrupts()
+    
+    // Critical section (atomic operation)
+    sayac = sayac + 1
+    değişken local_sayac = sayac
+    
+    // Re-enable interrupts
+    nvic.enable_all_interrupts()
+    
+    dön local_sayac
+son
+
+// Alternative: BASEPRI (disable interrupts with priority >= threshold)
+fonksiyon basepri_koruma() yap
+    // Disable interrupts with priority >= 3 (only allow 0-2)
+    nvic.set_basepri(3)
+    
+    // Critical section
+    paylasilanOlan veri = veri_oku()
+    veri_isle(veri)
+    
+    // Restore (allow all)
+    nvic.set_basepri(0)
+son</code></pre>
+<p><strong>Çıktı:</strong> sayac değişkeni interrupt'lardan korunur. Race condition önlenir.</p>
+</div>
+
+<h2> Örnek 3: Vector Table Relocation (Bootloader)</h2>
+<div class="example-box">
+<h3>Problem: Bootloader'dan application'a geçiş</h3>
+<pre><code>içe_aktar hal::nvic, hal::flash
+
+sabit BOOTLOADER_BASE: sayı = 0x0800_0000
+sabit APP_BASE: sayı = 0x0800_8000  // 32 KB offset
+
+fonksiyon jump_to_application() yap
+    // Read application's stack pointer
+    değişken app_sp = *(APP_BASE kayıt sayı*)
+    
+    // Read application's reset handler
+    değişken app_reset = *((APP_BASE + 4) kayıt sayı*)
+    
+    io.yazdir_satır('Jumping to application at 0x' + APP_BASE.onaltılıya())
+    
+    // Disable all interrupts
+    nvic.disable_all_interrupts()
+    
+    // Relocate vector table to application address
+    nvic.set_vector_table(APP_BASE)
+    
+    // Set stack pointer
+    asm yap
+        'MSR MSP, r0' // Set Main Stack Pointer
+    son with app_sp
+    
+    // Jump to application reset handler
+    değişken app_func = app_reset kayıt fonksiyon()
+    app_func()
+son
+
+// Bootloader mode check
+fonksiyon bootloader_mode() -> mantık yap
+    // Check if user button pressed during reset
+    gpio.pin_init(gpio.PORT_A, 0, yap mode: gpio.MODE_INPUT son)
+    
+    değişken buton = gpio.pin_read(gpio.PORT_A, 0)
+    
+    eğer (buton == 1) yap
+        io.yazdir_satır('Bootloader mode (button pressed)')
+        dön doğru
+    son
+    
+    // Check if application is valid (stack pointer in RAM)
+    değişken app_sp = *(APP_BASE kayıt sayı*)
+    eğer (app_sp >= 0x2000_0000 ve app_sp < 0x2002_0000) yap
+        io.yazdir_satır('Valid application found')
+        dön yanlış  // Jump to app
+    son
+    
+    io.yazdir_satır('No valid application, staying in bootloader')
+    dön doğru
+son</code></pre>
+<p><strong>Çıktı:</strong> Bootloader 0x0800_0000'den çalışır, uygulama 0x0800_8000'e yüklenir. Reset sonrası doğru vector table kullanılır.</p>
+</div>
+
+<h2> API Referansı</h2>
+<h3>Temel Fonksiyonlar</h3>
+<pre><code>// Interrupt enable/disable
+fonksiyon enable_irq(irq: IRQn, config: NVICConfig)
+fonksiyon disable_irq(irq: IRQn)
+
+// Priority configuration
+fonksiyon set_priority_grouping(group: PriorityGroup)
+fonksiyon set_priority(irq: IRQn, preempt: sayı, sub: sayı)
+fonksiyon get_priority(irq: IRQn) -> (sayı, sayı)
+
+// Pending management
+fonksiyon set_pending_irq(irq: IRQn)
+fonksiyon clear_pending_irq(irq: IRQn)
+fonksiyon is_pending_irq(irq: IRQn) -> mantık
+
+// Active status
+fonksiyon is_active_irq(irq: IRQn) -> mantık
+
+// Global interrupt control
+fonksiyon disable_all_interrupts()  // PRIMASK = 1
+fonksiyon enable_all_interrupts()   // PRIMASK = 0
+fonksiyon set_basepri(priority: sayı)  // Disable pri >= threshold
+fonksiyon get_basepri() -> sayı
+
+// Vector table relocation
+fonksiyon set_vector_table(offset: sayı)
+fonksiyon get_vector_table() -> sayı
+
+// System reset
+fonksiyon system_reset()</code></pre>
+
+<div class="warning">
+<strong> Önemli Notlar:</strong>
+<ul>
+<li><strong>Priority Inversion:</strong> Düşük öncelikli interrupt uzun sürerse, yüksek öncelikli bekler</li>
+<li><strong>Shared Peripherals:</strong> Aynı periferali kullanan interrupt'ların önceliği dikkatli ayarlanmalı</li>
+<li><strong>Stack Overflow:</strong> Nested interrupt çok derinleşirse stack overflow olabilir</li>
+<li><strong>Vector Table:</strong> RAM'e relocation yaparken alignment (0x200) gerekli</li>
+</ul>
+</div>
+
+<h2> Platform Desteği</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>Core</th>
+<th>IRQ Count</th>
+<th>Priority Bits</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>Cortex-M3</td>
+<td>60</td>
+<td>4 bit (16 levels)</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>Cortex-M4F</td>
+<td>82</td>
+<td>4 bit</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>Cortex-M7</td>
+<td>97</td>
+<td>4 bit</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>Cortex-M7</td>
+<td>150</td>
+<td>4 bit</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>RISC-V</td>
+<td>87 (ECLIC)</td>
+<td>4 bit</td>
+</tr>
+</table>
+
+<h2> Best Practices</h2>
+<ul>
+<li> <strong>Priority tasarımı:</strong> Kritik işlemler 0-3, normal 4-10, arka plan 11-15</li>
+<li> <strong>Kısa handler:</strong> ISR'da minimum işlem, flag set + main'de işle</li>
+<li> <strong>Sub-priority kullan:</strong> Aynı öncelikteki interrupt'ları sırala</li>
+<li> <strong>Pending temizle:</strong> Handler sonunda pending bit temizlenmeli</li>
+<li> <strong>Float kullanma:</strong> Cortex-M4F'de FPU lazy stacking maliyetli</li>
+<li> <strong>Uzun kritik bölge:</strong> disable_all_interrupts() minimum süre</li>
+</ul>
+
+<h2> İlgili Modüller</h2>
+<ul>
+<li><a href="hal-exti-tr.html">hal::exti</a> - External interrupts</li>
+<li><a href="hal-systick-tr.html">hal::systick</a> - SysTick interrupt</li>
+<li><a href="hal-timer-tr.html">hal::timer</a> - Timer interrupts</li>
+<li><a href="hal-usart-tr.html">hal::usart</a> - USART interrupts</li>
+<li><a href="hal-dma-tr.html">hal::dma</a> - DMA interrupts</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html"> HAL Modülleri</a> | 
+<a href="hal-nvic-en.html"> English</a>
+</p>
+</main>
+</div>
+</body>
+</html>

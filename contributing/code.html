@@ -182,6 +182,298 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="kod-katkısı-nasıl-yapılır"><a class="header" href="#kod-katkısı-nasıl-yapılır">Kod Katkısı Nasıl Yapılır</a></h1>
+                        
+                        <p>BERK Programlama Dili'ne kod katkısı yapmanız için rehber. Kod standartları, best practice'ler ve katkı süreci.</p>
+
+                        <h2>📝 Katkı Süreci</h2>
+
+                        <h3>1. İssue Oluşturma veya Seçme</h3>
+                        <ul>
+                            <li>Yeni özellik mi? Önce <strong>issue</strong> açın ve tartışın</li>
+                            <li>Bug fix mi? İlgili issue'yu bulun veya yeni oluşturun</li>
+                            <li><code>good-first-issue</code> label'ı ile başlayın</li>
+                        </ul>
+
+                        <h3>2. Fork ve Branch Oluşturma</h3>
+                        <pre><code class="language-bash"># Repository'yi fork edin (GitHub UI'dan)
+# Sonra local'e klonlayın
+git clone https://github.com/KULLANICI_ADINIZ/berk.git
+cd berk
+
+# Upstream ekleyin
+git remote add upstream https://github.com/ArslantasM/berk.git
+
+# Feature branch oluşturun
+git checkout -b feature/aciklayici-isim
+# veya bug fix için
+git checkout -b fix/bug-aciklamasi</code></pre>
+
+                        <h3>3. Kod Yazma</h3>
+                        <pre><code class="language-bash"># Değişiklik yapın
+# Build ve test
+cargo build
+cargo test
+cargo clippy
+cargo fmt
+
+# Değişiklikleri commit
+git add .
+git commit -m "feat: yeni özellik eklendi"</code></pre>
+
+                        <h3>4. Pull Request Açma</h3>
+                        <pre><code class="language-bash"># Değişiklikleri push edin
+git push origin feature/aciklayici-isim
+
+# GitHub'da Pull Request açın
+# - Açıklayıcı başlık ve description
+# - İlgili issue'yu bağlayın (#123)
+# - Screenshot/örnek ekleyin (UI değişikliği ise)</code></pre>
+
+                        <h2>📐 Kod Standartları</h2>
+
+                        <h3>Rust Kodu</h3>
+                        <ul>
+                            <li><strong>Rustfmt:</strong> <code>cargo fmt</code> ile formatlanmalı</li>
+                            <li><strong>Clippy:</strong> <code>cargo clippy</code> uyarısız olmalı</li>
+                            <li><strong>Naming:</strong> snake_case (fonksiyon/değişken), PascalCase (type/trait)</li>
+                            <li><strong>Documentation:</strong> Public API'ler doc comment'e sahip olmalı</li>
+                        </ul>
+
+                        <pre><code class="language-rust">/// Parses a BERK expression into an AST node.
+///
+/// # Arguments
+/// * `tokens` - Token stream to parse
+/// * `precedence` - Operator precedence level
+///
+/// # Returns
+/// Result containing the parsed expression or error
+///
+/// # Example
+/// ```
+/// let tokens = tokenize("5 + 3");
+/// let expr = parse_expression(tokens, 0)?;
+/// ```
+pub fn parse_expression(
+    tokens: &[Token],
+    precedence: u8,
+) -> Result<Expression, ParseError> {
+    // Implementation
+}</code></pre>
+
+                        <h3>BERK Kodu (stdlib)</h3>
+                        <pre><code class="language-berk">/// İki sayıyı toplar ve sonucu döndürür.
+///
+/// @param a İlk sayı
+/// @param b İkinci sayı
+/// @return Toplam sonucu
+///
+/// @örnek
+/// değişken sonuç = topla(5, 3)  // 8
+fonksiyon topla(a: tam, b: tam) -> tam {
+    döndür a + b
+}</code></pre>
+
+                        <h2>🧪 Test Yazma</h2>
+
+                        <h3>Unit Test</h3>
+                        <pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_simple_expression() {
+        let input = "5 + 3";
+        let result = parse_expression(input);
+        
+        assert!(result.is_ok());
+        let expr = result.unwrap();
+        assert_eq!(expr.evaluate(), 8);
+    }
+
+    #[test]
+    fn test_parse_invalid_syntax() {
+        let input = "5 +";
+        let result = parse_expression(input);
+        
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err().kind,
+            ErrorKind::UnexpectedEndOfInput
+        );
+    }
+}</code></pre>
+
+                        <h3>Integration Test</h3>
+                        <pre><code class="language-rust">// tests/integration/parser_tests.rs
+use berk_lang::*;
+
+#[test]
+fn test_full_program_parsing() {
+    let source = r#"
+        fonksiyon main() {
+            değişken x = 10
+            değişken y = 20
+            yazdır(x + y)
+        }
+    "#;
+    
+    let ast = parse_program(source).unwrap();
+    assert_eq!(ast.functions.len(), 1);
+    assert_eq!(ast.functions[0].name, "main");
+}</code></pre>
+
+                        <h3>Test Coverage</h3>
+                        <pre><code class="language-bash"># Coverage raporu oluşturma
+cargo install cargo-tarpaulin
+cargo tarpaulin --out Html --output-dir coverage
+
+# Minimum %80 coverage hedefliyoruz</code></pre>
+
+                        <h2>📋 Commit Message Formatı</h2>
+
+                        <p>Conventional Commits kullanıyoruz:</p>
+
+                        <pre><code>type(scope): kısa açıklama
+
+Detaylı açıklama (opsiyonel)
+
+Breaking changes (opsiyonel)
+
+Fixes #123</code></pre>
+
+                        <h3>Type'lar:</h3>
+                        <ul>
+                            <li><code>feat</code> - Yeni özellik</li>
+                            <li><code>fix</code> - Bug fix</li>
+                            <li><code>docs</code> - Dokümantasyon</li>
+                            <li><code>style</code> - Format değişikliği</li>
+                            <li><code>refactor</code> - Kod refactoring</li>
+                            <li><code>test</code> - Test ekleme/düzeltme</li>
+                            <li><code>chore</code> - Build/tooling değişikliği</li>
+                            <li><code>perf</code> - Performans iyileştirmesi</li>
+                        </ul>
+
+                        <h3>Örnekler:</h3>
+                        <pre><code class="language-bash">git commit -m "feat(parser): pattern matching desteği eklendi"
+git commit -m "fix(codegen): LLVM pointer hatası düzeltildi"
+git commit -m "docs(stdlib): math modülü örnekleri eklendi"
+git commit -m "perf(lexer): token buffer size optimize edildi"</code></pre>
+
+                        <h2>🎯 Best Practices</h2>
+
+                        <h3>Kod Kalitesi</h3>
+                        <ul>
+                            <li>✅ <strong>KISS</strong> - Keep It Simple, Stupid</li>
+                            <li>✅ <strong>DRY</strong> - Don't Repeat Yourself</li>
+                            <li>✅ <strong>SOLID</strong> prensiplerine uyun</li>
+                            <li>✅ Error handling yapın (<code>unwrap()</code> yerine <code>?</code>)</li>
+                            <li>✅ Panic'ten kaçının, <code>Result</code> kullanın</li>
+                        </ul>
+
+                        <h3>Performans</h3>
+                        <ul>
+                            <li>⚡ Allocasyon'dan kaçının (mümkünse borrow kullanın)</li>
+                            <li>⚡ Clone'dan kaçının</li>
+                            <li>⚡ String yerine <code>&str</code> kullanın (uygunsa)</li>
+                            <li>⚡ Benchmark yazın (kritik kod yolları için)</li>
+                        </ul>
+
+                        <pre><code class="language-rust">// ❌ Kötü - gereksiz allocation
+fn process_string(s: String) -> String {
+    s.to_uppercase()
+}
+
+// ✅ İyi - borrow kullanımı
+fn process_string(s: &str) -> String {
+    s.to_uppercase()
+}</code></pre>
+
+                        <h3>Hata Yönetimi</h3>
+                        <pre><code class="language-rust">// ❌ Kötü - panic
+fn read_file(path: &str) -> String {
+    std::fs::read_to_string(path).unwrap()
+}
+
+// ✅ İyi - Result döndürme
+fn read_file(path: &str) -> Result<String, std::io::Error> {
+    std::fs::read_to_string(path)
+}
+
+// ✅ Daha iyi - custom error type
+fn read_file(path: &str) -> Result<String, BerkError> {
+    std::fs::read_to_string(path)
+        .map_err(|e| BerkError::FileNotFound {
+            path: path.to_string(),
+            source: e,
+        })
+}</code></pre>
+
+                        <h2>🔍 Code Review Süreci</h2>
+
+                        <h3>Pull Request Checklist</h3>
+                        <ul>
+                            <li>☑️ Tüm testler geçiyor mu?</li>
+                            <li>☑️ Yeni testler eklendi mi?</li>
+                            <li>☑️ Dokümantasyon güncellendi mi?</li>
+                            <li>☑️ <code>cargo clippy</code> uyarısız mı?</li>
+                            <li>☑️ <code>cargo fmt</code> uygulandı mı?</li>
+                            <li>☑️ Breaking change var mı? (CHANGELOG.md)</li>
+                            <li>☑️ Commit mesajları standartlara uygun mu?</li>
+                        </ul>
+
+                        <h3>Review Beklerken</h3>
+                        <ul>
+                            <li>Sabırlı olun - review zaman alabilir</li>
+                            <li>Feedback'e açık olun</li>
+                            <li>Requested changes'leri hızlıca adresleyin</li>
+                            <li>Review'ları <code>Re-request review</code> butonuna tıklayarak bildirin</li>
+                        </ul>
+
+                        <h2>🚀 İleri Seviye Konular</h2>
+
+                        <h3>LLVM Code Generation</h3>
+                        <pre><code class="language-rust">// Örnek: Binary operasyon için LLVM IR üretme
+fn codegen_binary_op(
+    &mut self,
+    op: BinaryOp,
+    lhs: &Expr,
+    rhs: &Expr,
+) -> Result<LLVMValueRef, CodegenError> {
+    let lhs_val = self.codegen_expr(lhs)?;
+    let rhs_val = self.codegen_expr(rhs)?;
+    
+    match op {
+        BinaryOp::Add => self.builder.build_add(lhs_val, rhs_val),
+        BinaryOp::Sub => self.builder.build_sub(lhs_val, rhs_val),
+        BinaryOp::Mul => self.builder.build_mul(lhs_val, rhs_val),
+        BinaryOp::Div => self.builder.build_div(lhs_val, rhs_val),
+    }
+}</code></pre>
+
+                        <h3>Parser Optimization</h3>
+                        <ul>
+                            <li>Pratt parsing kullanın (operatör önceliği için)</li>
+                            <li>Lookahead minimize edin</li>
+                            <li>Error recovery ekleyin</li>
+                        </ul>
+
+                        <div style="padding: 20px; background: var(--sidebar-bg); border-radius: 8px; margin: 20px 0;">
+                            <h3>🎓 Kaynak ve Öğrenme</h3>
+                            <ul>
+                                <li><a href="https://rustc-dev-guide.rust-lang.org/">Rustc Dev Guide</a> - Compiler design</li>
+                                <li><a href="https://llvm.org/docs/">LLVM Documentation</a></li>
+                                <li><a href="https://craftinginterpreters.com/">Crafting Interpreters</a></li>
+                                <li><a href="https://www3.nd.edu/~dthain/compilerbook/">Introduction to Compilers</a></li>
+                            </ul>
+                        </div>
+
+                        <h2>🤝 İletişim</h2>
+                        <ul>
+                            <li><strong>GitHub Discussions:</strong> Genel tartışmalar</li>
+                            <li><strong>Issues:</strong> Bug report ve feature request</li>
+                            <li><strong>Pull Requests:</strong> Code review</li>
+                            <li><strong>Email:</strong> arslantas.mustafa@gmail.com</li>
+                        </ul>
 
                     </main>
 

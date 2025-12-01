@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>linalg - Lineer Cebir | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔢 linalg - Lineer Cebir</h1>
+<p>Matrix, Vector, LU/QR/SVD, Eigenvalues</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">43</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">848</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">25 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar linalg
+
+// Matrix oluşturma
+değişken A = linalg.matris([[1, 2], [3, 4]])
+değişken B = linalg.matris([[5, 6], [7, 8]])
+
+// Matrix işlemleri
+değişken C = linalg.matris_topla(A, B)
+değişken D = linalg.matris_çarp(A, B)
+değişken A_ters = linalg.ters(A)
+değişken det = linalg.determinant(A)
+
+// Vector işlemleri
+değişken v1 = [1.0, 2.0, 3.0]
+değişken v2 = [4.0, 5.0, 6.0]
+değişken nokta = linalg.nokta_çarpım(v1, v2)  // 32.0
+değişken norm = linalg.norm(v1)  // 3.742
+
+// Decomposition
+değişken (L, U) = linalg.lu_ayrıştır(A)
+değişken (Q, R) = linalg.qr_ayrıştır(A)
+değişken (U, S, Vt) = linalg.svd(A)
+
+// Eigenvalues
+değişken özdeğerler = linalg.eigenvalues(A)</code></pre>
+<h2>📚 Fonksiyon Kategorileri</h2>
+<ul>
+<li><strong>Temel İşlemler:</strong> topla, çıkar, çarp, transpoz, ters, determinant</li>
+<li><strong>Decomposition:</strong> LU, QR, Cholesky, SVD, Eigenvalue</li>
+<li><strong>Çözücüler:</strong> lineer_sistem_çöz, en_küçük_kareler</li>
+<li><strong>Norm ve Mesafe:</strong> norm, frobenius_norm, koşul_sayısı</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Lineer Sistem Çözme (Ax = b)</h3>
+<pre><code>içe_aktar linalg
+
+// 2x + 3y = 8
+// 4x + 5y = 14
+
+değişken A = linalg.matris([[2, 3], [4, 5]])
+değişken b = [8, 14]
+
+değişken x = linalg.lineer_sistem_çöz(A, b)
+yazdır("Çözüm: x = " + x[0].yazıya() + ", y = " + x[1].yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>Principal Component Analysis (PCA)</h3>
+<pre><code>içe_aktar linalg, stats
+
+fonksiyon pca(X: Matris, n_bileşen: tamsayı) -> Matris yap
+    // Veriyi merkeze al
+    değişken X_ortalanmış = stats.merkeze_al(X)
+    
+    // Kovaryans matrisi
+    değişken Σ = linalg.matris_çarp(linalg.transpoz(X_ortalanmış), X_ortalanmış)
+    
+    // Eigenvalue decomposition
+    değişken (özdeğerler, özvektörler) = linalg.eig(Σ)
+    
+    // En büyük n_bileşen'i seç
+    değişken pc = linalg.alt_matris(özvektörler, 0, n_bileşen)
+    
+    // Transform
+    dön linalg.matris_çarp(X_ortalanmış, pc)
+son
+
+değişken veri = linalg.matris([[1, 2], [3, 4], [5, 6]])
+değişken dönüştürülmüş = pca(veri, 1)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

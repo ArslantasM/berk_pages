@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>io - Girdi/Çıktı | BERK Stdlib</title>
+    <meta name="description" content="BERK io modülü - 64 fonksiyon ile dosya I/O, console, buffered okuma/yazma">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>📂 io - Girdi/Çıktı Modülü</h1>
+            <p>Dosya I/O, Console, Buffered Okuma/Yazma</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">64</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">449</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar io
+
+// Dosya okuma
+değişken içerik = io.dosya_oku("data.txt")
+yazdır(içerik)
+
+// Dosya yazma
+io.dosya_yaz("output.txt", "Merhaba BERK!")
+
+// Satır satır okuma
+değişken satırlar = io.satırları_oku("data.txt")
+için satır içinde satırlar yap
+    yazdır(satır)
+son
+
+// Buffered okuma (büyük dosyalar için)
+değişken dosya = io.aç("büyük_dosya.txt", "r")
+değişken okuyucu = io.buffered_reader(dosya)
+iken doğru yap
+    değişken satır = io.satır_oku(okuyucu)
+    eğer satır.yok_mu() ise kır son
+    yazdır(satır)
+son
+io.kapat(dosya)</code></pre>
+
+        <h2>📚 Fonksiyon Kategorileri</h2>
+
+        <div class="function-group">
+            <h3>Basit Dosya İşlemleri</h3>
+            <p><code>dosya_oku()</code>, <code>dosya_yaz()</code>, <code>dosya_ekle()</code>, <code>satırları_oku()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Dosya Handle İşlemleri</h3>
+            <p><code>aç()</code>, <code>kapat()</code>, <code>oku()</code>, <code>yaz()</code>, <code>flush()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Buffered I/O</h3>
+            <p><code>buffered_reader()</code>, <code>buffered_writer()</code>, <code>satır_oku()</code>, <code>buffer_flush()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Console I/O</h3>
+            <p><code>yazdır()</code>, <code>yazdır_satır()</code>, <code>hata_yazdır()</code>, <code>girdi_al()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Binary I/O</h3>
+            <p><code>bayt_oku()</code>, <code>bayt_yaz()</code>, <code>seek()</code>, <code>tell()</code></p>
+        </div>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Örnek 1: Log Dosyası Yazma</h3>
+            <pre><code>içe_aktar io, time
+
+fonksiyon log_yaz(mesaj: yazı) yap
+    değişken zaman = time.şimdi_str()
+    değişken log_satır = "[" + zaman + "] " + mesaj + "\n"
+    io.dosya_ekle("app.log", log_satır)
+son
+
+log_yaz("Uygulama başlatıldı")
+log_yaz("Kullanıcı giriş yaptı")
+log_yaz("İşlem tamamlandı")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Örnek 2: Büyük Dosya İşleme</h3>
+            <pre><code>içe_aktar io, string
+
+fonksiyon büyük_dosya_işle(girdi: yazı, çıktı: yazı) yap
+    değişken girdi_dosya = io.aç(girdi, "r")
+    değişken çıktı_dosya = io.aç(çıktı, "w")
+    
+    değişken okuyucu = io.buffered_reader(girdi_dosya, 8192)
+    değişken yazıcı = io.buffered_writer(çıktı_dosya, 8192)
+    
+    iken doğru yap
+        değişken satır = io.satır_oku(okuyucu)
+        eğer satır.yok_mu() ise kır son
+        
+        // İşleme
+        değişken işlenmiş = string.büyük_harf(satır.değer())
+        io.buffer_yaz(yazıcı, işlenmiş + "\n")
+    son
+    
+    io.buffer_flush(yazıcı)
+    io.kapat(çıktı_dosya)
+    io.kapat(girdi_dosya)
+son
+
+büyük_dosya_işle("input.txt", "output.txt")</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="index-tr.html">← Tüm Modüller</a> | 
+            <a href="../index-tr.html">Ana Sayfa</a>
+        </p>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>encoding - Encoding/Decoding | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔤 encoding - Encoding/Decoding</h1>
+<p>Base64, Hex, URL, UTF-8</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">532</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">17 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar encoding
+
+// Base64
+değişken encoded = encoding.base64_encode("Merhaba BERK")
+yazdır(encoded)  // "TWVyaGFiYSBCRVJL"
+değişken decoded = encoding.base64_decode(encoded)
+yazdır(decoded)  // "Merhaba BERK"
+
+// Hex
+değişken hex = encoding.hex_encode([0x42, 0x45, 0x52, 0x4B])
+yazdır(hex)  // "4245524B"
+
+// URL encoding
+değişken url = encoding.url_encode("merhaba dünya?")
+yazdır(url)  // "merhaba%20d%C3%BCnya%3F"</code></pre>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Data Transfer Encoding</h3>
+<pre><code>içe_aktar encoding, json, crypto
+
+fonksiyon güvenli_veri_gönder(veri: herhangi, anahtar: yazı) -> yazı yap
+    // 1. JSON serialize
+    değişken json_str = json.stringify(veri)
+    
+    // 2. Encrypt
+    değişken şifreli = crypto.aes_encrypt(json_str, anahtar)
+    
+    // 3. Base64 encode (binary -> text)
+    değişken encoded = encoding.base64_encode(şifreli)
+    
+    dön encoded
+son
+
+fonksiyon güvenli_veri_al(encoded: yazı, anahtar: yazı) -> herhangi yap
+    // 1. Base64 decode
+    değişken şifreli = encoding.base64_decode(encoded)
+    
+    // 2. Decrypt
+    değişken json_str = crypto.aes_decrypt(şifreli, anahtar)
+    
+    // 3. JSON parse
+    dön json.parse(json_str)
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

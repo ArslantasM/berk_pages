@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,167 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="time---zaman-İşlemleri"><a class="header" href="#time---zaman-İşlemleri">time - Zaman İşlemleri</a></h1>
+                        <div class="module-header">
+<h1>⏰ time - Zaman ve Tarih</h1>
+<p>DateTime, Duration, Formatting, Timezone</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">58</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">731</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">23 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar time
+
+// Şu an
+değişken şimdi = time.şimdi()
+yazdır(şimdi.yazıya())  // "2025-01-15 14:30:45"
+
+// Unix timestamp
+değişken timestamp = time.unix()
+yazdır(timestamp.yazıya())  // 1705328445
+
+// Formatting
+değişken formatted = time.format(şimdi, "%Y-%m-%d %H:%M:%S")
+yazdır(formatted)  // "2025-01-15 14:30:45"
+
+// Parsing
+değişken tarih = time.parse("2025-01-15", "%Y-%m-%d")
+
+// Duration
+değişken başlangıç = time.şimdi()
+// ... işlemler ...
+değişken bitiş = time.şimdi()
+değişken süre = time.duration(başlangıç, bitiş)
+yazdır("Geçen süre: " + süre.saniye().yazıya() + "s")
+
+// Sleep
+time.sleep(1000)  // 1000ms = 1 saniye</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li>DateTime operations (UTC, local timezone)</li>
+<li>Duration arithmetic</li>
+<li>strftime/strptime formatting</li>
+<li>ISO 8601 support</li>
+<li>Timer, stopwatch</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Benchmark Timer</h3>
+<pre><code>içe_aktar time
+
+sınıf Stopwatch yap
+    değişken başlangıç: DateTime
+    değişken tur_zamanları: Dizi
+    
+    fonksiyon başlat() yap
+        self.başlangıç = time.şimdi()
+        self.tur_zamanları = []
+    son
+    
+    fonksiyon tur() yap
+        self.tur_zamanları.ekle(time.şimdi())
+    son
+    
+    fonksiyon durdur() -> Duration yap
+        dön time.duration(self.başlangıç, time.şimdi())
+    son
+    
+    fonksiyon tur_süresi(index: tamsayı) -> Duration yap
+        eğer index == 0 ise yap
+            dön time.duration(self.başlangıç, self.tur_zamanları[0])
+        son değilse yap
+            dön time.duration(self.tur_zamanları[index-1], self.tur_zamanları[index])
+        son
+    son
+son
+
+değişken sw = Stopwatch.yeni()
+sw.başlat()
+
+// Test 1
+her i içinde aralık(0, 1000000) için yap
+    değişken x = i * i
+son
+sw.tur()
+
+// Test 2
+her i içinde aralık(0, 500000) için yap
+    değişken x = math.sqrt(i.kesir())
+son
+sw.tur()
+
+yazdır("Tur 1: " + sw.tur_süresi(0).milisaniye().yazıya() + "ms")
+yazdır("Tur 2: " + sw.tur_süresi(1).milisaniye().yazıya() + "ms")
+yazdır("Toplam: " + sw.durdur().milisaniye().yazıya() + "ms")</code></pre>
+</div>
+<div class="example-box">
+<h3>Task Scheduler</h3>
+<pre><code>içe_aktar time, thread
+
+sınıf ScheduledTask yap
+    değişken fonksiyon: Fonksiyon
+    değişken çalışma_zamanı: DateTime
+    
+    fonksiyon yeni(f: Fonksiyon, çalışma_zamanı: DateTime) yap
+        self.fonksiyon = f
+        self.çalışma_zamanı = çalışma_zamanı
+    son
+son
+
+sınıf Scheduler yap
+    değişken görevler: Dizi
+    
+    fonksiyon yeni() yap
+        self.görevler = []
+    son
+    
+    fonksiyon zamanla(f: Fonksiyon, gecikme_ms: tamsayı) yap
+        değişken çalışma_zamanı = time.add_ms(time.şimdi(), gecikme_ms)
+        self.görevler.ekle(ScheduledTask.yeni(f, çalışma_zamanı))
+    son
+    
+    fonksiyon çalıştır() yap
+        döngü yap
+            değişken şimdi = time.şimdi()
+            değişken çalıştırılan = 0
+            
+            her görev içinde self.görevler için yap
+                eğer time.before(görev.çalışma_zamanı, şimdi) ise yap
+                    görev.fonksiyon()
+                    çalıştırılan = çalıştırılan + 1
+                son
+            son
+            
+            // Çalıştırılan görevleri kaldır
+            self.görevler = self.görevler.filtrele(fonksiyon(g) yap
+                dön time.after(g.çalışma_zamanı, şimdi)
+            son)
+            
+            eğer self.görevler.uzunluk() == 0 ise yap
+                kır
+            son
+            
+            time.sleep(100)  // 100ms check interval
+        son
+    son
+son
+
+değişken scheduler = Scheduler.yeni()
+
+scheduler.zamanla(fonksiyon() yap
+    yazdır("Görev 1 çalıştı: " + time.şimdi().yazıya())
+son, 1000)
+
+scheduler.zamanla(fonksiyon() yap
+    yazdır("Görev 2 çalıştı: " + time.şimdi().yazıya())
+son, 2000)
+
+scheduler.çalıştır()</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
 
                     </main>
 

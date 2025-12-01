@@ -1,0 +1,786 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::spi - Serial Peripheral Interface | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#e67e22;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔄 hal::spi</h1>
+<p>Serial Peripheral Interface - High Speed Communication</p>
+<div style="margin-top:15px">
+<span class="stat-badge">394 satır</span>
+<span class="stat-badge">~16 fonksiyon</span>
+<span class="stat-badge">Full-Duplex</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>SPI (Serial Peripheral Interface), yüksek hızlı senkron full-duplex haberleşme protokolüdür. SD kart, flash bellek, LCD display ve RF modüller için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Master/Slave mode</li>
+<li>Full-duplex communication</li>
+<li>High speed (up to 18 Mbps)</li>
+<li>8/16 bit data frame</li>
+<li>MSB/LSB first</li>
+<li>4 clock modes (CPOL/CPHA)</li>
+<li>Hardware NSS/CS management</li>
+<li>DMA support</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+// SPI pins: SCK=PA5, MISO=PA6, MOSI=PA7, CS=PA4
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 5, yap mode: gpio.MODE_AF, af: 5 son)  // SCK
+gpio.pin_init(gpio.PORT_A, 6, yap mode: gpio.MODE_AF, af: 5 son)  // MISO
+gpio.pin_init(gpio.PORT_A, 7, yap mode: gpio.MODE_AF, af: 5 son)  // MOSI
+gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)     // CS
+
+// Initialize SPI
+değişken spi1 = spi.init(spi.SPI1, yap
+    mode: spi.MODE_MASTER,
+    speed: spi.SPEED_1MHZ,
+    clock_mode: spi.MODE_0,
+    data_size: spi.DATA_8BIT
+son)
+
+// Transfer data
+gpio.pin_write(cs, gpio.LOW)  // Select device
+değişken response = spi.transfer(spi1, [0x03, 0x00, 0x00])
+gpio.pin_write(cs, gpio.HIGH)  // Deselect</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: SD Card Reader</h3>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+sabit CMD0 = 0    // GO_IDLE_STATE
+sabit CMD8 = 8    // SEND_IF_COND
+sabit CMD17 = 17  // READ_SINGLE_BLOCK
+
+yapı SDCard yap
+    spi: spi.Handle,
+    cs: gpio.Pin
+son
+
+fonksiyon sd_send_cmd(sd: SDCard, cmd: sayı, arg: u32) -> u8 yap
+    // Select card
+    gpio.pin_write(sd.cs, gpio.LOW)
+    
+    // Send command
+    spi.transfer_byte(sd.spi, 0x40 | cmd)
+    spi.transfer_byte(sd.spi, (arg >> 24) & 0xFF)
+    spi.transfer_byte(sd.spi, (arg >> 16) & 0xFF)
+    spi.transfer_byte(sd.spi, (arg >> 8) & 0xFF)
+    spi.transfer_byte(sd.spi, arg & 0xFF)
+    spi.transfer_byte(sd.spi, 0x95)  // CRC (dummy for most commands)
+    
+    // Wait for response
+    değişken response = 0xFF
+    her i içinde 0..10 için yap
+        response = spi.transfer_byte(sd.spi, 0xFF)
+        eğer response != 0xFF ise yap
+            kır
+        son
+    son
+    
+    // Deselect card
+    gpio.pin_write(sd.cs, gpio.HIGH)
+    
+    dön response
+son
+
+fonksiyon sd_init() -> Sonuç[SDCard, Hata] yap
+    // SPI setup
+    değişken spi1 = spi.init(spi.SPI1, yap
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_400KHZ,  // Start with low speed
+        clock_mode: spi.MODE_0
+    son)
+    
+    // CS pin
+    değişken cs = gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    değişken sd = SDCard yap spi: spi1, cs: cs son
+    
+    // Send 80 clock pulses
+    her i içinde 0..10 için yap
+        spi.transfer_byte(sd.spi, 0xFF)
+    son
+    
+    // Send CMD0 (reset)
+    eğer sd_send_cmd(sd, CMD0, 0) != 0x01 ise yap
+        dön Hata("SD card init failed")
+    son
+    
+    // Increase speed
+    spi.set_speed(sd.spi, spi.SPEED_18MHZ)
+    
+    dön Tamam(sd)
+son
+
+fonksiyon sd_read_block(sd: SDCard, block: u32, buffer: [u8; 512]) -> Sonuç[Hiçbir, Hata] yap
+    // Send CMD17 (read single block)
+    gpio.pin_write(sd.cs, gpio.LOW)
+    
+    sd_send_cmd(sd, CMD17, block)
+    
+    // Wait for data token
+    değişken token = 0xFF
+    her i içinde 0..1000 için yap
+        token = spi.transfer_byte(sd.spi, 0xFF)
+        eğer token == 0xFE ise yap kır son
+    son
+    
+    eğer token != 0xFE ise yap
+        gpio.pin_write(sd.cs, gpio.HIGH)
+        dön Hata("SD read timeout")
+    son
+    
+    // Read data
+    her i içinde 0..512 için yap
+        buffer[i] = spi.transfer_byte(sd.spi, 0xFF)
+    son
+    
+    // Read CRC (2 bytes, ignore)
+    spi.transfer_byte(sd.spi, 0xFF)
+    spi.transfer_byte(sd.spi, 0xFF)
+    
+    gpio.pin_write(sd.cs, gpio.HIGH)
+    dön Tamam(Hiçbir)
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 2: NRF24L01+ Wireless Module</h3>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+sabit NRF24_CONFIG = 0x00
+sabit NRF24_EN_AA = 0x01
+sabit NRF24_RF_CH = 0x05
+sabit NRF24_RF_SETUP = 0x06
+sabit NRF24_STATUS = 0x07
+sabit NRF24_TX_ADDR = 0x10
+sabit NRF24_RX_ADDR_P0 = 0x0A
+
+yapı NRF24 yap
+    spi: spi.Handle,
+    cs: gpio.Pin,
+    ce: gpio.Pin
+son
+
+fonksiyon nrf24_write_reg(nrf: NRF24, reg: u8, value: u8) -> Sonuç[Hiçbir, Hata] yap
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, 0x20 | reg)  // W_REGISTER command
+    spi.transfer_byte(nrf.spi, value)
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon nrf24_read_reg(nrf: NRF24, reg: u8) -> u8 yap
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, reg & 0x1F)  // R_REGISTER command
+    değişken value = spi.transfer_byte(nrf.spi, 0x00)
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    dön value
+son
+
+fonksiyon nrf24_init() -> Sonuç[NRF24, Hata] yap
+    değişken spi1 = spi.init(spi.SPI1, yap
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_8MHZ,
+        clock_mode: spi.MODE_0
+    son)
+    
+    değişken cs = gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)
+    değişken ce = gpio.pin_init(gpio.PORT_A, 3, yap mode: gpio.MODE_OUTPUT son)
+    
+    gpio.pin_write(cs, gpio.HIGH)
+    gpio.pin_write(ce, gpio.LOW)
+    
+    değişken nrf = NRF24 yap spi: spi1, cs: cs, ce: ce son
+    
+    core.delay_ms(100)  // Power-on reset delay
+    
+    // Configure
+    nrf24_write_reg(nrf, NRF24_CONFIG, 0x0E)?       // PWR_UP, CRC enabled
+    nrf24_write_reg(nrf, NRF24_EN_AA, 0x01)?        // Enable auto-ack pipe 0
+    nrf24_write_reg(nrf, NRF24_RF_CH, 76)?          // Channel 76 (2.476 GHz)
+    nrf24_write_reg(nrf, NRF24_RF_SETUP, 0x06)?    // 1Mbps, 0dBm
+    
+    core.delay_ms(5)
+    
+    dön Tamam(nrf)
+son
+
+fonksiyon nrf24_transmit(nrf: NRF24, data: [u8]) -> Sonuç[Hiçbir, Hata] yap
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, 0xA0)  // W_TX_PAYLOAD command
+    
+    her byte içinde data için yap
+        spi.transfer_byte(nrf.spi, byte)
+    son
+    
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    
+    // Pulse CE to start transmission
+    gpio.pin_write(nrf.ce, gpio.HIGH)
+    core.delay_us(15)
+    gpio.pin_write(nrf.ce, gpio.LOW)
+    
+    // Wait for TX complete (max 1ms)
+    her i içinde 0..100 için yap
+        değişken status = nrf24_read_reg(nrf, NRF24_STATUS)
+        eğer (status & 0x20) != 0 ise yap  // TX_DS bit
+            nrf24_write_reg(nrf, NRF24_STATUS, 0x20)?  // Clear flag
+            dön Tamam(Hiçbir)
+        son
+        core.delay_us(10)
+    son
+    
+    dön Hata("TX timeout")
+son
+
+fonksiyon ana() yap
+    değişken nrf = nrf24_init()?
+    
+    döngü yap
+        değişken message = "Hello NRF24!".baytlar()
+        nrf24_transmit(nrf, message)?
+        io.println("Gönderildi")
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 3: MAX7219 LED Matrix Driver</h3>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+sabit MAX7219_NOOP = 0x00
+sabit MAX7219_DIGIT0 = 0x01
+sabit MAX7219_DECODE_MODE = 0x09
+sabit MAX7219_INTENSITY = 0x0A
+sabit MAX7219_SCAN_LIMIT = 0x0B
+sabit MAX7219_SHUTDOWN = 0x0C
+sabit MAX7219_DISPLAY_TEST = 0x0F
+
+yapı MAX7219 yap
+    spi: spi.Handle,
+    cs: gpio.Pin
+son
+
+fonksiyon max7219_write(max: MAX7219, reg: u8, data: u8) yap
+    gpio.pin_write(max.cs, gpio.LOW)
+    spi.transfer_byte(max.spi, reg)
+    spi.transfer_byte(max.spi, data)
+    gpio.pin_write(max.cs, gpio.HIGH)
+son
+
+fonksiyon max7219_init() -> MAX7219 yap
+    değişken spi1 = spi.init(spi.SPI1, yap
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_1MHZ,
+        clock_mode: spi.MODE_0
+    son)
+    
+    değişken cs = gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    değişken max = MAX7219 yap spi: spi1, cs: cs son
+    
+    // Initialize display
+    max7219_write(max, MAX7219_SHUTDOWN, 0x01)      // Normal operation
+    max7219_write(max, MAX7219_DECODE_MODE, 0x00)   // No decode (raw mode)
+    max7219_write(max, MAX7219_SCAN_LIMIT, 0x07)    // Display all 8 digits
+    max7219_write(max, MAX7219_INTENSITY, 0x08)     // Medium brightness
+    max7219_write(max, MAX7219_DISPLAY_TEST, 0x00)  // Normal mode
+    
+    dön max
+son
+
+fonksiyon max7219_clear(max: MAX7219) yap
+    her i içinde 1..9 için yap
+        max7219_write(max, i olarak u8, 0x00)
+    son
+son
+
+fonksiyon max7219_draw_pattern(max: MAX7219, pattern: [u8; 8]) yap
+    her i içinde 0..8 için yap
+        max7219_write(max, (i + 1) olarak u8, pattern[i])
+    son
+son
+
+fonksiyon ana() yap
+    değişken max = max7219_init()
+    
+    // Smiley face pattern
+    değişken smiley = [
+        0b00111100,
+        0b01000010,
+        0b10100101,
+        0b10000001,
+        0b10100101,
+        0b10011001,
+        0b01000010,
+        0b00111100
+    ]
+    
+    max7219_draw_pattern(max, smiley)
+    
+    döngü yap
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 4: W25Q128 Flash Memory</h3>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+sabit W25Q_WRITE_ENABLE = 0x06
+sabit W25Q_READ_DATA = 0x03
+sabit W25Q_PAGE_PROGRAM = 0x02
+sabit W25Q_SECTOR_ERASE = 0x20
+sabit W25Q_READ_STATUS = 0x05
+sabit W25Q_CHIP_ID = 0x9F
+
+yapı W25Q yap
+    spi: spi.Handle,
+    cs: gpio.Pin
+son
+
+fonksiyon w25q_wait_busy(w25q: W25Q) yap
+    döngü yap
+        gpio.pin_write(w25q.cs, gpio.LOW)
+        spi.transfer_byte(w25q.spi, W25Q_READ_STATUS)
+        değişken status = spi.transfer_byte(w25q.spi, 0x00)
+        gpio.pin_write(w25q.cs, gpio.HIGH)
+        
+        eğer (status & 0x01) == 0 ise yap kır son  // BUSY bit
+        core.delay_ms(1)
+    son
+son
+
+fonksiyon w25q_write_enable(w25q: W25Q) yap
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_WRITE_ENABLE)
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+son
+
+fonksiyon w25q_read_id(w25q: W25Q) -> [u8; 3] yap
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_CHIP_ID)
+    
+    değişken id = [0u8; 3]
+    id[0] = spi.transfer_byte(w25q.spi, 0x00)  // Manufacturer
+    id[1] = spi.transfer_byte(w25q.spi, 0x00)  // Memory type
+    id[2] = spi.transfer_byte(w25q.spi, 0x00)  // Capacity
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    dön id
+son
+
+fonksiyon w25q_read(w25q: W25Q, addr: u32, buffer: &mut [u8]) -> Sonuç[Hiçbir, Hata] yap
+    w25q_wait_busy(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_READ_DATA)
+    spi.transfer_byte(w25q.spi, (addr >> 16) olarak u8)
+    spi.transfer_byte(w25q.spi, (addr >> 8) olarak u8)
+    spi.transfer_byte(w25q.spi, addr olarak u8)
+    
+    her i içinde 0..buffer.uzunluk() için yap
+        buffer[i] = spi.transfer_byte(w25q.spi, 0x00)
+    son
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon w25q_write_page(w25q: W25Q, addr: u32, data: [u8]) -> Sonuç[Hiçbir, Hata] yap
+    w25q_wait_busy(w25q)
+    w25q_write_enable(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_PAGE_PROGRAM)
+    spi.transfer_byte(w25q.spi, (addr >> 16) olarak u8)
+    spi.transfer_byte(w25q.spi, (addr >> 8) olarak u8)
+    spi.transfer_byte(w25q.spi, addr olarak u8)
+    
+    her byte içinde data için yap
+        spi.transfer_byte(w25q.spi, byte)
+    son
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    w25q_wait_busy(w25q)
+    
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon w25q_erase_sector(w25q: W25Q, addr: u32) -> Sonuç[Hiçbir, Hata] yap
+    w25q_wait_busy(w25q)
+    w25q_write_enable(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_SECTOR_ERASE)
+    spi.transfer_byte(w25q.spi, (addr >> 16) olarak u8)
+    spi.transfer_byte(w25q.spi, (addr >> 8) olarak u8)
+    spi.transfer_byte(w25q.spi, addr olarak u8)
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    
+    w25q_wait_busy(w25q)  // Sector erase takes ~20-200ms
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon ana() yap
+    değişken spi1 = spi.init(spi.SPI1, yap
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_8MHZ,
+        clock_mode: spi.MODE_0
+    son)
+    
+    değişken cs = gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    değişken w25q = W25Q yap spi: spi1, cs: cs son
+    
+    // Read chip ID
+    değişken id = w25q_read_id(w25q)
+    io.println("Flash ID: {:02X} {:02X} {:02X}".formatla(id[0], id[1], id[2]))
+    
+    // Erase sector 0
+    w25q_erase_sector(w25q, 0x000000)?
+    io.println("Sector erased")
+    
+    // Write data
+    değişken data = "BERK Flash Test!".baytlar()
+    w25q_write_page(w25q, 0x000000, data)?
+    io.println("Data written")
+    
+    // Read back
+    değişken buffer = [0u8; 32]
+    w25q_read(w25q, 0x000000, &mut buffer)?
+    io.println("Read: {}", yazı.utf8_çöz(buffer)?)
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 5: ILI9341 TFT LCD (240x320 Display)</h3>
+<pre><code>içe_aktar hal::spi, hal::gpio
+
+yapı ILI9341 yap
+    spi: spi.Handle,
+    cs: gpio.Pin,
+    dc: gpio.Pin,   // Data/Command
+    rst: gpio.Pin   // Reset
+son
+
+fonksiyon ili9341_cmd(lcd: ILI9341, cmd: u8) yap
+    gpio.pin_write(lcd.dc, gpio.LOW)   // Command mode
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    spi.transfer_byte(lcd.spi, cmd)
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+son
+
+fonksiyon ili9341_data(lcd: ILI9341, data: u8) yap
+    gpio.pin_write(lcd.dc, gpio.HIGH)  // Data mode
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    spi.transfer_byte(lcd.spi, data)
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+son
+
+fonksiyon ili9341_init() -> ILI9341 yap
+    değişken spi1 = spi.init(spi.SPI1, yap
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_18MHZ,  // High speed for display
+        clock_mode: spi.MODE_0
+    son)
+    
+    değişken cs = gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_OUTPUT son)
+    değişken dc = gpio.pin_init(gpio.PORT_A, 3, yap mode: gpio.MODE_OUTPUT son)
+    değişken rst = gpio.pin_init(gpio.PORT_A, 2, yap mode: gpio.MODE_OUTPUT son)
+    
+    değişken lcd = ILI9341 yap spi: spi1, cs: cs, dc: dc, rst: rst son
+    
+    // Hardware reset
+    gpio.pin_write(lcd.rst, gpio.HIGH)
+    core.delay_ms(10)
+    gpio.pin_write(lcd.rst, gpio.LOW)
+    core.delay_ms(20)
+    gpio.pin_write(lcd.rst, gpio.HIGH)
+    core.delay_ms(150)
+    
+    // Software reset
+    ili9341_cmd(lcd, 0x01)
+    core.delay_ms(150)
+    
+    // Power control
+    ili9341_cmd(lcd, 0xC0)
+    ili9341_data(lcd, 0x23)
+    
+    ili9341_cmd(lcd, 0xC1)
+    ili9341_data(lcd, 0x10)
+    
+    // Memory access control
+    ili9341_cmd(lcd, 0x36)
+    ili9341_data(lcd, 0x48)  // RGB order
+    
+    // Pixel format
+    ili9341_cmd(lcd, 0x3A)
+    ili9341_data(lcd, 0x55)  // 16-bit RGB565
+    
+    // Display on
+    ili9341_cmd(lcd, 0x11)  // Sleep out
+    core.delay_ms(120)
+    ili9341_cmd(lcd, 0x29)  // Display on
+    
+    dön lcd
+son
+
+fonksiyon ili9341_fill_screen(lcd: ILI9341, color: u16) yap
+    // Set window (0,0)-(239,319)
+    ili9341_cmd(lcd, 0x2A)  // Column address
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0xEF)
+    
+    ili9341_cmd(lcd, 0x2B)  // Row address
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x01)
+    ili9341_data(lcd, 0x3F)
+    
+    ili9341_cmd(lcd, 0x2C)  // Write memory
+    
+    // Fill with color (240 * 320 pixels)
+    gpio.pin_write(lcd.dc, gpio.HIGH)
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    
+    her i içinde 0..(240 * 320) için yap
+        spi.transfer_byte(lcd.spi, (color >> 8) olarak u8)
+        spi.transfer_byte(lcd.spi, color olarak u8)
+    son
+    
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+son
+
+fonksiyon ana() yap
+    değişken lcd = ili9341_init()
+    
+    // RGB565 colors
+    sabit RED = 0xF800
+    sabit GREEN = 0x07E0
+    sabit BLUE = 0x001F
+    sabit WHITE = 0xFFFF
+    
+    döngü yap
+        ili9341_fill_screen(lcd, RED)
+        core.delay_ms(1000)
+        ili9341_fill_screen(lcd, GREEN)
+        core.delay_ms(1000)
+        ili9341_fill_screen(lcd, BLUE)
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// SPI Instance
+enum Instance {
+    SPI1, SPI2, SPI3, SPI4, SPI5, SPI6
+}
+
+// SPI Mode
+enum Mode {
+    MODE_MASTER,  // Master mode
+    MODE_SLAVE    // Slave mode
+}
+
+// Clock Mode (CPOL/CPHA)
+enum ClockMode {
+    MODE_0,  // CPOL=0, CPHA=0 (idle low, sample on rising)
+    MODE_1,  // CPOL=0, CPHA=1 (idle low, sample on falling)
+    MODE_2,  // CPOL=1, CPHA=0 (idle high, sample on falling)
+    MODE_3   // CPOL=1, CPHA=1 (idle high, sample on rising)
+}
+
+// Data Size
+enum DataSize {
+    DATA_8BIT,   // 8-bit data frame
+    DATA_16BIT   // 16-bit data frame
+}
+
+// Bit Order
+enum BitOrder {
+    MSB_FIRST,  // Most significant bit first (default)
+    LSB_FIRST   // Least significant bit first
+}
+
+// Speed (Baud Rate)
+enum Speed {
+    SPEED_100KHZ,
+    SPEED_400KHZ,
+    SPEED_1MHZ,
+    SPEED_2MHZ,
+    SPEED_4MHZ,
+    SPEED_8MHZ,
+    SPEED_18MHZ,
+    SPEED_42MHZ   // Max speed (platform dependent)
+}
+
+yapı Config yap
+    mode: Mode,
+    speed: Speed,
+    clock_mode: ClockMode,
+    data_size: DataSize,
+    bit_order: BitOrder,
+    nss_mode: NSSMode
+son
+
+enum NSSMode {
+    NSS_SOFT,     // Software NSS management (manual CS)
+    NSS_HARD_IN,  // Hardware NSS input (slave mode)
+    NSS_HARD_OUT  // Hardware NSS output (master mode)
+}</code></pre>
+
+<h2>⚙️ Fonksiyonlar</h2>
+
+<h3>Initialization</h3>
+<pre><code>fonksiyon init(instance: Instance, config: Config) -> Handle
+// Initialize SPI with configuration
+
+fonksiyon deinit(handle: Handle)
+// Deinitialize SPI
+
+fonksiyon enable(handle: Handle)
+// Enable SPI peripheral
+
+fonksiyon disable(handle: Handle)
+// Disable SPI peripheral</code></pre>
+
+<h3>Transfer Operations</h3>
+<pre><code>fonksiyon transfer_byte(handle: Handle, data: u8) -> u8
+// Transfer single byte (blocking)
+
+fonksiyon transfer(handle: Handle, data: [u8]) -> [u8]
+// Transfer multiple bytes (blocking)
+
+fonksiyon write(handle: Handle, data: [u8])
+// Write only (ignore received data)
+
+fonksiyon read(handle: Handle, len: sayı) -> [u8]
+// Read only (send dummy bytes)
+
+fonksiyon transfer_16(handle: Handle, data: u16) -> u16
+// Transfer 16-bit data</code></pre>
+
+<h3>DMA Support</h3>
+<pre><code>fonksiyon transfer_dma(handle: Handle, tx_buffer: &[u8], rx_buffer: &mut [u8]) -> Sonuç[Hiçbir, Hata]
+// Transfer using DMA (non-blocking)
+
+fonksiyon write_dma(handle: Handle, data: &[u8]) -> Sonuç[Hiçbir, Hata]
+// Write using DMA
+
+fonksiyon is_transfer_complete(handle: Handle) -> mantıksal
+// Check if DMA transfer is complete</code></pre>
+
+<h3>Configuration</h3>
+<pre><code>fonksiyon set_speed(handle: Handle, speed: Speed)
+// Change SPI speed dynamically
+
+fonksiyon set_data_size(handle: Handle, size: DataSize)
+// Change data size (8/16 bit)
+
+fonksiyon set_clock_mode(handle: Handle, mode: ClockMode)
+// Change clock polarity/phase</code></pre>
+
+<h2>⚡ Performans İpuçları</h2>
+<ul>
+<li><strong>DMA Kullanımı:</strong> Büyük veri transferleri için (>64 byte) DMA kullanın</li>
+<li><strong>Clock Speed:</strong> Kablo uzunluğuna göre ayarlayın (kısa kablo = yüksek hız)</li>
+<li><strong>CS Control:</strong> CS pinini mümkün olduğunca kısa süre LOW tutun</li>
+<li><strong>Full-Duplex:</strong> Aynı anda gönder/al yaparak hızlandırın</li>
+<li><strong>Burst Transfer:</strong> Tek seferde çok byte transfer edin</li>
+</ul>
+
+<h2>⚙️ SPI Clock Modes</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tr style="background:#e67e22;color:white">
+<th>Mode</th><th>CPOL</th><th>CPHA</th><th>Idle State</th><th>Sample Edge</th><th>Typical Devices</th>
+</tr>
+<tr><td>0</td><td>0</td><td>0</td><td>Low</td><td>Rising</td><td>SD Card, W25Q, ILI9341</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>Low</td><td>Falling</td><td>-</td></tr>
+<tr><td>2</td><td>1</td><td>0</td><td>High</td><td>Falling</td><td>-</td></tr>
+<tr><td>3</td><td>1</td><td>1</td><td>High</td><td>Rising</td><td>MAX7219, NRF24L01</td></tr>
+</table>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>CS (Chip Select) pini <strong>manuel kontrol</strong> edilmelidir (NSS_SOFT mode)</li>
+<li>MISO hattı pull-up gerektirebilir (open-collector slave'ler için)</li>
+<li>Kısa kablo kullanın - yüksek hızda sinyal bütünlüğü kritik (<30cm for >10MHz)</li>
+<li>Multi-slave için her device'ın <strong>ayrı CS pini</strong> olmalı</li>
+<li>SCK, MOSI, MISO pinleri <strong>tüm slave'ler arasında paylaşılır</strong></li>
+<li>Full-duplex modda her gönderilen byte bir byte alır</li>
+<li>DMA kullanırken buffer alignment dikkat edin (4-byte boundary)</li>
+<li>Clock polarity/phase device datasheet'ine göre ayarlayın</li>
+</ul>
+
+<h2>🎯 Uygulama Senaryoları</h2>
+<ul>
+<li><strong>Storage:</strong> SD/microSD kart, SPI Flash (W25Q, AT25)</li>
+<li><strong>Display:</strong> TFT LCD (ILI9341, ST7735), OLED, E-Paper</li>
+<li><strong>Wireless:</strong> NRF24L01+, RFM69, LoRa (SX1278)</li>
+<li><strong>Sensors:</strong> BME280, MAX6675 (thermocouple), ADXL345</li>
+<li><strong>ADC/DAC:</strong> MCP3008, MCP4922</li>
+<li><strong>LED Matrix:</strong> MAX7219, WS2812 (via DMA)</li>
+</ul>
+
+<h2>📚 Platform Desteği</h2>
+<ul>
+<li><strong>STM32 F1:</strong> SPI1/SPI2, up to 18 Mbps</li>
+<li><strong>STM32 F4:</strong> SPI1-3, up to 42 Mbps</li>
+<li><strong>STM32 F7:</strong> SPI1-6, up to 54 Mbps</li>
+<li><strong>STM32 H7:</strong> SPI1-6, up to 100 Mbps</li>
+<li><strong>ESP32:</strong> SPI2/SPI3 (HSPI/VSPI), up to 80 MHz</li>
+<li><strong>GD32VF103:</strong> SPI0/SPI1/SPI2 (RISC-V)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>hal::gpio</code> - SCK/MISO/MOSI/CS pin configuration</li>
+<li><code>hal::dma</code> - DMA transfers for high-speed data</li>
+<li><code>hal::int</code> - SPI interrupt handling</li>
+</ul>
+
+<h2>📖 Referanslar</h2>
+<ul>
+<li>Motorola SPI Block Guide (original specification)</li>
+<li>STM32 AN4286 - SPI protocol used in STM32</li>
+<li>SD Card Physical Layer Specification</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="index-tr.html">Tüm Modüller</a> | 
+<a href="../index-tr.html">Ana Sayfa</a>
+</p>
+</main>
+</div>
+</body>
+</html>

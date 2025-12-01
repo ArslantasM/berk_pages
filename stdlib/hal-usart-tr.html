@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::usart - Serial Communication | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📡 hal::usart</h1>
+<p>Universal Synchronous/Asynchronous Receiver/Transmitter</p>
+<div style="margin-top:15px">
+<span class="stat-badge">407 satır</span>
+<span class="stat-badge">~20 fonksiyon</span>
+<span class="stat-badge">UART/USART</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>USART/UART modülü, seri haberleşme protokolüdür. GPS, GSM modüller, sensörler ve PC ile haberleşme için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Asynchronous (UART) mode</li>
+<li>Synchronous (USART) mode</li>
+<li>Configurable baud rates (1200-12Mbps)</li>
+<li>7/8/9 bit data</li>
+<li>Parity: None/Even/Odd</li>
+<li>1/2 stop bits</li>
+<li>Hardware flow control (RTS/CTS)</li>
+<li>DMA support</li>
+<li>Interrupt-driven TX/RX</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::usart, hal::gpio
+
+// GPIO setup for USART1
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 9, yap   // TX
+    mode: gpio.MODE_AF,
+    af: 7  // AF7 = USART1
+son)
+gpio.pin_init(gpio.PORT_A, 10, yap  // RX
+    mode: gpio.MODE_AF,
+    pull: gpio.PULL_UP,
+    af: 7
+son)
+
+// USART init
+değişken uart = usart.init(usart.USART1, yap
+    baud_rate: 115200,
+    data_bits: usart.DATA_8BIT,
+    parity: usart.PARITY_NONE,
+    stop_bits: usart.STOP_1BIT
+son)
+
+// Send data
+usart.write(uart, "Hello World!\n")
+
+// Receive data
+değişken data = usart.read(uart, 100)  // Read up to 100 bytes</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek 1: Serial Console</h3>
+<pre><code>içe_aktar hal::usart, hal::gpio, hal::core
+
+fonksiyon uart_print(uart: usart.Handle, msg: yazı) yap
+    usart.write(uart, msg)
+son
+
+fonksiyon uart_println(uart: usart.Handle, msg: yazı) yap
+    usart.write(uart, msg + "\r\n")
+son
+
+fonksiyon ana() yap
+    core.system_init()
+    core.clock_config(72_000_000)
+    
+    // Setup USART1 GPIO (PA9=TX, PA10=RX)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 9, yap
+        mode: gpio.MODE_AF,
+        speed: gpio.SPEED_HIGH,
+        af: 7
+    son)
+    gpio.pin_init(gpio.PORT_A, 10, yap
+        mode: gpio.MODE_AF,
+        pull: gpio.PULL_UP,
+        af: 7
+    son)
+    
+    // Initialize USART
+    usart.clock_enable(usart.USART1)
+    değişken uart = usart.init(usart.USART1, yap
+        baud_rate: 115200,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT,
+        flow_control: usart.FLOW_NONE
+    son)
+    
+    uart_println(uart, "BERK v1.0.0 Console")
+    uart_println(uart, "Type 'help' for commands")
+    
+    değişken buffer = ""
+    
+    döngü yap
+        // Check if data available
+        eğer usart.available(uart) > 0 ise yap
+            değişken ch = usart.read_byte(uart)
+            
+            eğer ch == '\r' veya ch == '\n' ise yap
+                eğer buffer.uzunluk() > 0 ise yap
+                    uart_println(uart, "")
+                    process_command(uart, buffer)
+                    buffer = ""
+                    uart_print(uart, "> ")
+                son
+            değilse eğer ch == '\b' ise yap  // Backspace
+                eğer buffer.uzunluk() > 0 ise yap
+                    buffer = buffer[0..buffer.uzunluk()-1]
+                    uart_print(uart, "\b \b")  // Erase character
+                son
+            değilse yap
+                buffer += ch
+                usart.write_byte(uart, ch)  // Echo
+            son
+        son
+    son
+son
+
+fonksiyon process_command(uart: usart.Handle, cmd: yazı) yap
+    eğer cmd == "help" ise yap
+        uart_println(uart, "Available commands:")
+        uart_println(uart, "  help    - Show this message")
+        uart_println(uart, "  status  - System status")
+        uart_println(uart, "  reset   - Reset system")
+        uart_println(uart, "  info    - System info")
+    değilse eğer cmd == "status" ise yap
+        değişken uptime = core.uptime_ms() / 1000
+        uart_println(uart, "System Status:")
+        uart_println(uart, "  Uptime: " + uptime.yazıya() + "s")
+        uart_println(uart, "  Clock: 72 MHz")
+        uart_println(uart, "  Free RAM: 64 KB")
+    değilse eğer cmd == "reset" ise yap
+        uart_println(uart, "Resetting...")
+        core.delay_ms(100)
+        core.system_reset()
+    değilse eğer cmd == "info" ise yap
+        uart_println(uart, "BERK Embedded System")
+        uart_println(uart, "Version: 1.0.0")
+        uart_println(uart, "Platform: STM32F103")
+    değilse yap
+        uart_println(uart, "Unknown command: " + cmd)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 2: GPS Parser (NMEA)</h3>
+<pre><code>içe_aktar hal::usart, string
+
+yapı GPSData yap
+    latitude: kesir,
+    longitude: kesir,
+    altitude: kesir,
+    speed: kesir,
+    satellites: sayı,
+    valid: mantıksal
+son
+
+fonksiyon parse_nmea(sentence: yazı) -> İsteğe_Bağlı[GPSData] yap
+    // Parse GPGGA sentence: $GPGGA,time,lat,N,lon,E,quality,sats,hdop,alt,M,...
+    eğer sentence.starts_with("$GPGGA") değilse yap
+        dön Hiçbir
+    son
+    
+    değişken parts = sentence.split(",")
+    eğer parts.uzunluk() < 15 ise yap
+        dön Hiçbir
+    son
+    
+    değişken quality = parts[6].parse_int()?
+    eğer quality == 0 ise yap  // Invalid fix
+        dön Hiçbir
+    son
+    
+    // Parse latitude (DDMM.MMMM format)
+    değişken lat_str = parts[2]
+    değişken lat_deg = lat_str[0..2].parse_int()?
+    değişken lat_min = lat_str[2..].parse_float()?
+    değişken latitude = lat_deg.kesir() + lat_min / 60.0
+    eğer parts[3] == "S" ise yap
+        latitude = -latitude
+    son
+    
+    // Parse longitude (DDDMM.MMMM format)
+    değişken lon_str = parts[4]
+    değişken lon_deg = lon_str[0..3].parse_int()?
+    değişken lon_min = lon_str[3..].parse_float()?
+    değişken longitude = lon_deg.kesir() + lon_min / 60.0
+    eğer parts[5] == "W" ise yap
+        longitude = -longitude
+    son
+    
+    dön Bazı(GPSData yap
+        latitude: latitude,
+        longitude: longitude,
+        altitude: parts[9].parse_float()?,
+        speed: 0.0,
+        satellites: parts[7].parse_int()?,
+        valid: doğru
+    son)
+son
+
+fonksiyon ana() yap
+    // Setup USART for GPS (9600 baud, typical for GPS)
+    değişken gps_uart = usart.init(usart.USART2, yap
+        baud_rate: 9600,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT
+    son)
+    
+    değişken buffer = ""
+    
+    döngü yap
+        eğer usart.available(gps_uart) > 0 ise yap
+            değişken ch = usart.read_byte(gps_uart)
+            
+            eğer ch == '\n' ise yap
+                // Process complete sentence
+                eğer gps_data = parse_nmea(buffer) ise yap
+                    io.println("GPS Fix:")
+                    io.println("  Lat: {:.6f}".formatla(gps_data.latitude))
+                    io.println("  Lon: {:.6f}".formatla(gps_data.longitude))
+                    io.println("  Alt: {:.1f}m".formatla(gps_data.altitude))
+                    io.println("  Sats: {}".formatla(gps_data.satellites))
+                son
+                buffer = ""
+            değilse eğer ch != '\r' ise yap
+                buffer += ch
+            son
+        son
+        
+        core.delay_ms(10)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 3: AT Command Interface (GSM)</h3>
+<pre><code>içe_aktar hal::usart, hal::core
+
+yapı GSMModem yap
+    uart: usart.Handle
+son
+
+fonksiyon send_at_command(modem: GSMModem, cmd: yazı, timeout_ms: sayı) -> Sonuç[yazı, Hata] yap
+    // Send command
+    usart.write(modem.uart, cmd + "\r\n")
+    
+    // Wait for response
+    değişken response = ""
+    değişken start_time = core.millis()
+    
+    döngü yap
+        eğer usart.available(modem.uart) > 0 ise yap
+            değişken ch = usart.read_byte(modem.uart)
+            response += ch
+            
+            // Check for termination
+            eğer response.ends_with("OK\r\n") veya response.ends_with("ERROR\r\n") ise yap
+                dön Tamam(response)
+            son
+        son
+        
+        // Timeout check
+        eğer core.millis() - start_time > timeout_ms ise yap
+            dön Hata("AT command timeout")
+        son
+        
+        core.delay_ms(10)
+    son
+son
+
+fonksiyon gsm_init() -> Sonuç[GSMModem, Hata] yap
+    değişken uart = usart.init(usart.USART3, yap
+        baud_rate: 115200,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT
+    son)
+    
+    değişken modem = GSMModem yap uart: uart son
+    
+    // Test communication
+    send_at_command(modem, "AT", 1000)?
+    
+    // Disable echo
+    send_at_command(modem, "ATE0", 1000)?
+    
+    // Check SIM card
+    değişken sim_status = send_at_command(modem, "AT+CPIN?", 1000)?
+    eğer sim_status.contains("READY") değilse yap
+        dön Hata("SIM card not ready")
+    son
+    
+    dön Tamam(modem)
+son
+
+fonksiyon send_sms(modem: GSMModem, phone: yazı, message: yazı) -> Sonuç[Hiçbir, Hata] yap
+    // Set text mode
+    send_at_command(modem, "AT+CMGF=1", 1000)?
+    
+    // Set phone number
+    send_at_command(modem, "AT+CMGS=\"" + phone + "\"", 1000)?
+    
+    // Send message
+    usart.write(modem.uart, message)
+    usart.write_byte(modem.uart, 0x1A)  // Ctrl+Z
+    
+    değişken response = send_at_command(modem, "", 10000)?
+    eğer response.contains("OK") değilse yap
+        dön Hata("Failed to send SMS")
+    son
+    
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon ana() yap
+    değişken modem = gsm_init()?
+    
+    io.println("GSM Modem ready!")
+    
+    // Send alert SMS
+    send_sms(modem, "+905551234567", "BERK System Alert: Temperature exceeded 50°C")?
+    
+    io.println("SMS sent successfully!")
+son</code></pre>
+</div>
+
+<h2>⚙️ Baud Rates</h2>
+<pre><code>sabit BAUD_1200 = 1200
+sabit BAUD_2400 = 2400
+sabit BAUD_4800 = 4800
+sabit BAUD_9600 = 9600      // GPS, simple devices
+sabit BAUD_19200 = 19200
+sabit BAUD_38400 = 38400
+sabit BAUD_57600 = 57600
+sabit BAUD_115200 = 115200  // PC communication, GSM
+sabit BAUD_230400 = 230400
+sabit BAUD_460800 = 460800
+sabit BAUD_921600 = 921600</code></pre>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>TX/RX pinlerini doğru alternatif fonksiyona ayarlayın</li>
+<li>Baud rate hesabı clock frequency'ye bağlıdır</li>
+<li>Uzun kablolarda düşük baud rate kullanın</li>
+<li>RX buffer overflow'dan kaçının (interrupt/DMA kullanın)</li>
+<li>3.3V-5V level shifting gerekebilir</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>hal::gpio</code> - TX/RX pin configuration</li>
+<li><code>hal::dma</code> - DMA transfers</li>
+<li><code>hal::int</code> - USART interrupts</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="index-tr.html">Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

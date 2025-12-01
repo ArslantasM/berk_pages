@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>thread - Çok İş Parçacıklı Programlama | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🧵 thread - Çok İş Parçacıklı Programlama</h1>
+<p>Thread, Mutex, Channel, Arc, Atomic, ThreadPool</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">67</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">878</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">27 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar thread
+
+// Thread spawn
+değişken handle = thread.spawn(fonksiyon() yap
+    yazdır("Thread'den merhaba!")
+    dön 42
+son)
+
+değişken sonuç = thread.join(handle)
+yazdır("Sonuç: " + sonuç.yazıya())
+
+// Mutex (mutual exclusion)
+değişken sayaç = thread.mutex_new(0)
+
+değişken threads = []
+her i içinde aralık(0, 10) için yap
+    threads.ekle(thread.spawn(fonksiyon() yap
+        her j içinde aralık(0, 100) için yap
+            thread.mutex_lock(sayaç, fonksiyon(değer) yap
+                dön değer + 1
+            son)
+        son
+    son))
+son
+
+her t içinde threads için yap
+    thread.join(t)
+son
+
+değişken toplam = thread.mutex_get(sayaç)
+yazdır("Toplam: " + toplam.yazıya())  // 1000
+
+// Channel (message passing)
+değişken (tx, rx) = thread.channel_create()
+
+thread.spawn(fonksiyon() yap
+    thread.channel_send(tx, "Mesaj 1")
+    thread.channel_send(tx, "Mesaj 2")
+son)
+
+yazdır(thread.channel_receive(rx))  // "Mesaj 1"
+yazdır(thread.channel_receive(rx))  // "Mesaj 2"</code></pre>
+<h2>📚 Senkronizasyon</h2>
+<ul>
+<li><strong>Mutex:</strong> Mutual exclusion lock</li>
+<li><strong>RwLock:</strong> Read-write lock (multiple readers, single writer)</li>
+<li><strong>Channel:</strong> Message passing (mpsc, mpmc)</li>
+<li><strong>Atomic:</strong> Lock-free atomic operations</li>
+<li><strong>Arc:</strong> Atomic reference counting</li>
+<li><strong>Barrier:</strong> Wait for all threads</li>
+<li><strong>Semaphore:</strong> Resource counting</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Producer-Consumer Pattern</h3>
+<pre><code>içe_aktar thread, collections
+
+değişken (tx, rx) = thread.channel_create()
+
+// Producers
+her i içinde aralık(0, 3) için yap
+    değişken sender = tx.clone()
+    thread.spawn(fonksiyon() yap
+        her j içinde aralık(0, 5) için yap
+            değişken mesaj = "Producer " + i.yazıya() + " - Item " + j.yazıya()
+            thread.channel_send(sender, mesaj)
+            thread.sleep(100)  // 100ms
+        son
+    son)
+son
+
+// Consumer
+değişken consumer = thread.spawn(fonksiyon() yap
+    değişken items = []
+    
+    döngü yap
+        değişken sonuç = thread.channel_receive_timeout(rx, 1000)
+        
+        eğer sonuç.tamam_mı() ise yap
+            değişken mesaj = sonuç.çıkar()
+            yazdır("Tüketildi: " + mesaj)
+            items.ekle(mesaj)
+        son değilse yap
+            // Timeout - tüm producer'lar bitmiş
+            kır
+        son
+    son
+    
+    dön items.uzunluk()
+son)
+
+değişken toplam = thread.join(consumer)
+yazdır("Toplam item: " + toplam.yazıya())  // 15</code></pre>
+</div>
+<div class="example-box">
+<h3>Parallel Map-Reduce</h3>
+<pre><code>içe_aktar thread
+
+fonksiyon parallel_map(veri: Dizi, f: Fonksiyon, thread_sayısı: tamsayı) -> Dizi yap
+    değişken chunk_boyutu = (veri.uzunluk() + thread_sayısı - 1) / thread_sayısı
+    değişken handles = []
+    
+    her i içinde aralık(0, thread_sayısı) için yap
+        değişken başlangıç = i * chunk_boyutu
+        değişken bitiş = math.min(başlangıç + chunk_boyutu, veri.uzunluk())
+        
+        eğer başlangıç >= veri.uzunluk() ise yap
+            devam
+        son
+        
+        değişken chunk = veri.dilimle(başlangıç, bitiş)
+        
+        değişken handle = thread.spawn(fonksiyon() yap
+            dön chunk.map(f)
+        son)
+        
+        handles.ekle(handle)
+    son
+    
+    // Sonuçları birleştir
+    değişken sonuç = []
+    her handle içinde handles için yap
+        değişken chunk_result = thread.join(handle)
+        sonuç = sonuç + chunk_result
+    son
+    
+    dön sonuç
+son
+
+fonksiyon parallel_reduce(veri: Dizi, f: Fonksiyon, başlangıç: herhangi) -> herhangi yap
+    değişken partial_results = parallel_map(veri, fonksiyon(x) yap dön x son, 4)
+    
+    // Local reduce'lar
+    değişken handles = []
+    değişken chunk_boyutu = (partial_results.uzunluk() + 4 - 1) / 4
+    
+    her i içinde aralık(0, 4) için yap
+        değişken başlangıç_idx = i * chunk_boyutu
+        değişken bitiş_idx = math.min(başlangıç_idx + chunk_boyutu, partial_results.uzunluk())
+        
+        eğer başlangıç_idx >= partial_results.uzunluk() ise yap
+            devam
+        son
+        
+        değişken chunk = partial_results.dilimle(başlangıç_idx, bitiş_idx)
+        
+        handles.ekle(thread.spawn(fonksiyon() yap
+            değişken acc = başlangıç
+            her x içinde chunk için yap
+                acc = f(acc, x)
+            son
+            dön acc
+        son))
+    son
+    
+    // Final reduce
+    değişken sonuç = başlangıç
+    her handle içinde handles için yap
+        sonuç = f(sonuç, thread.join(handle))
+    son
+    
+    dön sonuç
+son
+
+// Kullanım: 1'den 1_000_000'a kadar topla
+değişken sayılar = aralık(1, 1_000_001).collect()
+değişken toplam = parallel_reduce(sayılar, fonksiyon(a, b) yap dön a + b son, 0)
+yazdır("Toplam: " + toplam.yazıya())  // 500000500000</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

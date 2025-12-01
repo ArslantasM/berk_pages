@@ -182,6 +182,205 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="geliştirme-ortamı-kurulumu"><a class="header" href="#geliştirme-ortamı-kurulumu">Geliştirme Ortamı Kurulumu</a></h1>
+                        
+                        <p>BERK Programlama Dili'nin kaynak koduna katkıda bulunmak için gerekli geliştirme ortamının kurulumu.</p>
+
+                        <h2>📋 Gereksinimler</h2>
+
+                        <h3>Temel Araçlar</h3>
+                        <ul>
+                            <li><strong>Git</strong> - Versiyon kontrolü</li>
+                            <li><strong>Rust</strong> (1.70+) - Derleyici geliştirme için</li>
+                            <li><strong>LLVM</strong> (16.0+) - Code generation backend</li>
+                            <li><strong>CMake</strong> (3.20+) - Build sistem</li>
+                            <li><strong>Python</strong> (3.8+) - Test scriptleri için</li>
+                        </ul>
+
+                        <h3>Platform Bazlı</h3>
+                        
+                        <h4>🪟 Windows</h4>
+                        <pre><code class="language-powershell"># Visual Studio 2022 (C++ Desktop Development)
+# LLVM kurulumu
+winget install LLVM.LLVM
+
+# Rust kurulumu
+winget install Rustlang.Rustup
+rustup default stable
+
+# Git
+winget install Git.Git</code></pre>
+
+                        <h4>🐧 Linux (Ubuntu/Debian)</h4>
+                        <pre><code class="language-bash">sudo apt update
+sudo apt install -y build-essential cmake git python3 python3-pip
+
+# LLVM
+sudo apt install -y llvm-16 llvm-16-dev clang-16
+
+# Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env</code></pre>
+
+                        <h4>🍎 macOS</h4>
+                        <pre><code class="language-bash"># Homebrew ile
+brew install llvm cmake git python3 rust</code></pre>
+
+                        <h2>🔧 Repository Kurulumu</h2>
+
+                        <h3>1. Repository'yi Klonlama</h3>
+                        <pre><code class="language-bash">git clone https://github.com/ArslantasM/berk.git
+cd berk/berk-lang</code></pre>
+
+                        <h3>2. Bağımlılıkları Yükleme</h3>
+                        <pre><code class="language-bash"># Rust bağımlılıkları
+cargo fetch
+
+# Python test araçları
+pip install pytest pytest-cov</code></pre>
+
+                        <h3>3. Build Yapma</h3>
+                        <pre><code class="language-bash"># Debug build (geliştirme için)
+cargo build
+
+# Release build (performans testleri için)
+cargo build --release
+
+# Test çalıştırma
+cargo test</code></pre>
+
+                        <h2>🛠️ IDE Kurulumu</h2>
+
+                        <h3>VS Code (Önerilen)</h3>
+                        <p>Gerekli eklentiler:</p>
+                        <ul>
+                            <li><strong>rust-analyzer</strong> - Rust IntelliSense</li>
+                            <li><strong>CodeLLDB</strong> - Debug desteği</li>
+                            <li><strong>Better TOML</strong> - Cargo.toml editörü</li>
+                            <li><strong>Error Lens</strong> - Hata gösterimi</li>
+                        </ul>
+
+                        <pre><code class="language-bash"># VS Code settings.json
+{
+    "rust-analyzer.checkOnSave.command": "clippy",
+    "rust-analyzer.cargo.features": "all",
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true
+    }
+}</code></pre>
+
+                        <h3>IntelliJ IDEA / CLion</h3>
+                        <ul>
+                            <li><strong>Rust Plugin</strong> yükleyin</li>
+                            <li>Project'i Cargo projesi olarak açın</li>
+                        </ul>
+
+                        <h2>📁 Proje Yapısı</h2>
+
+                        <pre><code>berk/
+├── berk-lang/              # Ana derleyici kodu
+│   ├── src/
+│   │   ├── lexer/         # Lexical analysis
+│   │   ├── parser/        # Syntax parsing
+│   │   ├── ast/           # Abstract Syntax Tree
+│   │   ├── semantic/      # Semantic analysis
+│   │   ├── codegen/       # LLVM code generation
+│   │   ├── stdlib/        # Standard library (Rust tarafı)
+│   │   └── main.rs        # Entry point
+│   ├── tests/             # Integration testler
+│   └── Cargo.toml
+├── stdlib/                 # BERK stdlib kaynak kodları
+│   ├── io.berk
+│   ├── math.berk
+│   └── ...
+├── examples/              # Örnek programlar
+└── docs/                  # Dokümantasyon</code></pre>
+
+                        <h2>🔍 Geliştirme Workflow</h2>
+
+                        <h3>1. Feature Branch Oluşturma</h3>
+                        <pre><code class="language-bash">git checkout -b feature/yeni-ozellik
+# veya
+git checkout -b fix/hata-duzeltmesi</code></pre>
+
+                        <h3>2. Kod Yazma ve Test</h3>
+                        <pre><code class="language-bash"># Kod değişikliği yaptıktan sonra
+cargo build
+cargo test
+cargo clippy  # Lint kontrolü
+cargo fmt     # Format düzeltme</code></pre>
+
+                        <h3>3. Commit ve Push</h3>
+                        <pre><code class="language-bash">git add .
+git commit -m "feat: yeni özellik eklendi"
+git push origin feature/yeni-ozellik</code></pre>
+
+                        <h2>🧪 Test Çalıştırma</h2>
+
+                        <pre><code class="language-bash"># Tüm testler
+cargo test
+
+# Belirli bir test
+cargo test test_parser
+
+# Integration testler
+cargo test --test integration
+
+# Coverage raporu
+cargo tarpaulin --out Html</code></pre>
+
+                        <h2>🐛 Debug Yapma</h2>
+
+                        <h3>VS Code ile</h3>
+                        <p><code>.vscode/launch.json</code>:</p>
+                        <pre><code class="language-json">{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug BERK",
+            "cargo": {
+                "args": ["build", "--bin=berk-lang"]
+            },
+            "args": ["run", "test.berk"],
+            "cwd": "${workspaceFolder}/berk-lang"
+        }
+    ]
+}</code></pre>
+
+                        <h3>LLDB ile Terminal</h3>
+                        <pre><code class="language-bash">lldb target/debug/berk-lang
+(lldb) run test.berk
+(lldb) breakpoint set -n parse_function
+(lldb) continue</code></pre>
+
+                        <h2>📊 Performans Profiling</h2>
+
+                        <pre><code class="language-bash"># Flamegraph
+cargo install flamegraph
+cargo flamegraph --bin berk-lang -- compile large.berk
+
+# Perf (Linux)
+perf record --call-graph dwarf target/release/berk-lang compile test.berk
+perf report</code></pre>
+
+                        <div style="padding: 20px; background: var(--sidebar-bg); border-radius: 8px; margin: 20px 0;">
+                            <h3>💡 İpuçları</h3>
+                            <ul>
+                                <li><code>cargo watch</code> kullanarak otomatik rebuild yapın</li>
+                                <li><code>cargo expand</code> ile macro expansion görün</li>
+                                <li><code>RUST_LOG=debug</code> ile detaylı log alın</li>
+                                <li>Büyük değişiklikler öncesi issue açın</li>
+                            </ul>
+                        </div>
+
+                        <h2>🆘 Yardım</h2>
+                        <ul>
+                            <li><strong>Discord:</strong> [BERK Community Server]</li>
+                            <li><strong>GitHub Issues:</strong> Sorularınızı issue olarak açın</li>
+                            <li><strong>Email:</strong> arslantas.mustafa@gmail.com</li>
+                        </ul>
 
                     </main>
 

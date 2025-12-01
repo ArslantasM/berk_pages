@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>mesh - 3D Mesh İşleme | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🗿 mesh - 3D Mesh İşleme</h1>
+<p>Load OBJ/STL, Primitives, Subdivision, Decimation</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">68</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">891</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar mesh
+
+// Load mesh
+değişken model = mesh.load_obj("model.obj")
+
+// Primitives
+değişken cube = mesh.cube(1.0)
+değişken sphere = mesh.sphere(0.5, 32, 32)
+değişken cylinder = mesh.cylinder(0.5, 2.0, 32)
+
+// Transform
+mesh.translate(cube, [1.0, 0.0, 0.0])
+mesh.rotate(cube, [0.0, 1.0, 0.0], 45.0)
+mesh.scale(cube, [2.0, 1.0, 1.0])
+
+// Normals
+mesh.compute_normals(model)
+
+// Save
+mesh.save_obj(model, "output.obj")</code></pre>
+<h2>📚 Operations</h2>
+<ul>
+<li>Load/Save (OBJ, STL, PLY)</li>
+<li>Primitives (cube, sphere, cylinder, cone, torus)</li>
+<li>Subdivision (Catmull-Clark, Loop)</li>
+<li>Decimation (mesh simplification)</li>
+<li>Boolean operations (union, intersection, difference)</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Procedural Mesh Generator</h3>
+<pre><code>içe_aktar mesh, math
+
+fonksiyon terrain_generate(width: tamsayı, height: tamsayı) -> Mesh yap
+    değişken m = mesh.new()
+    
+    // Generate vertices
+    her y içinde aralık(0, height) için yap
+        her x içinde aralık(0, width) için yap
+            değişken z = math.sin(x.kesir() * 0.1) * math.cos(y.kesir() * 0.1) * 5.0
+            mesh.add_vertex(m, [x.kesir(), z, y.kesir()])
+        son
+    son
+    
+    // Generate faces
+    her y içinde aralık(0, height-1) için yap
+        her x içinde aralık(0, width-1) için yap
+            değişken i0 = y * width + x
+            değişken i1 = i0 + 1
+            değişken i2 = (y + 1) * width + x
+            değişken i3 = i2 + 1
+            
+            mesh.add_triangle(m, i0, i1, i2)
+            mesh.add_triangle(m, i1, i3, i2)
+        son
+    son
+    
+    mesh.compute_normals(m)
+    dön m
+son
+
+değişken terrain = terrain_generate(100, 100)
+mesh.save_obj(terrain, "terrain.obj")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

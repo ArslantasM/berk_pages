@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>gui - GUI Framework | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖼️ gui - GUI Framework</h1>
+<p>Window, Button, Label, TextField, Layout, Events</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">169</div><div>Functions</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,636</div><div>Lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">54 KB</div><div>Size</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>içe_aktar gui
+
+// Create application
+değişken app = gui.app_create("Merhaba BERK")
+
+// Window
+değişken pencere = gui.window_create("İlk GUI Uygulamam", 400, 300)
+
+// Widgets
+değişken label = gui.label_create("Merhaba Dünya!")
+değişken button = gui.button_create("Tıkla Beni")
+değişken text_field = gui.textfield_create()
+
+// Event handler
+gui.button_on_click(button, fonksiyon() yap
+    değişken metin = gui.textfield_get_text(text_field)
+    gui.label_set_text(label, "Merhaba " + metin + "!")
+son)
+
+// Layout
+değişken vbox = gui.vbox_create()
+gui.vbox_add(vbox, label)
+gui.vbox_add(vbox, text_field)
+gui.vbox_add(vbox, button)
+
+gui.window_set_content(pencere, vbox)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+<h2>📚 Widgets</h2>
+<ul>
+<li><strong>Containers:</strong> Window, VBox, HBox, Grid, Stack, ScrollArea</li>
+<li><strong>Input:</strong> Button, TextField, TextArea, Checkbox, RadioButton, Slider, ComboBox</li>
+<li><strong>Display:</strong> Label, Image, ProgressBar, Separator</li>
+<li><strong>Menus:</strong> MenuBar, Menu, MenuItem, ContextMenu</li>
+<li><strong>Dialogs:</strong> MessageBox, FileDialog, ColorPicker</li>
+<li><strong>Advanced:</strong> TabView, TreeView, TableView, Canvas</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Todo Application</h3>
+<pre><code>içe_aktar gui, collections
+
+değişken app = gui.app_create("Todo App")
+değişken pencere = gui.window_create("Yapılacaklar", 600, 400)
+
+// Data model
+değişken todos = collections.vec_new()
+
+// UI elements
+değişken text_field = gui.textfield_create()
+gui.textfield_set_placeholder(text_field, "Yeni görev...")
+
+değişken add_button = gui.button_create("Ekle")
+değişken todo_list = gui.vbox_create()
+
+// "Add" button handler
+gui.button_on_click(add_button, fonksiyon() yap
+    değişken text = gui.textfield_get_text(text_field)
+    
+    eğer text.uzunluk() > 0 ise yap
+        // Create todo item
+        değişken item_box = gui.hbox_create()
+        
+        değişken checkbox = gui.checkbox_create(text)
+        değişken delete_btn = gui.button_create("Sil")
+        
+        // Checkbox handler
+        gui.checkbox_on_toggle(checkbox, fonksiyon(checked) yap
+            eğer checked ise yap
+                gui.checkbox_set_style(checkbox, "text-decoration: line-through")
+            son değilse yap
+                gui.checkbox_set_style(checkbox, "")
+            son
+        son)
+        
+        // Delete handler
+        gui.button_on_click(delete_btn, fonksiyon() yap
+            gui.vbox_remove(todo_list, item_box)
+        son)
+        
+        gui.hbox_add(item_box, checkbox)
+        gui.hbox_add(item_box, delete_btn)
+        gui.vbox_add(todo_list, item_box)
+        
+        gui.textfield_set_text(text_field, "")
+    son
+son)
+
+// Layout
+değişken input_box = gui.hbox_create()
+gui.hbox_add(input_box, text_field)
+gui.hbox_add(input_box, add_button)
+
+değişken main_box = gui.vbox_create()
+gui.vbox_add(main_box, input_box)
+gui.vbox_add(main_box, gui.separator_create())
+gui.vbox_add(main_box, todo_list)
+
+gui.window_set_content(pencere, main_box)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+</div>
+<div class="example-box">
+<h3>Image Viewer</h3>
+<pre><code>içe_aktar gui, image, fs
+
+değişken app = gui.app_create("Image Viewer")
+değişken pencere = gui.window_create("Resim Görüntüleyici", 800, 600)
+
+// UI
+değişken image_widget = gui.image_create()
+değişken open_button = gui.button_create("Resim Aç")
+değişken prev_button = gui.button_create("◀ Önceki")
+değişken next_button = gui.button_create("Sonraki ▶")
+
+değişken images = []
+değişken current_index = 0
+
+fonksiyon load_image(path: yazı) yap
+    değişken img = image.load(path)
+    gui.image_set_data(image_widget, img)
+    gui.window_set_title(pencere, "Image Viewer - " + path)
+son
+
+// File picker
+gui.button_on_click(open_button, fonksiyon() yap
+    değişken dialog = gui.filedialog_create()
+    gui.filedialog_set_filters(dialog, ["*.png", "*.jpg", "*.jpeg"])
+    
+    değişken seçilen = gui.filedialog_show(dialog)
+    eğer seçilen ise yap
+        değişken dizin = fs.path_dirname(seçilen)
+        images = fs.dizin_listele(dizin)
+        images = images.filtrele(fonksiyon(f) yap
+            dön f.bitiyor_mu(".png") veya f.bitiyor_mu(".jpg")
+        son)
+        
+        current_index = images.index_of(fs.path_basename(seçilen))
+        load_image(seçilen)
+    son
+son)
+
+// Navigation
+gui.button_on_click(prev_button, fonksiyon() yap
+    eğer current_index > 0 ise yap
+        current_index = current_index - 1
+        load_image(images[current_index])
+    son
+son)
+
+gui.button_on_click(next_button, fonksiyon() yap
+    eğer current_index < images.uzunluk() - 1 ise yap
+        current_index = current_index + 1
+        load_image(images[current_index])
+    son
+son)
+
+// Layout
+değişken button_box = gui.hbox_create()
+gui.hbox_add(button_box, open_button)
+gui.hbox_add(button_box, prev_button)
+gui.hbox_add(button_box, next_button)
+
+değişken main_box = gui.vbox_create()
+gui.vbox_add(main_box, button_box)
+gui.vbox_add(main_box, image_widget)
+
+gui.window_set_content(pencere, main_box)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

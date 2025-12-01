@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,118 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="math---matematik"><a class="header" href="#math---matematik">math - Matematik</a></h1>
+                        <div class="module-header">
+            <h1>📐 math - Bilimsel Matematik</h1>
+            <p>Trigonometri, Logaritma, Özel Fonksiyonlar, Entegrasyon</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">111</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">882</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">27.5 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar math
+
+// Temel işlemler
+değişken x = math.sqrt(16.0)        // Karekök
+değişken y = math.pow(2.0, 8.0)     // Üs alma
+değişken z = math.abs(-42.0)        // Mutlak değer
+
+// Trigonometri (radyan)
+değişken sin_val = math.sin(math.PI / 2.0)
+
+// Logaritma
+değişken ln_e = math.log(math.E)</code></pre>
+
+        <h2>📚 Özellikler</h2>
+        <ul>
+            <li>✓ Trigonometrik fonksiyonlar (radyan + derece)</li>
+            <li>✓ Hiperbolik fonksiyonlar</li>
+            <li>✓ Üstel ve logaritmik fonksiyonlar</li>
+            <li>✓ Özel fonksiyonlar (Gamma, Beta, Bessel)</li>
+            <li>✓ Polinom değerlendirme (Horner yöntemi)</li>
+            <li>✓ Kök bulma (Newton-Raphson, Bisection)</li>
+            <li>✓ Sayısal entegrasyon (Simpson, Gauss)</li>
+            <li>✓ Karmaşık sayı desteği</li>
+        </ul>
+
+        <h2>🔢 Matematiksel Sabitler</h2>
+        <ul>
+            <li><code>math.PI</code> - π (3.14159...)</li>
+            <li><code>math.E</code> - Euler sayısı (2.71828...)</li>
+            <li><code>math.PHI</code> - Altın oran (1.61803...)</li>
+            <li><code>math.TAU</code> - τ = 2π (6.28318...)</li>
+            <li><code>math.SQRT2</code> - √2 (1.41421...)</li>
+        </ul>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Scientific Computing</h3>
+            <pre><code>içe_aktar math
+
+fonksiyon fourier_series(x: ondalık, n: tamsayı) -> ondalık yap
+    // Fourier serisi ile kare dalga yaklaşımı
+    değişken sonuç = 0.0
+    
+    her k içinde aralık(1, n + 1) için yap
+        değişken terim = math.sin((2.0 * k - 1.0) * x) / (2.0 * k - 1.0)
+        sonuç = sonuç + terim
+    son
+    
+    dön (4.0 / math.PI) * sonuç
+son
+
+// Test
+her x içinde aralık(0, 100) için yap
+    değişken rad = (x * math.PI) / 50.0
+    değişken değer = fourier_series(rad, 10)
+    yazdır(değer.yazıya())
+son</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Numerical Integration</h3>
+            <pre><code>içe_aktar math
+
+fonksiyon simpson_integration(
+    f: Fonksiyon,
+    a: ondalık, 
+    b: ondalık, 
+    n: tamsayı
+) -> ondalık yap
+    // Simpson's rule ile sayısal integrasyon
+    değişken h = (b - a) / n
+    değişken toplam = f(a) + f(b)
+    
+    her i içinde aralık(1, n) için yap
+        değişken x = a + i * h
+        eğer i % 2 == 0 ise yap
+            toplam = toplam + 2.0 * f(x)
+        yoksa yap
+            toplam = toplam + 4.0 * f(x)
+        son
+    son
+    
+    dön (h / 3.0) * toplam
+son
+
+// π hesaplama: ∫₀¹ 4/(1+x²) dx = π
+değişken pi_approx = simpson_integration(
+    fonksiyon(x) yap dön 4.0 / (1.0 + x * x) son,
+    0.0,
+    1.0,
+    1000
+)
+yazdır("π ≈ " + pi_approx.yazıya())</code></pre>
+        </div>
+
+        <hr />
+        <p style="text-align: center; margin-top: 40px;">
+            <a href="fmt.html">← fmt</a> | 
+            <a href="../reference/std-library.html">Standart Kütüphane →</a>
+        </p>
 
                     </main>
 

@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>optim - Optimizasyon | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📈 optim - Optimizasyon Algoritmaları</h1>
+<p>Gradient Descent, BFGS, Genetic, Simulated Annealing</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">49</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">723</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">23 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar optim, math
+
+// Minimize f(x) = (x-3)²
+fonksiyon objective(x: kesir) -> kesir yap
+    dön (x - 3.0) * (x - 3.0)
+son
+
+// Gradient descent
+değişken sonuç = optim.minimize(objective, 0.0, yap
+    yöntem: optim.GRADIENT_DESCENT,
+    öğrenme_oranı: 0.1,
+    max_iter: 100
+son)
+
+yazdır("Minimum: x = " + sonuç.x.yazıya())  // x ≈ 3.0
+yazdır("f(x) = " + sonuç.f_min.yazıya())  // f(x) ≈ 0.0</code></pre>
+<h2>📚 Algoritmalar</h2>
+<ul>
+<li><strong>Gradient Descent:</strong> GD, SGD, Adam, RMSprop</li>
+<li><strong>Quasi-Newton:</strong> BFGS, L-BFGS</li>
+<li><strong>Metaheuristics:</strong> Genetic, PSO, Simulated Annealing</li>
+<li><strong>Constrained:</strong> Lagrange multipliers, Penalty method</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Linear Regression (Gradient Descent)</h3>
+<pre><code>içe_aktar optim, linalg
+
+// Training data
+değişken X = [[1.0], [2.0], [3.0], [4.0], [5.0]]
+değişken y = [2.0, 4.0, 6.0, 8.0, 10.0]
+
+// Loss function (MSE)
+fonksiyon loss(params: Dizi) -> kesir yap
+    değişken w = params[0]
+    değişken b = params[1]
+    
+    değişken total_loss = 0.0
+    her i içinde aralık(0, X.uzunluk()) için yap
+        değişken prediction = w * X[i][0] + b
+        değişken error = prediction - y[i]
+        total_loss = total_loss + error * error
+    son
+    
+    dön total_loss / X.uzunluk().kesir()
+son
+
+// Optimize
+değişken sonuç = optim.minimize(loss, [0.0, 0.0], yap
+    yöntem: optim.ADAM,
+    öğrenme_oranı: 0.1,
+    max_iter: 1000
+son)
+
+değişken w = sonuç.x[0]
+değişken b = sonuç.x[1]
+yazdır("y = " + w.yazıya() + "x + " + b.yazıya())  // y ≈ 2x + 0</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

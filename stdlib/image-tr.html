@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>image - Görüntü İşleme | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖼️ image - Görüntü İşleme</h1>
+<p>Load, Save, Resize, Filter, Transform</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">72</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">934</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">29 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar image
+
+// Load image
+değişken img = image.load("photo.jpg")
+
+// Resize
+değişken thumbnail = image.resize(img, 200, 200)
+
+// Filters
+değişken blurred = image.gaussian_blur(img, 5.0)
+değişken edges = image.sobel_edge_detect(img)
+değişken grayscale = image.to_grayscale(img)
+
+// Save
+image.save(thumbnail, "thumbnail.jpg")</code></pre>
+<h2>📚 Formats</h2>
+<ul>
+<li>PNG, JPEG, GIF, BMP, TIFF, WebP</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Batch Image Processor</h3>
+<pre><code>içe_aktar image, fs
+
+fonksiyon batch_resize(dizin: yazı, genişlik: tamsayı, yükseklik: tamsayı) yap
+    değişken dosyalar = fs.dizin_listele(dizin)
+    
+    her dosya içinde dosyalar için yap
+        eğer dosya.bitiyor_mu(".jpg") veya dosya.bitiyor_mu(".png") ise yap
+            değişken tam_yol = fs.path_join(dizin, dosya)
+            değişken img = image.load(tam_yol)
+            değişken resized = image.resize(img, genişlik, yükseklik)
+            
+            değişken yeni_dosya = "resized_" + dosya
+            değişken yeni_yol = fs.path_join(dizin, yeni_dosya)
+            image.save(resized, yeni_yol)
+            
+            yazdır("İşlendi: " + dosya)
+        son
+    son
+son
+
+batch_resize("./photos", 800, 600)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

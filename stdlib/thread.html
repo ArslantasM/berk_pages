@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,120 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="thread---Çoklu-İş-parçacığı"><a class="header" href="#thread---Çoklu-İş-parçacığı">thread - Çoklu İş Parçacığı</a></h1>
+                        <div class="module-header">
+            <h1>🧵 thread - Çok İş Parçacıklı Programlama</h1>
+            <p>Thread, Mutex, Channel, Arc, Atomic, ThreadPool</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">67</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">878</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">27 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar thread
+
+// Thread spawn
+değişken handle = thread.spawn(fonksiyon() yap
+    yazdır("Thread'den merhaba!")
+    dön 42
+son)
+
+değişken sonuç = thread.join(handle)
+yazdır("Sonuç: " + sonuç.yazıya())
+
+// Mutex (mutual exclusion)
+değişken sayaç = thread.mutex_new(0)
+
+değişken threads = []
+her i içinde aralık(0, 10) için yap
+    threads.ekle(thread.spawn(fonksiyon() yap
+        her j içinde aralık(0, 100) için yap
+            thread.mutex_lock(sayaç, fonksiyon(değer) yap
+                dön değer + 1
+            son)
+        son
+    son))
+son
+
+her t içinde threads için yap
+    thread.join(t)
+son
+
+değişken toplam = thread.mutex_get(sayaç)
+yazdır("Toplam: " + toplam.yazıya())  // 1000
+
+// Channel (message passing)
+değişken (tx, rx) = thread.channel_create()
+
+thread.spawn(fonksiyon() yap
+    thread.channel_send(tx, "Mesaj 1")
+    thread.channel_send(tx, "Mesaj 2")
+son)
+
+yazdır(thread.channel_receive(rx))  // "Mesaj 1"
+yazdır(thread.channel_receive(rx))  // "Mesaj 2"</code></pre>
+
+        <h2>📚 Senkronizasyon</h2>
+        <ul>
+            <li><strong>Mutex:</strong> Mutual exclusion lock</li>
+            <li><strong>RwLock:</strong> Read-write lock (multiple readers, single writer)</li>
+            <li><strong>Channel:</strong> Message passing (mpsc, mpmc)</li>
+            <li><strong>Atomic:</strong> Lock-free atomic operations</li>
+            <li><strong>Arc:</strong> Atomic reference counting</li>
+            <li><strong>Barrier:</strong> Wait for all threads</li>
+            <li><strong>Semaphore:</strong> Resource counting</li>
+        </ul>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Producer-Consumer Pattern</h3>
+            <pre><code>içe_aktar thread, collections
+
+değişken (tx, rx) = thread.channel_create()
+
+// Producers
+her i içinde aralık(0, 3) için yap
+    değişken sender = tx.clone()
+    thread.spawn(fonksiyon() yap
+        her j içinde aralık(0, 5) için yap
+            değişken mesaj = "Producer " + i.yazıya() + " - Item " + j.yazıya()
+            thread.channel_send(sender, mesaj)
+            thread.sleep(100)  // 100ms
+        son
+    son)
+son
+
+// Consumer
+değişken consumer = thread.spawn(fonksiyon() yap
+    değişken items = []
+    
+    döngü yap
+        değişken sonuç = thread.channel_receive_timeout(rx, 1000)
+        
+        eğer sonuç.tamam_mı() ise yap
+            değişken mesaj = sonuç.çıkar()
+            yazdır("Tüketildi: " + mesaj)
+            items.ekle(mesaj)
+        son değilse yap
+            // Timeout - tüm producer'lar bitmiş
+            kır
+        son
+    son
+    
+    dön items.uzunluk()
+son)
+
+değişken toplam = thread.join(consumer)
+yazdır("Toplam item: " + toplam.yazıya())  // 15</code></pre>
+        </div>
+
+        <hr />
+        <p style="text-align: center; margin-top: 40px;">
+            <a href="fs.html">← fs</a> | 
+            <a href="sys.html">sys →</a>
+        </p>
 
                     </main>
 

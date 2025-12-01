@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>result - Result Type | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>✓ result - Result Type</h1>
+<p>Ok, Err, map, and_then, or_else</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">24</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">389</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">12 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar result
+
+fonksiyon böl(a: kesir, b: kesir) -> Result yap
+    eğer b == 0.0 ise yap
+        dön Hata("Sıfıra bölme hatası")
+    son değilse yap
+        dön Tamam(a / b)
+    son
+son
+
+değişken sonuç = böl(10.0, 2.0)
+
+eğer sonuç.tamam_mı() ise yap
+    yazdır("Sonuç: " + sonuç.çıkar().yazıya())
+son değilse yap
+    yazdır("Hata: " + sonuç.hata().mesaj())
+son
+
+// Pattern matching
+eşleşme sonuç yap
+    Tamam(değer) => yazdır(değer),
+    Hata(hata) => yazdır(hata)
+son</code></pre>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Railway Oriented Programming</h3>
+<pre><code>içe_aktar result
+
+fonksiyon kullanıcı_oku(id: tamsayı) -> Result yap
+    // DB'den kullanıcı oku
+    eğer id < 0 ise yap
+        dön Hata("Geçersiz ID")
+    son
+    dön Tamam(yap "id": id, "name": "User " + id.yazıya() son)
+son
+
+fonksiyon kullanıcı_validate(user: herhangi) -> Result yap
+    eğer user["name"].uzunluk() < 3 ise yap
+        dön Hata("İsim çok kısa")
+    son
+    dön Tamam(user)
+son
+
+fonksiyon kullanıcı_kaydet(user: herhangi) -> Result yap
+    // DB'ye kaydet
+    yazdır("Kullanıcı kaydedildi: " + user["name"])
+    dön Tamam(user)
+son
+
+// Pipeline
+değişken sonuç = kullanıcı_oku(1)
+    .and_then(kullanıcı_validate)
+    .and_then(kullanıcı_kaydet)
+
+eşleşme sonuç yap
+    Tamam(_) => yazdır("Başarılı!"),
+    Hata(e) => yazdır("Hata: " + e)
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

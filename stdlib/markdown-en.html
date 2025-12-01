@@ -1,0 +1,267 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>markdown - Markdown Parser | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📝 markdown</h1>
+<p>Markdown Parser & HTML Renderer - CommonMark Compatible</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400 lines</span>
+<span class="stat-badge">~35 function</span>
+<span class="stat-badge">CommonMark</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Markdown modülü, CommonMark standardına uyumlu Markdown parser and HTML renderer sağlar. AST manipulation, syntax highlighting and table of contents generation destekler.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>CommonMark parser (standards-compliant)</li>
+<li>HTML rendering with customization</li>
+<li>AST (Abstract Syntax Tree) access</li>
+<li>Headings, paragraphs, lists, quotes</li>
+<li>Code blocks with syntax highlighting</li>
+<li>Tables, footnotes, task lists</li>
+<li>Inline: bold, italic, code, links, images</li>
+<li>Table of contents generation</li>
+<li>Word count & reading time</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import markdown
+
+// Basit rendering
+let html = markdown.render("# Hello\nWorld!")
+io.println(html)
+// Output: &lt;h1&gt;Hello&lt;/h1&gt;\n&lt;p&gt;World!&lt;/p&gt;
+
+// Dosyadan okuma
+let md_text = fs.read_to_string("README.md")?
+let html = markdown.render(md_text)
+fs.write("README.html", html)?</code></pre>
+
+<div class="example-box">
+<h3>💡 Example 1: Blog Generator</h3>
+<pre><code>import markdown, fs, time, regex
+
+struct BlogPost do
+    title: str,
+    date: time.Date,
+    author: str,
+    content_html: str,
+    excerpt: str,
+    reading_time: int
+end
+
+function parse_blog_post(md_file: str) -> Result[BlogPost, Error] do
+    // Markdown dosyasını oku
+    let content = fs.read_to_string(md_file)?
+    
+    // Front matter parse et (YAML)
+    let (frontmatter, body) = split_frontmatter(content)?
+    
+    let title = frontmatter.get("title")?
+    let date = time.parse(frontmatter.get("date")?, "%Y-%m-%d")?
+    let author = frontmatter.get("author")?
+    
+    // Markdown to HTML
+    let doc = markdown.parse(body)
+    
+    // Table of contents ekle
+    let toc = markdown.generate_toc(doc)
+    
+    // Syntax highlighting
+    markdown.highlight_code_blocks(doc, do
+        theme: "github",
+        line_numbers: true
+    end)
+    
+    let html = markdown.to_html(doc)
+    
+    // Excerpt (first paragraph)
+    let excerpt = markdown.extract_text(doc, max_length: 150)
+    
+    // Reading time (ortalama 200 kelime/dakika)
+    let word_count = markdown.word_count(doc)
+    let reading_time = (word_count / 200).max(1)
+    
+    return Ok(BlogPost do
+        title: title,
+        date: date,
+        author: author,
+        content_html: html,
+        excerpt: excerpt,
+        reading_time: reading_time
+    end)
+end
+
+function generate_blog_html(post: BlogPost) -> str do
+    return "
+        &lt;article&gt;
+            &lt;header&gt;
+                &lt;h1&gt;{}&lt;/h1&gt;
+                &lt;div class='meta'&gt;
+                    &lt;span&gt;By {}&lt;/span&gt;
+                    &lt;span&gt;{}&lt;/span&gt;
+                    &lt;span&gt;{} min read&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/header&gt;
+            &lt;div class='excerpt'&gt;{}&lt;/div&gt;
+            &lt;div class='content'&gt;
+                {}
+            &lt;/div&gt;
+        &lt;/article&gt;
+    ".formatla(
+        post.title,
+        post.author,
+        post.date.format("%B %d, %Y"),
+        post.reading_time,
+        post.excerpt,
+        post.content_html
+    )
+end
+
+function main() do
+    let posts = []
+    
+    // Tüm blog postlarını parse et
+    each file in fs.read_dir("posts")? for do
+        if file.ends_with(".md")  do
+            match parse_blog_post("posts/" + file) do
+                Ok(post) => posts.ekle(post),
+                Error(e) => io.eprintln("Error parsing {}: {}", file, e)
+            end
+        end
+    end
+    
+    // Tarihe göre sırala
+    posts.sort_by(|a, b| b.date.cmp(&a.date))
+    
+    // HTML create
+    each post in posts for do
+        let html = generate_blog_html(post)
+        let slug = post.title.to_lowercase().replace(" ", "-")
+        fs.write("output/{}.html".formatla(slug), html)?
+    end
+    
+    io.println("Generated {} blog posts", posts.uzunluk())
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 2: Documentation Generator</h3>
+<pre><code>import markdown, fs
+
+function generate_docs(input_dir: str, output_dir: str) -> Result[None, Error] do
+    // Template
+    let template = fs.read_to_string("template.html")?
+    
+    // Sidebar navigation
+    let nav_items = []
+    
+    // Process all markdown files
+    each file in fs.glob("{}/**/*.md".formatla(input_dir))? for do
+        let md_text = fs.read_to_string(file)?
+        let doc = markdown.parse(md_text)
+        
+        // Extract title (first h1)
+        let title = markdown.find_first_heading(doc, level: 1)
+            .unwrap_or("Untitled")
+        
+        // Generate TOC
+        let toc_html = markdown.generate_toc_html(doc, do
+            min_level: 2,
+            max_level: 4,
+            id_prefix: "toc-"
+        end)
+        
+        // Add IDs to headings
+        markdown.add_heading_ids(doc)
+        
+        // Convert to HTML
+        let content_html = markdown.to_html(doc)
+        
+        // Apply template
+        let html = template
+            .replace("{{title}}", title)
+            .replace("{{toc}}", toc_html)
+            .replace("{{content}}", content_html)
+        
+        // Output path
+        let rel_path = file.strip_prefix(input_dir)?
+        let out_file = "{}/{}.html".formatla(output_dir, 
+            rel_path.strip_suffix(".md")?)
+        
+        fs.create_dir_all(fs.parent(out_file)?)?
+        fs.write(out_file, html)?
+        
+        // Add to navigation
+        nav_items.ekle(do
+            title: title,
+            path: rel_path.replace(".md", ".html")
+        end)
+        
+        io.println("✓ Generated {}", out_file)
+    end
+    
+    // Generate index with navigation
+    generate_index(output_dir, nav_items)?
+    
+    return Ok(None)
+end</code></pre>
+</div>
+
+<h2>📦 AST Manipulation</h2>
+<pre><code>// Parse to AST
+let doc = markdown.parse("# Title\nContent")
+
+// Traverse nodes
+let root = doc.root()
+each node in root.children() for do
+    match node.type() do
+        NodeType.Heading(level) => do
+            io.println("H{}: {}", level, node.text())
+        end,
+        NodeType.Paragraph => do
+            io.println("Paragraph: {}", node.text())
+        end,
+        _ => do end
+    end
+end
+
+// Modify AST
+let heading = markdown.Node.new_heading(2)
+heading.append_text("New Section")
+root.append_child(heading)
+
+// Convert back to HTML
+let html = markdown.to_html(doc)</code></pre>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code>fs</code> - File I/O</li>
+<li><code>regex</code> - Pattern matching</li>
+<li><code>string</code> - Text processing</li>
+<li><code>template</code> - HTML templates</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

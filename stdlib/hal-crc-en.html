@@ -1,0 +1,402 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>hal::crc - CRC32 Calculator | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 hal::crc</h1>
+<p>Hardware CRC32 Calculator - Fast Data Integrity Check</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360 satır</span>
+<span class="stat-badge">~12 function</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>CRC modülü, hardware accelerated CRC32 hesaplaması sağlar. Polynomial 0x04C11DB7 kullanır (Ethernet standardı). Firmware integrity check, flash verification, communication protocols ve data corruption detection for kritiktir. Software CRC'den 10-100x daha hızlıdır.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li><strong>Hardware CRC32:</strong> Single-cycle 32-bit CRC calculation</li>
+<li><strong>Standard Polynomial:</strong> 0x04C11DB7 (Ethernet, ZIP, PNG)</li>
+<li><strong>Fast Performance:</strong> 1 clock cycle per 32-bit word</li>
+<li><strong>Initial Value:</strong> Configurable (default 0xFFFFFFFF)</li>
+<li><strong>DMA Compatible:</strong> Can be used with DMA transfers</li>
+<li><strong>Accumulation:</strong> Sequential CRC calculation support</li>
+<li><strong>Reset Capability:</strong> Quick reset to initial value</li>
+<li><strong>Low Power:</strong> Minimal power consumption</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::crc, hal::rcc
+
+// Enable CRC clock
+rcc.periph_clock_enable(rcc.PERIPH_CRC)
+
+// Initialize CRC
+crc.init()
+
+// Calculate CRC32 of data
+let data: Array&lt;int&gt; = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+let checksum = crc.calculate(data)
+
+io.yazdir_satır("CRC32: 0x" + checksum.onaltılıya())
+
+// Verify data
+if crc.verify(data, checksum) do
+    io.yazdir_satır("Data integrity OK")
+end</code></pre>
+
+<h2>📦 Types and Enums'lar</h2>
+<pre><code>// CRC Configuration
+struct CRCConfig do
+    polynomial: int = 0x04C11DB7,  // Default Ethernet polynomial
+    initial_value: int = 0xFFFFFFFF,
+    input_reverse: bool = false,
+    output_reverse: bool = false
+end
+
+// CRC Result
+struct CRCResult do
+    value: int,
+    valid: bool
+end</code></pre>
+
+<h2>💡 Example 1: Firmware Integrity Check</h2>
+<div class="example-box">
+<h3>Problem: Flash'taki firmware'in bozulmadığını truelamak</h3>
+<pre><code>import hal::crc, hal::flash
+
+const FIRMWARE_START: int = 0x0800_8000  // Application start
+const FIRMWARE_SIZE: int = 128 * 1024     // 128 KB
+const CRC_STORAGE: int = 0x0807_FFFC      // Last 4 bytes of app region
+
+function firmware_calculate_crc() -> int do
+    crc.reset()
+    
+    // Calculate CRC of firmware (32-bit words)
+    let word_count = FIRMWARE_SIZE / 4
+    let addr = FIRMWARE_START
+    
+    for i forde 0..word_count do
+        let word = *(addr cast *int)
+        crc.accumulate(word)
+        addr = addr + 4
+    end
+    
+    return crc.get_value()
+end
+
+function firmware_store_crc(checksum: int) do
+    // Unlock flash
+    flash.unlock()
+    
+    // Erase last page
+    flash.erase_page(CRC_STORAGE)
+    
+    // Write CRC
+    flash.program_word(CRC_STORAGE, checksum)
+    
+    flash.lock()
+    
+    io.yazdir_satır("CRC stored: 0x" + checksum.onaltılıya())
+end
+
+function firmware_verify() -> bool do
+    // Read stored CRC
+    let stored_crc = *(CRC_STORAGE cast *int)
+    
+    // Calculate current CRC
+    let calculated_crc = firmware_calculate_crc()
+    
+    io.yazdir_satır("Stored CRC:     0x" + stored_crc.onaltılıya())
+    io.yazdir_satır("Calculated CRC: 0x" + calculated_crc.onaltılıya())
+    
+    if stored_crc == calculated_crc do
+        io.yazdir_satır("✅ Firmware integrity OK")
+        return true
+    else do
+        io.yazdir_satır("❌ Firmware corrupted!")
+        return false
+    end
+end
+
+function ana() do
+    crc.init()
+    
+    // On firmware update: store CRC
+    // firmware_store_crc(firmware_calculate_crc())
+    
+    // On boot: verify firmware
+    if değil firmware_verify() do
+        io.yazdir_satır("ERROR: Cannot start corrupted firmware")
+        // Enter safe mode or bootloader
+        loop do end  // Halt
+    end
+    
+    io.yazdir_satır("Starting application...")
+end</code></pre>
+<p><strong>Result:</strong> Boot sırasında firmware corruption detect edilir. Güvenli başlatma sağlanır.</p>
+</div>
+
+<h2>💡 Example 2: UART Packet Verification</h2>
+<div class="example-box">
+<h3>Problem: Serial communication'da packet integrity kontrolü</h3>
+<pre><code>import hal::crc, hal::usart
+
+struct Packet do
+    header: int8 = 0xAA,
+    length: int8,
+    data: Array&lt;int8&gt;,
+    crc32: int
+end
+
+function packet_calculate_crc(pkt: Packet) -> int do
+    crc.reset()
+    
+    // CRC over header + length + data
+    crc.accumulate_byte(pkt.header)
+    crc.accumulate_byte(pkt.length)
+    
+    for byte forde pkt.data do
+        crc.accumulate_byte(byte)
+    end
+    
+    return crc.get_value()
+end
+
+function packet_send(pkt: Packet) do
+    // Calculate CRC
+    pkt.crc32 = packet_calculate_crc(pkt)
+    
+    // Send packet
+    usart.write_byte(usart.USART1, pkt.header)
+    usart.write_byte(usart.USART1, pkt.length)
+    
+    for byte forde pkt.data do
+        usart.write_byte(usart.USART1, byte)
+    end
+    
+    // Send CRC (big-endian)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 24) & 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 16) & 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 8) & 0xFF cast int8)
+    usart.write_byte(usart.USART1, pkt.crc32 & 0xFF cast int8)
+end
+
+function packet_receive() -> Option&lt;Packet&gt; do
+    // Read header
+    let header = usart.read_byte(usart.USART1)
+    if header != 0xAA do
+        return Option.Hiçbiri
+    end
+    
+    // Read length
+    let length = usart.read_byte(usart.USART1)
+    
+    // Read data
+    let data = Array.yeni(length)
+    for i forde 0..length do
+        data[i] = usart.read_byte(usart.USART1)
+    end
+    
+    // Read CRC
+    let crc_recv = 0 cast int
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) cast int
+    
+    // Create packet
+    let pkt = Packet do
+        header: header,
+        length: length,
+        data: data,
+        crc32: crc_recv
+    end
+    
+    // Verify CRC
+    let crc_calc = packet_calculate_crc(pkt)
+    
+    if crc_calc == crc_recv do
+        io.yazdir_satır("✅ Packet CRC OK")
+        return Option.Bazı(pkt)
+    else do
+        io.yazdir_satır("❌ Packet CRC mismatch!")
+        return Option.Hiçbiri
+    end
+end</code></pre>
+<p><strong>Result:</strong> UART üzerinden gelen corrupt paketler reddedilir. Data integrity garanti edilir.</p>
+</div>
+
+<h2>💡 Example 3: SD Card File Verification</h2>
+<div class="example-box">
+<h3>Problem: SD card'dan okunan dosyanın bozulmadığını kontrol etmek</h3>
+<pre><code>import hal::crc, hal::sdio
+
+function file_calculate_crc(filename: String) -> int do
+    // Open file
+    let file = sdio.file_open(filename, sdio.MODE_READ)
+    
+    if değil file.is_valid() do
+        io.yazdir_satır("ERROR: Cannot open file")
+        return 0
+    end
+    
+    crc.reset()
+    
+    // Read file in 512-byte blocks
+    let buffer: Array&lt;int8&gt; = Array.yeni(512)
+    
+    loop do
+        let bytes_read = sdio.file_read(file, buffer)
+        
+        if bytes_read == 0 do
+            break  // EOF
+        end
+        
+        // Process full 32-bit words
+        for i forde 0..(bytes_read/4) do
+            let word = (buffer[i*4] cast int) |
+                           ((buffer[i*4+1] cast int) << 8) |
+                           ((buffer[i*4+2] cast int) << 16) |
+                           ((buffer[i*4+3] cast int) << 24)
+            crc.accumulate(word)
+        end
+        
+        // Handle remaining bytes
+        let remainder = bytes_read % 4
+        if remainder > 0 do
+            for i forde (bytes_read - remainder)..bytes_read do
+                crc.accumulate_byte(buffer[i])
+            end
+        end
+    end
+    
+    sdio.file_close(file)
+    
+    return crc.get_value()
+end
+
+function file_verify(filename: String, expected_crc: int) -> bool do
+    io.yazdir_satır("Verifying " + filename + "...")
+    
+    let calculated = file_calculate_crc(filename)
+    
+    io.yazdir_satır("Expected:   0x" + expected_crc.onaltılıya())
+    io.yazdir_satır("Calculated: 0x" + calculated.onaltılıya())
+    
+    return calculated == expected_crc
+end</code></pre>
+<p><strong>Kullanım:</strong> Firmware update dosyalarının SD card'dan okunurken bozulmadığını garanti eder.</p>
+</div>
+
+<h2>📚 API Reference</h2>
+<h3>Core Functions</h3>
+<pre><code>// CRC initialization
+function init()
+function deinit()
+function reset()  // Reset to initial value
+
+// CRC calculation
+function calculate(data: Array&lt;int&gt;) -> int
+function accumulate(word: int)  // Add 32-bit word
+function accumulate_byte(byte: int8)  // Add 8-bit byte
+
+// Get result
+function get_value() -> int
+
+// Verification
+function verify(data: Array&lt;int&gt;, expected: int) -> bool</code></pre>
+
+<div class="warning">
+<strong>⚠️ Important Notes:</strong>
+<ul>
+<li><strong>Word Alignment:</strong> CRC hardware 32-bit word aligned çalışır</li>
+<li><strong>Byte Order:</strong> Little-endian işlemci for byte order dikkat edilmeli</li>
+<li><strong>Initial Value:</strong> Reset endrası 0xFFFFFFFF (not 0x00000000)</li>
+<li><strong>Final XOR:</strong> Bazı protokoller final XOR 0xFFFFFFFF gerektirir</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Support</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>CRC Support</th>
+<th>Polynomial</th>
+<th>Speed</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ Var</td>
+<td>Configurable</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ Var</td>
+<td>Configurable</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>Firmware check:</strong> Boot sırasında firmware CRC kontrolü do</li>
+<li>✅ <strong>Communication:</strong> Paketlerde CRC kullan (especially wireless)</li>
+<li>✅ <strong>Storage:</strong> Flash/SD card'dan okunan veriler for CRC</li>
+<li>✅ <strong>Reset before use:</strong> Her hesaplama öncesi crc.reset() çağır</li>
+<li>❌ <strong>Not for crypto:</strong> CRC security for değil, error detection for</li>
+<li>❌ <strong>Byte alignment:</strong> Non-aligned erişim performans kaybı yaratır</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="hal-flash-en.html">hal::flash</a> - Firmware integrity verification</li>
+<li><a href="hal-usart-en.html">hal::usart</a> - UART packet CRC</li>
+<li><a href="hal-sdio-en.html">hal::sdio</a> - SD card file verification</li>
+<li><a href="hal-dma-en.html">hal::dma</a> - DMA with CRC calculation</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-en.html">🔙 HAL Modules</a> | 
+<a href="hal-crc-en.html">🌐 Turkish</a>
+</p>
+</main>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,401 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::crc - CRC32 Calculator | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 hal::crc</h1>
+<p>Hardware CRC32 Calculator - Fast Data Integrity Check</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360 satır</span>
+<span class="stat-badge">~12 fonksiyon</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>CRC modülü, hardware accelerated CRC32 hesaplaması sağlar. Polynomial 0x04C11DB7 kullanır (Ethernet standardı). Firmware integrity check, flash verification, communication protocols ve data corruption detection için kritiktir. Software CRC'den 10-100x daha hızlıdır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li><strong>Hardware CRC32:</strong> Single-cycle 32-bit CRC calculation</li>
+<li><strong>Standard Polynomial:</strong> 0x04C11DB7 (Ethernet, ZIP, PNG)</li>
+<li><strong>Fast Performance:</strong> 1 clock cycle per 32-bit word</li>
+<li><strong>Initial Value:</strong> Configurable (default 0xFFFFFFFF)</li>
+<li><strong>DMA Compatible:</strong> Can be used with DMA transfers</li>
+<li><strong>Accumulation:</strong> Sequential CRC calculation support</li>
+<li><strong>Reset Capability:</strong> Quick reset to initial value</li>
+<li><strong>Low Power:</strong> Minimal power consumption</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::crc, hal::rcc
+
+// Enable CRC clock
+rcc.periph_clock_enable(rcc.PERIPH_CRC)
+
+// Initialize CRC
+crc.init()
+
+// Calculate CRC32 of data
+değişken data: Dizi&lt;sayı&gt; = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+değişken checksum = crc.calculate(data)
+
+io.yazdir_satır("CRC32: 0x" + checksum.onaltılıya())
+
+// Verify data
+eğer crc.verify(data, checksum) yap
+    io.yazdir_satır("Data integrity OK")
+son</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// CRC Configuration
+yapı CRCConfig yap
+    polynomial: sayı = 0x04C11DB7,  // Default Ethernet polynomial
+    initial_value: sayı = 0xFFFFFFFF,
+    input_reverse: mantık = yanlış,
+    output_reverse: mantık = yanlış
+son
+
+// CRC Result
+yapı CRCResult yap
+    value: sayı,
+    valid: mantık
+son</code></pre>
+
+<h2>💡 Örnek 1: Firmware Integrity Check</h2>
+<div class="example-box">
+<h3>Problem: Flash'taki firmware'in bozulmadığını doğrulamak</h3>
+<pre><code>içe_aktar hal::crc, hal::flash
+
+sabit FIRMWARE_START: sayı = 0x0800_8000  // Application start
+sabit FIRMWARE_SIZE: sayı = 128 * 1024     // 128 KB
+sabit CRC_STORAGE: sayı = 0x0807_FFFC      // Last 4 bytes of app region
+
+fonksiyon firmware_calculate_crc() -> sayı yap
+    crc.reset()
+    
+    // Calculate CRC of firmware (32-bit words)
+    değişken word_count = FIRMWARE_SIZE / 4
+    değişken addr = FIRMWARE_START
+    
+    için i içinde 0..word_count yap
+        değişken word = *(addr kayıt *sayı)
+        crc.accumulate(word)
+        addr = addr + 4
+    son
+    
+    dön crc.get_value()
+son
+
+fonksiyon firmware_store_crc(checksum: sayı) yap
+    // Unlock flash
+    flash.unlock()
+    
+    // Erase last page
+    flash.erase_page(CRC_STORAGE)
+    
+    // Write CRC
+    flash.program_word(CRC_STORAGE, checksum)
+    
+    flash.lock()
+    
+    io.yazdir_satır("CRC stored: 0x" + checksum.onaltılıya())
+son
+
+fonksiyon firmware_verify() -> mantık yap
+    // Read stored CRC
+    değişken stored_crc = *(CRC_STORAGE kayıt *sayı)
+    
+    // Calculate current CRC
+    değişken calculated_crc = firmware_calculate_crc()
+    
+    io.yazdir_satır("Stored CRC:     0x" + stored_crc.onaltılıya())
+    io.yazdir_satır("Calculated CRC: 0x" + calculated_crc.onaltılıya())
+    
+    eğer stored_crc == calculated_crc yap
+        io.yazdir_satır("✅ Firmware integrity OK")
+        dön doğru
+    yoksa yap
+        io.yazdir_satır("❌ Firmware corrupted!")
+        dön yanlış
+    son
+son
+
+fonksiyon ana() yap
+    crc.init()
+    
+    // On firmware update: store CRC
+    // firmware_store_crc(firmware_calculate_crc())
+    
+    // On boot: verify firmware
+    eğer değil firmware_verify() yap
+        io.yazdir_satır("ERROR: Cannot start corrupted firmware")
+        // Enter safe mode or bootloader
+        döngü yap son  // Halt
+    son
+    
+    io.yazdir_satır("Starting application...")
+son</code></pre>
+<p><strong>Sonuç:</strong> Boot sırasında firmware corruption detect edilir. Güvenli başlatma sağlanır.</p>
+</div>
+
+<h2>💡 Örnek 2: UART Packet Verification</h2>
+<div class="example-box">
+<h3>Problem: Serial communication'da packet integrity kontrolü</h3>
+<pre><code>içe_aktar hal::crc, hal::usart
+
+yapı Packet yap
+    header: sayı8 = 0xAA,
+    length: sayı8,
+    data: Dizi&lt;sayı8&gt;,
+    crc32: sayı
+son
+
+fonksiyon packet_calculate_crc(pkt: Packet) -> sayı yap
+    crc.reset()
+    
+    // CRC over header + length + data
+    crc.accumulate_byte(pkt.header)
+    crc.accumulate_byte(pkt.length)
+    
+    için byte içinde pkt.data yap
+        crc.accumulate_byte(byte)
+    son
+    
+    dön crc.get_value()
+son
+
+fonksiyon packet_send(pkt: Packet) yap
+    // Calculate CRC
+    pkt.crc32 = packet_calculate_crc(pkt)
+    
+    // Send packet
+    usart.write_byte(usart.USART1, pkt.header)
+    usart.write_byte(usart.USART1, pkt.length)
+    
+    için byte içinde pkt.data yap
+        usart.write_byte(usart.USART1, byte)
+    son
+    
+    // Send CRC (big-endian)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 24) & 0xFF kayıt sayı8)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 16) & 0xFF kayıt sayı8)
+    usart.write_byte(usart.USART1, (pkt.crc32 >> 8) & 0xFF kayıt sayı8)
+    usart.write_byte(usart.USART1, pkt.crc32 & 0xFF kayıt sayı8)
+son
+
+fonksiyon packet_receive() -> Seçenek&lt;Packet&gt; yap
+    // Read header
+    değişken header = usart.read_byte(usart.USART1)
+    eğer header != 0xAA yap
+        dön Seçenek.Hiçbiri
+    son
+    
+    // Read length
+    değişken length = usart.read_byte(usart.USART1)
+    
+    // Read data
+    değişken data = Dizi.yeni(length)
+    için i içinde 0..length yap
+        data[i] = usart.read_byte(usart.USART1)
+    son
+    
+    // Read CRC
+    değişken crc_recv = 0 kayıt sayı
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) kayıt sayı
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) kayıt sayı
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) kayıt sayı
+    crc_recv = (crc_recv << 8) | usart.read_byte(usart.USART1) kayıt sayı
+    
+    // Create packet
+    değişken pkt = Packet yap
+        header: header,
+        length: length,
+        data: data,
+        crc32: crc_recv
+    son
+    
+    // Verify CRC
+    değişken crc_calc = packet_calculate_crc(pkt)
+    
+    eğer crc_calc == crc_recv yap
+        io.yazdir_satır("✅ Packet CRC OK")
+        dön Seçenek.Bazı(pkt)
+    yoksa yap
+        io.yazdir_satır("❌ Packet CRC mismatch!")
+        dön Seçenek.Hiçbiri
+    son
+son</code></pre>
+<p><strong>Sonuç:</strong> UART üzerinden gelen corrupt paketler reddedilir. Data integrity garanti edilir.</p>
+</div>
+
+<h2>💡 Örnek 3: SD Card File Verification</h2>
+<div class="example-box">
+<h3>Problem: SD card'dan okunan dosyanın bozulmadığını kontrol etmek</h3>
+<pre><code>içe_aktar hal::crc, hal::sdio
+
+fonksiyon file_calculate_crc(filename: Metin) -> sayı yap
+    // Open file
+    değişken file = sdio.file_open(filename, sdio.MODE_READ)
+    
+    eğer değil file.is_valid() yap
+        io.yazdir_satır("ERROR: Cannot open file")
+        dön 0
+    son
+    
+    crc.reset()
+    
+    // Read file in 512-byte blocks
+    değişken buffer: Dizi&lt;sayı8&gt; = Dizi.yeni(512)
+    
+    döngü yap
+        değişken bytes_read = sdio.file_read(file, buffer)
+        
+        eğer bytes_read == 0 yap
+            kır  // EOF
+        son
+        
+        // Process full 32-bit words
+        için i içinde 0..(bytes_read/4) yap
+            değişken word = (buffer[i*4] kayıt sayı) |
+                           ((buffer[i*4+1] kayıt sayı) << 8) |
+                           ((buffer[i*4+2] kayıt sayı) << 16) |
+                           ((buffer[i*4+3] kayıt sayı) << 24)
+            crc.accumulate(word)
+        son
+        
+        // Handle remaining bytes
+        değişken remainder = bytes_read % 4
+        eğer remainder > 0 yap
+            için i içinde (bytes_read - remainder)..bytes_read yap
+                crc.accumulate_byte(buffer[i])
+            son
+        son
+    son
+    
+    sdio.file_close(file)
+    
+    dön crc.get_value()
+son
+
+fonksiyon file_verify(filename: Metin, expected_crc: sayı) -> mantık yap
+    io.yazdir_satır("Verifying " + filename + "...")
+    
+    değişken calculated = file_calculate_crc(filename)
+    
+    io.yazdir_satır("Expected:   0x" + expected_crc.onaltılıya())
+    io.yazdir_satır("Calculated: 0x" + calculated.onaltılıya())
+    
+    dön calculated == expected_crc
+son</code></pre>
+<p><strong>Kullanım:</strong> Firmware update dosyalarının SD card'dan okunurken bozulmadığını garanti eder.</p>
+</div>
+
+<h2>📚 API Referansı</h2>
+<h3>Temel Fonksiyonlar</h3>
+<pre><code>// CRC initialization
+fonksiyon init()
+fonksiyon deinit()
+fonksiyon reset()  // Reset to initial value
+
+// CRC calculation
+fonksiyon calculate(data: Dizi&lt;sayı&gt;) -> sayı
+fonksiyon accumulate(word: sayı)  // Add 32-bit word
+fonksiyon accumulate_byte(byte: sayı8)  // Add 8-bit byte
+
+// Get result
+fonksiyon get_value() -> sayı
+
+// Verification
+fonksiyon verify(data: Dizi&lt;sayı&gt;, expected: sayı) -> mantık</code></pre>
+
+<div class="warning">
+<strong>⚠️ Önemli Notlar:</strong>
+<ul>
+<li><strong>Word Alignment:</strong> CRC hardware 32-bit word aligned çalışır</li>
+<li><strong>Byte Order:</strong> Little-endian işlemci için byte order dikkat edilmeli</li>
+<li><strong>Initial Value:</strong> Reset sonrası 0xFFFFFFFF (not 0x00000000)</li>
+<li><strong>Final XOR:</strong> Bazı protokoller final XOR 0xFFFFFFFF gerektirir</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Desteği</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>CRC Support</th>
+<th>Polynomial</th>
+<th>Speed</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ Var</td>
+<td>Configurable</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ Var</td>
+<td>Configurable</td>
+<td>1 cycle/word</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>✅ Var</td>
+<td>0x04C11DB7</td>
+<td>1 cycle/word</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>Firmware check:</strong> Boot sırasında firmware CRC kontrolü yap</li>
+<li>✅ <strong>Communication:</strong> Paketlerde CRC kullan (especially wireless)</li>
+<li>✅ <strong>Storage:</strong> Flash/SD card'dan okunan veriler için CRC</li>
+<li>✅ <strong>Reset before use:</strong> Her hesaplama öncesi crc.reset() çağır</li>
+<li>❌ <strong>Not for crypto:</strong> CRC security için değil, error detection için</li>
+<li>❌ <strong>Byte alignment:</strong> Non-aligned erişim performans kaybı yaratır</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-flash-tr.html">hal::flash</a> - Firmware integrity verification</li>
+<li><a href="hal-usart-tr.html">hal::usart</a> - UART packet CRC</li>
+<li><a href="hal-sdio-tr.html">hal::sdio</a> - SD card file verification</li>
+<li><a href="hal-dma-tr.html">hal::dma</a> - DMA with CRC calculation</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-crc-en.html">🌐 English</a>
+</p>
+</main>
+</div>
+</body>
+</html>

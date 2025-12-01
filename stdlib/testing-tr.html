@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>testing - Test Framework | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>✅ testing - Test Framework</h1>
+<p>Unit Tests, Assertions, Mocking, Coverage</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">52</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">712</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">22 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar testing
+
+test "toplama fonksiyonu" yap
+    değişken sonuç = topla(2, 3)
+    testing.assert_eq(sonuç, 5)
+son
+
+test "bölme sıfıra" yap
+    testing.assert_panic(fonksiyon() yap
+        değişken x = böl(10, 0)
+    son)
+son
+
+// Test suite
+test_grubu "Matematik İşlemleri" yap
+    test "toplama" yap
+        testing.assert_eq(topla(1, 1), 2)
+        testing.assert_eq(topla(-1, 1), 0)
+    son
+    
+    test "çıkarma" yap
+        testing.assert_eq(çıkar(5, 3), 2)
+        testing.assert_ne(çıkar(5, 3), 3)
+    son
+    
+    test "çarpma" yap
+        testing.assert_eq(çarp(2, 3), 6)
+        testing.assert_eq(çarp(-2, 3), -6)
+    son
+son</code></pre>
+<h2>📚 Assertions</h2>
+<ul>
+<li><strong>assert_eq:</strong> Eşitlik kontrolü</li>
+<li><strong>assert_ne:</strong> Eşit değil</li>
+<li><strong>assert_true/false:</strong> Boolean kontrol</li>
+<li><strong>assert_close:</strong> Yaklaşık eşitlik (float)</li>
+<li><strong>assert_panic:</strong> Hata fırlatma kontrolü</li>
+<li><strong>assert_ok/err:</strong> Result type kontrolü</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Comprehensive Test Suite</h3>
+<pre><code>içe_aktar testing, collections
+
+// Test edilen fonksiyonlar
+fonksiyon stack_new() -> Stack yap
+    dön yap içerik: [] son
+son
+
+fonksiyon stack_push(s: Stack, value: herhangi) yap
+    s.içerik.ekle(value)
+son
+
+fonksiyon stack_pop(s: Stack) -> Seçenek yap
+    eğer s.içerik.uzunluk() > 0 ise yap
+        dön Bazı(s.içerik.pop())
+    son değilse yap
+        dön Hiç
+    son
+son
+
+// Test suite
+test_grubu "Stack Veri Yapısı" yap
+    test "yeni stack boş olmalı" yap
+        değişken s = stack_new()
+        testing.assert_eq(s.içerik.uzunluk(), 0)
+    son
+    
+    test "push eleman eklemeli" yap
+        değişken s = stack_new()
+        stack_push(s, 10)
+        stack_push(s, 20)
+        testing.assert_eq(s.içerik.uzunluk(), 2)
+    son
+    
+    test "pop son elemanı çıkarmalı" yap
+        değişken s = stack_new()
+        stack_push(s, 10)
+        stack_push(s, 20)
+        
+        değişken popped = stack_pop(s)
+        testing.assert_some(popped)
+        testing.assert_eq(popped.çıkar(), 20)
+        testing.assert_eq(s.içerik.uzunluk(), 1)
+    son
+    
+    test "boş stack'ten pop Hiç dönmeli" yap
+        değişken s = stack_new()
+        değişken popped = stack_pop(s)
+        testing.assert_none(popped)
+    son
+    
+    test "LIFO sırası korunmalı" yap
+        değişken s = stack_new()
+        stack_push(s, 1)
+        stack_push(s, 2)
+        stack_push(s, 3)
+        
+        testing.assert_eq(stack_pop(s).çıkar(), 3)
+        testing.assert_eq(stack_pop(s).çıkar(), 2)
+        testing.assert_eq(stack_pop(s).çıkar(), 1)
+    son
+son
+
+// Tüm testleri çalıştır
+testing.run_all()</code></pre>
+</div>
+<div class="example-box">
+<h3>Property-Based Testing</h3>
+<pre><code>içe_aktar testing, random
+
+// Property: reverse(reverse(list)) == list
+test "reverse tersine çevirme idempotent" yap
+    her i içinde aralık(0, 100) için yap
+        // Random liste oluştur
+        değişken uzunluk = random.aralık(0, 50)
+        değişken liste = []
+        
+        her j içinde aralık(0, uzunluk) için yap
+            liste.ekle(random.aralık(0, 1000))
+        son
+        
+        // Property kontrolü
+        değişken ters1 = liste.reverse()
+        değişken ters2 = ters1.reverse()
+        
+        testing.assert_eq(liste, ters2)
+    son
+son
+
+// Property: sort(list) sıralı olmalı
+test "sort sıralama doğruluğu" yap
+    her i içinde aralık(0, 100) için yap
+        değişken uzunluk = random.aralık(1, 50)
+        değişken liste = []
+        
+        her j içinde aralık(0, uzunluk) için yap
+            liste.ekle(random.aralık(0, 1000))
+        son
+        
+        değişken sıralı = liste.sort()
+        
+        // Sıralı mı kontrol
+        her k içinde aralık(0, sıralı.uzunluk() - 1) için yap
+            testing.assert_true(sıralı[k] <= sıralı[k + 1])
+        son
+    son
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

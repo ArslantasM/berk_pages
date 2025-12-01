@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>iter - Iterator Trait | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔄 iter - Iterator Trait</h1>
+<p>map, filter, reduce, chain, zip</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">54</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">689</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">22 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar iter
+
+// map
+değişken sayılar = [1, 2, 3, 4, 5]
+değişken kareler = iter.map(sayılar, fonksiyon(x) yap dön x * x son)
+// [1, 4, 9, 16, 25]
+
+// filter
+değişken çiftler = iter.filter(sayılar, fonksiyon(x) yap dön x % 2 == 0 son)
+// [2, 4]
+
+// reduce
+değişken toplam = iter.reduce(sayılar, 0, fonksiyon(acc, x) yap dön acc + x son)
+// 15
+
+// chain
+değişken combined = iter.chain([1, 2], [3, 4], [5, 6])
+// [1, 2, 3, 4, 5, 6]
+
+// zip
+değişken isimler = ["Ali", "Ayşe", "Mehmet"]
+değişken yaşlar = [25, 30, 35]
+değişken paired = iter.zip(isimler, yaşlar)
+// [("Ali", 25), ("Ayşe", 30), ("Mehmet", 35)]</code></pre>
+<h2>📚 Iterator Methods</h2>
+<ul>
+<li><strong>Transform:</strong> map, flat_map, flatten</li>
+<li><strong>Filter:</strong> filter, take, skip, take_while, skip_while</li>
+<li><strong>Reduce:</strong> reduce, fold, sum, product, min, max</li>
+<li><strong>Combine:</strong> chain, zip, enumerate</li>
+<li><strong>Collect:</strong> collect, to_vec, to_set</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Functional Data Pipeline</h3>
+<pre><code>içe_aktar iter
+
+// Word frequency (functional style)
+değişken metin = "the quick brown fox jumps over the lazy dog"
+
+değişken kelime_frekansı = metin
+    .böl(" ")
+    |> iter.map(fonksiyon(w) yap dön string.küçük_harf(w) son)
+    |> iter.filter(fonksiyon(w) yap dön w.uzunluk() > 3 son)
+    |> iter.group_by(fonksiyon(w) yap dön w son)
+    |> iter.map(fonksiyon((kelime, grup)) yap
+        dön (kelime, grup.uzunluk())
+    son)
+    |> iter.collect()
+
+yazdır(kelime_frekansı)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

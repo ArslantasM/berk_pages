@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>redis - Redis Cache Client | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#dc382d 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #dc382d;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔴 redis</h1>
+<p>Redis Cache Client - RESP Protocol</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~450 satır</span>
+<span class="stat-badge">~60 fonksiyon</span>
+<span class="stat-badge">In-Memory</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Redis modülü, RESP (REdis Serialization Protocol) üzerinden tam özellikli Redis client sağlar. String, hash, list, set operations ve pub/sub desteği sunar.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>String operations: GET, SET, INCR, DECR</li>
+<li>Hash operations: HSET, HGET, HGETALL</li>
+<li>List operations: LPUSH, RPUSH, LRANGE</li>
+<li>Set operations: SADD, SMEMBERS, SISMEMBER</li>
+<li>Key expiration: EXPIRE, TTL</li>
+<li>Pub/Sub messaging</li>
+<li>Pipelin & transactions</li>
+<li>Connection pooling</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar redis
+
+// Connect
+değişken client = redis.connect("127.0.0.1:6379")?
+
+// String operations
+client.set("user:1:name", "Alice")?
+değişken name = client.get("user:1:name")?
+io.println("Name: {}", name)
+
+// With expiration (5 minutes)
+client.setex("session:abc", 300, "user_data")?
+
+client.close()</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: Session Management</h3>
+<pre><code>içe_aktar redis, crypto, time, json
+
+yapı SessionStore yap
+    redis: redis.Client
+son
+
+yapı Session yap
+    user_id: sayı,
+    username: yazı,
+    created_at: time.Instant,
+    data: Map[yazı, yazı]
+son
+
+fonksiyon session_store_new(redis_url: yazı) -> Sonuç[SessionStore, Hata] yap
+    dön Tamam(SessionStore yap
+        redis: redis.connect(redis_url)?
+    son)
+son
+
+fonksiyon create_session(store: SessionStore, user_id: sayı, username: yazı) 
+    -> Sonuç[yazı, Hata] yap
+    // Generate session ID
+    değişken session_id = crypto.random_hex(32)
+    
+    // Create session
+    değişken session = Session yap
+        user_id: user_id,
+        username: username,
+        created_at: time.now(),
+        data: Map.new()
+    son
+    
+    // Store in Redis (1 hour TTL)
+    değişken key = "session:{}".formatla(session_id)
+    değişken value = json.encode(session)
+    store.redis.setex(key, 3600, value)?
+    
+    dön Tamam(session_id)
+son
+
+fonksiyon get_session(store: SessionStore, session_id: yazı) 
+    -> Sonuç[İsteğe_Bağlı[Session], Hata] yap
+    değişken key = "session:{}".formatla(session_id)
+    değişken value = store.redis.get(key)?
+    
+    eğer value.is_none() ise yap
+        dön Tamam(Hiçbir)
+    son
+    
+    değişken session: Session = json.decode(value.unwrap())?
+    dön Tamam(Bazı(session))
+son
+
+fonksiyon destroy_session(store: SessionStore, session_id: yazı) -> Sonuç[Hiçbir, Hata] yap
+    değişken key = "session:{}".formatla(session_id)
+    store.redis.del(key)?
+    dön Tamam(Hiçbir)
+son
+
+// Kullanım
+fonksiyon ana() yap
+    değişken store = session_store_new("127.0.0.1:6379")?
+    
+    // Login - create session
+    değişken session_id = create_session(store, 123, "alice")?
+    io.println("Session created: {}", session_id)
+    
+    // Verify session
+    eğer session = get_session(store, session_id)? ise yap
+        io.println("User: {} (ID: {})", session.username, session.user_id)
+    son
+    
+    // Logout - destroy session
+    destroy_session(store, session_id)?
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Rate Limiting</h3>
+<pre><code>içe_aktar redis, time
+
+fonksiyon rate_limit_check(client: redis.Client, user_id: sayı, max_requests: sayı, window_secs: sayı) 
+    -> Sonuç[mantıksal, Hata] yap
+    değişken key = "rate_limit:{}".formatla(user_id)
+    
+    // Increment counter
+    değişken count = client.incr(key)?
+    
+    // Set expiry on first request
+    eğer count == 1 ise yap
+        client.expire(key, window_secs)?
+    son
+    
+    // Check limit
+    dön Tamam(count <= max_requests)
+son
+
+// API endpoint
+fonksiyon handle_request(client: redis.Client, user_id: sayı) -> Sonuç[Hiçbir, Hata] yap
+    // 100 requests per minute
+    eğer rate_limit_check(client, user_id, 100, 60)? ise yap
+        // Process request
+        io.println("Request processed")
+    değilse yap
+        io.println("Rate limit exceeded")
+    son
+    dön Tamam(Hiçbir)
+son</code></pre>
+</div>
+
+<h2>📊 Data Structures</h2>
+<pre><code>// Hash (dictionary)
+client.hset("user:1", "name", "Alice")?
+client.hset("user:1", "email", "alice@example.com")?
+değişken all = client.hgetall("user:1")?
+
+// List (queue)
+client.lpush("queue:tasks", "task1")?
+client.lpush("queue:tasks", "task2")?
+değişken task = client.rpop("queue:tasks")?
+
+// Set (unique items)
+client.sadd("tags", "python")?
+client.sadd("tags", "rust")?
+değişken members = client.smembers("tags")?</code></pre>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>msgpack</code> - Binary serialization</li>
+<li><code>json</code> - JSON serialization</li>
+<li><code>postgresql</code> - Persistent storage</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

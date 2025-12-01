@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>toml - TOML Configuration | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ toml</h1>
+<p>TOML Parser - Tom's Obvious Minimal Language</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350 satır</span>
+<span class="stat-badge">~30 fonksiyon</span>
+<span class="stat-badge">v1.0.0</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>TOML modülü, configuration files için human-friendly TOML v1.0.0 parser sağlar. Strings, integers, floats, booleans, arrays, tables ve inline tables destekler.</p>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar toml
+
+// Parse TOML
+değişken config = toml.parse("
+    [database]
+    host = \"localhost\"
+    port = 5432
+    
+    [server]
+    bind = \"0.0.0.0:8080\"
+    workers = 4
+")?
+
+değişken host = config.get("database.host")?
+değişken port = config.get_int("database.port")?</code></pre>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>yaml</code> - YAML parser</li>
+<li><code>json</code> - JSON parser</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

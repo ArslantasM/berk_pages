@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>pdf - PDF Document Creation | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📄 pdf</h1>
+<p>PDF Document Creation & Manipulation</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400 satır</span>
+<span class="stat-badge">~35 fonksiyon</span>
+<span class="stat-badge">PDF 1.7</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>PDF modülü, programmatically PDF döküman oluşturma ve manipülasyon sağlar. Text, shapes, images ve multi-page dokümantasyon destekler.</p>
+
+<h2>🚀 Kullanım</h2>
+<pre><code>içe_aktar pdf
+
+// Create PDF
+değişken doc = pdf.new()
+doc.set_title("My Document")
+doc.set_author("BERK")
+
+// Add page
+değişken page = doc.add_page(pdf.A4)
+page.text(100, 700, "Hello PDF!", 12)
+
+// Save
+doc.save("output.pdf")?</code></pre>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>image</code> - Image embedding</li>
+<li><code>graphics</code> - Drawing shapes</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

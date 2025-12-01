@@ -1,0 +1,170 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>msgpack - MessagePack Serialization | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 msgpack</h1>
+<p>MessagePack Binary Serialization - Kompakt and Hızlı</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~500 lines</span>
+<span class="stat-badge">~40 function</span>
+<span class="stat-badge">30-50% Daha Küçük</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>MessagePack, JSON'dan %30-50 daha küçük and 2-3x daha hızlı binary serialization formatıdır. Network protokolleri, cache sistemleri and IPC for idealdir.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>JSON'dan %30-50 daha küçük boyut</li>
+<li>2-3x daha hızlı serialization/deserialization</li>
+<li>Type-safe encoding/decoding</li>
+<li>Integers, floats, strings, binary, arrays, maps</li>
+<li>Nil/null value support</li>
+<li>Extension types</li>
+<li>Streaming API</li>
+<li>Zero-copy where possible</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import msgpack
+
+// Serialize
+let data = do
+    name: "Alice",
+    age: 30,
+    scores: [95, 87, 92]
+end
+
+let bytes = msgpack.encode(data)
+io.println("Encoded: {} bytes", bytes.uzunluk())
+
+// Deserialize
+let decoded = msgpack.decode(bytes)?
+io.println("Name: {}", decoded["name"])</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: Redis-Style Cache with MessagePack</h3>
+<pre><code>import msgpack, redis, time
+
+struct CacheEntry[T] do
+    value: T,
+    expires_at: time.Instant
+end
+
+struct MessagePackCache do
+    redis: redis.Client
+end
+
+function cache_new(redis_url: str) -> Result[MessagePackCache, Error] do
+    return Ok(MessagePackCache do
+        redis: redis.connect(redis_url)?
+    end)
+end
+
+function cache_set[T](cache: MessagePackCache, key: str, value: T, ttl_secs: int) 
+    -> Result[None, Error] do
+    // Wrap with expiry
+    let entry = CacheEntry do
+        value: value,
+        expires_at: time.now() + time.seconds(ttl_secs)
+    end
+    
+    // Serialize with MessagePack (much smaller than JSON)
+    let bytes = msgpack.encode(entry)
+    
+    // Store in Redis
+    cache.redis.setex(key, ttl_secs, bytes)?
+    
+    return Ok(None)
+end
+
+function cache_get[T](cache: MessagePackCache, key: str) 
+    -> Result[Optional[T], Error] do
+    // Get from Redis
+    let bytes = cache.redis.get(key)?
+    
+    if bytes.is_none()  do
+        return Ok(None)
+    end
+    
+    // Deserialize
+    let entry: CacheEntry[T] = msgpack.decode(bytes.unwrap())?
+    
+    // Check expiry
+    if time.now() > entry.expires_at  do
+        cache.redis.del(key)?
+        return Ok(None)
+    end
+    
+    return Ok(Some(entry.value))
+end
+
+// useım
+function main() do
+    let cache = cache_new("redis://localhost:6379")?
+    
+    // Store user data
+    let user = do
+        id: 123,
+        name: "Alice",
+        email: "alice@example.com",
+        roles: ["admin", "user"]
+    end
+    
+    cache_set(cache, "user:123", user, 3600)?  // 1 hour TTL
+    
+    // Retrieve
+    let cached_user = cache_get(cache, "user:123")?
+    if cached_user.is_some()  do
+        io.println("Cache hit: {}", cached_user.unwrap().name)
+    end
+end</code></pre>
+</div>
+
+<h2>📊 Boyut Karşılaştırması</h2>
+<pre><code>// Test data
+let data = do
+    users: [
+        do id: 1, name: "Alice", age: 30, active: true end,
+        do id: 2, name: "Bob", age: 25, active: true end,
+        do id: 3, name: "Charlie", age: 35, active: false end
+    ]
+end
+
+// JSON: 189 bytes
+let json_bytes = json.encode(data)
+io.println("JSON: {} bytes", json_bytes.uzunluk())
+
+// MessagePack: 98 bytes (48% smaller!)
+let msgpack_bytes = msgpack.encode(data)
+io.println("MessagePack: {} bytes", msgpack_bytes.uzunluk())
+io.println("Savings: {}%", (1.0 - msgpack_bytes.uzunluk().float() / json_bytes.uzunluk().float()) * 100.0)</code></pre>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code>json</code> - JSON serialization</li>
+<li><code>redis</code> - Redis cache</li>
+<li><code>network</code> - Binary protocols</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>xml - XML Parser | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📄 xml - XML Parser/Builder</h1>
+<p>Parse, Query, Build, XPath</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">46</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">789</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">24 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar xml
+
+// Parse XML
+değişken xml_str = "<root><user id='1'><name>Ali</name></user></root>"
+değişken doc = xml.parse(xml_str)
+
+// Query
+değişken name = xml.find_text(doc, "//user/name")
+yazdır(name)  // "Ali"
+
+// Attribute
+değişken id = xml.find_attr(doc, "//user", "id")
+yazdır(id)  // "1"
+
+// Build XML
+değişken builder = xml.builder_new()
+xml.start_element(builder, "root")
+xml.start_element(builder, "user")
+xml.attr(builder, "id", "2")
+xml.element_text(builder, "name", "Ayşe")
+xml.end_element(builder)  // user
+xml.end_element(builder)  // root
+
+değişken yeni_xml = xml.builder_to_string(builder)
+yazdır(yeni_xml)</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li>XML 1.0 parsing</li>
+<li>XPath queries</li>
+<li>Namespace support</li>
+<li>Pretty printing</li>
+<li>Streaming parser</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>RSS Feed Parser</h3>
+<pre><code>içe_aktar xml, http
+
+fonksiyon rss_parse(url: yazı) -> Dizi yap
+    değişken yanıt = http.get(url)
+    değişken doc = xml.parse(yanıt.gövde)
+    
+    değişken items = []
+    değişken item_nodes = xml.find_all(doc, "//item")
+    
+    her item_node içinde item_nodes için yap
+        değişken item = yap
+            "title": xml.find_text(item_node, "title"),
+            "link": xml.find_text(item_node, "link"),
+            "description": xml.find_text(item_node, "description"),
+            "pubDate": xml.find_text(item_node, "pubDate")
+        son
+        items.ekle(item)
+    son
+    
+    dön items
+son
+
+değişken haberler = rss_parse("https://example.com/rss")
+her haber içinde haberler için yap
+    yazdır(haber["title"] + " - " + haber["link"])
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

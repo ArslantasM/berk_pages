@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>result - Error Handling | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚠️ result</h1>
+<p>Result & Option Types</p>
+<div style="margin-top:15px">
+<span class="stat-badge">24 functions</span>
+<span class="stat-badge">266 lines</span>
+<span class="stat-badge">Type-safe</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Type-safe error handling with Result and Option. No null pointer exceptions.</p>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import result
+
+function divide(a: float, b: float) -> Result[float, string] do
+    if b == 0.0 do
+        return Error("Division by zero")
+    end
+    return Ok(a / b)
+end
+
+match divide(10.0, 2.0) do
+    Ok(v) => println("Result: {}", v),
+    Error(e) => println("Error: {}", e)
+end</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a> | <a href="result-tr.html">🇹🇷 Türkçe</a>
+</p>
+</main>
+</div>
+</body>
+</html>

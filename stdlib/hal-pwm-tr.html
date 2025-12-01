@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::pwm - PWM Signal Generation | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #3498db;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 hal::pwm</h1>
+<p>Pulse Width Modulation - PWM Sinyal Üretimi</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~320 satır</span>
+<span class="stat-badge">~12 fonksiyon</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>PWM modülü, timer donanımını kullanarak değişken genişlikli dijital sinyaller üretir. Motor hız kontrolü, LED parlaklık ayarı, servo kontrol ve analog çıkış simülasyonu için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Konfigüre edilebilir frekans (1 Hz - 1 MHz+)</li>
+<li>0-100% duty cycle kontrolü</li>
+<li>Çoklu kanal desteği (4 kanala kadar)</li>
+<li>Complementary output (dead-time ile)</li>
+<li>Hardware sync ve trigger</li>
+<li>DMA destekli dalga formu üretimi</li>
+<li>One-pulse mode</li>
+<li>Encoder interface mode</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::pwm, hal::gpio
+
+// PWM pin setup (TIM3 CH1 -> PA6)
+gpio.pin_init(gpio.PORT_A, 6, yap
+    mode: gpio.MODE_AF,
+    af: gpio.AF2_TIM3
+son)
+
+// PWM initialization (1 kHz, 50% duty)
+değişken pwm_handle = pwm.init(pwm.TIM3, pwm.CHANNEL_1, yap
+    frequency: 1000,      // 1 kHz
+    duty_cycle: 50,       // 50%
+    polarity: pwm.ACTIVE_HIGH,
+    mode: pwm.MODE_PWM1
+son)
+
+// Start PWM
+pwm.start(pwm_handle)
+
+// Update duty cycle
+pwm.set_duty_cycle(pwm_handle, 75)  // 75%</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Timer Seçimi
+enum Timer {
+    TIM1, TIM2, TIM3, TIM4, TIM5,
+    TIM8, TIM9, TIM10, TIM11, TIM12
+}
+
+// PWM Kanalları
+enum Channel {
+    CHANNEL_1, CHANNEL_2, CHANNEL_3, CHANNEL_4
+}
+
+// PWM Modları
+enum Mode {
+    PWM1,  // Active when CNT < CCR
+    PWM2   // Active when CNT > CCR
+}
+
+// Polarity
+enum Polarity {
+    ACTIVE_HIGH,  // High is active
+    ACTIVE_LOW    // Low is active
+}
+
+// Alignment Mode
+enum Alignment {
+    EDGE,    // Edge-aligned
+    CENTER1, // Center-aligned mode 1
+    CENTER2, // Center-aligned mode 2
+    CENTER3  // Center-aligned mode 3
+}
+
+yapı PWMConfig yap
+    frequency: sayı,        // Hz (1-1000000)
+    duty_cycle: kesir,      // 0.0-100.0
+    polarity: Polarity,
+    mode: Mode,
+    alignment: Alignment
+son</code></pre>
+
+<h2>💡 Örnek 1: LED Dimming (Parlaklık Kontrolü)</h2>
+<div class="example-box">
+<h3>LED parlaklığını PWM ile kontrol etme</h3>
+<pre><code>içe_aktar hal::pwm, hal::core
+
+fonksiyon led_dimmer() yap
+    // PWM setup (10 kHz)
+    değişken led_pwm = pwm.init(pwm.TIM2, pwm.CHANNEL_1, yap
+        frequency: 10000,
+        duty_cycle: 0,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    son)
+    
+    pwm.start(led_pwm)
+    
+    // Fade in/out loop
+    döngü yap
+        // Fade in (0% -> 100%)
+        için brightness içinde 0..100 için yap
+            pwm.set_duty_cycle(led_pwm, brightness.kesir())
+            core.delay_ms(10)
+        son
+        
+        core.delay_ms(500)
+        
+        // Fade out (100% -> 0%)
+        için brightness içinde (0..100).reverse() için yap
+            pwm.set_duty_cycle(led_pwm, brightness.kesir())
+            core.delay_ms(10)
+        son
+        
+        core.delay_ms(500)
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 2: DC Motor Hız Kontrolü</h2>
+<div class="example-box">
+<h3>L298N sürücüsü ile motor kontrolü</h3>
+<pre><code>içe_aktar hal::pwm, hal::gpio
+
+yapı Motor yap
+    pwm: PWMHandle,
+    dir_pin1: GPIOPin,
+    dir_pin2: GPIOPin
+son
+
+fonksiyon motor_init() -> Motor yap
+    // Direction pins
+    değişken in1 = gpio.pin_init(gpio.PORT_B, 0, gpio.MODE_OUTPUT)
+    değişken in2 = gpio.pin_init(gpio.PORT_B, 1, gpio.MODE_OUTPUT)
+    
+    // PWM for speed (20 kHz)
+    değişken motor_pwm = pwm.init(pwm.TIM1, pwm.CHANNEL_1, yap
+        frequency: 20000,
+        duty_cycle: 0,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    son)
+    
+    pwm.start(motor_pwm)
+    
+    dön Motor yap
+        pwm: motor_pwm,
+        dir_pin1: in1,
+        dir_pin2: in2
+    son
+son
+
+fonksiyon motor_set_speed(motor: Motor, speed: kesir) yap
+    // speed: -100 to +100 (negative = reverse)
+    eğer speed > 0 ise yap
+        // Forward
+        gpio.pin_write(motor.dir_pin1, gpio.HIGH)
+        gpio.pin_write(motor.dir_pin2, gpio.LOW)
+        pwm.set_duty_cycle(motor.pwm, speed)
+    yoksa eğer speed < 0 ise yap
+        // Reverse
+        gpio.pin_write(motor.dir_pin1, gpio.LOW)
+        gpio.pin_write(motor.dir_pin2, gpio.HIGH)
+        pwm.set_duty_cycle(motor.pwm, -speed)
+    yoksa yap
+        // Stop
+        gpio.pin_write(motor.dir_pin1, gpio.LOW)
+        gpio.pin_write(motor.dir_pin2, gpio.LOW)
+        pwm.set_duty_cycle(motor.pwm, 0.0)
+    son
+son
+
+fonksiyon ana() yap
+    değişken motor = motor_init()
+    
+    // Acceleration test
+    için speed içinde 0..100 için yap
+        motor_set_speed(motor, speed.kesir())
+        core.delay_ms(50)
+    son
+    
+    core.delay_ms(2000)
+    
+    // Deceleration
+    için speed içinde (0..100).reverse() için yap
+        motor_set_speed(motor, speed.kesir())
+        core.delay_ms(50)
+    son
+    
+    motor_set_speed(motor, 0.0)  // Stop
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 3: Servo Motor Kontrolü (SG90)</h2>
+<div class="example-box">
+<h3>50Hz PWM ile servo açı kontrolü</h3>
+<pre><code>içe_aktar hal::pwm
+
+yapı Servo yap
+    pwm: PWMHandle,
+    min_pulse: kesir,  // ms
+    max_pulse: kesir   // ms
+son
+
+fonksiyon servo_init(timer: Timer, channel: Channel) -> Servo yap
+    // Servo: 50Hz, 1-2ms pulse width
+    değişken servo_pwm = pwm.init(timer, channel, yap
+        frequency: 50,      // 50 Hz (20ms period)
+        duty_cycle: 7.5,    // 1.5ms pulse (90°)
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    son)
+    
+    pwm.start(servo_pwm)
+    
+    dön Servo yap
+        pwm: servo_pwm,
+        min_pulse: 1.0,  // 1ms = 0°
+        max_pulse: 2.0   // 2ms = 180°
+    son
+son
+
+fonksiyon servo_set_angle(servo: Servo, angle: kesir) yap
+    // angle: 0-180 degrees
+    değişken clamped = angle.clamp(0.0, 180.0)
+    
+    // Map angle to pulse width (1-2ms)
+    değişken pulse_ms = servo.min_pulse + 
+        (clamped / 180.0) * (servo.max_pulse - servo.min_pulse)
+    
+    // Convert to duty cycle (20ms period)
+    değişken duty = (pulse_ms / 20.0) * 100.0
+    
+    pwm.set_duty_cycle(servo.pwm, duty)
+son
+
+fonksiyon ana() yap
+    değişken servo = servo_init(pwm.TIM2, pwm.CHANNEL_1)
+    
+    // Sweep 0° to 180°
+    döngü yap
+        için angle içinde 0..180 için yap
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        son
+        
+        için angle içinde (0..180).reverse() için yap
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        son
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 4: Buzzer Melodi Çalma</h2>
+<div class="example-box">
+<h3>PWM frekans değiştirerek nota üretme</h3>
+<pre><code>içe_aktar hal::pwm, hal::core
+
+// Note frequencies (Hz)
+sabit DO = 262
+sabit RE = 294
+sabit MI = 330
+sabit FA = 349
+sabit SOL = 392
+sabit LA = 440
+sabit SI = 494
+sabit DO_HIGH = 523
+
+fonksiyon buzzer_init() -> PWMHandle yap
+    değişken buzzer = pwm.init(pwm.TIM3, pwm.CHANNEL_2, yap
+        frequency: 440,  // Default: LA (440 Hz)
+        duty_cycle: 50,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    son)
+    
+    dön buzzer
+son
+
+fonksiyon play_tone(buzzer: PWMHandle, freq: sayı, duration_ms: sayı) yap
+    pwm.set_frequency(buzzer, freq)
+    pwm.start(buzzer)
+    core.delay_ms(duration_ms)
+    pwm.stop(buzzer)
+son
+
+fonksiyon play_melody(buzzer: PWMHandle) yap
+    // "Twinkle Twinkle Little Star"
+    değişken melody = [
+        (DO, 500), (DO, 500), (SOL, 500), (SOL, 500),
+        (LA, 500), (LA, 500), (SOL, 1000),
+        (FA, 500), (FA, 500), (MI, 500), (MI, 500),
+        (RE, 500), (RE, 500), (DO, 1000)
+    ]
+    
+    her (note, duration) içinde melody için yap
+        play_tone(buzzer, note, duration)
+        core.delay_ms(50)  // Short pause between notes
+    son
+son
+
+fonksiyon ana() yap
+    değişken buzzer = buzzer_init()
+    
+    döngü yap
+        play_melody(buzzer)
+        core.delay_ms(2000)
+    son
+son</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Initialization</h3>
+<pre><code>fonksiyon init(timer: Timer, channel: Channel, config: PWMConfig) -> PWMHandle
+fonksiyon deinit(handle: PWMHandle)
+fonksiyon start(handle: PWMHandle)
+fonksiyon stop(handle: PWMHandle)</code></pre>
+
+<h3>Configuration</h3>
+<pre><code>fonksiyon set_duty_cycle(handle: PWMHandle, duty: kesir)  // 0.0-100.0
+fonksiyon get_duty_cycle(handle: PWMHandle) -> kesir
+fonksiyon set_frequency(handle: PWMHandle, freq: sayı)  // Hz
+fonksiyon get_frequency(handle: PWMHandle) -> sayı
+fonksiyon set_polarity(handle: PWMHandle, pol: Polarity)</code></pre>
+
+<h3>Advanced</h3>
+<pre><code>fonksiyon set_pulse_width(handle: PWMHandle, width_us: sayı)  // Microseconds
+fonksiyon enable_complementary(handle: PWMHandle, deadtime_ns: sayı)
+fonksiyon set_phase_shift(handle: PWMHandle, phase_degrees: kesir)
+fonksiyon configure_dma(handle: PWMHandle, buffer: Dizi[sayı])</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>Timers</th><th>Max Freq</th><th>Resolution</th></tr>
+<tr><td>STM32F4</td><td>TIM1-14</td><td>84 MHz</td><td>16-bit</td></tr>
+<tr><td>STM32F1</td><td>TIM1-4</td><td>72 MHz</td><td>16-bit</td></tr>
+<tr><td>ESP32</td><td>LEDC 0-7</td><td>40 MHz</td><td>20-bit</td></tr>
+<tr><td>GD32VF103</td><td>TIM0-6</td><td>108 MHz</td><td>16-bit</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Frekans seçimi:</strong> Motor kontrolü için 20-25 kHz (insan işitme aralığı dışı)</li>
+<li><strong>Servo kontrol:</strong> 50 Hz sabit frekans, 1-2ms pulse genişliği</li>
+<li><strong>LED dimming:</strong> 100+ Hz (göz yanıp sönmeyi algılamaz)</li>
+<li><strong>Timer çakışması:</strong> Aynı timer'ın farklı kanallarını kullanın</li>
+<li><strong>Dead-time:</strong> H-bridge kontrolünde shoot-through önlemek için gerekli</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-timer-tr.html">hal::timer</a> - Hardware timer (PWM'in temeli)</li>
+<li><a href="hal-gpio-tr.html">hal::gpio</a> - GPIO AF configuration</li>
+<li><a href="hal-dma-tr.html">hal::dma</a> - DMA-based waveform generation</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-pwm-en.html">🇬🇧 English</a>
+</p>
+</main>
+</div>
+</body>
+</html>

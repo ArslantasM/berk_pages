@@ -1,0 +1,389 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>hal::exti - External Interrupts | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ hal::exti</h1>
+<p>External Interrupts - GPIO Pin Event Detection</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360 satır</span>
+<span class="stat-badge">~15 function</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>EXTI modülü, GPIO pinlerinde meydana gelen değişiklikleri (rising edge, falling edge) yakalayarak interrupt üretir. Buton basımları, harici sensör sinyalleri ve asenkron olaylar for kritik öneme sahiptir. Polling gerektirmeden düşük güç tüketimi ve yüksek tepki süresi sağlar.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li><strong>16 EXTI Hattı:</strong> EXTI0-EXTI15 (GPIO pinleri for)</li>
+<li><strong>Trigger Modları:</strong> Rising edge, falling edge veya her ikisi</li>
+<li><strong>Maskeleme:</strong> Interrupt enable/disable desteği</li>
+<li><strong>Software Interrupt:</strong> Yazılımdan interrupt tetikleme</li>
+<li><strong>Event Mode:</strong> Interrupt olmadan DMA tetikleme</li>
+<li><strong>Wake-up Source:</strong> Stop/Standby modundan çıkış</li>
+<li><strong>Debounce Desteği:</strong> Yazılım bazlı gürültü filtreleme</li>
+<li><strong>Priority Control:</strong> NVIC ile öncelik yönetimi</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+// Button pin setup (PA0 - User Button)
+gpio.pin_init(gpio.PORT_A, 0, do
+    mode: gpio.MODE_INPUT,
+    pull: gpio.PULL_DOWN,
+    speed: gpio.SPEED_LOW
+end)
+
+// EXTI configuration (falling edge for button press)
+let exti_cfg = exti.init(0, do  // EXTI line 0 -> PA0
+    trigger: exti.TRIGGER_FALLING,
+    mode: exti.MODE_INTERRUPT,
+    callback: buton_callback
+end)
+
+// Enable interrupt in NVIC
+nvic.enable_irq(nvic.EXTI0_IRQn, do
+    priority: 5
+end)
+
+// Callback function
+function buton_callback() do
+    // Button pressed!
+    led_toggle()
+end</code></pre>
+
+<h2>📦 Types and Enums'lar</h2>
+<pre><code>// EXTI Lines (0-15 for GPIO pins)
+enum Line {
+    LINE_0, LINE_1, LINE_2, LINE_3, LINE_4,
+    LINE_5, LINE_6, LINE_7, LINE_8, LINE_9,
+    LINE_10, LINE_11, LINE_12, LINE_13, LINE_14, LINE_15,
+    LINE_PVD = 16,    // PVD output
+    LINE_RTC = 17,    // RTC alarm
+    LINE_USB = 18,    // USB wakeup
+    LINE_ETH = 19     // Ethernet wakeup
+}
+
+// Trigger Mode
+enum Trigger {
+    TRIGGER_RISING,   // 0->1 transition
+    TRIGGER_FALLING,  // 1->0 transition
+    TRIGGER_BOTH      // Any edge
+}
+
+// EXTI Mode
+enum Mode {
+    MODE_INTERRUPT,   // Generate interrupt
+    MODE_EVENT        // Generate event (for DMA)
+}
+
+struct EXTIConfig do
+    trigger: Trigger,
+    mode: Mode,
+    callback: function(),
+    debounce_ms: int = 0  // Software debounce
+end</code></pre>
+
+<h2>💡 Example 1: Button with Debounce</h2>
+<div class="example-box">
+<h3>Problem: Mekanik butonlarda bouncing problemi</h3>
+<pre><code>import hal::exti, hal::gpio, hal::systick
+
+let end_basin_zamani: int64 = 0
+const DEBOUNCE_SURESI: int = 50  // 50 ms
+
+function buton_init() do
+    // PA0 -> User Button (Active Low)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI0 -> Falling edge (button press)
+    exti.init(0, do
+        trigger: exti.TRIGGER_FALLING,
+        mode: exti.MODE_INTERRUPT,
+        callback: buton_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI0_IRQn, 5)
+end
+
+function buton_handler() do
+    let simdiki_zaman = systick.get_ms()
+    
+    // Debounce check
+    if (simdiki_zaman - end_basin_zamani < DEBOUNCE_SURESI) do
+        return  // Ignore bouncing
+    end
+    
+    end_basin_zamani = simdiki_zaman
+    
+    // Real button press detected
+    buton_basildi()
+end
+
+function buton_basildi() do
+    io.yazdir_satır("Button pressed!")
+    led_toggle()
+end</code></pre>
+<p><strong>Çıktı:</strong> Bouncing problemi olmadan temiz buton algılama. 50ms forde tekrar tetiklemeleri filtreler.</p>
+</div>
+
+<h2>💡 Example 2: Rotary Encoder (Quadrature Decoder)</h2>
+<div class="example-box">
+<h3>Problem: Mekanik encoder ile konum okuma</h3>
+<pre><code>import hal::exti, hal::gpio
+
+let encoder_konum: int = 0
+let end_A: bool = false
+let end_B: bool = false
+
+function encoder_init() do
+    // PA1 -> Encoder A channel
+    gpio.pin_init(gpio.PORT_A, 1, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // PA2 -> Encoder B channel
+    gpio.pin_init(gpio.PORT_A, 2, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI on both channels (both edges)
+    exti.init(1, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_A_handler
+    end)
+    
+    exti.init(2, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_B_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 5)
+    
+    // Read initial state
+    end_A = gpio.pin_read(gpio.PORT_A, 1)
+    end_B = gpio.pin_read(gpio.PORT_A, 2)
+end
+
+function encoder_A_handler() do
+    let A = gpio.pin_read(gpio.PORT_A, 1)
+    let B = end_B
+    
+    // Quadrature decoding logic
+    if (A != end_A) do
+        if (A == B) do
+            encoder_konum = encoder_konum + 1  // CW
+        else do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    end_A = A
+end
+
+function encoder_B_handler() do
+    let A = end_A
+    let B = gpio.pin_read(gpio.PORT_A, 2)
+    
+    if (B != end_B) do
+        if (A != B) do
+            encoder_konum = encoder_konum + 1  // CW
+        else do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    end_B = B
+end
+
+function encoder_oku() -> int do
+    return encoder_konum
+end</code></pre>
+<p><strong>Çıktı:</strong> Rotary encoder konumunu gerçek zamanlı takip eder. CW/CCW yönü otomatik algılanır.</p>
+</div>
+
+<h2>💡 Example 3: Multi-Source Priority Handling</h2>
+<div class="example-box">
+<h3>Problem: Birden fazla interrupt kaynağını öncelik sırasına göre yönetme</h3>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+const KRITIK_OLAY_PIN: int = 0   // PA0 -> Emergency stop
+const NORMAL_OLAY_PIN: int = 1   // PA1 -> Regular sensor
+const DUSUK_OLAY_PIN: int = 2    // PA2 -> Low priority event
+
+function coklu_interrupt_init() do
+    // Critical event (highest priority)
+    gpio.pin_init(gpio.PORT_A, KRITIK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(KRITIK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: kritik_handler
+    end)
+    nvic.enable_irq(nvic.EXTI0_IRQn, 0)  // Highest priority
+    
+    // Normal event (medium priority)
+    gpio.pin_init(gpio.PORT_A, NORMAL_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(NORMAL_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: normal_handler
+    end)
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)  // Medium priority
+    
+    // Low priority event
+    gpio.pin_init(gpio.PORT_A, DUSUK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(DUSUK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: dusuk_handler
+    end)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 10)  // Low priority
+end
+
+function kritik_handler() do
+    // Emergency stop - preempt everything!
+    motor_durdur()
+    alarm_calar()
+    io.yazdir_satır("CRITICAL: Emergency stop!")
+end
+
+function normal_handler() do
+    // Regular sensor reading
+    let deger = sensor_oku()
+    io.yazdir_satır("Sensor value: " + deger.metne())
+end
+
+function dusuk_handler() do
+    // Low priority background task
+    log_olay("Low priority event")
+end</code></pre>
+<p><strong>Çıktı:</strong> Kritik olaylar düşük öncelikli interrupt'ları preempt eder. Sistem güvenliği sağlanır.</p>
+</div>
+
+<h2>📚 API Reference</h2>
+<h3>Core Functions</h3>
+<pre><code>// EXTI hattını structlandırır
+function init(line: int, config: EXTIConfig) -> Result
+
+// EXTI hattını etkinleştirir
+function enable(line: int)
+
+// EXTI hattını devre dışı bırabreak
+function disable(line: int)
+
+// Pending flag'i temizler
+function clear_pending(line: int)
+
+// Pending flag'i kontrol eder
+function is_pending(line: int) -> bool
+
+// Software interrupt tetikler
+function trigger_software(line: int)
+
+// GPIO pin ile EXTI hattını matchir
+function connect_gpio(line: int, port: gpio.Port, pin: int)</code></pre>
+
+<div class="warning">
+<strong>⚠️ Important Notes:</strong>
+<ul>
+<li><strong>Shared IRQs:</strong> EXTI5-9 ve EXTI10-15 paylaşımlı IRQ kullanır</li>
+<li><strong>Pin Mapping:</strong> Aynı pin numarası farklı portlarda aynı EXTI hattını kullanır (PA0, PB0, PC0 -> EXTI0)</li>
+<li><strong>Callback Safety:</strong> Callback functionları kısa olmalı (ağır işlemler main loop'a ertelenmeli)</li>
+<li><strong>Debounce:</strong> Donanım debounce yok, yazılım filtreleme gerekli</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Support</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>EXTI Hatları</th>
+<th>Interrupt Groups</th>
+<th>Event Mode</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>20 (0-15 + 4 özel)</td>
+<td>7 IRQ</td>
+<td>Evet</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>23 (0-15 + 8 özel)</td>
+<td>7 IRQ</td>
+<td>Evet</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>23</td>
+<td>7 IRQ</td>
+<td>Evet</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>20</td>
+<td>ECLIC (47 IRQ)</td>
+<td>Evet</td>
+</tr>
+<tr>
+<td>ESP32</td>
+<td>Tüm GPIO</td>
+<td>2 CPU core</td>
+<td>Hayır</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>Debounce kullan:</strong> Mekanik butonlarda 20-50ms debounce uygula</li>
+<li>✅ <strong>Callback kısa olsun:</strong> Interrupt handler'da minimum işlem do, flag set et</li>
+<li>✅ <strong>Priority ayarla:</strong> Kritik olaylar for düşük priority numarası kullan</li>
+<li>✅ <strong>Pending temizle:</strong> Interrupt handler endunda pending bit'i temizle</li>
+<li>❌ <strong>Float işlem doma:</strong> Interrupt'ta floating-point hesaplamalardan kaçın</li>
+<li>❌ <strong>Uzun delay kullanma:</strong> Blocking delay callback forde kullanılmamalı</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="hal-gpio-en.html">hal::gpio</a> - GPIO pin configuration</li>
+<li><a href="hal-nvic-en.html">hal::nvic</a> - Interrupt priority management</li>
+<li><a href="hal-power-en.html">hal::power</a> - Low power modes with wakeup</li>
+<li><a href="hal-systick-en.html">hal::systick</a> - Timing for debounce</li>
+<li><a href="hal-timer-en.html">hal::timer</a> - Hardware encoder mode</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-en.html">🔙 HAL Modules</a> | 
+<a href="hal-exti-en.html">🌐 Turkish</a>
+</p>
+</main>
+</div>
+</body>
+</html>
+

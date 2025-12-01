@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>physics2d - 2D Fizik Motoru | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚽ physics2d - 2D Fizik Motoru</h1>
+<p>Rigid Body, Collision Detection, Constraints, Forces</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">192</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">3,317</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">109 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar physics2d
+
+// Dünya oluştur
+değişken dünya = physics2d.world_create([0.0, -9.81])  // Yerçekimi
+
+// Zemin (statik body)
+değişken zemin = physics2d.body_create_static()
+değişken zemin_shape = physics2d.box_shape(10.0, 0.5)
+physics2d.body_add_shape(zemin, zemin_shape)
+physics2d.body_set_position(zemin, [0.0, -5.0])
+physics2d.world_add_body(dünya, zemin)
+
+// Kutu (dinamik body)
+değişken kutu = physics2d.body_create_dynamic(1.0)  // 1kg
+değişken kutu_shape = physics2d.box_shape(1.0, 1.0)
+physics2d.body_add_shape(kutu, kutu_shape)
+physics2d.body_set_position(kutu, [0.0, 5.0])
+physics2d.world_add_body(dünya, kutu)
+
+// Simülasyon
+değişken dt = 1.0 / 60.0  // 60 FPS
+
+döngü yap
+    physics2d.world_step(dünya, dt)
+    
+    değişken pos = physics2d.body_get_position(kutu)
+    yazdır("Kutu pozisyonu: " + pos[0].yazıya() + ", " + pos[1].yazıya())
+    
+    eğer pos[1] < -10.0 ise yap
+        kır
+    son
+son</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li><strong>Rigid Body Dynamics:</strong> Kütle, hız, açısal momentum</li>
+<li><strong>Shapes:</strong> Circle, Box, Polygon, Edge, Chain</li>
+<li><strong>Collision Detection:</strong> Broad phase (AABB tree), narrow phase (SAT, GJK)</li>
+<li><strong>Constraints:</strong> Distance joint, revolute joint, prismatic joint, weld joint</li>
+<li><strong>Forces:</strong> Gravity, damping, friction, restitution</li>
+<li><strong>Queries:</strong> Raycast, AABB query, shape query</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Angry Birds Tarzı Fırlatma</h3>
+<pre><code>içe_aktar physics2d, graphics
+
+değişken dünya = physics2d.world_create([0.0, -9.81])
+
+// Sapan noktası
+değişken sapan_pos = [-5.0, 0.0]
+
+// Kuş
+değişken kuş = physics2d.body_create_dynamic(0.5)
+değişken kuş_shape = physics2d.circle_shape(0.3)
+physics2d.body_add_shape(kuş, kuş_shape)
+physics2d.body_set_position(kuş, sapan_pos)
+physics2d.world_add_body(dünya, kuş)
+
+// Hedef (kutular)
+fonksiyon kutu_oluştur(x: kesir, y: kesir) -> Body yap
+    değişken body = physics2d.body_create_dynamic(1.0)
+    değişken shape = physics2d.box_shape(0.5, 0.5)
+    physics2d.body_add_shape(body, shape)
+    physics2d.body_set_position(body, [x, y])
+    physics2d.world_add_body(dünya, body)
+    dön body
+son
+
+// Piramit
+değişken kutular = []
+her y içinde aralık(0, 5) için yap
+    her x içinde aralık(0, 5 - y) için yap
+        kutular.ekle(kutu_oluştur(5.0 + x.kesir() - y.kesir() * 0.25, y.kesir() + 0.5))
+    son
+son
+
+// Kullanıcı girdisi (mouse drag)
+değişken mouse_down = yanlış
+değişken drag_start = [0.0, 0.0]
+
+fonksiyon mouse_press(pos: Dizi) yap
+    mouse_down = doğru
+    drag_start = pos
+son
+
+fonksiyon mouse_release(pos: Dizi) yap
+    eğer mouse_down ise yap
+        // Fırlatma hızını hesapla
+        değişken delta = [drag_start[0] - pos[0], drag_start[1] - pos[1]]
+        değişken velocity = [delta[0] * 10.0, delta[1] * 10.0]
+        
+        physics2d.body_set_velocity(kuş, velocity)
+        mouse_down = yanlış
+    son
+son
+
+// Render loop
+döngü yap
+    physics2d.world_step(dünya, 1.0/60.0)
+    
+    // Render kuş
+    değişken kuş_pos = physics2d.body_get_position(kuş)
+    graphics.draw_circle(kuş_pos[0], kuş_pos[1], 0.3)
+    
+    // Render kutular
+    her kutu içinde kutular için yap
+        değişken pos = physics2d.body_get_position(kutu)
+        değişken angle = physics2d.body_get_angle(kutu)
+        graphics.draw_box(pos[0], pos[1], 0.5, 0.5, angle)
+    son
+son</code></pre>
+</div>
+<div class="example-box">
+<h3>Ragdoll Physics</h3>
+<pre><code>içe_aktar physics2d
+
+fonksiyon ragdoll_oluştur(dünya: World, x: kesir, y: kesir) -> Ragdoll yap
+    // Baş
+    değişken baş = physics2d.body_create_dynamic(5.0)
+    physics2d.body_add_shape(baş, physics2d.circle_shape(0.3))
+    physics2d.body_set_position(baş, [x, y + 1.5])
+    physics2d.world_add_body(dünya, baş)
+    
+    // Gövde
+    değişken gövde = physics2d.body_create_dynamic(10.0)
+    physics2d.body_add_shape(gövde, physics2d.box_shape(0.4, 0.8))
+    physics2d.body_set_position(gövde, [x, y + 0.5])
+    physics2d.world_add_body(dünya, gövde)
+    
+    // Baş-gövde revolute joint
+    değişken boyun = physics2d.revolute_joint_create(
+        baş, gövde,
+        [x, y + 1.2],
+        -0.5, 0.5  // Angle limits
+    )
+    physics2d.world_add_joint(dünya, boyun)
+    
+    // Sol kol
+    değişken sol_kol = physics2d.body_create_dynamic(2.0)
+    physics2d.body_add_shape(sol_kol, physics2d.box_shape(0.15, 0.5))
+    physics2d.body_set_position(sol_kol, [x - 0.5, y + 0.5])
+    physics2d.world_add_body(dünya, sol_kol)
+    
+    değişken sol_omuz = physics2d.revolute_joint_create(
+        gövde, sol_kol,
+        [x - 0.3, y + 0.7],
+        -1.57, 1.57  // ±90 derece
+    )
+    physics2d.world_add_joint(dünya, sol_omuz)
+    
+    // Sağ kol (benzer şekilde)
+    // Sol bacak, sağ bacak...
+    
+    dön yap
+        baş: baş,
+        gövde: gövde,
+        sol_kol: sol_kol
+        // ...
+    son
+son
+
+değişken dünya = physics2d.world_create([0.0, -9.81])
+değişken ragdoll = ragdoll_oluştur(dünya, 0.0, 5.0)
+
+// Ragdoll'a darbe
+physics2d.body_apply_impulse(ragdoll.baş, [5.0, 0.0], [0.0, 0.0])</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

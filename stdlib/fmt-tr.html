@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>fmt - Formatting | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎨 fmt - Formatting</h1>
+<p>printf, format!, Display, Debug</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">512</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">16 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar fmt
+
+// printf style
+fmt.printf("Merhaba %s, yaşın %d\n", "Ali", 25)
+
+// Rust style (format!)
+değişken msg = fmt.format("Sonuç: {}, Durum: {}", 42, "OK")
+
+// Formatting options
+fmt.printf("Float: %.2f\n", 3.14159)  // 3.14
+fmt.printf("Hex: %#x\n", 255)  // 0xff
+fmt.printf("Binary: %b\n", 42)  // 101010</code></pre>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Table Formatter</h3>
+<pre><code>içe_aktar fmt
+
+fonksiyon print_table(headers: Dizi, rows: Dizi) yap
+    // Column widths
+    değişken widths = headers.map(fonksiyon(h) yap dön h.uzunluk() son)
+    
+    // Header
+    her (i, h) içinde headers.enumerate() için yap
+        fmt.printf("%-*s ", widths[i], h)
+    son
+    fmt.printf("\n")
+    
+    // Separator
+    her w içinde widths için yap
+        fmt.printf("%s ", "-".repeat(w))
+    son
+    fmt.printf("\n")
+    
+    // Rows
+    her row içinde rows için yap
+        her (i, cell) içinde row.enumerate() için yap
+            fmt.printf("%-*s ", widths[i], cell)
+        son
+        fmt.printf("\n")
+    son
+son
+
+print_table(
+    ["Name", "Age", "City"],
+    [
+        ["Ali", "25", "Istanbul"],
+        ["Ayşe", "30", "Ankara"]
+    ]
+)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

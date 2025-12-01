@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>websocket - WebSocket Protocol | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔌 websocket</h1>
+<p>WebSocket Protocol - Real-Time Bidirectional Communication</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~800 satır</span>
+<span class="stat-badge">~45 fonksiyon</span>
+<span class="stat-badge">RFC 6455</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>WebSocket modülü, RFC 6455 uyumlu tam özellikli WebSocket client ve server sağlar. Real-time chat, live notifications, multiplayer games ve IoT için idealdir.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>RFC 6455 compliant</li>
+<li>Client & server support</li>
+<li>Text & binary messages</li>
+<li>Ping/pong keepalive</li>
+<li>Message fragmentation</li>
+<li>UTF-8 validation</li>
+<li>Graceful close handshake</li>
+<li>Event-driven API</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç - Client</h2>
+<pre><code>içe_aktar websocket olarakws
+
+fonksiyon ana() yap
+    // Connect
+    değişken client = ws.connect("ws://localhost:8080")?
+    
+    // Event handlers
+    client.on_open(|| yap
+        io.println("Connected!")
+    son)
+    
+    client.on_message(|msg| yap
+        io.println("Received: {}", msg.text())
+    son)
+    
+    // Send message
+    client.send_text("Hello Server!")?
+    
+    // Keep alive
+    client.run()
+son</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: Real-Time Chat Server</h3>
+<pre><code>içe_aktar websocket olarakws, thread, collections
+
+yapı ChatServer yap
+    clients: Map[sayı, ws.Connection],
+    next_id: sayı
+son
+
+fonksiyon chat_server_new() -> ChatServer yap
+    ChatServer yap
+        clients: Map.new(),
+        next_id: 1
+    son
+son
+
+fonksiyon broadcast(server: ChatServer, message: yazı, sender_id: sayı) yap
+    her (id, client) içinde server.clients için yap
+        eğer id != sender_id ise yap
+            client.send_text(message).ok()
+        son
+    son
+son
+
+fonksiyon handle_client(server: ChatServer, conn: ws.Connection, client_id: sayı) yap
+    io.println("Client {} connected", client_id)
+    
+    // Welcome message
+    conn.send_text("Welcome to chat! Your ID: {}".formatla(client_id))?
+    
+    // Announce to others
+    broadcast(server, "User {} joined".formatla(client_id), client_id)
+    
+    // Message loop
+    döngü yap
+        değişken msg = conn.receive()?
+        
+        eşle msg.opcode yap
+            ws.TEXT => yap
+                değişken text = msg.text()
+                io.println("[{}] {}", client_id, text)
+                
+                // Broadcast to all
+                değişken broadcast_msg = "[{}] {}".formatla(client_id, text)
+                broadcast(server, broadcast_msg, client_id)
+            son,
+            
+            ws.CLOSE => yap
+                io.println("Client {} disconnected", client_id)
+                server.clients.remove(client_id)
+                broadcast(server, "User {} left".formatla(client_id), client_id)
+                kır
+            son,
+            
+            ws.PING => yap
+                conn.send_pong(msg.data)?
+            son,
+            
+            _ => yap son
+        son
+    son
+son
+
+fonksiyon ana() yap
+    değişken server = chat_server_new()
+    değişken ws_server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Chat server listening on ws://localhost:8080")
+    
+    döngü yap
+        // Accept new connections
+        değişken conn = ws_server.accept()?
+        
+        değişken client_id = server.next_id
+        server.next_id += 1
+        server.clients.insert(client_id, conn.clone())
+        
+        // Spawn thread for each client
+        thread.spawn(|| yap
+            handle_client(server, conn, client_id)
+        son)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Live Dashboard (Data Streaming)</h3>
+<pre><code>içe_aktar websocket olarakws, time, thread, json
+
+yapı SystemStats yap
+    cpu_usage: kesir,
+    memory_usage: kesir,
+    disk_usage: kesir,
+    timestamp: time.Instant
+son
+
+fonksiyon collect_stats() -> SystemStats yap
+    SystemStats yap
+        cpu_usage: sys.cpu_usage(),
+        memory_usage: sys.memory_usage(),
+        disk_usage: sys.disk_usage(),
+        timestamp: time.now()
+    son
+son
+
+fonksiyon stream_stats_to_client(conn: ws.Connection) yap
+    io.println("Dashboard client connected")
+    
+    döngü yap
+        // Collect system stats
+        değişken stats = collect_stats()
+        
+        // Send as JSON
+        değişken json_data = json.encode(stats)
+        
+        eşle conn.send_text(json_data) yap
+            Tamam(_) => yap son,
+            Hata(_) => yap
+                io.println("Client disconnected")
+                kır
+            son
+        son
+        
+        // Update every second
+        thread.sleep_ms(1000)
+    son
+son
+
+fonksiyon ana() yap
+    değişken server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Dashboard server: ws://localhost:8080")
+    
+    döngü yap
+        değişken conn = server.accept()?
+        
+        thread.spawn(|| yap
+            stream_stats_to_client(conn)
+        son)
+    son
+son
+
+// HTML Client
+// &lt;script&gt;
+//   const ws = new WebSocket('ws://localhost:8080');
+//   ws.onmessage = (e) => {
+//     const stats = JSON.parse(e.data);
+//     document.getElementById('cpu').textContent = stats.cpu_usage + '%';
+//     document.getElementById('memory').textContent = stats.memory_usage + '%';
+//   };
+// &lt;/script&gt;</code></pre>
+</div>
+
+<h2>🎮 Use Cases</h2>
+<ul>
+<li>Real-time chat applications</li>
+<li>Live notifications</li>
+<li>Multiplayer games</li>
+<li>Stock/crypto price feeds</li>
+<li>IoT device communication</li>
+<li>Collaborative editing</li>
+<li>Live dashboards</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>http</code> - HTTP upgrade</li>
+<li><code>network</code> - Socket operations</li>
+<li><code>json</code> - Message serialization</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

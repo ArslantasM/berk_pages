@@ -1,0 +1,484 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::dac - Digital-to-Analog Converter | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#3498db;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📈 hal::dac</h1>
+<p>Digital-to-Analog Converter - Analog Sinyal Üretimi</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 satır</span>
+<span class="stat-badge">~10 fonksiyon</span>
+<span class="stat-badge">12-bit</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>DAC modülü, dijital değerleri analog voltaja dönüştürür. Dalga üretimi, audio, sensör simülasyonu için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>12-bit resolution (0-4095)</li>
+<li>2 output channels</li>
+<li>DMA support</li>
+<li>Triangle/Noise wave generation</li>
+<li>Timer trigger</li>
+<li>Output buffer</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::dac, hal::gpio
+
+// DAC pin (PA4 = DAC_OUT1)
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_ANALOG son)
+
+// Initialize DAC
+değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+
+// Output voltage (0-3.3V)
+dac.write(dac1, 2048)  // ~1.65V (mid-scale)</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: Sine Wave Generator</h3>
+<pre><code>içe_aktar hal::dac, hal::timer, math
+
+sabit SAMPLES = 100
+
+fonksiyon generate_sine_wave() yap
+    // Generate sine wave lookup table
+    değişken sine_table = [0u16; SAMPLES]
+    her i içinde 0..SAMPLES için yap
+        değişken angle = 2.0 * math.PI * i.kesir() / SAMPLES.kesir()
+        değişken value = (math.sin(angle) + 1.0) * 2047.5
+        sine_table[i] = value.sayı()
+    son
+    
+    // Setup DAC with DMA
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    dac.enable_dma(dac1)
+    
+    // Timer trigger (1kHz = 1kHz sine with 100 samples)
+    değişken tim6 = timer.init_basic(timer.TIM6, yap
+        frequency: 100_000  // 100kHz update rate
+    son)
+    
+    dac.set_trigger(dac1, dac.TRIGGER_TIM6)
+    
+    // Start DMA circular mode
+    dma.circular_transfer(dac.get_dma_channel(), 
+        sine_table.as_ptr(),
+        dac.get_data_register(dac1),
+        SAMPLES
+    )
+    
+    timer.start(tim6)
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Audio Tone Generator</h3>
+<pre><code>içe_aktar hal::dac, math
+
+fonksiyon play_tone(freq: kesir, duration_ms: sayı) yap
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    değişken sample_rate = 8000.0  // 8kHz
+    değişken samples = (sample_rate * duration_ms.kesir() / 1000.0).sayı()
+    
+    her i içinde 0..samples için yap
+        değişken t = i.kesir() / sample_rate
+        değişken value = (math.sin(2.0 * math.PI * freq * t) + 1.0) * 2047.5
+        dac.write(dac1, value.sayı())
+        core.delay_us(125)  // 8kHz = 125us per sample
+    son
+son
+
+fonksiyon ana() yap
+    // Play musical scale (C4 to C5)
+    değişken freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
+    
+    her freq içinde freqs için yap
+        play_tone(freq, 500)  // 500ms each note
+        core.delay_ms(100)    // 100ms gap
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Function Generator (Triangle, Sawtooth, Square)</h3>
+<pre><code>içe_aktar hal::dac, hal::timer, hal::dma
+
+enum Waveform {
+    SINE,
+    TRIANGLE,
+    SAWTOOTH,
+    SQUARE
+}
+
+sabit SAMPLES = 256
+
+fonksiyon generate_waveform(waveform: Waveform, freq: kesir) yap
+    değişken wave_table = [0u16; SAMPLES]
+    
+    // Generate waveform lookup table
+    her i içinde 0..SAMPLES için yap
+        değişken phase = i.kesir() / SAMPLES.kesir()
+        
+        değişken value = eşle waveform yap
+            Waveform::SINE => yap
+                değişken angle = 2.0 * math.PI * phase
+                (math.sin(angle) + 1.0) * 2047.5
+            son,
+            
+            Waveform::TRIANGLE => yap
+                eğer phase < 0.5 ise yap
+                    phase * 4.0 * 4095.0
+                son yoksa yap
+                    (1.0 - (phase - 0.5) * 2.0) * 4095.0
+                son
+            son,
+            
+            Waveform::SAWTOOTH => yap
+                phase * 4095.0
+            son,
+            
+            Waveform::SQUARE => yap
+                eğer phase < 0.5 ise 4095.0 yoksa 0.0
+            son
+        son
+        
+        wave_table[i] = value.sayı()
+    son
+    
+    // Setup DAC with DMA + Timer trigger
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1, yap
+        trigger: dac.TRIGGER_TIM6,
+        dma_enable: doğru
+    son)
+    
+    // Timer frequency = desired_freq * SAMPLES
+    değişken tim6 = timer.init_basic(timer.TIM6, yap
+        frequency: (freq * SAMPLES.kesir()).sayı()
+    son)
+    
+    // DMA circular mode
+    değişken dma_ch = dma.init(dma.DMA1, dma.STREAM5, yap
+        direction: dma.M2P,
+        src_address: wave_table.as_ptr(),
+        dst_address: dac.get_data_register(dac1),
+        data_count: SAMPLES,
+        src_increment: doğru,
+        dst_increment: yanlış,
+        circular: doğru,
+        data_size: dma.SIZE_16BIT
+    son)
+    
+    dma.start(dma_ch)
+    timer.start(tim6)
+    
+    io.println("Generating {} waveform at {}Hz", waveform, freq)
+son
+
+fonksiyon ana() yap
+    // Generate 1kHz triangle wave
+    generate_waveform(Waveform::TRIANGLE, 1000.0)
+    
+    döngü yap
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Dual Channel DAC (Stereo Output)</h3>
+<pre><code>içe_aktar hal::dac, hal::gpio
+
+fonksiyon dac_dual_init() -> (dac.Handle, dac.Handle) yap
+    // PA4 = DAC_OUT1 (left channel)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 4, yap mode: gpio.MODE_ANALOG son)
+    
+    // PA5 = DAC_OUT2 (right channel)
+    gpio.pin_init(gpio.PORT_A, 5, yap mode: gpio.MODE_ANALOG son)
+    
+    // Initialize both channels
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    değişken dac2 = dac.init(dac.DAC1, dac.CHANNEL_2)
+    
+    dön (dac1, dac2)
+son
+
+fonksiyon stereo_tone(left_freq: kesir, right_freq: kesir) yap
+    değişken (dac_left, dac_right) = dac_dual_init()
+    
+    değişken sample_rate = 8000.0
+    
+    her i içinde 0..8000 için yap  // 1 second
+        değişken t = i.kesir() / sample_rate
+        
+        // Left channel
+        değişken left_val = (math.sin(2.0 * math.PI * left_freq * t) + 1.0) * 2047.5
+        dac.write(dac_left, left_val.sayı())
+        
+        // Right channel
+        değişken right_val = (math.sin(2.0 * math.PI * right_freq * t) + 1.0) * 2047.5
+        dac.write(dac_right, right_val.sayı())
+        
+        core.delay_us(125)
+    son
+son
+
+fonksiyon ana() yap
+    // Stereo test: 440Hz left, 880Hz right
+    stereo_tone(440.0, 880.0)
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Voltage Reference / Sensor Simulation</h3>
+<pre><code>içe_aktar hal::dac
+
+fonksiyon voltage_to_dac(voltage: kesir) -> u16 yap
+    // DAC: 0-3.3V = 0-4095
+    değişken dac_val = (voltage / 3.3) * 4095.0
+    dön dac_val.clamp(0.0, 4095.0).sayı()
+son
+
+fonksiyon simulate_temperature_sensor() yap
+    // Simulate LM35 temperature sensor (10mV/°C)
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Simulate 25°C room temperature
+    değişken temp_c = 25.0
+    
+    döngü yap
+        // LM35: 10mV per degree Celsius
+        değişken voltage = temp_c * 0.01  // 25°C = 0.25V
+        
+        dac.write(dac1, voltage_to_dac(voltage))
+        
+        io.println("Simulating {}°C ({}V)", temp_c, voltage)
+        
+        // Slowly vary temperature
+        temp_c += 0.5
+        eğer temp_c > 40.0 ise temp_c = 20.0
+        
+        core.delay_ms(1000)
+    son
+son
+
+fonksiyon calibration_voltages() yap
+    // Generate precise reference voltages for ADC calibration
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    değişken test_voltages = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.3]
+    
+    her voltage içinde test_voltages için yap
+        dac.write(dac1, voltage_to_dac(voltage))
+        io.println("Output: {}V (measure with ADC)", voltage)
+        core.delay_ms(5000)  // Hold for 5 seconds
+    son
+son
+
+fonksiyon ana() yap
+    simulate_temperature_sensor()
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: PWM-like DC Motor Control via DAC</h3>
+<pre><code>içe_aktar hal::dac
+
+fonksiyon motor_speed_control() yap
+    // DAC output -> Motor driver analog input
+    değişken dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Speed ramp up
+    io.println("Motor ramping up...")
+    her speed içinde 0..=100 için yap
+        değişken voltage = (speed.kesir() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    son
+    
+    // Hold max speed
+    io.println("Motor at max speed")
+    core.delay_ms(2000)
+    
+    // Speed ramp down
+    io.println("Motor ramping down...")
+    her speed içinde (0..=100).rev() için yap
+        değişken voltage = (speed.kesir() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    son
+    
+    io.println("Motor stopped")
+son
+
+fonksiyon voltage_to_dac(voltage: kesir) -> u16 yap
+    dön ((voltage / 3.3) * 4095.0).clamp(0.0, 4095.0).sayı()
+son
+
+fonksiyon ana() yap
+    döngü yap
+        motor_speed_control()
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<h2>⚙️ DAC Yapılandırma</h2>
+<pre><code>// DAC Configuration
+yapı DACConfig yap
+    channel: Channel,           // CHANNEL_1 or CHANNEL_2
+    trigger: Trigger,           // Software, Timer, EXTI
+    output_buffer: bool,        // Enable for external loads
+    dma_enable: bool,           // DMA for waveform generation
+    noise_wave: bool,           // Noise generation
+    triangle_wave: bool,        // Triangle generation
+    amplitude: sayı             // Wave amplitude (0-12)
+son
+
+// Trigger Sources
+enum Trigger {
+    SOFTWARE,    // Manual trigger
+    TIM2_TRGO,   // Timer 2
+    TIM4_TRGO,   // Timer 4
+    TIM6_TRGO,   // Timer 6
+    TIM7_TRGO,   // Timer 7
+    EXTI9        // External line 9
+}
+
+// Channels
+enum Channel {
+    CHANNEL_1,  // PA4
+    CHANNEL_2   // PA5
+}</code></pre>
+
+<h2>📚 DAC Fonksiyonları</h2>
+<pre><code>// Initialization
+fonksiyon init(dac: DACInstance, channel: Channel) -> Handle
+fonksiyon init_with_config(dac: DACInstance, config: DACConfig) -> Handle
+
+// Basic output
+fonksiyon write(handle: Handle, value: u16)  // 0-4095
+fonksiyon write_voltage(handle: Handle, voltage: kesir)  // 0.0-3.3V
+
+// Advanced features
+fonksiyon enable_dma(handle: Handle)
+fonksiyon set_trigger(handle: Handle, trigger: Trigger)
+fonksiyon software_trigger(handle: Handle)
+
+// Waveform generation
+fonksiyon enable_noise_wave(handle: Handle, amplitude: sayı)
+fonksiyon enable_triangle_wave(handle: Handle, amplitude: sayı)
+
+// Utility
+fonksiyon get_data_register(handle: Handle) -> *değişken u16
+fonksiyon clock_enable()
+fonksiyon clock_disable()</code></pre>
+
+<h2>📊 DAC Kullanım Senaryoları</h2>
+<table style="width:100%;border-collapse:collapse">
+<tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Uygulama</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Frekans</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Yöntem</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Açıklama</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DC Voltage Reference</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Static</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Manual write</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Calibration, sensor simulation</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Tone (8kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">100Hz-4kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Software loop</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Simple beeper, alarms</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Waveform Generator</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">1Hz-10kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DMA + Timer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Function generator, test equipment</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Playback (44kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">20Hz-20kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DMA + I2S/Timer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Music, voice synthesis</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Motor Speed Control</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DC-100Hz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Slow updates</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Analog motor driver input</td>
+</tr>
+</table>
+
+<h2>⚡ Performans İpuçları</h2>
+<ul>
+<li><strong>DMA + Timer</strong>: Kullanın waveform generation için (CPU-free)</li>
+<li><strong>Lookup Tables</strong>: Pre-calculate sine/triangle değerleri</li>
+<li><strong>Output Buffer</strong>: Enable edin external load (>5kΩ) için</li>
+<li><strong>Dual Channel</strong>: Stereo veya differential output için kullanın</li>
+<li><strong>Trigger Source</strong>: Timer trigger precise timing için ideal</li>
+</ul>
+
+<h2>🖥️ Platform Desteği</h2>
+<ul>
+<li><strong>STM32F1</strong>: 2-channel 12-bit DAC</li>
+<li><strong>STM32F4</strong>: 2-channel 12-bit DAC, up to 1 MSPS</li>
+<li><strong>STM32L4</strong>: 2-channel 12-bit DAC, ultra-low-power</li>
+<li><strong>STM32H7</strong>: 2-channel 12-bit DAC, up to 1 MSPS</li>
+<li><strong>GD32</strong>: Compatible DAC</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li><strong>Voltage Range</strong>: 0V - 3.3V (VDDA reference)</li>
+<li><strong>Output Current</strong>: Maximum ~5mA without buffer, 10-20mA with buffer</li>
+<li><strong>Output Buffer</strong>: Enable for loads < 5kΩ impedance</li>
+<li><strong>Pin Mapping</strong>: PA4 = DAC_OUT1, PA5 = DAC_OUT2 (fixed, no alternate)</li>
+<li><strong>Resolution</strong>: 12-bit (0-4095), right-aligned or left-aligned</li>
+<li><strong>Sample Rate</strong>: Up to 1 MSPS with DMA + Timer trigger</li>
+<li><strong>Noise/Triangle</strong>: Hardware waveform generation modu (test için ideal)</li>
+<li><strong>Dual Mode</strong>: Her iki channel simultane güncelleme (synchronized output)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>hal::timer</code> - DAC trigger source</li>
+<li><code>hal::dma</code> - Waveform generation</li>
+<li><code>hal::adc</code> - ADC-DAC loopback test</li>
+<li><code>hal::gpio</code> - Pin configuration</li>
+</ul>
+
+<h2>📖 Referanslar</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00087957.pdf">AN3126: Audio and Waveform Generation using DAC</a></li>
+<li>Reference Manual: Digital-to-analog converter (DAC) chapter</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

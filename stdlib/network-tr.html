@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>network - Ağ Programlama | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🌐 network - Ağ Programlama</h1>
+<p>TCP, UDP, Socket, DNS, TLS/SSL</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">84</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,043</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">32 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar network
+
+// TCP Client
+değişken socket = network.tcp_connect("example.com", 80)
+network.send(socket, "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
+değişken yanıt = network.receive(socket, 1024)
+yazdır(yanıt)
+network.close(socket)
+
+// TCP Server
+değişken sunucu = network.tcp_listen("127.0.0.1", 8080)
+yazdır("Server listening on 127.0.0.1:8080")
+
+döngü yap
+    değişken client = network.accept(sunucu)
+    değişken mesaj = network.receive(client, 1024)
+    network.send(client, "Echo: " + mesaj)
+    network.close(client)
+son
+
+// UDP
+değişken udp = network.udp_socket()
+network.udp_send_to(udp, "Merhaba", "127.0.0.1", 9000)
+değişken (data, addr, port) = network.udp_receive_from(udp, 1024)</code></pre>
+<h2>📚 Protokoller</h2>
+<ul>
+<li><strong>TCP:</strong> Reliable, connection-oriented streaming</li>
+<li><strong>UDP:</strong> Unreliable, connectionless datagram</li>
+<li><strong>TLS/SSL:</strong> Encrypted TCP connections</li>
+<li><strong>DNS:</strong> Domain name resolution</li>
+<li><strong>WebSocket:</strong> Full-duplex communication</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Multi-threaded TCP Server</h3>
+<pre><code>içe_aktar network, thread
+
+fonksiyon handle_client(client: Socket) yap
+    dene yap
+        döngü yap
+            değişken data = network.receive(client, 1024)
+            
+            eğer data.uzunluk() == 0 ise yap
+                kır  // Client disconnected
+            son
+            
+            yazdır("Alındı: " + data)
+            network.send(client, "Echo: " + data)
+        son
+    son yakala hata yap
+        yazdır("Client hatası: " + hata.mesaj())
+    son sonunda yap
+        network.close(client)
+    son
+son
+
+fonksiyon sunucu_başlat() yap
+    değişken sunucu = network.tcp_listen("0.0.0.0", 8080)
+    yazdır("Server running on port 8080")
+    
+    döngü yap
+        değişken client = network.accept(sunucu)
+        değişken client_addr = network.peer_addr(client)
+        yazdır("Yeni bağlantı: " + client_addr)
+        
+        // Her client için yeni thread
+        thread.spawn(fonksiyon() yap
+            handle_client(client)
+        son)
+    son
+son
+
+sunucu_başlat()</code></pre>
+</div>
+<div class="example-box">
+<h3>HTTP Client with TLS</h3>
+<pre><code>içe_aktar network, crypto
+
+fonksiyon https_get(host: yazı, path: yazı) -> Sonuç yap
+    // DNS çözümleme
+    değişken ip = network.dns_resolve(host)
+    
+    // TLS socket
+    değişken socket = network.tcp_connect(ip, 443)
+    değişken tls = network.tls_wrap(socket, host)
+    
+    // HTTP request
+    değişken request = "GET " + path + " HTTP/1.1\r\n" +
+                      "Host: " + host + "\r\n" +
+                      "Connection: close\r\n\r\n"
+    
+    network.tls_send(tls, request)
+    
+    // Response okuma
+    değişken yanıt = ""
+    döngü yap
+        değişken chunk = network.tls_receive(tls, 4096)
+        eğer chunk.uzunluk() == 0 ise yap
+            kır
+        son
+        yanıt = yanıt + chunk
+    son
+    
+    network.tls_close(tls)
+    dön Tamam(yanıt)
+son
+
+değişken sonuç = https_get("api.github.com", "/users/arslantasm")
+eğer sonuç.tamam_mı() ise yap
+    yazdır(sonuç.çıkar())
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

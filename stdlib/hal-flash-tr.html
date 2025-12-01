@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::flash - Flash Memory | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💾 hal::flash</h1>
+<p>Flash Memory Programming - Program Storage and Data Persistence</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~340 satır</span>
+<span class="stat-badge">~15 fonksiyon</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Flash memory modülü, mikrokontrolcünün dahili flash belleğine program kodu yazma, okuma ve silme işlemlerini sağlar. Kalıcı veri saklama, firmware güncelleme (OTA), konfigürasyon ayarları ve EEPROM emülasyonu için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Program memory read/write/erase</li>
+<li>Page/sector based erase operations</li>
+<li>Mass erase support</li>
+<li>Write protection mechanisms</li>
+<li>Option bytes programming</li>
+<li>Dual-bank flash (F4/F7)</li>
+<li>ECC error detection</li>
+<li>Flash memory locking</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::flash
+
+// Unlock flash for writing
+flash.unlock()
+
+// Erase a page
+flash.erase_page(0x0801F800)  // Last page
+
+// Write data
+değişken data = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+flash.write(0x0801F800, data)
+
+// Lock flash
+flash.lock()
+
+// Read back
+değişken value = flash.read_word(0x0801F800)
+io.println("Okunan değer: 0x" + value.to_hex())</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Flash Latency
+enum Latency {
+    WS0,  // 0 wait state
+    WS1,  // 1 wait state
+    WS2,  // 2 wait states
+    WS3,  // 3 wait states
+    WS4,  // 4 wait states
+    WS5   // 5 wait states
+}
+
+// Flash Bank
+enum Bank {
+    BANK_1,
+    BANK_2
+}
+
+// Sector Size (STM32F4)
+enum SectorSize {
+    SECTOR_16K,
+    SECTOR_64K,
+    SECTOR_128K
+}
+
+yapı FlashInfo yap
+    total_size: sayı,      // Bytes
+    page_size: sayı,       // Bytes
+    num_pages: sayı,
+    write_alignment: sayı  // 1, 2, 4, 8 bytes
+son</code></pre>
+
+<h2>💡 Örnek 1: EEPROM Emulation</h2>
+<div class="example-box">
+<h3>Flash'ta key-value storage sistemi</h3>
+<pre><code>içe_aktar hal::flash
+
+sabit EEPROM_START = 0x0801F000  // Son 4KB
+sabit EEPROM_END = 0x08020000
+sabit MAGIC_HEADER = 0xDEADBEEF
+
+yapı EEPROMEntry yap
+    key: sayı,
+    value: sayı,
+    checksum: sayı
+son
+
+fonksiyon eeprom_write(key: sayı, value: sayı) yap
+    flash.unlock()
+    
+    // Boş slot bul
+    değişken addr = EEPROM_START
+    döngü addr < EEPROM_END için yap
+        değişken magic = flash.read_word(addr)
+        eğer magic == 0xFFFFFFFF ise yap
+            // Boş slot bulundu
+            flash.write_word(addr, MAGIC_HEADER)
+            flash.write_word(addr + 4, key)
+            flash.write_word(addr + 8, value)
+            flash.write_word(addr + 12, key ^ value)  // Checksum
+            
+            çık
+        son
+        addr += 16  // Entry size
+    son
+    
+    flash.lock()
+son
+
+fonksiyon eeprom_read(key: sayı) -> Seçenek[sayı] yap
+    değişken addr = EEPROM_START
+    döngü addr < EEPROM_END için yap
+        değişken magic = flash.read_word(addr)
+        eğer magic == MAGIC_HEADER ise yap
+            değişken stored_key = flash.read_word(addr + 4)
+            eğer stored_key == key ise yap
+                değişken value = flash.read_word(addr + 8)
+                değişken checksum = flash.read_word(addr + 12)
+                
+                // Verify checksum
+                eğer checksum == (key ^ value) ise yap
+                    dön Bazı(value)
+                son
+            son
+        son
+        addr += 16
+    son
+    
+    dön Hiçbiri
+son
+
+fonksiyon eeprom_format() yap
+    flash.unlock()
+    flash.erase_page(EEPROM_START)
+    flash.lock()
+    
+    io.println("EEPROM formatted")
+son
+
+fonksiyon ana() yap
+    // Write configuration
+    eeprom_write(1, 12345)  // key=1, value=12345
+    eeprom_write(2, 67890)
+    
+    // Read back
+    eğer değişken val = eeprom_read(1) ise yap
+        io.println("Key 1: " + val.yazıya())
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 2: Firmware Update (Bootloader)</h2>
+<div class="example-box">
+<h3>OTA firmware güncelleme</h3>
+<pre><code>içe_aktar hal::flash, hal::crc
+
+sabit APP_START = 0x08010000  // Application start
+sabit APP_SIZE = 0x00030000   // 192 KB
+sabit UPDATE_START = 0x08040000  // Update area
+
+yapı FirmwareHeader yap
+    magic: sayı,        // 0x42455247 (BERK)
+    version: sayı,
+    size: sayı,
+    crc32: sayı
+son
+
+fonksiyon firmware_validate(addr: sayı) -> mantık yap
+    // Read header
+    değişken header = flash.read_struct::<FirmwareHeader>(addr)
+    
+    eğer header.magic != 0x42455247 ise yap
+        dön yanlış
+    son
+    
+    // Calculate CRC
+    değişken calculated_crc = crc.calculate(
+        addr + sizeofreşitli, 
+        header.size
+    )
+    
+    dön calculated_crc == header.crc32
+son
+
+fonksiyon firmware_copy(src: sayı, dest: sayı, size: sayı) yap
+    flash.unlock()
+    
+    // Erase destination
+    değişken pages = (size + 2047) / 2048
+    için i içinde 0..pages için yap
+        flash.erase_page(dest + i * 2048)
+    son
+    
+    // Copy data
+    değişken offset = 0
+    döngü offset < size için yap
+        değişken data = flash.read_word(src + offset)
+        flash.write_word(dest + offset, data)
+        offset += 4
+    son
+    
+    flash.lock()
+son
+
+fonksiyon bootloader_ana() yap
+    io.println("Bootloader başlatılıyor...")
+    
+    // Check for update
+    eğer firmware_validate(UPDATE_START) ise yap
+        io.println("Yeni firmware bulundu, güncelleniyor...")
+        
+        değişken header = flash.read_struct::<FirmwareHeader>(UPDATE_START)
+        
+        // Copy new firmware to application area
+        firmware_copy(
+            UPDATE_START,
+            APP_START,
+            header.size
+        )
+        
+        // Verify
+        eğer firmware_validate(APP_START) ise yap
+            io.println("Güncelleme başarılı!")
+            
+            // Clear update area
+            flash.unlock()
+            flash.erase_sector(UPDATE_START)
+            flash.lock()
+        yoksa yap
+            io.println("Güncelleme başarısız!")
+            dön
+        son
+    son
+    
+    // Jump to application
+    io.println("Uygulamaya atlanıyor...")
+    jump_to_application(APP_START)
+son
+
+fonksiyon jump_to_application(addr: sayı) yap
+    // Read stack pointer and reset vector
+    değişken sp = flash.read_word(addr)
+    değişken reset_handler = flash.read_word(addr + 4)
+    
+    // Disable interrupts
+    asm!("cpsid i")
+    
+    // Set stack pointer
+    asm!("msr msp, {}", in(reg) sp)
+    
+    // Jump to reset handler
+    değişken jump: fonksiyon() = transmute(reset_handler)
+    jump()
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 3: Option Bytes Programming</h2>
+<div class="example-box">
+<h3>Read protection ve write protection ayarları</h3>
+<pre><code>içe_aktar hal::flash
+
+enum ReadProtection {
+    LEVEL_0,  // No protection
+    LEVEL_1,  // Memory read protection
+    LEVEL_2   // Permanent protection (irreversible!)
+}
+
+fonksiyon set_read_protection(level: ReadProtection) yap
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    eğer level == ReadProtection.LEVEL_1 ise yap
+        flash.set_option_byte(flash.OB_RDP, 0x00)
+        io.println("UYARI: Read protection Level 1 etkinleştirildi")
+    yoksa eğer level == ReadProtection.LEVEL_2 ise yap
+        io.println("UYARI: Level 2 GERİ ALINAMAZ! Devam edilsin mi? (y/n)")
+        // Level 2 is permanent - chip cannot be debugged anymore!
+    son
+    
+    flash.lock_option_bytes()
+    flash.lock()
+son
+
+fonksiyon protect_bootloader() yap
+    // Protect first 16KB (bootloader area)
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    flash.set_write_protection(yap
+        sectors: [flash.SECTOR_0, flash.SECTOR_1],
+        enable: doğru
+    son)
+    
+    flash.lock_option_bytes()
+    flash.lock()
+    
+    io.println("Bootloader koruması etkinleştirildi")
+son</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Lock/Unlock</h3>
+<pre><code>fonksiyon unlock()
+fonksiyon lock()
+fonksiyon is_locked() -> mantık</code></pre>
+
+<h3>Erase Operations</h3>
+<pre><code>fonksiyon erase_page(address: sayı)
+fonksiyon erase_sector(sector: sayı)
+fonksiyon mass_erase()
+fonksiyon mass_erase_bank(bank: Bank)</code></pre>
+
+<h3>Write Operations</h3>
+<pre><code>fonksiyon write_byte(address: sayı, data: u8)
+fonksiyon write_halfword(address: sayı, data: u16)
+fonksiyon write_word(address: sayı, data: u32)
+fonksiyon write_doubleword(address: sayı, data: u64)
+fonksiyon write(address: sayı, data: Dizi[u32])</code></pre>
+
+<h3>Read Operations</h3>
+<pre><code>fonksiyon read_byte(address: sayı) -> u8
+fonksiyon read_halfword(address: sayı) -> u16
+fonksiyon read_word(address: sayı) -> u32
+fonksiyon read(address: sayı, length: sayı) -> Dizi[u8]</code></pre>
+
+<h3>Option Bytes</h3>
+<pre><code>fonksiyon unlock_option_bytes()
+fonksiyon lock_option_bytes()
+fonksiyon set_option_byte(option: sayı, value: sayı)
+fonksiyon get_option_byte(option: sayı) -> sayı</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>Flash Size</th><th>Page Size</th><th>Write Align</th></tr>
+<tr><td>STM32F1</td><td>64-512 KB</td><td>1-2 KB</td><td>2 bytes</td></tr>
+<tr><td>STM32F4</td><td>512 KB-2 MB</td><td>16-128 KB</td><td>4 bytes</td></tr>
+<tr><td>STM32F7</td><td>1-2 MB</td><td>32-256 KB</td><td>4 bytes</td></tr>
+<tr><td>GD32VF103</td><td>64-128 KB</td><td>1 KB</td><td>4 bytes</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Write alignment:</strong> Data her zaman belirtilen alignment'a uygun olmalı</li>
+<li><strong>Erase before write:</strong> Flash sadece 1 → 0 yazabilir, önce erase (0xFF) gerekli</li>
+<li><strong>Wear leveling:</strong> Aynı sayfaya çok sık yazma yapılmamalı (100K cycle limit)</li>
+<li><strong>Power loss:</strong> Yazma sırasında güç kaybında data corruption olabilir</li>
+<li><strong>Interrupts:</strong> Flash programming sırasında interrupt'ları dikkatli kullanın</li>
+<li><strong>Read-while-write:</strong> Bazı MCU'lar yazarken okuma yapamaz</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>Flash programming CPU'yu bloklar (~20-50ms per page)</li>
+<li>Option bytes Level 2 read protection <strong>geri alınamaz!</strong></li>
+<li>Flash endurance tipik 10K-100K erase cycle</li>
+<li>Data retention: 10+ yıl (25°C'de)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-crc-tr.html">hal::crc</a> - CRC verification for stored data</li>
+<li><a href="hal-watchdog-tr.html">hal::watchdog</a> - Disable during flash erase</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-flash-en.html">🇬🇧 English</a>
+</p>
+</main>
+</div>
+</body>
+</html>

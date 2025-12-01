@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::std - HAL Standard Library | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#34495e 0%,#2c3e50 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📚 hal::std</h1>
+<p>HAL Standard Types & Utilities</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 satır</span>
+<span class="stat-badge">Common Types</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>HAL standard library: common types, error codes, utilities.</p>
+
+<h2>📦 Common Types</h2>
+<pre><code>içe_aktar hal::std
+
+// Result type
+enum HalResult[T] yap
+    Ok(T),
+    Err(HalError)
+son
+
+// Error codes
+enum HalError yap
+    HAL_OK,
+    HAL_ERROR,
+    HAL_BUSY,
+    HAL_TIMEOUT,
+    HAL_UNSUPPORTED
+son
+
+// Handle types
+yapı GpioHandle yap
+    port: Port,
+    pin: sayı,
+    config: PinConfig
+son
+
+yapı TimerHandle yap
+    instance: Timer,
+    channel: Channel,
+    frequency: sayı
+son</code></pre>
+
+<h2>🛠️ Utilities</h2>
+<pre><code>// Bit manipulation
+fonksiyon set_bit(reg: *u32, bit: sayı)
+fonksiyon clear_bit(reg: *u32, bit: sayı)
+fonksiyon toggle_bit(reg: *u32, bit: sayı)
+
+// Conversion helpers
+fonksiyon voltage_to_adc(voltage: kesir) -> u16
+fonksiyon adc_to_voltage(adc_value: u16) -> kesir</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

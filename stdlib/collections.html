@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,146 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="collections---koleksiyonlar"><a class="header" href="#collections---koleksiyonlar">collections - Koleksiyonlar</a></h1>
+                        <div class="module-header">
+<h1>📦 collections - Veri Yapıları</h1>
+<p>Vec, HashMap, HashSet, LinkedList, BTreeMap, BinaryHeap</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">89</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,126</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">34 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar collections
+
+// Vec (dinamik dizi)
+değişken v = collections.vec_new()
+collections.vec_push(v, 10)
+collections.vec_push(v, 20)
+değişken eleman = collections.vec_get(v, 0)
+
+// HashMap
+değişken map = collections.hashmap_new()
+collections.hashmap_insert(map, "name", "BERK")
+collections.hashmap_insert(map, "version", "1.0")
+değişken isim = collections.hashmap_get(map, "name")
+
+// HashSet
+değişken set = collections.hashset_new()
+collections.hashset_insert(set, "apple")
+collections.hashset_insert(set, "banana")
+değişken var_mı = collections.hashset_contains(set, "apple")
+
+// LinkedList
+değişken list = collections.linkedlist_new()
+collections.linkedlist_push_back(list, 1)
+collections.linkedlist_push_front(list, 0)
+
+// BinaryHeap (öncelik kuyruğu)
+değişken heap = collections.heap_new()
+collections.heap_push(heap, 5)
+collections.heap_push(heap, 3)
+değişken en_büyük = collections.heap_pop(heap)  // 5</code></pre>
+<h2>📚 Veri Yapıları</h2>
+<ul>
+<li><strong>Vec:</strong> Dinamik dizi, O(1) erişim, O(1) amortized push</li>
+<li><strong>HashMap:</strong> Hash tablosu, O(1) average insert/get/delete</li>
+<li><strong>HashSet:</strong> Unique elemanlar, O(1) average contains</li>
+<li><strong>LinkedList:</strong> Çift bağlı liste, O(1) push/pop başta/sonda</li>
+<li><strong>BTreeMap:</strong> Sıralı map, O(log n) operations</li>
+<li><strong>BinaryHeap:</strong> Max-heap, O(log n) push/pop, O(1) peek</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Word Frequency Counter</h3>
+<pre><code>içe_aktar collections, string, io
+
+fonksiyon word_frequency(text: yazı) -> HashMap yap
+    değişken freq = collections.hashmap_new()
+    değişken kelimeler = string.böl(text, " ")
+    
+    her kelime içinde kelimeler için yap
+        değişken küçük = string.küçük_harf(kelime)
+        
+        eğer collections.hashmap_contains(freq, küçük) ise yap
+            değişken count = collections.hashmap_get(freq, küçük)
+            collections.hashmap_insert(freq, küçük, count + 1)
+        son değilse yap
+            collections.hashmap_insert(freq, küçük, 1)
+        son
+    son
+    
+    dön freq
+son
+
+değişken metin = io.dosya_oku("document.txt")
+değişken frekans = word_frequency(metin)
+
+// En çok geçen 10 kelimeyi göster
+değişken kelimeler = collections.hashmap_keys(frekans)
+collections.vec_sort_by(kelimeler, fonksiyon(a, b) yap
+    dön collections.hashmap_get(frekans, b) - collections.hashmap_get(frekans, a)
+son)
+
+her i içinde aralık(0, 10) için yap
+    değişken k = collections.vec_get(kelimeler, i)
+    yazdır(k + ": " + collections.hashmap_get(frekans, k).yazıya())
+son</code></pre>
+</div>
+<div class="example-box">
+<h3>LRU Cache Implementation</h3>
+<pre><code>içe_aktar collections
+
+sınıf LRUCache yap
+    değişken kapasite: tamsayı
+    değişken cache: HashMap
+    değişken sıra: LinkedList
+    
+    fonksiyon yeni(kap: tamsayı) yap
+        self.kapasite = kap
+        self.cache = collections.hashmap_new()
+        self.sıra = collections.linkedlist_new()
+    son
+    
+    fonksiyon get(anahtar: yazı) -> herhangi yap
+        eğer collections.hashmap_contains(self.cache, anahtar) değilse yap
+            dön yok
+        son
+        
+        // Sıraya taşı (LRU güncelle)
+        collections.linkedlist_remove(self.sıra, anahtar)
+        collections.linkedlist_push_back(self.sıra, anahtar)
+        
+        dön collections.hashmap_get(self.cache, anahtar)
+    son
+    
+    fonksiyon put(anahtar: yazı, değer: herhangi) yap
+        eğer collections.hashmap_contains(self.cache, anahtar) ise yap
+            collections.linkedlist_remove(self.sıra, anahtar)
+        son
+        
+        collections.hashmap_insert(self.cache, anahtar, değer)
+        collections.linkedlist_push_back(self.sıra, anahtar)
+        
+        eğer collections.hashmap_size(self.cache) > self.kapasite ise yap
+            // En eski elemanı çıkar
+            değişken eski = collections.linkedlist_pop_front(self.sıra)
+            collections.hashmap_remove(self.cache, eski)
+        son
+    son
+son
+
+değişken cache = LRUCache.yeni(3)
+cache.put("a", 1)
+cache.put("b", 2)
+cache.put("c", 3)
+yazdır(cache.get("a"))  // 1
+cache.put("d", 4)  // "b" çıkarılır
+yazdır(cache.get("b"))  // yok</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
 
                     </main>
 

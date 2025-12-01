@@ -1,0 +1,309 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>HAL - Hardware Abstraction Layer | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.hal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin:30px 0}
+.hal-card{background:var(--sidebar-bg);padding:20px;border-radius:8px;border-left:4px solid #e74c3c;transition:transform 0.2s}
+.hal-card:hover{transform:translateY(-5px)}
+.hal-card h3{margin:0 0 10px 0;color:var(--fg)}
+.hal-card p{margin:5px 0;font-size:0.9em;color:var(--fg)}
+.platform-badge{display:inline-block;background:#e74c3c;color:white;padding:3px 10px;border-radius:12px;font-size:0.8em;margin:2px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔧 HAL - Hardware Abstraction Layer</h1>
+<p>Gömülü Sistemler için Donanım Soyutlama Katmanı</p>
+<div style="margin-top:20px">
+<span class="platform-badge">STM32</span>
+<span class="platform-badge">ESP32</span>
+<span class="platform-badge">ARM Cortex-M</span>
+<span class="platform-badge">RISC-V</span>
+<span class="platform-badge">Bare Metal</span>
+</div>
+</div>
+
+<h2>📋 HAL Modülleri (21 Modül)</h2>
+
+<div class="hal-grid">
+<div class="hal-card">
+<h3>🔌 gpio</h3>
+<p><strong>381 satır</strong> - GPIO Pin Control</p>
+<p>Digital I/O, input/output modes, interrupts, pull-up/down</p>
+</div>
+
+<div class="hal-card">
+<h3>📊 adc</h3>
+<p><strong>400 satır</strong> - Analog-to-Digital Converter</p>
+<p>ADC channels, sampling, resolution, DMA support</p>
+</div>
+
+<div class="hal-card">
+<h3>📈 dac</h3>
+<p><strong>391 satır</strong> - Digital-to-Analog Converter</p>
+<p>DAC output, waveform generation, voltage control</p>
+</div>
+
+<div class="hal-card">
+<h3>🔄 spi</h3>
+<p><strong>394 satır</strong> - Serial Peripheral Interface</p>
+<p>SPI master/slave, full-duplex, DMA transfers</p>
+</div>
+
+<div class="hal-card">
+<h3>🔗 i2c</h3>
+<p><strong>396 satır</strong> - Inter-Integrated Circuit</p>
+<p>I2C bus, multi-master, 7/10-bit addressing</p>
+</div>
+
+<div class="hal-card">
+<h3>📡 usart</h3>
+<p><strong>407 satır</strong> - Universal Serial Communication</p>
+<p>UART/USART, baud rates, parity, DMA</p>
+</div>
+
+<div class="hal-card">
+<h3>🚗 can</h3>
+<p><strong>383 satır</strong> - Controller Area Network</p>
+<p>CAN bus, filters, message queues, error handling</p>
+</div>
+
+<div class="hal-card">
+<h3>⏱️ timer</h3>
+<p><strong>366 satır</strong> - Hardware Timers</p>
+<p>PWM, input capture, output compare, encoder mode</p>
+</div>
+
+<div class="hal-card">
+<h3>🕐 rtc</h3>
+<p><strong>379 satır</strong> - Real-Time Clock</p>
+<p>Date/time, alarms, calendar, backup registers</p>
+</div>
+
+<div class="hal-card">
+<h3>💾 dma</h3>
+<p><strong>391 satır</strong> - Direct Memory Access</p>
+<p>Memory-to-memory, peripheral-to-memory transfers</p>
+</div>
+
+<div class="hal-card">
+<h3>⚡ int</h3>
+<p><strong>366 satır</strong> - Interrupt Controller</p>
+<p>NVIC, interrupt priorities, enable/disable</p>
+</div>
+
+<div class="hal-card">
+<h3>🧠 core</h3>
+<p><strong>367 satır</strong> - CPU Core Functions</p>
+<p>System init, clock config, power modes</p>
+</div>
+
+<div class="hal-card">
+<h3>🎛️ regs</h3>
+<p><strong>366 satır</strong> - Register Access</p>
+<p>Memory-mapped registers, bit manipulation</p>
+</div>
+
+<div class="hal-card">
+<h3>🔧 hw</h3>
+<p><strong>366 satır</strong> - Hardware Utilities</p>
+<p>Delays, atomic operations, critical sections</p>
+</div>
+
+<div class="hal-card">
+<h3>📦 dev</h3>
+<p><strong>371 satır</strong> - Device Management</p>
+<p>Device tree, resource allocation</p>
+</div>
+
+<div class="hal-card">
+<h3>🖥️ host</h3>
+<p><strong>367 satır</strong> - Host Communication</p>
+<p>USB host, debugging interface</p>
+</div>
+
+<div class="hal-card">
+<h3>🔀 pipe</h3>
+<p><strong>369 satır</strong> - Data Pipes</p>
+<p>Stream processing, buffering</p>
+</div>
+
+<div class="hal-card">
+<h3>📝 enum</h3>
+<p><strong>366 satır</strong> - Enumerations</h3>
+<p>Hardware enums, constants</p>
+</div>
+
+<div class="hal-card">
+<h3>⚠️ ie</h3>
+<p><strong>366 satır</strong> - Interrupt Events</p>
+<p>Event handling, callbacks</p>
+</div>
+
+<div class="hal-card">
+<h3>🎵 transc</h3>
+<p><strong>366 satır</strong> - Transceivers</p>
+<p>RF transceivers, wireless communication</p>
+</div>
+
+<div class="hal-card">
+<h3>📚 std</h3>
+<p><strong>366 satır</strong> - Standard HAL Library</p>
+<p>Common types, utilities</p>
+</div>
+</div>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::gpio, hal::timer
+
+// GPIO LED blink
+değişken led_pin = gpio.pin_init(gpio.PORT_A, 5, gpio.MODE_OUTPUT)
+gpio.pin_write(led_pin, gpio.HIGH)
+
+// Timer PWM
+değişken pwm = timer.pwm_init(timer.TIM1, timer.CH1, 1000)  // 1kHz
+timer.pwm_set_duty(pwm, 50)  // 50% duty cycle
+timer.pwm_start(pwm)</code></pre>
+
+<h2>💡 Örnek: STM32 LED Blink</h2>
+<pre><code>içe_aktar hal::core, hal::gpio, hal::timer
+
+fonksiyon ana() yap
+    // System initialization
+    core.system_init()
+    core.clock_config(72_000_000)  // 72MHz
+    
+    // GPIO setup
+    gpio.clock_enable(gpio.PORT_C)
+    değişken led = gpio.pin_init(gpio.PORT_C, 13, yap
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    son)
+    
+    // Blink loop
+    döngü yap
+        gpio.pin_toggle(led)
+        core.delay_ms(500)
+    son
+son</code></pre>
+
+<h2>💡 Örnek: ADC Reading</h2>
+<pre><code>içe_aktar hal::adc, hal::gpio, hal::core
+
+fonksiyon sıcaklık_oku() -> kesir yap
+    // ADC setup
+    adc.clock_enable()
+    değişken adc1 = adc.init(adc.ADC1, yap
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    son)
+    
+    // GPIO for analog input
+    değişken pin = gpio.pin_init(gpio.PORT_A, 0, gpio.MODE_ANALOG)
+    
+    // Configure channel
+    adc.channel_config(adc1, adc.CHANNEL_0, yap
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    son)
+    
+    // Read value
+    adc.start(adc1)
+    değişken raw = adc.read(adc1)
+    
+    // Convert to temperature (example)
+    değişken voltage = raw.kesir() * 3.3 / 4095.0
+    değişken temp = (voltage - 0.76) / 0.0025 + 25.0
+    
+    dön temp
+son
+
+fonksiyon ana() yap
+    core.system_init()
+    
+    döngü yap
+        değişken temp = sıcaklık_oku()
+        io.println("Sıcaklık: " + temp.yazıya() + "°C")
+        core.delay_ms(1000)
+    son
+son</code></pre>
+
+<h2>💡 Örnek: I2C OLED Display</h2>
+<pre><code>içe_aktar hal::i2c, hal::gpio
+
+sabit OLED_ADDR = 0x3C
+
+fonksiyon oled_init(i2c: I2CHandle) yap
+    // Initialization sequence
+    değişken init_cmds = [
+        0xAE,  // Display off
+        0xD5, 0x80,  // Clock divide
+        0xA8, 0x3F,  // Multiplex
+        0xD3, 0x00,  // Display offset
+        0x40,  // Start line
+        0x8D, 0x14,  // Charge pump
+        0x20, 0x00,  // Memory mode
+        0xA1,  // Segment remap
+        0xC8,  // COM scan direction
+        0xDA, 0x12,  // COM pins
+        0x81, 0xCF,  // Contrast
+        0xD9, 0xF1,  // Pre-charge
+        0xDB, 0x40,  // VCOMH deselect
+        0xA4,  // Display resume
+        0xA6,  // Normal display
+        0xAF   // Display on
+    ]
+    
+    her cmd içinde init_cmds için yap
+        i2c.write_byte(i2c, OLED_ADDR, 0x00, cmd)
+    son
+son
+
+fonksiyon ana() yap
+    // I2C setup
+    gpio.pin_init(gpio.PORT_B, 6, gpio.MODE_AF_OD)  // SCL
+    gpio.pin_init(gpio.PORT_B, 7, gpio.MODE_AF_OD)  // SDA
+    
+    değişken i2c1 = i2c.init(i2c.I2C1, yap
+        speed: i2c.SPEED_100KHZ,
+        mode: i2c.MODE_I2C
+    son)
+    
+    oled_init(i2c1)
+    
+    // Display text
+    oled_print(i2c1, "BERK v1.0.0")
+    oled_print(i2c1, "Embedded!")
+son</code></pre>
+
+<h2>📚 Platform Desteği</h2>
+<ul>
+<li><strong>STM32:</strong> F0, F1, F2, F3, F4, F7, H7, L0, L1, L4, L5</li>
+<li><strong>ESP32:</strong> ESP32, ESP32-S2, ESP32-S3, ESP32-C3</li>
+<li><strong>Nordic:</strong> nRF51, nRF52, nRF53</li>
+<li><strong>RISC-V:</strong> GD32VF103, CH32V103</li>
+<li><strong>ARM Cortex-M:</strong> M0, M0+, M3, M4, M7, M33</li>
+</ul>
+
+<h2>🔗 İlgili Kaynaklar</h2>
+<ul>
+<li><a href="../docs/hal-guide.html">HAL Developer Guide</a></li>
+<li><a href="../docs/embedded-systems.html">Embedded Systems Documentation</a></li>
+<li><a href="../docs/platform-support.html">Platform Support Matrix</a></li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a> | 
+<a href="../index-tr.html">Ana Sayfa</a>
+</p>
+</main>
+</div>
+</body>
+</html>

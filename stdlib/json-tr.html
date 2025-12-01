@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>json - JSON Parser | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📋 json - JSON Parser/Serializer</h1>
+<p>JSON Parsing, Serialization, Pretty Print</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">51</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,204</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">37 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar json
+
+// JSON parse
+değişken veri = '{"name":"BERK","version":"1.0","active":true}'
+değişken obj = json.parse(veri)
+yazdır(obj["name"])  // "BERK"
+
+// JSON stringify
+değişken kullanıcı = {"id": 1, "isim": "Ali", "yaş": 25}
+değişken json_str = json.stringify(kullanıcı)
+yazdır(json_str)  // {"id":1,"isim":"Ali","yaş":25}
+
+// Pretty print
+değişken güzel = json.stringify_pretty(kullanıcı, 2)
+yazdır(güzel)
+// {
+//   "id": 1,
+//   "isim": "Ali",
+//   "yaş": 25
+// }</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li>JSON parsing (RFC 8259 uyumlu)</li>
+<li>JSON serialization</li>
+<li>Pretty printing</li>
+<li>UTF-8 desteği</li>
+<li>Number, String, Boolean, Null, Array, Object</li>
+<li>Hata yönetimi</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>API Response İşleme</h3>
+<pre><code>içe_aktar json, http
+
+değişken yanıt = http.get("https://api.github.com/users/arslantasm")
+değişken veri = json.parse(yanıt.gövde)
+
+yazdır("Kullanıcı: " + veri["login"])
+yazdır("Repos: " + veri["public_repos"].yazıya())
+yazdır("Followers: " + veri["followers"].yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>Config Dosyası</h3>
+<pre><code>içe_aktar json, io
+
+// Config yükleme
+değişken config_str = io.dosya_oku("config.json")
+değişken config = json.parse(config_str)
+
+// Config kullanma
+değişken host = config["database"]["host"]
+değişken port = config["database"]["port"]
+
+// Config kaydetme
+config["last_updated"] = time.şimdi()
+io.dosya_yaz("config.json", json.stringify_pretty(config, 2))</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

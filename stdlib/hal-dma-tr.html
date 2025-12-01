@@ -1,0 +1,556 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::dma - Direct Memory Access | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#c0392b;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💾 hal::dma</h1>
+<p>Direct Memory Access - High Performance Data Transfer</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 satır</span>
+<span class="stat-badge">~15 fonksiyon</span>
+<span class="stat-badge">Zero-Copy</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>DMA (Direct Memory Access), CPU müdahalesi olmadan bellek ve çevre birimleri arasında veri transferi sağlar. ADC, USART, SPI gibi modüllerle yüksek hızlı veri aktarımı için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Memory-to-memory transfers</li>
+<li>Peripheral-to-memory transfers</li>
+<li>Memory-to-peripheral transfers</li>
+<li>Circular/Normal mode</li>
+<li>Priority levels (4)</li>
+<li>8/16/32-bit data width</li>
+<li>Transfer complete interrupts</li>
+<li>Multiple channels/streams</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::dma
+
+// Memory-to-memory transfer
+değişken src = [1, 2, 3, 4, 5]
+değişken dst = [0; 5]
+
+değişken dma_ch = dma.init(dma.DMA1, dma.CH1, yap
+    direction: dma.M2M,  // Memory to Memory
+    src_increment: doğru,
+    dst_increment: doğru,
+    data_size: dma.SIZE_8BIT
+son)
+
+dma.transfer(dma_ch, src.as_ptr(), dst.as_ptr(), 5)
+dma.wait(dma_ch)  // Wait for completion</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek: ADC with DMA (Continuous Sampling)</h3>
+<pre><code>içe_aktar hal::dma, hal::adc
+
+sabit SAMPLE_COUNT = 1000
+
+değişken adc_buffer = [0u16; SAMPLE_COUNT]
+
+fonksiyon adc_dma_init() yap
+    // Initialize ADC
+    adc.clock_enable()
+    değişken adc1 = adc.init(adc.ADC1, yap
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: doğru,
+        dma_enable: doğru
+    son)
+    
+    adc.channel_config(adc1, adc.CHANNEL_0, yap
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    son)
+    
+    // Setup DMA
+    dma.clock_enable(dma.DMA2)
+    değişken dma_ch = dma.init(dma.DMA2, dma.STREAM0, yap
+        direction: dma.P2M,  // Peripheral to Memory
+        src_address: adc.get_data_register(adc1),
+        dst_address: adc_buffer.as_ptr(),
+        data_count: SAMPLE_COUNT,
+        src_increment: yanlış,  // Same ADC register
+        dst_increment: doğru,   // Increment buffer
+        circular: doğru,        // Continuous sampling
+        data_size: dma.SIZE_16BIT,
+        priority: dma.PRIORITY_HIGH
+    son)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+son
+
+fonksiyon calculate_average() -> kesir yap
+    değişken toplam = 0
+    her sample içinde adc_buffer için yap
+        toplam += sample
+    son
+    dön toplam.kesir() / SAMPLE_COUNT.kesir()
+son
+
+fonksiyon ana() yap
+    adc_dma_init()
+    
+    döngü yap
+        değişken avg = calculate_average()
+        değişken voltage = avg * 3.3 / 4095.0
+        io.println("Average voltage: {:.3f}V".formatla(voltage))
+        core.delay_ms(1000)
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: USART TX with DMA</h3>
+<pre><code>içe_aktar hal::dma, hal::usart
+
+değişken dma_complete = yanlış
+
+fonksiyon dma_complete_callback() yap
+    dma_complete = doğru
+son
+
+fonksiyon usart_dma_send(uart: usart.Handle, data: yazı) -> Sonuç[Hiçbir, Hata] yap
+    // Setup DMA for USART TX
+    değişken dma_ch = dma.init(dma.DMA1, dma.CH4, yap
+        direction: dma.M2P,  // Memory to Peripheral
+        src_address: data.as_ptr(),
+        dst_address: usart.get_tx_register(uart),
+        data_count: data.uzunluk(),
+        src_increment: doğru,
+        dst_increment: yanlış,  // Same USART register
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM,
+        callback: dma_complete_callback
+    son)
+    
+    dma_complete = yanlış
+    dma.start(dma_ch)
+    
+    // Enable USART DMA mode
+    usart.enable_dma_tx(uart)
+    
+    // Wait for completion
+    döngü dma_complete değilse yap
+        core.delay_ms(1)
+    son
+    
+    dön Tamam(Hiçbir)
+son
+
+fonksiyon ana() yap
+    değişken uart = usart.init(usart.USART1, yap
+        baud_rate: 115200
+    son)
+    
+    usart_dma_send(uart, "Hello from DMA!\n")?
+    io.println("DMA transfer complete!")
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Memory-to-Memory Fast Copy</h3>
+<pre><code>içe_aktar hal::dma
+
+fonksiyon fast_memcpy(dest: *değişken u8, src: *u8, size: sayı) yap
+    // DMA memory-to-memory is much faster than CPU copy
+    değişken dma_ch = dma.init(dma.DMA2, dma.STREAM0, yap
+        direction: dma.M2M,  // Memory to Memory
+        src_address: src,
+        dst_address: dest,
+        data_count: size,
+        src_increment: doğru,
+        dst_increment: doğru,
+        data_size: dma.SIZE_32BIT,  // 32-bit for efficiency
+        priority: dma.PRIORITY_VERY_HIGH
+    son)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+son
+
+fonksiyon ana() yap
+    // Large buffer copy test
+    sabit SIZE = 10000
+    değişken src_buffer = [0u8; SIZE]
+    değişken dst_buffer = [0u8; SIZE]
+    
+    // Fill source with test data
+    her i içinde 0..SIZE için yap
+        src_buffer[i] = (i % 256).u8()
+    son
+    
+    // Benchmark
+    değişken start = core.uptime_us()
+    fast_memcpy(dst_buffer.as_mut_ptr(), src_buffer.as_ptr(), SIZE)
+    değişken elapsed = core.uptime_us() - start
+    
+    io.println("DMA copy {}KB in {}us", SIZE/1024, elapsed)
+    io.println("Speed: {:.2f}MB/s", SIZE.kesir() / elapsed.kesir())
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: Double Buffer (Ping-Pong)</h3>
+<pre><code>içe_aktar hal::dma, hal::adc
+
+sabit BUFFER_SIZE = 512
+
+değişken buffer_a = [0u16; BUFFER_SIZE]
+değişken buffer_b = [0u16; BUFFER_SIZE]
+değişken current_buffer = 0
+
+fonksiyon buffer_half_complete() yap
+    // Buffer A is full, start processing while DMA fills B
+    process_samples(buffer_a)
+    current_buffer = 1
+son
+
+fonksiyon buffer_complete() yap
+    // Buffer B is full, start processing while DMA fills A
+    process_samples(buffer_b)
+    current_buffer = 0
+son
+
+fonksiyon process_samples(buffer: []u16) yap
+    değişken max_val = 0u16
+    her sample içinde buffer için yap
+        eğer sample > max_val ise max_val = sample
+    son
+    io.println("Max value: {}", max_val)
+son
+
+fonksiyon adc_double_buffer_init() yap
+    // Init ADC
+    değişken adc1 = adc.init(adc.ADC1, yap
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: doğru,
+        dma_enable: doğru
+    son)
+    
+    // DMA double buffer mode
+    değişken dma_ch = dma.init(dma.DMA2, dma.STREAM0, yap
+        direction: dma.P2M,
+        src_address: adc.get_data_register(adc1),
+        dst_address_0: buffer_a.as_ptr(),  // Ping buffer
+        dst_address_1: buffer_b.as_ptr(),  // Pong buffer
+        data_count: BUFFER_SIZE,
+        circular: doğru,
+        double_buffer: doğru,
+        src_increment: yanlış,
+        dst_increment: doğru,
+        data_size: dma.SIZE_16BIT,
+        half_complete_callback: buffer_half_complete,
+        complete_callback: buffer_complete
+    son)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+son
+
+fonksiyon ana() yap
+    adc_double_buffer_init()
+    
+    // Process in background via interrupts
+    döngü yap
+        core.sleep()  // CPU sleeps while DMA works
+    son
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: SPI Display with DMA Burst</h3>
+<pre><code>içe_aktar hal::dma, hal::spi, hal::gpio
+
+// Display framebuffer (128x64 OLED = 1024 bytes)
+sabit WIDTH = 128
+sabit HEIGHT = 64
+değişken framebuffer = [0u8; (WIDTH * HEIGHT) / 8]
+
+fonksiyon display_update() yap
+    // CS low
+    gpio.pin_write(gpio.PORT_A, 4, gpio.LOW)
+    
+    // Command: set column/page address
+    spi.write_byte(spi1, 0x00)  // Command mode
+    
+    // DMA burst transfer entire framebuffer
+    değişken dma_ch = dma.init(dma.DMA1, dma.STREAM3, yap
+        direction: dma.M2P,
+        src_address: framebuffer.as_ptr(),
+        dst_address: spi.get_data_register(spi1),
+        data_count: framebuffer.uzunluk(),
+        src_increment: doğru,
+        dst_increment: yanlış,
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_HIGH
+    son)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+    
+    // CS high
+    gpio.pin_write(gpio.PORT_A, 4, gpio.HIGH)
+son
+
+fonksiyon draw_pixel(x: sayı, y: sayı, color: bool) yap
+    değişken byte_index = x + (y / 8) * WIDTH
+    değişken bit_index = y % 8
+    
+    eğer color ise yap
+        framebuffer[byte_index] |= (1 << bit_index)
+    son yoksa yap
+        framebuffer[byte_index] &= ~(1 << bit_index)
+    son
+son
+
+fonksiyon ana() yap
+    // Draw test pattern
+    her x içinde 0..WIDTH için yap
+        her y içinde 0..HEIGHT için yap
+            draw_pixel(x, y, (x + y) % 2 == 0)
+        son
+    son
+    
+    // Fast DMA update (instead of slow SPI byte-by-byte)
+    display_update()  // ~8ms with DMA vs 100ms+ without
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek: USART RX with DMA Circular Buffer</h3>
+<pre><code>içe_aktar hal::dma, hal::usart
+
+sabit RX_BUFFER_SIZE = 256
+değişken rx_buffer = [0u8; RX_BUFFER_SIZE]
+değişken read_pos = 0
+
+fonksiyon uart_dma_rx_init(uart: usart.Handle) yap
+    // DMA in circular mode for continuous RX
+    değişken dma_ch = dma.init(dma.DMA1, dma.STREAM5, yap
+        direction: dma.P2M,
+        src_address: usart.get_rx_register(uart),
+        dst_address: rx_buffer.as_ptr(),
+        data_count: RX_BUFFER_SIZE,
+        src_increment: yanlış,
+        dst_increment: doğru,
+        circular: doğru,  // Never stops, wraps around
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM
+    son)
+    
+    usart.enable_dma_rx(uart)
+    dma.start(dma_ch)
+son
+
+fonksiyon available() -> sayı yap
+    // Get DMA write position
+    değişken write_pos = RX_BUFFER_SIZE - dma.get_counter(dma_ch)
+    
+    eğer write_pos >= read_pos ise yap
+        dön write_pos - read_pos
+    son yoksa yap
+        dön RX_BUFFER_SIZE - read_pos + write_pos
+    son
+son
+
+fonksiyon read_byte() -> Seçenek[u8] yap
+    eğer available() > 0 ise yap
+        değişken data = rx_buffer[read_pos]
+        read_pos = (read_pos + 1) % RX_BUFFER_SIZE
+        dön Bazı(data)
+    son
+    dön Hiçbir
+son
+
+fonksiyon ana() yap
+    değişken uart = usart.init(usart.USART1, yap
+        baud_rate: 115200
+    son)
+    
+    uart_dma_rx_init(uart)
+    
+    döngü yap
+        eğer available() > 0 ise yap
+            eşle read_byte() yap
+                Bazı(byte) => io.print("{:c}", byte),
+                Hiçbir => {}
+            son
+        son
+        core.delay_ms(10)
+    son
+son</code></pre>
+</div>
+
+<h2>⚙️ DMA Yapılandırma Tipleri</h2>
+<pre><code>// DMA Direction
+enum Direction {
+    P2M,  // Peripheral to Memory (ADC, USART RX)
+    M2P,  // Memory to Peripheral (USART TX, DAC)
+    M2M   // Memory to Memory (fast copy)
+}
+
+// Data Size
+enum DataSize {
+    SIZE_8BIT,   // Byte
+    SIZE_16BIT,  // Half-word
+    SIZE_32BIT   // Word
+}
+
+// Priority
+enum Priority {
+    LOW,
+    MEDIUM,
+    HIGH,
+    VERY_HIGH
+}
+
+// DMA Configuration
+yapı DMAConfig yap
+    direction: Direction,
+    src_address: *u8,
+    dst_address: *u8,
+    data_count: sayı,
+    src_increment: bool,
+    dst_increment: bool,
+    circular: bool,
+    data_size: DataSize,
+    priority: Priority,
+    double_buffer: bool,         // Optional
+    dst_address_1: *u8,          // For double buffer
+    half_complete_callback: fn(), // Optional
+    complete_callback: fn()       // Optional
+son</code></pre>
+
+<h2>📚 DMA Fonksiyonları</h2>
+<pre><code>// DMA channel initialization
+fonksiyon init(dma: DMAInstance, channel: Channel, config: DMAConfig) -> Handle
+
+// Transfer control
+fonksiyon start(handle: Handle)
+fonksiyon stop(handle: Handle)
+fonksiyon wait(handle: Handle)  // Blocking wait
+fonksiyon is_complete(handle: Handle) -> bool
+
+// Status queries
+fonksiyon get_counter(handle: Handle) -> sayı  // Remaining transfers
+fonksiyon get_current_buffer(handle: Handle) -> sayı  // 0 or 1 (double buffer)
+
+// Advanced
+fonksiyon transfer(handle: Handle, src: *u8, dst: *u8, count: sayı)
+fonksiyon circular_transfer(handle: Handle, src: *u8, dst: *u8, count: sayı)
+
+// Clock control
+fonksiyon clock_enable(dma: DMAInstance)
+fonksiyon clock_disable(dma: DMAInstance)</code></pre>
+
+<h2>⚡ Performans İpuçları</h2>
+<ul>
+<li><strong>32-bit transfers</strong>: 4x faster than 8-bit for aligned data</li>
+<li><strong>Circular mode</strong>: Zero overhead for continuous streaming (ADC, USART)</li>
+<li><strong>Double buffer</strong>: Process one buffer while filling the other (zero data loss)</li>
+<li><strong>Priority</strong>: Set VERY_HIGH for time-critical transfers</li>
+<li><strong>Burst mode</strong>: Use for large block transfers (framebuffers, files)</li>
+</ul>
+
+<h2>📊 DMA Kullanım Senaryoları</h2>
+<table style="width:100%;border-collapse:collapse">
+<tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Senaryo</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Direction</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Mode</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Avantaj</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">ADC Continuous Sampling</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">P2M</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Circular</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">CPU-free data acquisition</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">USART High-Speed TX</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Non-blocking transmission</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">SPI Display Update</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">10-20x faster refresh</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Streaming</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P (DAC)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Double Buffer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Glitch-free playback</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Large Buffer Copy</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2M</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Hardware acceleration</td>
+</tr>
+</table>
+
+<h2>🖥️ Platform Desteği</h2>
+<ul>
+<li><strong>STM32F1</strong>: DMA1 (7 channels), DMA2 (5 channels)</li>
+<li><strong>STM32F4</strong>: DMA1/DMA2 (8 streams each, FIFO support)</li>
+<li><strong>STM32L4</strong>: DMA1/DMA2 (7 channels each, low-power)</li>
+<li><strong>GD32</strong>: Compatible with STM32 DMA architecture</li>
+<li><strong>ESP32</strong>: GDMA (general purpose DMA)</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li><strong>Memory Alignment</strong>: DMA buffer'ları RAM'de olmalıdır (not flash/peripheral memory)</li>
+<li><strong>Circular Mode</strong>: Infinite loop için kullanılır, ADC/USART streaming ideal</li>
+<li><strong>NVIC Enable</strong>: DMA interrupt kullanırken NVIC enable edilmelidir</li>
+<li><strong>Double Buffer</strong>: Zero data loss için ping-pong buffering kullanın</li>
+<li><strong>Buffer Safety</strong>: DMA transfer sırasında buffer modify edilmemelidir</li>
+<li><strong>Cache Coherency</strong>: STM32F7/H7'de cache invalidation gerekir</li>
+<li><strong>Data Width</strong>: 32-bit aligned data için SIZE_32BIT kullanın (4x hızlı)</li>
+<li><strong>Priority</strong>: Aynı öncelikte multiple DMA kullanımında arbitration olur</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>hal::adc</code> - ADC with DMA (continuous sampling)</li>
+<li><code>hal::dac</code> - DAC with DMA (waveform generation)</li>
+<li><code>hal::usart</code> - UART with DMA (high-speed serial)</li>
+<li><code>hal::spi</code> - SPI with DMA (display, SD card)</li>
+<li><code>hal::i2c</code> - I2C with DMA (sensor reading)</li>
+<li><code>hal::int</code> - DMA interrupts (NVIC configuration)</li>
+<li><code>hal::timer</code> - Timer-triggered DMA</li>
+</ul>
+
+<h2>📖 Referanslar</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4031: Using STM32 DMA Controller</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00272912.pdf">AN4943: DMA in STM32F7</a></li>
+<li>Reference Manual: DMA Controller (DMA) chapter</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

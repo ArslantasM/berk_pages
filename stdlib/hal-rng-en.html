@@ -1,0 +1,340 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>hal::rng - Random Number Generator | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎲 hal::rng</h1>
+<p>Hardware True Random Number Generator</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~380 satır</span>
+<span class="stat-badge">~14 function</span>
+<span class="stat-badge">STM32F4/F7/H7</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>RNG modülü, hardware tabanlı gerçek rastgele int üretir. Analog noise source kullanarak kriptografik kalitede random difler sağlar. IoT güvenliği, UUID generation, cryptographic key generation ve Monte Carlo simülasyonları for kritiktir.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li><strong>True Random:</strong> Pseudo-random değil, analog gürültü kaynağı</li>
+<li><strong>32-bit Output:</strong> Her okumada tam 32-bit random dif</li>
+<li><strong>FIPS 140-2 Compliant:</strong> Kriptografik standartlara uygun</li>
+<li><strong>Single Cycle:</strong> 40 CPU cycle'da yeni random dif</li>
+<li><strong>Clock Error Detection:</strong> Clock problemi tespit edilir</li>
+<li><strong>Seed Error Detection:</strong> Entropi hatası algılanır</li>
+<li><strong>Interrupt Support:</strong> Data ready interrupt</li>
+<li><strong>DMA Compatible:</strong> Continuous random stream</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::rng, hal::rcc
+
+// Enable RNG clock
+rcc.periph_clock_enable(rcc.PERIPH_RNG)
+
+// Initialize RNG
+rng.init()
+
+// Get random 32-bit value
+let rastgele = rng.get_random()
+io.yazdir_satır("Random: 0x" + rastgele.onaltılıya())
+
+// Random range [0, max)
+function random_range(max: int) -> int do
+    return (rng.get_random() % max)
+end</code></pre>
+
+<h2>📦 Types and Enums'lar</h2>
+<pre><code>// RNG Flags
+enum Flag {
+    FLAG_DRDY,    // Data ready
+    FLAG_CECS,    // Clock error current status
+    FLAG_SECS     // Seed error current status
+}
+
+// RNG Interrupts
+enum Interrupt {
+    IT_CEI,       // Clock error interrupt
+    IT_SEI        // Seed error interrupt
+}
+
+struct RNGConfig do
+    clock_enable: bool = true,
+    interrupt_enable: bool = false,
+    error_callback: function(Flag) = null
+end</code></pre>
+
+<h2>💡 Example 1: UUID Generation (RFC 4122)</h2>
+<div class="example-box">
+<h3>Problem: Unique identifier oluşturmak (IoT device ID)</h3>
+<pre><code>import hal::rng
+
+struct UUID do
+    data: Array&lt;int8&gt; = Array.yeni(16)
+end
+
+function uuid_v4_generate() -> UUID do
+    let uuid = UUID do end
+    
+    // Generate 128 bits (16 bytes) of random data
+    for i forde 0..4 do
+        let rand32 = rng.get_random()
+        
+        // Split into 4 bytes
+        uuid.data[i*4 + 0] = (rand32 >> 24) & 0xFF cast int8
+        uuid.data[i*4 + 1] = (rand32 >> 16) & 0xFF cast int8
+        uuid.data[i*4 + 2] = (rand32 >> 8) & 0xFF cast int8
+        uuid.data[i*4 + 3] = rand32 & 0xFF cast int8
+    end
+    
+    // Set version (4) and variant (RFC 4122)
+    uuid.data[6] = (uuid.data[6] & 0x0F) | 0x40  // Version 4
+    uuid.data[8] = (uuid.data[8] & 0x3F) | 0x80  // Variant RFC4122
+    
+    return uuid
+end
+
+function uuid_to_string(uuid: UUID) -> String do
+    // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+    let hex = ""
+    for i forde 0..16 do
+        hex = hex + uuid.data[i].onaltılıya(2)
+        if (i == 3 veya i == 5 veya i == 7 veya i == 9) do
+            hex = hex + "-"
+        end
+    end
+    return hex
+end
+
+function ana() do
+    rng.init()
+    
+    for i forde 0..5 do
+        let uuid = uuid_v4_generate()
+        io.yazdir_satır("UUID: " + uuid_to_string(uuid))
+    end
+end</code></pre>
+<p><strong>Çıktı:</strong> UUID: 550e8400-e29b-41d4-a716-446655440000 (benzersiz her çalıştırmada)</p>
+</div>
+
+<h2>💡 Example 2: Cryptographic Key Generation</h2>
+<div class="example-box">
+<h3>Problem: AES-256 for 256-bit random key oluşturmak</h3>
+<pre><code>import hal::rng, hal::crypto
+
+const AES256_KEY_SIZE: int = 32  // 256 bit = 32 bytes
+
+struct CryptoKey do
+    data: Array&lt;int8&gt;,
+    size: int
+end
+
+function generate_aes256_key() -> CryptoKey do
+    let key = CryptoKey do
+        data: Array.yeni(AES256_KEY_SIZE),
+        size: AES256_KEY_SIZE
+    end
+    
+    // Generate 256 bits of cryptographic random data
+    for i forde 0..8 do  // 8 * 32 bits = 256 bits
+        let rand = rng.get_random()
+        
+        if rng.get_flag(rng.FLAG_CECS) veya rng.get_flag(rng.FLAG_SECS) do
+            io.yazdir_satır("RNG ERROR: Clock or seed error!")
+            return key  // Invalid key
+        end
+        
+        key.data[i*4 + 0] = (rand >> 24) & 0xFF cast int8
+        key.data[i*4 + 1] = (rand >> 16) & 0xFF cast int8
+        key.data[i*4 + 2] = (rand >> 8) & 0xFF cast int8
+        key.data[i*4 + 3] = rand & 0xFF cast int8
+    end
+    
+    return key
+end
+
+function key_to_hex(key: CryptoKey) -> String do
+    let hex = ""
+    for byte forde key.data do
+        hex = hex + byte.onaltılıya(2)
+    end
+    return hex
+end
+
+function ana() do
+    rng.init()
+    
+    io.yazdir_satır("Generating AES-256 key...")
+    let key = generate_aes256_key()
+    io.yazdir_satır("Key: " + key_to_hex(key))
+    
+    // Use key for AES encryption
+    crypto.aes_init(crypto.AES256, key.data)
+end</code></pre>
+<p><strong>Güvenlik:</strong> Hardware RNG kullanımı software PRNG'den çok daha güvenlidir.</p>
+</div>
+
+<h2>💡 Example 3: Random Number Distribution (Dice Roll)</h2>
+<div class="example-box">
+<h3>Problem: Uniform distribution ile dice roll simulation</h3>
+<pre><code>import hal::rng
+
+// Random in range [min, max]
+function random_range(min: int, max: int) -> int do
+    let range = max - min + 1
+    let rand = rng.get_random()
+    
+    // Avoid modulo bias using rejection sampling
+    let limit = 0xFFFF_FFFF - (0xFFFF_FFFF % range)
+    
+    loop do
+        if rand < limit do
+            return min + (rand % range)
+        end
+        rand = rng.get_random()
+    end
+end
+
+function dice_roll() -> int do
+    return random_range(1, 6)
+end
+
+function test_distribution() do
+    let histogram: Array&lt;int&gt; = Array.yeni(6, 0)
+    const ROLLS: int = 10000
+    
+    for i forde 0..ROLLS do
+        let roll = dice_roll()
+        histogram[roll - 1] = histogram[roll - 1] + 1
+    end
+    
+    io.yazdir_satır("Dice roll distribution (" + ROLLS.metne() + " rolls):")
+    for i forde 0..6 do
+        let face = i + 1
+        let count = histogram[i]
+        let percent = (count cast float / ROLLS cast float) * 100.0
+        
+        io.yazdir_satır("  [" + face.metne() + "]: " + count.metne() +
+                        " (" + percent.metne() + "%)")
+    end
+end
+
+function ana() do
+    rng.init()
+    test_distribution()
+end</code></pre>
+<p><strong>Result:</strong> Uniform distribution ~16.67% her yüz for (ideal: 16.666...%).</p>
+</div>
+
+<h2>📚 API Reference</h2>
+<h3>Core Functions</h3>
+<pre><code>// RNG initialization and control
+function init()
+function deinit()
+function enable()
+function disable()
+
+// Random number generation
+function get_random() -> int              // Blocking read
+function get_random_async() -> Option&lt;int&gt;  // Non-blocking
+
+// Status and error checking
+function is_ready() -> bool
+function get_flag(flag: Flag) -> bool
+function clear_flag(flag: Flag)
+
+// Interrupt handling
+function interrupt_enable(it: Interrupt)
+function interrupt_disable(it: Interrupt)</code></pre>
+
+<div class="warning">
+<strong>⚠️ Important Notes:</strong>
+<ul>
+<li><strong>Clock Required:</strong> RNG for 48 MHz clock gerekli (PLL'den)</li>
+<li><strong>Error Handling:</strong> CECS/SECS flagleri kontrol edilmeli</li>
+<li><strong>First Read:</strong> İlk random dif for ~40 cycle bekleme</li>
+<li><strong>Modulo Bias:</strong> Range işlemlerinde rejection sampling kullan</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Support</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>RNG Support</th>
+<th>Clock Source</th>
+<th>Performance</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>❌ Yok</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>40 cycles</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>40 cycles</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>32 cycles</td>
+</tr>
+<tr>
+<td>STM32L4</td>
+<td>✅ Var</td>
+<td>MSI/HSI48</td>
+<td>40 cycles</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>Error check:</strong> CECS/SECS flaglerini kontrol et</li>
+<li>✅ <strong>Seeding:</strong> PRNG seed for RNG kullan</li>
+<li>✅ <strong>Key generation:</strong> Crypto keyler for RNG şart</li>
+<li>✅ <strong>Rejection sampling:</strong> Modulo bias'tan kaçın</li>
+<li>❌ <strong>Predictable değil:</strong> RNG debug'da bile predictable değil</li>
+<li>❌ <strong>Clock dependency:</strong> 48 MHz clock olmadan çalışmaz</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="hal-crypto-en.html">hal::crypto</a> - AES/DES encryption with random keys</li>
+<li><a href="hal-clock-en.html">hal::clock</a> - 48 MHz clock configuration</li>
+<li><a href="stdlib/math-tr.html">math</a> - Statistical distribution functions</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-en.html">🔙 HAL Modules</a> | 
+<a href="hal-rng-en.html">🌐 Turkish</a>
+</p>
+</main>
+</div>
+</body>
+</html>
+

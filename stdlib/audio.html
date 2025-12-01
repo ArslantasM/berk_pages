@@ -1,0 +1,609 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>audio - Ses Isleme - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/audio.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                                            <main>
+                                                <div class="module-header">
+            <h1>🔊 audio - Ses İşleme ve Oynatma</h1>
+            <p>Ses dosyaları oynatma, kaydetme, işleme ve sentezleme</p>
+            <div class="module-stats">
+                <span class="stat-badge">📦 163 Fonksiyon</span>
+                <span class="stat-badge">📝 1669 Satır</span>
+                <span class="stat-badge">💾 55.6 KB</span>
+            </div>
+        </div>
+
+        <h2>📋 Genel Bakış</h2>
+        <p><code>audio</code> modülü, ses dosyalarını yükleme, oynatma, kaydetme ve işleme için kapsamlı araçlar sağlar. MP3, WAV, FLAC gibi formatları destekler, ses efektleri ve sentezleyici özellikleri sunar.</p>
+
+        <div class="function-group">
+            <h3>🎵 Ses Oynatma</h3>
+            <ul>
+                <li><strong>audio.yükle()</strong> - Ses dosyası yükleme</li>
+                <li><strong>audio.oynat()</strong> - Ses oynatma</li>
+                <li><strong>audio.duraklat()</strong> - Duraklatma</li>
+                <li><strong>audio.durdur()</strong> - Durdurma</li>
+                <li><strong>audio.ses_seviyesi()</strong> - Ses seviyesi ayarlama (0.0-1.0)</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🎙️ Ses Kaydı</h3>
+            <ul>
+                <li><strong>audio.mikrofon_aç()</strong> - Mikrofon başlatma</li>
+                <li><strong>audio.kayıt_başlat()</strong> - Kayıt başlatma</li>
+                <li><strong>audio.kayıt_durdur()</strong> - Kaydı durdurma</li>
+                <li><strong>audio.dosyaya_kaydet()</strong> - Ses dosyasına yazma</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🎚️ Ses İşleme ve Efektler</h3>
+            <ul>
+                <li><strong>audio.ses_seviyesi_ayarla()</strong> - Volume değiştirme</li>
+                <li><strong>audio.hız_değiştir()</strong> - Oynatma hızı</li>
+                <li><strong>audio.yankı()</strong> - Echo efekti</li>
+                <li><strong>audio.reverb()</strong> - Reverb efekti</li>
+                <li><strong>audio.filtre()</strong> - Ses filtresi (low-pass, high-pass)</li>
+                <li><strong>audio.normalize()</strong> - Ses normalizasyonu</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🎹 Ses Sentezi</h3>
+            <ul>
+                <li><strong>audio.sinüs_dalgası()</strong> - Sine wave üretme</li>
+                <li><strong>audio.kare_dalga()</strong> - Square wave</li>
+                <li><strong>audio.testere_dişi()</strong> - Sawtooth wave</li>
+                <li><strong>audio.gürültü()</strong> - White/pink noise</li>
+                <li><strong>audio.nota_frekansı()</strong> - Nota'dan frekans (A4=440Hz)</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>📊 Ses Analizi</h3>
+            <ul>
+                <li><strong>audio.fft()</strong> - Fast Fourier Transform</li>
+                <li><strong>audio.spektrum()</strong> - Frekans spektrumu</li>
+                <li><strong>audio.tepe_frekanlar()</strong> - Dominant frekanslar</li>
+                <li><strong>audio.süre()</strong> - Ses dosyası süresi</li>
+                <li><strong>audio.rms_seviye()</strong> - RMS güç seviyesi</li>
+            </ul>
+        </div>
+
+        <h2>💡 Kullanım Örnekleri</h2>
+
+        <div class="example-box">
+            <h3>Basit Müzik Çalar</h3>
+            <pre><code class="language-berk">kullan audio
+kullan fs
+
+sınıf MüzikÇalar {
+    değer ses: Opsiyonel&lt;audio.Ses&gt; = boş
+    değer oynatılıyor: Mantıksal = yanlış
+    
+    fonksiyon yükle(dosya_yolu: Dize) -> Sonuç&lt;Boş, Hata&gt; {
+        bu.ses = audio.yükle(dosya_yolu)?
+        yazdır(f"✓ Yüklendi: {dosya_yolu}")
+        
+        // Ses bilgilerini göster
+        değer süre = bu.ses.aç().süre()
+        değer örnek_hızı = bu.ses.aç().örnek_hızı()
+        değer kanal = bu.ses.aç().kanal_sayısı()
+        
+        yazdır(f"  Süre: {süre:.2f} saniye")
+        yazdır(f"  Örnek hızı: {örnek_hızı} Hz")
+        yazdır(f"  Kanallar: {kanal}")
+        
+        dön Tamam(boş)
+    }
+    
+    fonksiyon oynat() {
+        eğer bu.ses.var_mı() {
+            audio.oynat(bu.ses.aç())
+            bu.oynatılıyor = doğru
+            yazdır("▶️  Oynatılıyor...")
+        } yoksa {
+            yazdır("❌ Önce bir ses dosyası yükleyin!")
+        }
+    }
+    
+    fonksiyon duraklat() {
+        eğer bu.ses.var_mı() ve bu.oynatılıyor {
+            audio.duraklat(bu.ses.aç())
+            bu.oynatılıyor = yanlış
+            yazdır("⏸️  Duraklatıldı")
+        }
+    }
+    
+    fonksiyon devam_et() {
+        eğer bu.ses.var_mı() ve !bu.oynatılıyor {
+            audio.devam_et(bu.ses.aç())
+            bu.oynatılıyor = doğru
+            yazdır("▶️  Devam ediyor...")
+        }
+    }
+    
+    fonksiyon durdur() {
+        eğer bu.ses.var_mı() {
+            audio.durdur(bu.ses.aç())
+            bu.oynatılıyor = yanlış
+            yazdır("⏹️  Durduruldu")
+        }
+    }
+    
+    fonksiyon ses_seviyesi_ayarla(seviye: Gerçek) {
+        eğer bu.ses.var_mı() {
+            değer kısıtlı = seviye.kısıtla(0.0, 1.0)
+            audio.ses_seviyesi(bu.ses.aç(), kısıtlı)
+            yazdır(f"🔊 Ses seviyesi: {(kısıtlı * 100):.0f}%")
+        }
+    }
+}
+
+// Kullanım
+değer çalar = MüzikÇalar {}
+
+çalar.yükle("müzik.mp3").aç()
+çalar.oynat()
+
+// Ses kontrolü
+çalar.ses_seviyesi_ayarla(0.7)
+
+// Bekle
+audio.bekle(5.0)
+
+çalar.duraklat()
+audio.bekle(2.0)
+çalar.devam_et()
+
+// Şarkı bitene kadar bekle
+çalar.ses.aç().tamamlanana_kadar_bekle()
+yazdır("✓ Oynatma tamamlandı")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Ses Kaydedici</h3>
+            <pre><code class="language-berk">kullan audio
+kullan time
+
+sınıf SesKaydedici {
+    değer mikrofon: audio.Mikrofon
+    değer kayıt: Opsiyonel&lt;audio.KayıtArabelleği&gt; = boş
+    değer kayıt_aktif: Mantıksal = yanlış
+    
+    fonksiyon yeni() -> Sonuç&lt;SesKaydedici, Hata&gt; {
+        değer mikrofon = audio.mikrofon_aç(
+            örnek_hızı: 44100,
+            kanallar: 2,
+            tampon_boyutu: 4096
+        )?
+        
+        yazdır("🎙️  Mikrofon hazır")
+        yazdır(f"  Örnek hızı: {mikrofon.örnek_hızı()} Hz")
+        yazdır(f"  Kanallar: {mikrofon.kanal_sayısı()}")
+        
+        dön Tamam(SesKaydedici {
+            mikrofon: mikrofon,
+            kayıt: boş,
+            kayıt_aktif: yanlış
+        })
+    }
+    
+    fonksiyon kayıt_başlat() {
+        bu.kayıt = audio.KayıtArabelleği.yeni()
+        bu.kayıt_aktif = doğru
+        
+        audio.kayıt_başlat(bu.mikrofon, bu.kayıt.aç())
+        yazdır("🔴 Kayıt başladı...")
+    }
+    
+    fonksiyon kayıt_durdur() -> audio.KayıtArabelleği {
+        audio.kayıt_durdur(bu.mikrofon)
+        bu.kayıt_aktif = yanlış
+        yazdır("⏹️  Kayıt durduruldu")
+        
+        dön bu.kayıt.al()
+    }
+    
+    fonksiyon dosyaya_kaydet(dosya_adı: Dize) -> Sonuç&lt;Boş, Hata&gt; {
+        eğer bu.kayıt.var_mı() {
+            audio.wav_olarak_kaydet(bu.kayıt.aç(), dosya_adı)?
+            yazdır(f"💾 Kaydedildi: {dosya_adı}")
+            dön Tamam(boş)
+        }
+        dön Hata("Kayıt bulunamadı!")
+    }
+    
+    fonksiyon seviye_göster() {
+        döngü {
+            eğer !bu.kayıt_aktif {
+                kır
+            }
+            
+            değer seviye = audio.giriş_seviyesi(bu.mikrofon)
+            değer çubuk_sayısı = (seviye * 50).tam()
+            değer çubuk = "█" * çubuk_sayısı + "░" * (50 - çubuk_sayısı)
+            
+            yazdır(f"\r🎤 {çubuk} {(seviye * 100):.0f}%", yeni_satır: yanlış)
+            time.uyu(0.05)
+        }
+        yazdır()  // Yeni satır
+    }
+}
+
+// Kullanım
+değer kaydedici = SesKaydedici.yeni().aç()
+
+yazdır("\n3 saniye içinde kayıt başlayacak...")
+time.uyu(3.0)
+
+kaydedici.kayıt_başlat()
+
+// 10 saniye kaydet
+değer başlangıç = time.şimdi()
+döngü {
+    değer geçen = (time.şimdi() - başlangıç).saniye()
+    eğer geçen >= 10.0 {
+        kır
+    }
+    time.uyu(0.1)
+}
+
+değer kayıt = kaydedici.kayıt_durdur()
+kaydedici.dosyaya_kaydet("kayıt.wav").aç()
+
+yazdır("\n✓ Ses başarıyla kaydedildi!")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Ses Sentezleyici (Synthesizer)</h3>
+            <pre><code class="language-berk">kullan audio
+kullan math
+
+sınıf Sentezleyici {
+    değer örnek_hızı: Tam = 44100
+    
+    fonksiyon nota_çal(nota: Dize, süre: Gerçek, dalga_tipi: Dize = "sinüs") -> audio.Ses {
+        değer frekans = audio.nota_frekansı(nota)
+        değer örnek_sayısı = (bu.örnek_hızı * süre).tam()
+        değer örnekler = Liste.yeni&lt;Gerçek&gt;(örnek_sayısı)
+        
+        için i içinde 0..örnek_sayısı {
+            değer t = i.gerçek() / bu.örnek_hızı.gerçek()
+            değer faz = 2.0 * math.PI * frekans * t
+            
+            değer örnek = eşleştir dalga_tipi {
+                "sinüs" => math.sin(faz),
+                "kare" => eğer math.sin(faz) >= 0.0 { 1.0 } yoksa { -1.0 },
+                "testere" => 2.0 * (faz / (2.0 * math.PI) - (faz / (2.0 * math.PI)).taban()),
+                _ => math.sin(faz)
+            }
+            
+            // ADSR zarfı uygula (basit)
+            değer zarf = bu.adsr_zarfı(t, süre)
+            örnekler.ekle(örnek * zarf)
+        }
+        
+        dön audio.örneklerden_oluştur(örnekler, bu.örnek_hızı)
+    }
+    
+    fonksiyon adsr_zarfı(t: Gerçek, toplam_süre: Gerçek) -> Gerçek {
+        // Attack, Decay, Sustain, Release
+        değer attack = 0.05
+        değer decay = 0.1
+        değer sustain = 0.7
+        değer release = 0.2
+        
+        eğer t < attack {
+            dön t / attack
+        } yoksa eğer t < attack + decay {
+            değer decay_t = (t - attack) / decay
+            dön 1.0 - (1.0 - sustain) * decay_t
+        } yoksa eğer t < toplam_süre - release {
+            dön sustain
+        } yoksa {
+            değer release_t = (t - (toplam_süre - release)) / release
+            dön sustain * (1.0 - release_t)
+        }
+        dön 0.0
+    }
+    
+    fonksiyon melodi_çal(notalar: Liste&lt;(Dize, Gerçek)&gt;) {
+        yazdır("🎹 Melodi çalınıyor...")
+        
+        için (nota, süre) içinde notalar {
+            değer ses = bu.nota_çal(nota, süre)
+            audio.oynat(ses)
+            audio.bekle(süre)
+        }
+        
+        yazdır("✓ Melodi tamamlandı")
+    }
+    
+    fonksiyon akor_çal(notalar: Liste&lt;Dize&gt;, süre: Gerçek) {
+        // Birden fazla notayı aynı anda çal
+        değer sesler = notalar.eşle(|nota| bu.nota_çal(nota, süre))
+        değer karışık = audio.sesleri_karıştır(sesler)
+        
+        audio.oynat(karışık)
+        audio.bekle(süre)
+    }
+}
+
+// Kullanım
+değer synth = Sentezleyici {}
+
+// Basit melodi (Twinkle Twinkle Little Star)
+değer melodi = [
+    ("C4", 0.5), ("C4", 0.5), ("G4", 0.5), ("G4", 0.5),
+    ("A4", 0.5), ("A4", 0.5), ("G4", 1.0),
+    ("F4", 0.5), ("F4", 0.5), ("E4", 0.5), ("E4", 0.5),
+    ("D4", 0.5), ("D4", 0.5), ("C4", 1.0)
+]
+
+synth.melodi_çal(melodi)
+
+// C majör akoru
+yazdır("\n🎸 C majör akoru...")
+synth.akor_çal(["C4", "E4", "G4"], 2.0)
+
+yazdır("✓ Bitti!")</code></pre>
+        </div>
+
+        <h2>🎯 İyi Uygulamalar</h2>
+        <ul>
+            <li>Ses dosyalarını asenkron yükleyin</li>
+            <li>Büyük ses dosyaları için streaming kullanın</li>
+            <li>Ses efektlerini önceden işleyin (pre-process)</li>
+            <li>Mikrofon erişimi için kullanıcı izni alın</li>
+            <li>Oynatma bitişlerini callback ile yakalayın</li>
+            <li>Ses işleme için yeterli tampon boyutu kullanın</li>
+            <li>Normalize ederek ses seviyesi tutarlılığı sağlayın</li>
+        </ul>
+
+        <h2>🔗 İlgili Modüller</h2>
+        <ul>
+            <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>
+            <li><a href="math.html">math</a> - Matematiksel fonksiyonlar</li>
+            <li><a href="thread.html">thread</a> - Asenkron işlemler</li>
+            <li><a href="time.html">time</a> - Zamanlama işlemleri</li>
+        </ul>
+    </div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/graphics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/image.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/graphics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/image.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

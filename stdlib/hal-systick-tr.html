@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::systick - System Tick Timer | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #1abc9c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏱️ hal::systick</h1>
+<p>System Tick Timer - Millisecond Timebase for RTOS and Delays</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~240 satır</span>
+<span class="stat-badge">~10 fonksiyon</span>
+<span class="stat-badge">ARM Cortex-M</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>SysTick, ARM Cortex-M mimarilerinde bulunan 24-bit sistem timer'ıdır. Genellikle 1ms tick interrupt üretmek için kullanılır ve RTOS (Real-Time Operating System) scheduler'ların temelini oluşturur. Ayrıca ms-based delay fonksiyonları ve uptime sayaçları için de kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>24-bit down counter (0xFFFFFF)</li>
+<li>Konfigüre edilebilir tick rate (genellikle 1ms)</li>
+<li>Exception/interrupt generation</li>
+<li>CPU clock veya external clock kaynaklı</li>
+<li>Low overhead timing</li>
+<li>RTOS scheduler timebase</li>
+<li>Millisecond delay functions</li>
+<li>Uptime counter</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::systick, hal::core
+
+değişken g_tick_count: u64 = 0
+
+// SysTick interrupt handler
+@interrupt
+fonksiyon SysTick_Handler() yap
+    g_tick_count += 1
+son
+
+fonksiyon ana() yap
+    // 72 MHz CPU, 1ms tick
+    systick.init(72000000 / 1000)  // 1ms period
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Now delay_ms() works
+    döngü yap
+        io.println("Uptime: " + g_tick_count.yazıya() + " ms")
+        systick.delay_ms(1000)
+    son
+son</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Clock Source
+enum ClockSource {
+    EXTERNAL,  // External clock (HCLK/8)
+    PROCESSOR  // Processor clock (HCLK)
+}
+
+yapı SysTickConfig yap
+    reload_value: sayı,      // 24-bit (0 - 0xFFFFFF)
+    clock_source: ClockSource,
+    interrupt_enable: mantık
+son</code></pre>
+
+<h2>💡 Örnek 1: Millisecond Delay İmplementasyonu</h2>
+<div class="example-box">
+<h3>Blocking delay ve non-blocking timeout</h3>
+<pre><code>içe_aktar hal::systick
+
+değişken g_ticks: sayacı64 = 0
+
+@interrupt
+fonksiyon SysTick_Handler() yap
+    g_ticks += 1
+son
+
+// Blocking delay
+fonksiyon delay_ms(ms: sayı) yap
+    değişken start = g_ticks
+    döngü (g_ticks - start) < ms.to_u64() için yap
+        // Wait
+    son
+son
+
+// Non-blocking timeout
+yapı Timeout yap
+    start: sayı64,
+    duration: sayı64
+son
+
+fonksiyon timeout_start(ms: sayı) -> Timeout yap
+    dön Timeout yap
+        start: g_ticks,
+        duration: ms.to_u64()
+    son
+son
+
+fonksiyon timeout_expired(timeout: Timeout) -> mantık yap
+    dön (g_ticks - timeout.start) >= timeout.duration
+son
+
+// Kullanım örneği
+fonksiyon main_loop() yap
+    değişken timeout = timeout_start(5000)  // 5 saniye
+    
+    döngü yap
+        // Non-blocking işlemler
+        process_data()
+        
+        eğer timeout_expired(timeout) ise yap
+            io.println("5 saniye geçti!")
+            timeout = timeout_start(5000)  // Reset
+        son
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 2: Simple RTOS Scheduler</h2>
+<div class="example-box">
+<h3>Cooperative multitasking with SysTick</h3>
+<pre><code>içe_aktar hal::systick
+
+yapı Task yap
+    fonksiyon: Fonksiyon(),
+    period_ms: sayı,
+    son_calistirma: sayı64
+son
+
+değişken g_ticks: sayı64 = 0
+değişken g_tasks: Dizi[Task] = []
+
+@interrupt
+fonksiyon SysTick_Handler() yap
+    g_ticks += 1
+son
+
+fonksiyon task_register(func: Fonksiyon(), period_ms: sayı) yap
+    g_tasks.push(Task yap
+        fonksiyon: func,
+        period_ms: period_ms,
+        son_calistirma: 0
+    son)
+son
+
+fonksiyon scheduler_run() yap
+    döngü yap
+        her task içinde g_tasks için yap
+            değişken elapsed = g_ticks - task.son_calistirma
+            
+            eğer elapsed >= task.period_ms.to_u64() ise yap
+                // Task zamanı geldi
+                task.fonksiyon()
+                task.son_calistirma = g_ticks
+            son
+        son
+    son
+son
+
+// Örnek tasklar
+fonksiyon led_blink_task() yap
+    gpio.pin_toggle(LED_PIN)
+son
+
+fonksiyon sensor_read_task() yap
+    değişken temp = sensor.read_temperature()
+    io.println("Sıcaklık: " + temp.yazıya())
+son
+
+fonksiyon ana() yap
+    systick.init(72000000 / 1000)  // 1ms
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Register tasks
+    task_register(led_blink_task, 500)      // 500ms period
+    task_register(sensor_read_task, 1000)   // 1000ms period
+    
+    // Run scheduler
+    scheduler_run()
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 3: Performance Profiling</h2>
+<div class="example-box">
+<h3>Fonksiyon yürütme süresi ölçümü</h3>
+<pre><code>içe_aktar hal::systick
+
+fonksiyon micros() -> sayı64 yap
+    // SysTick counts down from reload value
+    değişken reload = systick.get_reload()
+    değişken current = systick.get_value()
+    
+    // Calculate microseconds
+    değişken ticks_elapsed = reload - current
+    değişken us_per_tick = 1000 / reload  // Assuming 1ms period
+    
+    dön (g_ticks * 1000) + (ticks_elapsed * us_per_tick).to_u64()
+son
+
+fonksiyon profile_start() -> sayı64 yap
+    dön micros()
+son
+
+fonksiyon profile_end(start: sayı64) -> sayı64 yap
+    dön micros() - start
+son
+
+// Kullanım
+fonksiyon slow_function() yap
+    için i içinde 0..1000 için yap
+        math.sqrt(i.kesir())
+    son
+son
+
+fonksiyon ana() yap
+    systick.init(72000)  // 1ms
+    systick.enable()
+    
+    değişken start = profile_start()
+    slow_function()
+    değişken duration = profile_end(start)
+    
+    io.println("Süre: " + duration.yazıya() + " μs")
+son</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Initialization</h3>
+<pre><code>fonksiyon init(reload_value: sayı)  // 24-bit max
+fonksiyon deinit()
+fonksiyon enable()
+fonksiyon disable()</code></pre>
+
+<h3>Configuration</h3>
+<pre><code>fonksiyon enable_interrupt()
+fonksiyon disable_interrupt()
+fonksiyon set_clock_source(source: ClockSource)
+fonksiyon get_reload() -> sayı
+fonksiyon set_reload(value: sayı)</code></pre>
+
+<h3>Status</h3>
+<pre><code>fonksiyon get_value() -> sayı  // Current counter value
+fonksiyon get_calib() -> sayı  // Calibration value
+fonksiyon has_reference() -> mantık</code></pre>
+
+<h3>Utility</h3>
+<pre><code>fonksiyon delay_ms(ms: sayı)
+fonksiyon delay_us(us: sayı)
+fonksiyon get_ticks() -> sayı64</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>Clock Source</th><th>Max Reload</th><th>Precision</th></tr>
+<tr><td>Cortex-M0</td><td>HCLK, HCLK/8</td><td>0xFFFFFF (16.7M)</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M3</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M4</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M7</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Tick rate:</strong> 1ms industry standard for RTOS</li>
+<li><strong>Interrupt priority:</strong> SysTick genellikle en düşük priority (15)</li>
+<li><strong>Handler duration:</strong> Interrupt handler minimal tutulmalı (<10μs)</li>
+<li><strong>Overflow handling:</strong> 64-bit counter kullanarak overflow'u önleyin</li>
+<li><strong>Power optimization:</strong> Tickless idle mode düşünün (RTOS)</li>
+<li><strong>Debug freeze:</strong> Debug sırasında SysTick'i durdurabilirsiniz</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>24-bit counter: Maximum reload value 0xFFFFFF (16,777,215)</li>
+<li>72 MHz'de 1ms için reload = 72000</li>
+<li>Interrupt handler'da uzun işlem yapma (context switch overhead)</li>
+<li>Atomic operations için interrupt disable gerekebilir</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-timer-tr.html">hal::timer</a> - Hardware timers for longer periods</li>
+<li><a href="hal-nvic-tr.html">hal::nvic</a> - Interrupt controller configuration</li>
+<li><a href="hal-power-tr.html">hal::power</a> - Tickless idle integration</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-systick-en.html">🇬🇧 English</a>
+</p>
+</main>
+</div>
+</body>
+</html>

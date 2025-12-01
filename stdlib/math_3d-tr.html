@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>math_3d - 3D Matematik | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📐 math_3d - 3D Matematik</h1>
+<p>Vector3, Matrix4, Quaternion, Transformations</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">94</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,156</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar math_3d
+
+// Vector3
+değişken v1 = math_3d.vec3(1.0, 2.0, 3.0)
+değişken v2 = math_3d.vec3(4.0, 5.0, 6.0)
+değişken toplam = math_3d.vec3_add(v1, v2)
+değişken nokta = math_3d.vec3_dot(v1, v2)
+değişken çapraz = math_3d.vec3_cross(v1, v2)
+
+// Matrix4 (4x4 transformation matrix)
+değişken M = math_3d.mat4_identity()
+M = math_3d.mat4_translate(M, [10.0, 0.0, 0.0])
+M = math_3d.mat4_rotate_y(M, 45.0)
+M = math_3d.mat4_scale(M, [2.0, 2.0, 2.0])
+
+// Quaternion (rotation)
+değişken q = math_3d.quat_from_axis_angle([0.0, 1.0, 0.0], 90.0)
+değişken rotated = math_3d.quat_rotate_vec3(q, v1)</code></pre>
+<h2>📚 Fonksiyonlar</h2>
+<ul>
+<li><strong>Vector3:</strong> add, sub, mul, dot, cross, normalize, length</li>
+<li><strong>Matrix4:</strong> translate, rotate, scale, perspective, lookAt</li>
+<li><strong>Quaternion:</strong> from_axis_angle, slerp, to_matrix</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Camera System</h3>
+<pre><code>içe_aktar math_3d
+
+sınıf Camera yap
+    değişken position: Vec3
+    değişken target: Vec3
+    değişken up: Vec3
+    
+    fonksiyon view_matrix() -> Mat4 yap
+        dön math_3d.mat4_look_at(self.position, self.target, self.up)
+    son
+    
+    fonksiyon projection_matrix(fov: kesir, aspect: kesir, near: kesir, far: kesir) -> Mat4 yap
+        dön math_3d.mat4_perspective(fov, aspect, near, far)
+    son
+son
+
+değişken cam = Camera.yeni()
+cam.position = math_3d.vec3(0.0, 5.0, 10.0)
+cam.target = math_3d.vec3(0.0, 0.0, 0.0)
+cam.up = math_3d.vec3(0.0, 1.0, 0.0)
+
+değişken view = cam.view_matrix()
+değişken proj = cam.projection_matrix(45.0, 16.0/9.0, 0.1, 100.0)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

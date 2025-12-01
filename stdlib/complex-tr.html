@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>complex - Karmaşık Sayılar | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔢 complex - Karmaşık Sayılar</h1>
+<p>Complex Arithmetic, Polar Form, FFT</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">39</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">567</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">18 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar complex, math
+
+// Complex number (a + bi)
+değişken z1 = complex.new(3.0, 4.0)  // 3 + 4i
+değişken z2 = complex.new(1.0, -2.0)  // 1 - 2i
+
+// Arithmetic
+değişken toplam = complex.add(z1, z2)
+değişken çarpım = complex.mul(z1, z2)
+
+// Properties
+değişken mod = complex.abs(z1)  // |z| = sqrt(3²+4²) = 5
+değişken açı = complex.arg(z1)  // θ = atan2(4,3)
+değişken eşlenik = complex.conj(z1)  // 3 - 4i
+
+// Polar form
+değişken z_polar = complex.from_polar(5.0, math.PI/4)
+
+yazdır(complex.to_string(z1))  // "3+4i"</code></pre>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Mandelbrot Set</h3>
+<pre><code>içe_aktar complex, graphics
+
+fonksiyon mandelbrot(c: Complex, max_iter: tamsayı) -> tamsayı yap
+    değişken z = complex.new(0.0, 0.0)
+    
+    her i içinde aralık(0, max_iter) için yap
+        z = complex.add(complex.mul(z, z), c)
+        
+        eğer complex.abs(z) > 2.0 ise yap
+            dön i
+        son
+    son
+    
+    dön max_iter
+son
+
+// Render Mandelbrot
+her y içinde aralık(0, 600) için yap
+    her x içinde aralık(0, 800) için yap
+        değişken re = (x.kesir() - 400.0) / 200.0
+        değişken im = (y.kesir() - 300.0) / 200.0
+        
+        değişken c = complex.new(re, im)
+        değişken iterations = mandelbrot(c, 100)
+        
+        değişken renk = iterations.kesir() / 100.0
+        graphics.set_pixel(x, y, renk, renk, renk)
+    son
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,825 @@
+﻿<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <title>math - Bilimsel Matematik Modülü | BERK v1.0.0</title>
+        
+        <meta name="description" content="BERK math modülü - 111 function ile üniversite seviyesi matematiksel hesaplamalar. Trigonometri, logaritma, özel functionlar, sayısal entegrasyon.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+        
+        <style>
+            .module-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 20px;
+                margin: -20px -20px 30px -20px;
+                border-radius: 8px;
+            }
+            .module-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .stat-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .stat-value {
+                font-size: 2em;
+                font-weight: bold;
+            }
+            .stat-label {
+                font-size: 0.9em;
+                opacity: 0.9;
+            }
+            .function-group {
+                margin: 30px 0;
+                padding: 20px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 4px solid var(--links);
+            }
+            .function-signature {
+                background: var(--theme-popup-bg);
+                padding: 15px;
+                border-radius: 5px;
+                font-family: monospace;
+                margin: 10px 0;
+                border-left: 3px solid var(--links);
+            }
+            .example-box {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border: 1px solid var(--sidebar-fg);
+            }
+            .example-output {
+                background: #1e1e1e;
+                color: #d4d4d4;
+                padding: 15px;
+                border-radius: 5px;
+                font-family: monospace;
+                margin-top: 10px;
+            }
+            .lang-switcher {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 100;
+                background: var(--sidebar-bg);
+                border: 1px solid var(--sidebar-fg);
+                border-radius: 5px;
+                padding: 8px 15px;
+            }
+            .lang-switcher a {
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+            .lang-switcher a:hover {
+                color: var(--links);
+            }
+            .constants-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            .constants-table th,
+            .constants-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid var(--sidebar-fg);
+            }
+            .constants-table th {
+                background: var(--sidebar-bg);
+                font-weight: bold;
+            }
+            .constants-table code {
+                background: var(--theme-popup-bg);
+                padding: 2px 6px;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="body-container">
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="theme-toggle" class="icon-button" type="button" title="Tema Değiştir">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK v1.0.0 - Stdlib</h1>
+
+                    <div class="right-buttons">
+                        <a href="../index-tr.html" title="Ana Sayfa">
+                            <i class="fa fa-home"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="GitHub" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lang-switcher">
+                    <a href="math-en.html" title="Switch to English">🇬🇧 EN</a>
+                </div>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>📐 math - Bilimsel Matematik Modülü</h1>
+                            <p style="font-size: 1.2em; margin: 10px 0;">Üniversite + Araştırma + Mühendislik seviyesi matematiksel hesaplamalar</p>
+                            
+                            <div class="module-stats">
+                                <div class="stat-badge">
+                                    <div class="stat-value">111</div>
+                                    <div class="stat-label">function</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">882</div>
+                                    <div class="stat-label">lines Kod</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">27.5 KB</div>
+                                    <div class="stat-label">Boyut</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">✓</div>
+                                    <div class="stat-label">LLVM Opt</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 id="genel-bakis"><a class="header" href="#genel-bakis">📚 Overview</a></h2>
+                        
+                        <p><code>math</code> modülü, BERK'un bilimsel hesaplama yeteneklerinin temelidir. Julia Math, NumPy, SciPy and GNU Scientific Library (GSL) standartlarından esinlenerek tasarlanmıştır.</p>
+
+                        <h3>İlham Kaynakları</h3>
+                        <ul>
+                            <li><strong>Julia:</strong> Math + FastMath + SpecialFunctions</li>
+                            <li><strong>Python:</strong> NumPy / SciPy scientific computing</li>
+                            <li><strong>Rust:</strong> nalgebra, ndarray, statrs, argmin</li>
+                            <li><strong>C:</strong> GNU Scientific Library (GSL)</li>
+                            <li><strong>Standartlar:</strong> BLAS/LAPACK/LINPACK</li>
+                        </ul>
+
+                        <h3>Özellikler</h3>
+                        <ul>
+                            <li>✓ Trigonometrik functionlar (radyan + derece)</li>
+                            <li>✓ Hiperbolik functionlar</li>
+                            <li>✓ Üstel and logaritmik functionlar</li>
+                            <li>✓ Özel functionlar (Gamma, Beta, Bessel)</li>
+                            <li>✓ Polinom değerlendirme (Horner yöntemi)</li>
+                            <li>✓ Kök bulma (Newton-Raphson, Bisection)</li>
+                            <li>✓ Sayısal entegrasyon (Simpson, Gauss)</li>
+                            <li>✓ İnterpolasyon (Linear, Cubic spline)</li>
+                            <li>✓ Karmaşık int desteği</li>
+                            <li>✓ LLVM fast-math optimizasyonları</li>
+                        </ul>
+
+                        <h2 id="hizli-baslangic"><a class="header" href="#hizli-baslangic">🚀 Quick Start</a></h2>
+
+                        <div class="example-box">
+                            <h3>Temel useım</h3>
+                            <pre><code class="language-berk">import math
+
+function main() do
+    // Temel işlemler
+    let x = math.sqrt(16.0)        // Karekök
+    let y = math.pow(2.0, 8.0)     // Üs alma
+    let z = math.abs(-42.0)        // Mutlak değer
+    
+    yazdır("√16 = " + x.yazıya())       // √16 = 4
+    yazdır("2^8 = " + y.yazıya())       // 2^8 = 256
+    yazdır("|-42| = " + z.yazıya())     // |-42| = 42
+    
+    // Trigonometri (radyan)
+    let sin_pi_2 = math.sin(math.PI / 2.0)
+    yazdır("sin(π/2) = " + sin_pi_2.yazıya())  // sin(π/2) = 1.0
+    
+    // Logaritma
+    let ln_e = math.log(math.E)
+    yazdır("ln(e) = " + ln_e.yazıya())        // ln(e) = 1.0
+end</code></pre>
+                            <div class="example-output">
+√16 = 4
+2^8 = 256
+|-42| = 42
+sin(π/2) = 1.0
+ln(e) = 1.0
+                            </div>
+                        </div>
+
+                        <h2 id="matematiksel-sabitler"><a class="header" href="#matematiksel-sabitler">🔢 Matematiksel Sabitler</a></h2>
+
+                        <table class="constants-table">
+                            <thead>
+                                <tr>
+                                    <th>const</th>
+                                    <th>Değer</th>
+                                    <th>Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>math.PI</code></td>
+                                    <td>3.14159265358979...</td>
+                                    <td>π (pi)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.E</code></td>
+                                    <td>2.71828182845904...</td>
+                                    <td>Euler sayısı (e)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.PHI</code></td>
+                                    <td>1.61803398874989...</td>
+                                    <td>Altın oran (φ)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.TAU</code></td>
+                                    <td>6.28318530717958...</td>
+                                    <td>τ = 2π</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.SQRT2</code></td>
+                                    <td>1.41421356237309...</td>
+                                    <td>√2</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.SQRT3</code></td>
+                                    <td>1.73205080756887...</td>
+                                    <td>√3</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.EULER_GAMMA</code></td>
+                                    <td>0.57721566490153...</td>
+                                    <td>Euler-Mascheroni sabiti</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Fiziksel Sabitler (SI Birimi)</h3>
+                        <table class="constants-table">
+                            <thead>
+                                <tr>
+                                    <th>const</th>
+                                    <th>Değer</th>
+                                    <th>Açıklama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>math.LIGHT_SPEED</code></td>
+                                    <td>299792458</td>
+                                    <td>Işık hızı (c) m/s</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.PLANCK</code></td>
+                                    <td>6.62607015×10⁻³⁴</td>
+                                    <td>Planck sabiti (h) J·s</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.BOLTZMANN</code></td>
+                                    <td>1.380649×10⁻²³</td>
+                                    <td>Boltzmann sabiti (k) J/K</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.AVOGADRO</code></td>
+                                    <td>6.02214076×10²³</td>
+                                    <td>Avogadro sayısı (Nₐ) mol⁻¹</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.GAS_CONSTANT</code></td>
+                                    <td>8.314462618</td>
+                                    <td>Gaz sabiti (R) J/(mol·K)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>math.GRAVITATIONAL</code></td>
+                                    <td>6.67430×10⁻¹¹</td>
+                                    <td>Çekim sabiti (G) m³/(kg·s²)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2 id="function-kategorileri"><a class="header" href="#function-kategorileri">🎯 function Kategorileri</a></h2>
+
+                        <div class="function-group">
+                            <h3>1. Temel Aritmetik</h3>
+                            
+                            <div class="function-signature">
+<strong>abs</strong>(x: ondalık) -> ondalık
+<strong>abs_int</strong>(x: tamsayı) -> tamsayı</div>
+                            <p>Mutlak değer hesaplar. LLVM <code>fabs</code> intrinsic useır.</p>
+                            
+                            <div class="function-signature">
+<strong>sign</strong>(x: ondalık) -> ondalık
+<strong>sign_int</strong>(x: tamsayı) -> tamsayı</div>
+                            <p>İşaret functionu: -1 (negatif), 0 (sıfır), +1 (pozitif)</p>
+                            
+                            <div class="function-signature">
+<strong>max</strong>(a, b: ondalık) -> ondalık
+<strong>min</strong>(a, b: ondalık) -> ondalık</div>
+                            <p>Maksimum and minimum değer. NaN handling ile güvenli.</p>
+                            
+                            <div class="function-signature">
+<strong>clamp</strong>(x, min_val, max_val: ondalık) -> ondalık</div>
+                            <p>Değeri [min_val, max_val] aralığına sınırlar.</p>
+
+                            <div class="example-box">
+                                <h4>Example: Temel Aritmetik</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Mutlak değer
+    yazdır(math.abs(-15.7))           // 15.7
+    yazdır(math.abs_int(-42))         // 42
+    
+    // İşaret
+    yazdır(math.sign(-5.5))           // -1.0
+    yazdır(math.sign(0.0))            // 0.0
+    yazdır(math.sign(3.14))           // 1.0
+    
+    // Max/Min
+    yazdır(math.max(10.5, 20.3))      // 20.3
+    yazdır(math.min(-5, 5))           // -5
+    
+    // Clamp (sınırlama)
+    yazdır(math.clamp(15, 0, 10))     // 10 (üst sınır)
+    yazdır(math.clamp(-5, 0, 10))     // 0 (alt sınır)
+    yazdır(math.clamp(5, 0, 10))      // 5 (aralık in)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>2. Üs and Kök functionları</h3>
+                            
+                            <div class="function-signature">
+<strong>pow</strong>(taban, üs: ondalık) -> ondalık
+<strong>pow_int</strong>(taban, üs: tamsayı) -> tamsayı</div>
+                            <p>Üs alma. <code>pow_int</code> binary exponentiation ile O(log n) hızında.</p>
+                            
+                            <div class="function-signature">
+<strong>sqrt</strong>(x: ondalık) -> ondalık
+<strong>cbrt</strong>(x: ondalık) -> ondalık
+<strong>nth_root</strong>(x: ondalık, n: tamsayı) -> ondalık</div>
+                            <p>Karekök, küpkök and n-inci kök. Newton-Raphson veya LLVM intrinsic.</p>
+                            
+                            <div class="function-signature">
+<strong>kare</strong>(x: ondalık) -> ondalık
+<strong>küp</strong>(x: ondalık) -> ondalık</div>
+                            <p>Kare and küp alma. Optimizasyon for özel functionlar.</p>
+                            
+                            <div class="function-signature">
+<strong>hypot</strong>(a, b: ondalık) -> ondalık
+<strong>hypot3</strong>(a, b, c: ondalık) -> ondalık</div>
+                            <p>Hipotenüs: √(a² + b²). Overflow-safe implementasyon.</p>
+
+                            <div class="example-box">
+                                <h4>Example: Üs and Kök</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Üs alma
+    yazdır(math.pow(2.0, 10.0))           // 1024.0
+    yazdır(math.pow_int(2, 20))           // 1048576 (hızlı)
+    
+    // Kökler
+    yazdır(math.sqrt(144.0))              // 12.0
+    yazdır(math.cbrt(27.0))               // 3.0
+    yazdır(math.nth_root(256.0, 4))       // 4.0 (4. kök)
+    
+    // Kare and küp
+    yazdır(math.kare(5.0))                // 25.0
+    yazdır(math.küp(3.0))                 // 27.0
+    
+    // Pisagor teoremi
+    let a = 3.0
+    let b = 4.0
+    let c = math.hypot(a, b)
+    yazdır("Hipotenüs: " + c.yazıya())    // 5.0
+    
+    // 3D mesafe
+    let dist = math.hypot3(1.0, 2.0, 2.0)
+    yazdır("3D mesafe: " + dist.yazıya()) // 3.0
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>3. Trigonometrik functionlar</h3>
+                            
+                            <div class="function-signature">
+<strong>sin</strong>(x: ondalık) -> ondalık
+<strong>cos</strong>(x: ondalık) -> ondalık
+<strong>tan</strong>(x: ondalık) -> ondalık</div>
+                            <p>Sinüs, kosinüs, tanjant. Girdi radyan cinsindendir.</p>
+                            
+                            <div class="function-signature">
+<strong>sind</strong>(x: ondalık) -> ondalık
+<strong>cosd</strong>(x: ondalık) -> ondalık
+<strong>tand</strong>(x: ondalık) -> ondalık</div>
+                            <p>Derece cinsinden trigonometrik functionlar.</p>
+                            
+                            <div class="function-signature">
+<strong>asin</strong>(x: ondalık) -> ondalık
+<strong>acos</strong>(x: ondalık) -> ondalık
+<strong>atan</strong>(x: ondalık) -> ondalık
+<strong>atan2</strong>(y, x: ondalık) -> ondalık</div>
+                            <p>Ters trigonometrik functionlar. <code>atan2</code> tüm kadranları destekler.</p>
+
+                            <div class="example-box">
+                                <h4>Example: Trigonometri</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Radyan cinsinden
+    yazdır(math.sin(0.0))                    // 0.0
+    yazdır(math.cos(0.0))                    // 1.0
+    yazdır(math.tan(math.PI / 4.0))          // 1.0
+    
+    // Derece cinsinden (daha sezgisel)
+    yazdır(math.sind(0.0))                   // 0.0
+    yazdır(math.sind(30.0))                  // 0.5
+    yazdır(math.sind(90.0))                  // 1.0
+    yazdır(math.cosd(60.0))                  // 0.5
+    yazdır(math.tand(45.0))                  // 1.0
+    
+    // Ters functionlar
+    let açı = math.asin(0.5)
+    yazdır("arcsin(0.5) = " + açı.yazıya()) // π/6 radyan
+    
+    // atan2 ile açı hesaplama (x,y koordinatından)
+    let açı2 = math.atan2(1.0, 1.0)
+    yazdır("atan2(1,1) = " + açı2.yazıya()) // π/4 (45°)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>4. Logaritma and Üstel functionlar</h3>
+                            
+                            <div class="function-signature">
+<strong>exp</strong>(x: ondalık) -> ondalık
+<strong>exp2</strong>(x: ondalık) -> ondalık
+<strong>exp10</strong>(x: ondalık) -> ondalık</div>
+                            <p>Üstel functionlar: e^x, 2^x, 10^x. LLVM intrinsic ile optimize.</p>
+                            
+                            <div class="function-signature">
+<strong>log</strong>(x: ondalık) -> ondalık
+<strong>log2</strong>(x: ondalık) -> ondalık
+<strong>log10</strong>(x: ondalık) -> ondalık</div>
+                            <p>Logaritma: ln(x), log₂(x), log₁₀(x).</p>
+                            
+                            <div class="function-signature">
+<strong>expm1</strong>(x: ondalık) -> ondalık
+<strong>log1p</strong>(x: ondalık) -> ondalık</div>
+                            <p>Küçük değerler for hassas: e^x-1, ln(1+x).</p>
+
+                            <div class="example-box">
+                                <h4>Example: Logaritma and Üstel</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Üstel functionlar
+    yazdır(math.exp(1.0))              // e¹ = 2.71828...
+    yazdır(math.exp2(10.0))            // 2¹⁰ = 1024
+    yazdır(math.exp10(3.0))            // 10³ = 1000
+    
+    // Logaritma
+    yazdır(math.log(math.E))           // ln(e) = 1.0
+    yazdır(math.log2(1024.0))          // log₂(1024) = 10.0
+    yazdır(math.log10(1000.0))         // log₁₀(1000) = 3.0
+    
+    // Küçük değerlerde hassasiyet
+    let küçük = 1e-10
+    yazdır(math.log1p(küçük))          // ln(1 + 10⁻¹⁰)
+    yazdır(math.expm1(küçük))          // e^(10⁻¹⁰) - 1
+    
+    // pH hesaplama örneği
+    let H_konsantrasyon = 1e-7    // mol/L
+    let pH = -math.log10(H_konsantrasyon)
+    yazdır("pH = " + pH.yazıya())      // pH = 7.0 (nötr)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <h2 id="gelismis-ornekler"><a class="header" href="#gelismis-ornekler">🎓 Gelişmiş Exampleler and Tutoriallar</a></h2>
+
+                        <div class="example-box">
+                            <h3>Tutorial 1: Nümerik Türev Hesaplama</h3>
+                            <p>Bir functionun sayısal türevini hesaplayın (merkezi fark yöntemi).</p>
+                            <pre><code class="language-berk">import math
+
+// f'(x) ≈ [f(x+h) - f(x-h)] / (2h)
+function sayısal_türev(f: function(ondalık)->ondalık, x: ondalık, h: ondalık) -> ondalık do
+    let fx_plus_h = f(x + h)
+    let fx_minus_h = f(x - h)
+    return (fx_plus_h - fx_minus_h) / (2.0 * h)
+end
+
+// Test functionu: f(x) = x²
+function f(x: ondalık) -> ondalık do
+    return x * x
+end
+
+function main() do
+    // f'(x) = 2x for x=3 noktasında türev
+    let x = 3.0
+    let h = 1e-5           // Küçük adım
+    let türev = sayısal_türev(f, x, h)
+    
+    yazdır("f'(3) sayısal = " + türev.yazıya())  // ~6.0
+    yazdır("f'(3) analitik = " + (2.0 * x).yazıya())  // 6.0
+    
+    // Error analizi
+    let Error = math.abs(türev - 2.0 * x)
+    yazdır("Error: " + Error.yazıya())  // ~10⁻¹⁰
+end</code></pre>
+                            <div class="example-output">
+f'(3) sayısal = 6.000000001
+f'(3) analitik = 6.0
+Error: 0.000000001
+                            </div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Tutorial 2: Newton-Raphson Kök Bulma</h3>
+                            <p>Bir denklemin kökünü bulun: f(x) = x² - 2 = 0 (yani √2)</p>
+                            <pre><code class="language-berk">import math
+
+// Newton-Raphson: x_{n+1} = x_n - f(x_n) / f'(x_n)
+function newton_raphson(
+    f: function(ondalık)->ondalık,
+    df: function(ondalık)->ondalık,
+    x0: ondalık,
+    tolerans: ondalık,
+    max_iter: tamsayı
+) -> ondalık do
+    let x = x0
+    
+    for i = 0; i < max_iter; i += 1 do
+        let fx = f(x)
+        let dfx = df(x)
+        
+        if math.abs(fx) < tolerans  do
+            yazdır("Yakınsadı: " + i.yazıya() + " iterasyon")
+            return x
+        end
+        
+        x = x - fx / dfx
+    end
+    
+    yazdır("Maksimum iterasyon aşıldı!")
+    return x
+end
+
+// f(x) = x² - 2
+function f(x: ondalık) -> ondalık do
+    return x * x - 2.0
+end
+
+// f'(x) = 2x
+function df(x: ondalık) -> ondalık do
+    return 2.0 * x
+end
+
+function main() do
+    let kök = newton_raphson(f, df, 1.0, 1e-10, 100)
+    
+    yazdır("Bulunan kök: " + kök.yazıya())
+    yazdır("√2 (referans): " + math.SQRT2.yazıya())
+    yazdır("Error: " + math.abs(kök - math.SQRT2).yazıya())
+end</code></pre>
+                            <div class="example-output">
+Yakınsadı: 4 iterasyon
+Bulunan kök: 1.414213562373095
+√2 (referans): 1.414213562373095
+Error: 0.000000000000000
+                            </div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Tutorial 3: Monte Carlo Pi Hesaplama</h3>
+                            <p>Rastgele sayılar usearak π değerini tahmin edin.</p>
+                            <pre><code class="language-berk">import math, random
+
+function monte_carlo_pi(n: tamsayı) -> ondalık do
+    let içeride = 0
+    
+    for i = 0; i < n; i += 1 do
+        // [-1, 1] aralığında rastgele nokta
+        let x = random.uniform(-1.0, 1.0)
+        let y = random.uniform(-1.0, 1.0)
+        
+        // Birim çember in mi?
+        if x*x + y*y <= 1.0  do
+            içeride += 1
+        end
+    end
+    
+    // π ≈ 4 * (içerideki noktalar / toplam noktalar)
+    return 4.0 * içeride.ondalık() / n.ondalık()
+end
+
+function main() do
+    // Farklı Examplelem boyutları
+    let boyutlar = [100, 1000, 10000, 100000, 1000000]
+    
+    yazdır("Gerçek π = " + math.PI.yazıya())
+    yazdır("\nMonte Carlo Tahminleri:")
+    yazdır("------------------------")
+    
+    for boyut in boyutlar do
+        let tahmin = monte_carlo_pi(boyut)
+        let Error = math.abs(tahmin - math.PI)
+        let Error_yüzde = (Error / math.PI) * 100.0
+        
+        yazdır("n=" + boyut.yazıya() + ": π≈" + tahmin.yazıya() + 
+               " (Error: %" + Error_yüzde.yazıya() + ")")
+    end
+end</code></pre>
+                            <div class="example-output">
+Gerçek π = 3.141592653589793
+
+Monte Carlo Tahminleri:
+------------------------
+n=100: π≈3.16 (Error: %0.59)
+n=1000: π≈3.148 (Error: %0.20)
+n=10000: π≈3.1432 (Error: %0.05)
+n=100000: π≈3.14204 (Error: %0.014)
+n=1000000: π≈3.141456 (Error: %0.004)
+                            </div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Tutorial 4: Fourier Serisi Yaklaşımı</h3>
+                            <p>Kare dalga functionunu Fourier serisi ile yaklaşık hesaplayın.</p>
+                            <pre><code class="language-berk">import math
+
+// Kare dalga Fourier serisi: f(x) = (4/π) Σ [sin((2k-1)x) / (2k-1)]
+function fourier_kare_dalga(x: ondalık, terimler: tamsayı) -> ondalık do
+    let toplam = 0.0
+    
+    for k = 1; k <= terimler; k += 1 do
+        let n = 2 * k - 1
+        let terim = math.sin(n.ondalık() * x) / n.ondalık()
+        toplam += terim
+    end
+    
+    return (4.0 / math.PI) * toplam
+end
+
+function main() do
+    yazdır("Fourier Kare Dalga Yaklaşımı")
+    yazdır("================================\n")
+    
+    // x = π/4 noktasında (yükselen kenar)
+    let x = math.PI / 4.0
+    
+    for n_terim = 1; n_terim <= 50; n_terim *= 5 do
+        let Result = fourier_kare_dalga(x, n_terim)
+        yazdır(n_terim.yazıya() + " terim: f(π/4) = " + Result.yazıya())
+    end
+    
+    // Görselleştirme (basit ASCII)
+    yazdır("\nGrafik (0 ile 2π arası, 10 terim):")
+    yazdır("-----------------------------------")
+    
+    for i = 0; i < 40; i += 1 do
+        let x_nokta = (i.ondalık() / 40.0) * 2.0 * math.PI
+        let y = fourier_kare_dalga(x_nokta, 10)
+        
+        // Y değerini karaktere dönüştür (basitleştirilmiş)
+        let seviye = ((y + 1.0) / 2.0 * 20.0).tamsayı()
+        let çizgi = ""
+        
+        for j = 0; j < seviye; j += 1 do
+            çizgi += " "
+        end
+        çizgi += "*"
+        
+        yazdır(çizgi)
+    end
+end</code></pre>
+                            <div class="example-output">
+Fourier Kare Dalga Yaklaşımı
+================================
+
+1 terim: f(π/4) = 0.900316
+5 terim: f(π/4) = 0.983631
+25 terim: f(π/4) = 0.996727
+50 terim: f(π/4) = 0.998363
+
+Grafik (0 ile 2π arası, 10 terim):
+-----------------------------------
+                    *
+                    *
+                    *
+...
+                            </div>
+                        </div>
+
+                        <h2 id="performans"><a class="header" href="#performans">⚡ Performans and Optimizasyon</a></h2>
+
+                        <div class="function-group">
+                            <h3>LLVM Intrinsics</h3>
+                            <p>Çoğu function LLVM intrinsic'leri useır:</p>
+                            <ul>
+                                <li><code>@llvm.fabs.*</code> - Mutlak değer</li>
+                                <li><code>@llvm.sqrt.*</code> - Karekök</li>
+                                <li><code>@llvm.sin.*</code>, <code>@llvm.cos.*</code> - Trigonometri</li>
+                                <li><code>@llvm.exp.*</code>, <code>@llvm.log.*</code> - Üstel/Log</li>
+                                <li><code>@llvm.pow.*</code> - Üs alma</li>
+                            </ul>
+                            <p>Bu intrinsic'ler donanım talimatlarına (SSE, AVX) derlenir.</p>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>Fast-Math Bayrakları</h3>
+                            <p>Agresif optimizasyon for:</p>
+                            <pre><code class="language-bash"># Derleme sırasında fast-math etkinleştir
+berk-lang compile program.berk --fast-math --release</code></pre>
+                            <p>Fast-math etkinleştirir:</p>
+                            <ul>
+                                <li>NaN/Inf kontrollerini atlama</li>
+                                <li>Associativity yeniden düzenleme</li>
+                                <li>Reciprocal approximation</li>
+                                <li>SIMD vectorization</li>
+                            </ul>
+                        </div>
+
+                        <h2 id="api-referans"><a class="header" href="#api-referans">📖 Tam API Referansı</a></h2>
+
+                        <p>Tüm 111 functionun detaylı listesi for:</p>
+                        <ul>
+                            <li><a href="https://github.com/ArslantasM/berk/blob/main/berk-lang/stdlib/math.berk">Kaynak Kodu (math.berk)</a></li>
+                            <li><a href="../intro.html">BERK Dokümantasyon Ana Sayfası</a></li>
+                            <li><a href="../stdlib/index-tr.html">Tüm Stdlib Modülleri</a></li>
+                        </ul>
+
+                        <hr>
+
+                        <p style="text-align: center; margin-top: 40px;">
+                            <a href="../index-tr.html">← Ana Sayfa</a> | 
+                            <a href="../stdlib/index-tr.html">All Modules</a> | 
+                            <a href="math-en.html">English →</a>
+                        </p>
+
+                        <p style="text-align: center; color: #888; margin-top: 20px; font-size: 0.9em;">
+                            BERK v1.0.0 | math modülü | 111 function | 882 lines<br>
+                            end güncelleme: Aralık 2025
+                        </p>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    </body>
+</html>

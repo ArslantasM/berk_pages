@@ -1,0 +1,122 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>stats - İstatistik | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 stats - İstatistik and Olasılık</h1>
+<p>Descriptive Stats, Probability, Regression, Hypothesis Testing</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">56</div><div>function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">820</div><div>lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">25 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import stats
+
+// Temel istatistikler
+let veri = [1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8]
+
+let ort = stats.ortalama(veri)           // 4.5
+let med = stats.medyan(veri)             // 4.5
+let std = stats.standart_sapma(veri)    // 2.28
+let var = stats.varyans(veri)           // 5.2
+
+// Dağılımlar
+let z_değeri = stats.z_skoru(5.0, ort, std)
+let normal = stats.normal_dağılım(0, 1)
+let prob = stats.normal_pdf(1.96)       // ~0.06
+
+// Korelasyon and regresyon
+let x = [1, 2, 3, 4, 5]
+let y = [2, 4, 5, 4, 5]
+let (r, p) = stats.korelasyon(x, y)    // r~0.83, p<0.05
+let (a, b) = stats.lineer_regresyon(x, y)  // y = a + bx
+
+// Hipotez testleri
+let t = stats.t_test(grup1, grup2)
+if t.p_değeri < 0.05  do
+    yazdır("İstatistiksel olarak anlamlı fark var")
+end</code></pre>
+<h2>📚 function Kategorileri</h2>
+<ul>
+<li><strong>Merkezi Eğilim:</strong> ortalama, medyan, mod, geometrik_ortalama</li>
+<li><strong>Yayılım:</strong> varyans, standart_sapma, IQR, aralık</li>
+<li><strong>Dağılımlar:</strong> normal, uniform, poisson, binomial, exponential</li>
+<li><strong>Korelasyon:</strong> pearson, spearman, kendall</li>
+<li><strong>Regresyon:</strong> lineer, polynomial, lojistik</li>
+<li><strong>Testler:</strong> t-test, chi-square, ANOVA, Kolmogorov-Smirnov</li>
+</ul>
+<h2>💡 Exampleler</h2>
+<div class="example-box">
+<h3>Veri Analizi Pipeline</h3>
+<pre><code>import stats, io, csv
+
+// CSV'den veri yükle
+let veri = csv.oku("sales_data.csv")
+let satışlar = veri["sales"]
+
+// Descriptive statistics
+yazdır("Ortalama: " + stats.ortalama(satışlar).yazıya())
+yazdır("Medyan: " + stats.medyan(satışlar).yazıya())
+yazdır("Std Sapma: " + stats.standart_sapma(satışlar).yazıya())
+yazdır("Q1: " + stats.çeyreklik(satışlar, 0.25).yazıya())
+yazdır("Q3: " + stats.çeyreklik(satışlar, 0.75).yazıya())
+
+// Outlier detection
+let Q1 = stats.çeyreklik(satışlar, 0.25)
+let Q3 = stats.çeyreklik(satışlar, 0.75)
+let IQR = Q3 - Q1
+let alt_sınır = Q1 - 1.5 * IQR
+let üst_sınır = Q3 + 1.5 * IQR
+
+let outliers = stats.filtrele(satışlar, function(x) do
+    return x < alt_sınır veya x > üst_sınır
+end)
+
+yazdır("Outliers: " + outliers.uzunluk().yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>A/B Testing</h3>
+<pre><code>import stats
+
+// Grup A and B'nin conversion rates
+let grup_A = [1,0,1,1,0,1,1,1,0,1]  // 7/10 = 70%
+let grup_B = [1,1,0,1,1,1,0,1,1,1]  // 8/10 = 80%
+
+// İki oran karşılaştırması (z-test)
+let p_A = stats.ortalama(grup_A)
+let p_B = stats.ortalama(grup_B)
+
+yazdır("Grup A: " + (p_A * 100).yazıya() + "%")
+yazdır("Grup B: " + (p_B * 100).yazıya() + "%")
+
+// Hipotez testi
+let Result = stats.oran_testi(grup_A, grup_B)
+
+if Result.p_değeri < 0.05  do
+    yazdır("Anlamlı fark var (p=" + Result.p_değeri.yazıya() + ")")
+end else do
+    yazdır("Anlamlı fark yok (p=" + Result.p_değeri.yazıya() + ")")
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

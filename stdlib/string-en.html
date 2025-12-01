@@ -1,0 +1,139 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>string - String İşleme | BERK Stdlib</title>
+    <meta name="description" content="BERK string modülü - 127 function ile UTF-8 string işlemleri, pattern matching, formatting">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>📝 string - String İşleme Modülü</h1>
+            <p>UTF-8, Pattern Matching, Formatting</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">127</div><div>function</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">953</div><div>lines</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Quick Start</h2>
+        <pre><code>import string
+
+// Temel işlemler
+let uzunluk = string.uzunluk("Merhaba")  // 7
+let büyük = string.büyük_harf("merhaba") // "MERHABA"
+let küçük = string.küçük_harf("MERHABA") // "merhaba"
+
+// Arama and değiştirme
+let içerir = string.içerir_mi("Hello World", "World") // true
+let değişti = string.değiştir("foo bar", "foo", "baz") // "baz bar"
+
+// Bölme and birleştirme
+let parçalar = string.böl("a,b,c", ",")  // ["a", "b", "c"]
+let birleşik = string.birleştir(["a","b"], "-") // "a-b"
+
+// Whitespace temizleme
+let temiz = string.temizle("  hello  ") // "hello"</code></pre>
+
+        <h2>📚 function Kategorileri</h2>
+
+        <div class="function-group">
+            <h3>Temel İşlemler</h3>
+            <p><code>uzunluk()</code>, <code>birleştir()</code>, <code>alt_yazı()</code>, <code>kopyala()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Karakter Dönüşümleri</h3>
+            <p><code>büyük_harf()</code>, <code>küçük_harf()</code>, <code>ilk_harf_büyük()</code>, <code>başlık_hali()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Arama and Karşılaştırma</h3>
+            <p><code>eşit_mi()</code>, <code>içerir_mi()</code>, <code>başlar_mı()</code>, <code>biter_mi()</code>, <code>bul()</code>, <code>bul_hepsi()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>String Manipülasyonu</h3>
+            <p><code>değiştir()</code>, <code>değiştir_hepsi()</code>, <code>böl()</code>, <code>birleştir()</code>, <code>temizle()</code>, <code>ters_çevir()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>UTF-8 and Unicode</h3>
+            <p><code>karakter_sayısı()</code>, <code>bayt_sayısı()</code>, <code>utf8_geçerli_mi()</code>, <code>unicode_normalize()</code></p>
+        </div>
+
+        <h2>💡 Exampleler</h2>
+
+        <div class="example-box">
+            <h3>Example 1: Email Validasyonu</h3>
+            <pre><code>import string
+
+function email_geçerli_mi(email: str) -> bool do
+    if string.içerir_mi(email, "@") else return false end
+    
+    let parçalar = string.böl(email, "@")
+    if string.uzunluk(parçalar) != 2  return false end
+    
+    let local = parçalar[0]
+    let domain = parçalar[1]
+    
+    if string.uzunluk(local) == 0  return false end
+    if string.uzunluk(domain) == 0  return false end
+    if string.içerir_mi(domain, ".") else return false end
+    
+    return true
+end
+
+yazdır(email_geçerli_mi("user@example.com"))  // true
+yazdır(email_geçerli_mi("invalid"))           // false</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Example 2: CSV Parser</h3>
+            <pre><code>import string
+
+function csv_parse(lines: str) -> liste[str] do
+    let Result = []
+    let geçici = ""
+    let tırnak_içinde = false
+    
+    for karakter in string.karakterler(lines) do
+        if karakter == '"'  do
+            tırnak_içinde = !tırnak_içinde
+        end else if karakter == ',' and !tırnak_içinde  do
+            liste_ekle(Result, string.temizle(geçici))
+            geçici = ""
+        end else do
+            geçici += karakter
+        end
+    end
+    
+    liste_ekle(Result, string.temizle(geçici))
+    return Result
+end
+
+let veri = 'John,Doe,"123 Main St",30'
+yazdır(csv_parse(veri))  // ["John", "Doe", "123 Main St", "30"]</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="index-tr.html">← All Modules</a> | 
+            <a href="../index-tr.html">Ana Sayfa</a>
+        </p>
+    </main>
+</div>
+</body>
+</html>

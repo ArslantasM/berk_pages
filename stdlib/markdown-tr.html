@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>markdown - Markdown Parser | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📝 markdown</h1>
+<p>Markdown Parser & HTML Renderer - CommonMark Compatible</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400 satır</span>
+<span class="stat-badge">~35 fonksiyon</span>
+<span class="stat-badge">CommonMark</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Markdown modülü, CommonMark standardına uyumlu Markdown parser ve HTML renderer sağlar. AST manipulation, syntax highlighting ve table of contents generation destekler.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>CommonMark parser (standards-compliant)</li>
+<li>HTML rendering with customization</li>
+<li>AST (Abstract Syntax Tree) access</li>
+<li>Headings, paragraphs, lists, quotes</li>
+<li>Code blocks with syntax highlighting</li>
+<li>Tables, footnotes, task lists</li>
+<li>Inline: bold, italic, code, links, images</li>
+<li>Table of contents generation</li>
+<li>Word count & reading time</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar markdown
+
+// Basit rendering
+değişken html = markdown.render("# Hello\nWorld!")
+io.println(html)
+// Output: &lt;h1&gt;Hello&lt;/h1&gt;\n&lt;p&gt;World!&lt;/p&gt;
+
+// Dosyadan okuma
+değişken md_text = fs.read_to_string("README.md")?
+değişken html = markdown.render(md_text)
+fs.write("README.html", html)?</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek 1: Blog Generator</h3>
+<pre><code>içe_aktar markdown, fs, time, regex
+
+yapı BlogPost yap
+    title: yazı,
+    date: time.Date,
+    author: yazı,
+    content_html: yazı,
+    excerpt: yazı,
+    reading_time: sayı
+son
+
+fonksiyon parse_blog_post(md_file: yazı) -> Sonuç[BlogPost, Hata] yap
+    // Markdown dosyasını oku
+    değişken content = fs.read_to_string(md_file)?
+    
+    // Front matter parse et (YAML)
+    değişken (frontmatter, body) = split_frontmatter(content)?
+    
+    değişken title = frontmatter.get("title")?
+    değişken date = time.parse(frontmatter.get("date")?, "%Y-%m-%d")?
+    değişken author = frontmatter.get("author")?
+    
+    // Markdown to HTML
+    değişken doc = markdown.parse(body)
+    
+    // Table of contents ekle
+    değişken toc = markdown.generate_toc(doc)
+    
+    // Syntax highlighting
+    markdown.highlight_code_blocks(doc, yap
+        theme: "github",
+        line_numbers: doğru
+    son)
+    
+    değişken html = markdown.to_html(doc)
+    
+    // Excerpt (first paragraph)
+    değişken excerpt = markdown.extract_text(doc, max_length: 150)
+    
+    // Reading time (ortalama 200 kelime/dakika)
+    değişken word_count = markdown.word_count(doc)
+    değişken reading_time = (word_count / 200).max(1)
+    
+    dön Tamam(BlogPost yap
+        title: title,
+        date: date,
+        author: author,
+        content_html: html,
+        excerpt: excerpt,
+        reading_time: reading_time
+    son)
+son
+
+fonksiyon generate_blog_html(post: BlogPost) -> yazı yap
+    dön "
+        &lt;article&gt;
+            &lt;header&gt;
+                &lt;h1&gt;{}&lt;/h1&gt;
+                &lt;div class='meta'&gt;
+                    &lt;span&gt;By {}&lt;/span&gt;
+                    &lt;span&gt;{}&lt;/span&gt;
+                    &lt;span&gt;{} min read&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/header&gt;
+            &lt;div class='excerpt'&gt;{}&lt;/div&gt;
+            &lt;div class='content'&gt;
+                {}
+            &lt;/div&gt;
+        &lt;/article&gt;
+    ".formatla(
+        post.title,
+        post.author,
+        post.date.format("%B %d, %Y"),
+        post.reading_time,
+        post.excerpt,
+        post.content_html
+    )
+son
+
+fonksiyon ana() yap
+    değişken posts = []
+    
+    // Tüm blog postlarını parse et
+    her file içinde fs.read_dir("posts")? için yap
+        eğer file.ends_with(".md") ise yap
+            eşle parse_blog_post("posts/" + file) yap
+                Tamam(post) => posts.ekle(post),
+                Hata(e) => io.eprintln("Error parsing {}: {}", file, e)
+            son
+        son
+    son
+    
+    // Tarihe göre sırala
+    posts.sort_by(|a, b| b.date.cmp(&a.date))
+    
+    // HTML oluştur
+    her post içinde posts için yap
+        değişken html = generate_blog_html(post)
+        değişken slug = post.title.to_lowercase().replace(" ", "-")
+        fs.write("output/{}.html".formatla(slug), html)?
+    son
+    
+    io.println("Generated {} blog posts", posts.uzunluk())
+son</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 2: Documentation Generator</h3>
+<pre><code>içe_aktar markdown, fs
+
+fonksiyon generate_docs(input_dir: yazı, output_dir: yazı) -> Sonuç[Hiçbir, Hata] yap
+    // Template
+    değişken template = fs.read_to_string("template.html")?
+    
+    // Sidebar navigation
+    değişken nav_items = []
+    
+    // Process all markdown files
+    her file içinde fs.glob("{}/**/*.md".formatla(input_dir))? için yap
+        değişken md_text = fs.read_to_string(file)?
+        değişken doc = markdown.parse(md_text)
+        
+        // Extract title (first h1)
+        değişken title = markdown.find_first_heading(doc, level: 1)
+            .unwrap_or("Untitled")
+        
+        // Generate TOC
+        değişken toc_html = markdown.generate_toc_html(doc, yap
+            min_level: 2,
+            max_level: 4,
+            id_prefix: "toc-"
+        son)
+        
+        // Add IDs to headings
+        markdown.add_heading_ids(doc)
+        
+        // Convert to HTML
+        değişken content_html = markdown.to_html(doc)
+        
+        // Apply template
+        değişken html = template
+            .replace("{{title}}", title)
+            .replace("{{toc}}", toc_html)
+            .replace("{{content}}", content_html)
+        
+        // Output path
+        değişken rel_path = file.strip_prefix(input_dir)?
+        değişken out_file = "{}/{}.html".formatla(output_dir, 
+            rel_path.strip_suffix(".md")?)
+        
+        fs.create_dir_all(fs.parent(out_file)?)?
+        fs.write(out_file, html)?
+        
+        // Add to navigation
+        nav_items.ekle(yap
+            title: title,
+            path: rel_path.replace(".md", ".html")
+        son)
+        
+        io.println("✓ Generated {}", out_file)
+    son
+    
+    // Generate index with navigation
+    generate_index(output_dir, nav_items)?
+    
+    dön Tamam(Hiçbir)
+son</code></pre>
+</div>
+
+<h2>📦 AST Manipulation</h2>
+<pre><code>// Parse to AST
+değişken doc = markdown.parse("# Title\nContent")
+
+// Traverse nodes
+değişken root = doc.root()
+her node içinde root.children() için yap
+    eşle node.type() yap
+        NodeType.Heading(level) => yap
+            io.println("H{}: {}", level, node.text())
+        son,
+        NodeType.Paragraph => yap
+            io.println("Paragraph: {}", node.text())
+        son,
+        _ => yap son
+    son
+son
+
+// Modify AST
+değişken heading = markdown.Node.new_heading(2)
+heading.append_text("New Section")
+root.append_child(heading)
+
+// Convert back to HTML
+değişken html = markdown.to_html(doc)</code></pre>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>fs</code> - File I/O</li>
+<li><code>regex</code> - Pattern matching</li>
+<li><code>string</code> - Text processing</li>
+<li><code>template</code> - HTML templates</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

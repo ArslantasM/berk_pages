@@ -1,0 +1,484 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>hal::dac - Digital-to-Analog Converter | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#3498db;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📈 hal::dac</h1>
+<p>Digital-to-Analog Converter - Analog Sinyal Üretimi</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 lines</span>
+<span class="stat-badge">~10 function</span>
+<span class="stat-badge">12-bit</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>DAC modülü, dijital difleri analog voltaja returnüştürür. Dalga üretimi, audio, sensör simülasyonu for kullanılır.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>12-bit resolution (0-4095)</li>
+<li>2 output channels</li>
+<li>DMA support</li>
+<li>Triangle/Noise wave generation</li>
+<li>Timer trigger</li>
+<li>Output buffer</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::dac, hal::gpio
+
+// DAC pin (PA4 = DAC_OUT1)
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_ANALOG end)
+
+// Initialize DAC
+let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+
+// Output voltage (0-3.3V)
+dac.write(dac1, 2048)  // ~1.65V (mid-scale)</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: Sine Wave Generator</h3>
+<pre><code>import hal::dac, hal::timer, math
+
+const SAMPLES = 100
+
+function generate_sine_wave() do
+    // Generate sine wave lookup table
+    let sine_table = [0u16; SAMPLES]
+    each i forde 0..SAMPLES for do
+        let angle = 2.0 * math.PI * i.float() / SAMPLES.float()
+        let value = (math.sin(angle) + 1.0) * 2047.5
+        sine_table[i] = value.int()
+    end
+    
+    // Setup DAC with DMA
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    dac.enable_dma(dac1)
+    
+    // Timer trigger (1kHz = 1kHz sine with 100 samples)
+    let tim6 = timer.init_basic(timer.TIM6, do
+        frequency: 100_000  // 100kHz update rate
+    end)
+    
+    dac.set_trigger(dac1, dac.TRIGGER_TIM6)
+    
+    // Start DMA circular mode
+    dma.circular_transfer(dac.get_dma_channel(), 
+        sine_table.as_ptr(),
+        dac.get_data_register(dac1),
+        SAMPLES
+    )
+    
+    timer.start(tim6)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Audio Tone Generator</h3>
+<pre><code>import hal::dac, math
+
+function play_tone(freq: float, duration_ms: int) do
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    let sample_rate = 8000.0  // 8kHz
+    let samples = (sample_rate * duration_ms.float() / 1000.0).int()
+    
+    each i forde 0..samples for do
+        let t = i.float() / sample_rate
+        let value = (math.sin(2.0 * math.PI * freq * t) + 1.0) * 2047.5
+        dac.write(dac1, value.int())
+        core.delay_us(125)  // 8kHz = 125us per sample
+    end
+end
+
+function ana() do
+    // Play musical scale (C4 to C5)
+    let freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
+    
+    each freq forde freqs for do
+        play_tone(freq, 500)  // 500ms each note
+        core.delay_ms(100)    // 100ms gap
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Function Generator (Triangle, Sawtooth, Square)</h3>
+<pre><code>import hal::dac, hal::timer, hal::dma
+
+enum Waveform {
+    SINE,
+    TRIANGLE,
+    SAWTOOTH,
+    SQUARE
+}
+
+const SAMPLES = 256
+
+function generate_waveform(waveform: Waveform, freq: float) do
+    let wave_table = [0u16; SAMPLES]
+    
+    // Generate waveform lookup table
+    each i forde 0..SAMPLES for do
+        let phase = i.float() / SAMPLES.float()
+        
+        let value = match waveform do
+            Waveform::SINE => do
+                let angle = 2.0 * math.PI * phase
+                (math.sin(angle) + 1.0) * 2047.5
+            end,
+            
+            Waveform::TRIANGLE => do
+                if phase < 0.5 ise do
+                    phase * 4.0 * 4095.0
+                end else do
+                    (1.0 - (phase - 0.5) * 2.0) * 4095.0
+                end
+            end,
+            
+            Waveform::SAWTOOTH => do
+                phase * 4095.0
+            end,
+            
+            Waveform::SQUARE => do
+                if phase < 0.5 ise 4095.0 else 0.0
+            end
+        end
+        
+        wave_table[i] = value.int()
+    end
+    
+    // Setup DAC with DMA + Timer trigger
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1, do
+        trigger: dac.TRIGGER_TIM6,
+        dma_enable: true
+    end)
+    
+    // Timer frequency = desired_freq * SAMPLES
+    let tim6 = timer.init_basic(timer.TIM6, do
+        frequency: (freq * SAMPLES.float()).int()
+    end)
+    
+    // DMA circular mode
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM5, do
+        direction: dma.M2P,
+        src_address: wave_table.as_ptr(),
+        dst_address: dac.get_data_register(dac1),
+        data_count: SAMPLES,
+        src_increment: true,
+        dst_increment: false,
+        circular: true,
+        data_size: dma.SIZE_16BIT
+    end)
+    
+    dma.start(dma_ch)
+    timer.start(tim6)
+    
+    io.println("Generating {} waveform at {}Hz", waveform, freq)
+end
+
+function ana() do
+    // Generate 1kHz triangle wave
+    generate_waveform(Waveform::TRIANGLE, 1000.0)
+    
+    loop do
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Dual Channel DAC (Stereo Output)</h3>
+<pre><code>import hal::dac, hal::gpio
+
+function dac_dual_init() -> (dac.Handle, dac.Handle) do
+    // PA4 = DAC_OUT1 (left channel)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_ANALOG end)
+    
+    // PA5 = DAC_OUT2 (right channel)
+    gpio.pin_init(gpio.PORT_A, 5, do mode: gpio.MODE_ANALOG end)
+    
+    // Initialize both channels
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    let dac2 = dac.init(dac.DAC1, dac.CHANNEL_2)
+    
+    return (dac1, dac2)
+end
+
+function stereo_tone(left_freq: float, right_freq: float) do
+    let (dac_left, dac_right) = dac_dual_init()
+    
+    let sample_rate = 8000.0
+    
+    each i forde 0..8000 for do  // 1 second
+        let t = i.float() / sample_rate
+        
+        // Left channel
+        let left_val = (math.sin(2.0 * math.PI * left_freq * t) + 1.0) * 2047.5
+        dac.write(dac_left, left_val.int())
+        
+        // Right channel
+        let right_val = (math.sin(2.0 * math.PI * right_freq * t) + 1.0) * 2047.5
+        dac.write(dac_right, right_val.int())
+        
+        core.delay_us(125)
+    end
+end
+
+function ana() do
+    // Stereo test: 440Hz left, 880Hz right
+    stereo_tone(440.0, 880.0)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Voltage Reference / Sensor Simulation</h3>
+<pre><code>import hal::dac
+
+function voltage_to_dac(voltage: float) -> u16 do
+    // DAC: 0-3.3V = 0-4095
+    let dac_val = (voltage / 3.3) * 4095.0
+    return dac_val.clamp(0.0, 4095.0).int()
+end
+
+function simulate_temperature_sensor() do
+    // Simulate LM35 temperature sensor (10mV/°C)
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Simulate 25°C room temperature
+    let temp_c = 25.0
+    
+    loop do
+        // LM35: 10mV per degree Celsius
+        let voltage = temp_c * 0.01  // 25°C = 0.25V
+        
+        dac.write(dac1, voltage_to_dac(voltage))
+        
+        io.println("Simulating {}°C ({}V)", temp_c, voltage)
+        
+        // Slowly vary temperature
+        temp_c += 0.5
+        if temp_c > 40.0 ise temp_c = 20.0
+        
+        core.delay_ms(1000)
+    end
+end
+
+function calibration_voltages() do
+    // Generate precise reference voltages for ADC calibration
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    let test_voltages = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.3]
+    
+    each voltage forde test_voltages for do
+        dac.write(dac1, voltage_to_dac(voltage))
+        io.println("Output: {}V (measure with ADC)", voltage)
+        core.delay_ms(5000)  // Hold for 5 seconds
+    end
+end
+
+function ana() do
+    simulate_temperature_sensor()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: PWM-like DC Motor Control via DAC</h3>
+<pre><code>import hal::dac
+
+function motor_speed_control() do
+    // DAC output -> Motor driver analog input
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Speed ramp up
+    io.println("Motor ramping up...")
+    each speed forde 0..=100 for do
+        let voltage = (speed.float() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    end
+    
+    // Hold max speed
+    io.println("Motor at max speed")
+    core.delay_ms(2000)
+    
+    // Speed ramp down
+    io.println("Motor ramping down...")
+    each speed forde (0..=100).rev() for do
+        let voltage = (speed.float() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    end
+    
+    io.println("Motor stopped")
+end
+
+function voltage_to_dac(voltage: float) -> u16 do
+    return ((voltage / 3.3) * 4095.0).clamp(0.0, 4095.0).int()
+end
+
+function ana() do
+    loop do
+        motor_speed_control()
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ DAC structlandırma</h2>
+<pre><code>// DAC Configuration
+struct DACConfig do
+    channel: Channel,           // CHANNEL_1 or CHANNEL_2
+    trigger: Trigger,           // Software, Timer, EXTI
+    output_buffer: bool,        // Enable for external loads
+    dma_enable: bool,           // DMA for waveform generation
+    noise_wave: bool,           // Noise generation
+    triangle_wave: bool,        // Triangle generation
+    amplitude: int             // Wave amplitude (0-12)
+end
+
+// Trigger Sources
+enum Trigger {
+    SOFTWARE,    // Manual trigger
+    TIM2_TRGO,   // Timer 2
+    TIM4_TRGO,   // Timer 4
+    TIM6_TRGO,   // Timer 6
+    TIM7_TRGO,   // Timer 7
+    EXTI9        // External line 9
+}
+
+// Channels
+enum Channel {
+    CHANNEL_1,  // PA4
+    CHANNEL_2   // PA5
+}</code></pre>
+
+<h2>📚 DAC functionları</h2>
+<pre><code>// Initialization
+function init(dac: DACInstance, channel: Channel) -> Handle
+function init_with_config(dac: DACInstance, config: DACConfig) -> Handle
+
+// Basic output
+function write(handle: Handle, value: u16)  // 0-4095
+function write_voltage(handle: Handle, voltage: float)  // 0.0-3.3V
+
+// Advanced features
+function enable_dma(handle: Handle)
+function set_trigger(handle: Handle, trigger: Trigger)
+function software_trigger(handle: Handle)
+
+// Waveform generation
+function enable_noise_wave(handle: Handle, amplitude: int)
+function enable_triangle_wave(handle: Handle, amplitude: int)
+
+// Utility
+function get_data_register(handle: Handle) -> *let u16
+function clock_enable()
+function clock_disable()</code></pre>
+
+<h2>📊 DAC Use Cases</h2>
+<table style="width:100%;border-collapse:collapse">
+<tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Uygulama</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Frekans</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Yöntem</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Açıklama</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DC Voltage Reference</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Static</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Manual write</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Calibration, sensor simulation</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Tone (8kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">100Hz-4kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Software loop</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Simple beeper, alarms</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Waveform Generator</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">1Hz-10kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DMA + Timer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Function generator, test equipment</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Playback (44kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">20Hz-20kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DMA + I2S/Timer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Music, voice synthesis</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Motor Speed Control</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">DC-100Hz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Slow updates</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Analog motor driver input</td>
+</tr>
+</table>
+
+<h2>⚡ Performance Tips</h2>
+<ul>
+<li><strong>DMA + Timer</strong>: Kullanın waveform generation for (CPU-free)</li>
+<li><strong>Lookup Tables</strong>: Pre-calculate sine/triangle difleri</li>
+<li><strong>Output Buffer</strong>: Enable edin external load (>5kΩ) for</li>
+<li><strong>Dual Channel</strong>: Stereo veya differential output for kullanın</li>
+<li><strong>Trigger Source</strong>: Timer trigger precise timing for ideal</li>
+</ul>
+
+<h2>🖥️ Platform Support</h2>
+<ul>
+<li><strong>STM32F1</strong>: 2-channel 12-bit DAC</li>
+<li><strong>STM32F4</strong>: 2-channel 12-bit DAC, up to 1 MSPS</li>
+<li><strong>STM32L4</strong>: 2-channel 12-bit DAC, ultra-low-power</li>
+<li><strong>STM32H7</strong>: 2-channel 12-bit DAC, up to 1 MSPS</li>
+<li><strong>GD32</strong>: Compatible DAC</li>
+</ul>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li><strong>Voltage Range</strong>: 0V - 3.3V (VDDA reference)</li>
+<li><strong>Output Current</strong>: Maximum ~5mA without buffer, 10-20mA with buffer</li>
+<li><strong>Output Buffer</strong>: Enable for loads < 5kΩ impedance</li>
+<li><strong>Pin Mapping</strong>: PA4 = DAC_OUT1, PA5 = DAC_OUT2 (fixed, no alternate)</li>
+<li><strong>Resolution</strong>: 12-bit (0-4095), right-aligned or left-aligned</li>
+<li><strong>Sample Rate</strong>: Up to 1 MSPS with DMA + Timer trigger</li>
+<li><strong>Noise/Triangle</strong>: Hardware waveform generation modu (test for ideal)</li>
+<li><strong>Dual Mode</strong>: each iki channel simultane güncelleme (synchronized output)</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code>hal::timer</code> - DAC trigger source</li>
+<li><code>hal::dma</code> - Waveform generation</li>
+<li><code>hal::adc</code> - ADC-DAC loopback test</li>
+<li><code>hal::gpio</code> - Pin configuration</li>
+</ul>
+
+<h2>📖 References</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00087957.pdf">AN3126: Audio and Waveform Generation using DAC</a></li>
+<li>Reference Manual: Digital-to-analog converter (DAC) chapter</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

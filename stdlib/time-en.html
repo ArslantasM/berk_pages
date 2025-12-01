@@ -1,0 +1,182 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>time - Zaman and Tarih | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏰ time - Zaman and Tarih</h1>
+<p>DateTime, Duration, Formatting, Timezone</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">58</div><div>function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">731</div><div>lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">23 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import time
+
+// Şu an
+let şimdi = time.şimdi()
+yazdır(şimdi.yazıya())  // "2025-01-15 14:30:45"
+
+// Unix timestamp
+let timestamp = time.unix()
+yazdır(timestamp.yazıya())  // 1705328445
+
+// Formatting
+let formatted = time.format(şimdi, "%Y-%m-%d %H:%M:%S")
+yazdır(formatted)  // "2025-01-15 14:30:45"
+
+// Parsing
+let tarih = time.parse("2025-01-15", "%Y-%m-%d")
+
+// Duration
+let başlangıç = time.şimdi()
+// ... işlemler ...
+let bitiş = time.şimdi()
+let süre = time.duration(başlangıç, bitiş)
+yazdır("Geçen süre: " + süre.saniye().yazıya() + "s")
+
+// Sleep
+time.sleep(1000)  // 1000ms = 1 saniye</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li>DateTime operations (UTC, local timezone)</li>
+<li>Duration arithmetic</li>
+<li>strftime/strptime formatting</li>
+<li>ISO 8601 support</li>
+<li>Timer, stopwatch</li>
+</ul>
+<h2>💡 Exampleler</h2>
+<div class="example-box">
+<h3>Benchmark Timer</h3>
+<pre><code>import time
+
+sınıf Stopwatch do
+    let başlangıç: DateTime
+    let tur_zamanları: Dizi
+    
+    function başlat() do
+        self.başlangıç = time.şimdi()
+        self.tur_zamanları = []
+    end
+    
+    function tur() do
+        self.tur_zamanları.ekle(time.şimdi())
+    end
+    
+    function durdur() -> Duration do
+        return time.duration(self.başlangıç, time.şimdi())
+    end
+    
+    function tur_süresi(index: tamsayı) -> Duration do
+        if index == 0  do
+            return time.duration(self.başlangıç, self.tur_zamanları[0])
+        end else do
+            return time.duration(self.tur_zamanları[index-1], self.tur_zamanları[index])
+        end
+    end
+end
+
+let sw = Stopwatch.yeni()
+sw.başlat()
+
+// Test 1
+each i in aralık(0, 1000000) for do
+    let x = i * i
+end
+sw.tur()
+
+// Test 2
+each i in aralık(0, 500000) for do
+    let x = math.sqrt(i.float())
+end
+sw.tur()
+
+yazdır("Tur 1: " + sw.tur_süresi(0).milisaniye().yazıya() + "ms")
+yazdır("Tur 2: " + sw.tur_süresi(1).milisaniye().yazıya() + "ms")
+yazdır("Toplam: " + sw.durdur().milisaniye().yazıya() + "ms")</code></pre>
+</div>
+<div class="example-box">
+<h3>Task Scheduler</h3>
+<pre><code>import time, thread
+
+sınıf ScheduledTask do
+    let function: function
+    let çalışma_zamanı: DateTime
+    
+    function yeni(f: function, çalışma_zamanı: DateTime) do
+        self.function = f
+        self.çalışma_zamanı = çalışma_zamanı
+    end
+end
+
+sınıf Scheduler do
+    let görevler: Dizi
+    
+    function yeni() do
+        self.görevler = []
+    end
+    
+    function zamanla(f: function, gecikme_ms: tamsayı) do
+        let çalışma_zamanı = time.add_ms(time.şimdi(), gecikme_ms)
+        self.görevler.ekle(ScheduledTask.yeni(f, çalışma_zamanı))
+    end
+    
+    function çalıştır() do
+        loop do
+            let şimdi = time.şimdi()
+            let çalıştırılan = 0
+            
+            each görev in self.görevler for do
+                if time.before(görev.çalışma_zamanı, şimdi)  do
+                    görev.function()
+                    çalıştırılan = çalıştırılan + 1
+                end
+            end
+            
+            // Çalıştırılan görevleri kaldır
+            self.görevler = self.görevler.filtrele(function(g) do
+                return time.after(g.çalışma_zamanı, şimdi)
+            end)
+            
+            if self.görevler.uzunluk() == 0  do
+                kır
+            end
+            
+            time.sleep(100)  // 100ms check interval
+        end
+    end
+end
+
+let scheduler = Scheduler.yeni()
+
+scheduler.zamanla(function() do
+    yazdır("Görev 1 çalıştı: " + time.şimdi().yazıya())
+end, 1000)
+
+scheduler.zamanla(function() do
+    yazdır("Görev 2 çalıştı: " + time.şimdi().yazıya())
+end, 2000)
+
+scheduler.çalıştır()</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

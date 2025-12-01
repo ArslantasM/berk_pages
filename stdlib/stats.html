@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,26 +188,18 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="stats---İstatistik-ve-olasılık"><a class="header" href="#stats---İstatistik-ve-olasılık">stats - İstatistik ve Olasılık</a></h1>
-<p><strong>Modül:</strong> <code>stats.berk</code> (24.5 KB)<br />
-<strong>Kategori:</strong> Bilimsel Hesaplama<br />
-<strong>Inspiration:</strong> Julia Statistics, SciPy.stats, R</p>
-<h2 id="-genel-bakış"><a class="header" href="#-genel-bakış">📋 Genel Bakış</a></h2>
-<p><code>stats</code> modülü, modern istatistiksel analiz için kapsamlı fonksiyonlar sunar. Veri bilimi, makine öğrenmesi ve bilimsel araştırma için tasarlanmıştır.</p>
-<p><strong>Özellikler:</strong></p>
-<ul>
-<li>✅ Tanımlayıcı istatistikler (mean, median, std dev, moments)</li>
-<li>✅ Quantile ve percentile hesaplama</li>
-<li>✅ Korelasyon ve kovaryans</li>
-<li>✅ Hipotez testleri (t-test, chi-square, ANOVA)</li>
-<li>✅ Olasılık dağılımları (PDF, CDF)</li>
-<li>✅ Doğrusal regresyon</li>
-<li>✅ Yeniden örnekleme (bootstrap, jackknife)</li>
-<li>✅ Non-parametric testler</li>
-</ul>
-<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🎯 Hızlı Başlangıç</a></h2>
-<h3 id="temel-İstatistikler"><a class="header" href="#temel-İstatistikler">Temel İstatistikler</a></h3>
-<pre><code class="language-berk">kullan stats
+                        <div class="module-header">
+            <h1>📊 stats - İstatistik ve Olasılık</h1>
+            <p>Descriptive Stats, Hypothesis Tests, Distributions, Regression</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">92</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1024</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">24.5 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar stats
 
 değişken data = [2.5, 3.1, 4.8, 5.2, 6.0, 7.3, 8.1]
 değişken n = 7

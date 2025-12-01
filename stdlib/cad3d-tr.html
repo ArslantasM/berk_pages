@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>cad3d - 3D CAD Modeling | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📏 cad3d - 3D CAD Modeling</h1>
+<p>CSG, Extrude, Revolve, Loft, Boolean Operations</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">79</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,023</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">32 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar cad3d
+
+// CSG (Constructive Solid Geometry)
+değişken box = cad3d.box([0.0, 0.0, 0.0], [2.0, 2.0, 2.0])
+değişken sphere = cad3d.sphere([1.0, 1.0, 1.0], 1.5)
+
+// Boolean operations
+değişken union = cad3d.union(box, sphere)
+değişken intersection = cad3d.intersection(box, sphere)
+değişken difference = cad3d.difference(box, sphere)
+
+// Extrude (2D profile -> 3D solid)
+değişken profile = cad3d.circle(1.0, 32)
+değişken cylinder = cad3d.extrude(profile, 5.0)
+
+// Revolve (rotate profile around axis)
+değişken vase = cad3d.revolve(profile, [0.0, 1.0, 0.0], 360.0)
+
+// Export
+cad3d.export_step(union, "part.step")</code></pre>
+<h2>📚 CAD Operations</h2>
+<ul>
+<li><strong>Primitives:</strong> box, sphere, cylinder, cone, torus</li>
+<li><strong>Boolean:</strong> union, intersection, difference</li>
+<li><strong>Transforms:</strong> translate, rotate, scale, mirror</li>
+<li><strong>Modeling:</strong> extrude, revolve, loft, sweep</li>
+<li><strong>Export:</strong> STEP, IGES, STL</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Mechanical Part (Bolt)</h3>
+<pre><code>içe_aktar cad3d, math
+
+fonksiyon bolt_create(uzunluk: kesir, çap: kesir) -> Solid yap
+    // Shaft
+    değişken shaft = cad3d.cylinder([0.0, 0.0, 0.0], çap/2.0, uzunluk)
+    
+    // Head (hexagon)
+    değişken head_profile = []
+    her i içinde aralık(0, 6) için yap
+        değişken angle = i.kesir() * math.PI / 3.0
+        değişken x = math.cos(angle) * çap
+        değişken y = math.sin(angle) * çap
+        head_profile.ekle([x, y])
+    son
+    
+    değişken head = cad3d.extrude(head_profile, çap * 0.7)
+    cad3d.translate(head, [0.0, 0.0, uzunluk])
+    
+    // Thread (simplified)
+    değişken thread_depth = çap * 0.1
+    değişken helix = cad3d.helix([0.0, 0.0, 0.0], çap/2.0 - thread_depth, uzunluk, 2.0)
+    
+    // Combine
+    değişken bolt = cad3d.union(shaft, head)
+    bolt = cad3d.difference(bolt, helix)
+    
+    dön bolt
+son
+
+değişken m8_bolt = bolt_create(50.0, 8.0)
+cad3d.export_step(m8_bolt, "m8_bolt.step")</code></pre>
+</div>
+<div class="example-box">
+<h3>Parametric Gear</h3>
+<pre><code>içe_aktar cad3d, math
+
+fonksiyon gear_create(teeth: tamsayı, module: kesir, thickness: kesir) -> Solid yap
+    değişken pitch_radius = module * teeth.kesir() / 2.0
+    değişken base_circle = cad3d.circle(pitch_radius, teeth * 4)
+    
+    // Tooth profile (involute curve - simplified)
+    değişken tooth_angle = 2.0 * math.PI / teeth.kesir()
+    
+    değişken gear_profile = []
+    her i içinde aralık(0, teeth) için yap
+        değişken angle = i.kesir() * tooth_angle
+        
+        // Tooth tip
+        değişken tip_r = pitch_radius * 1.1
+        değişken tip_x = math.cos(angle) * tip_r
+        değişken tip_y = math.sin(angle) * tip_r
+        
+        gear_profile.ekle([tip_x, tip_y])
+        
+        // Tooth root
+        değişken root_angle = angle + tooth_angle * 0.5
+        değişken root_r = pitch_radius * 0.9
+        değişken root_x = math.cos(root_angle) * root_r
+        değişken root_y = math.sin(root_angle) * root_r
+        
+        gear_profile.ekle([root_x, root_y])
+    son
+    
+    değişken gear = cad3d.extrude(gear_profile, thickness)
+    
+    // Center hole
+    değişken hole = cad3d.cylinder([0.0, 0.0, 0.0], pitch_radius * 0.3, thickness)
+    gear = cad3d.difference(gear, hole)
+    
+    dön gear
+son
+
+değişken gear = gear_create(24, 2.0, 10.0)
+cad3d.export_step(gear, "gear.step")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

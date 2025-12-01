@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>http - HTTP Client/Server | BERK Stdlib</title>
+    <meta name="description" content="BERK http module - 76 functions for HTTP client/server, REST API, routing">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>🌐 http - HTTP Client/Server</h1>
+            <p>HTTP/1.1 Client, Server, REST API, Routing</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">76</div><div>Functions</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,549</div><div>Lines</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">50 KB</div><div>Size</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Quick Start</h2>
+        <pre><code>içe_aktar http
+
+// HTTP GET request
+değişken yanıt = http.get("https://api.github.com/users/arslantasm")
+yazdır(yanıt.durum.kod)  // 200
+yazdır(yanıt.gövde)      // JSON response
+
+// HTTP POST request
+değişken veri = json.stringify({"name": "BERK", "version": "1.0"})
+değişken yanıt2 = http.post("https://api.example.com/data", veri)
+
+// Create HTTP Server
+değişken sunucu = http.sunucu_oluştur("127.0.0.1", 8080)
+
+sunucu.rotala("GET", "/", fonksiyon(istek, yanıt) yap
+    yanıt.json({"message": "Merhaba BERK!", "version": "1.0.0"})
+son)
+
+sunucu.rotala("GET", "/users/:id", fonksiyon(istek, yanıt) yap
+    değişken id = istek.params["id"]
+    yanıt.json({"user_id": id, "name": "Test User"})
+son)
+
+yazdır("Sunucu http://127.0.0.1:8080 çalışıyor...")
+sunucu.başlat()</code></pre>
+
+        <h2>📚 Function Categories</h2>
+
+        <div class="function-group">
+            <h3>HTTP Client</h3>
+            <p><code>get()</code>, <code>post()</code>, <code>put()</code>, <code>delete()</code>, <code>patch()</code>, <code>head()</code>, <code>options()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>HTTP Server</h3>
+            <p><code>sunucu_oluştur()</code>, <code>rotala()</code>, <code>başlat()</code>, <code>durdur()</code>, <code>middleware()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Request/Response</h3>
+            <p><code>istek_oluştur()</code>, <code>yanıt_oluştur()</code>, <code>başlık_ekle()</code>, <code>çerez_ekle()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>Helper Functions</h3>
+            <p><code>query_parse()</code>, <code>form_parse()</code>, <code>json_parse()</code>, <code>url_encode()</code>, <code>url_decode()</code></p>
+        </div>
+
+        <h2>💡 Examples</h2>
+
+        <div class="example-box">
+            <h3>Example 1: REST API Client</h3>
+            <pre><code>içe_aktar http, json
+
+fonksiyon kullanıcı_al(id: tamsayı) -> Sonuç[yazı, yazı] yap
+    değişken url = "https://api.example.com/users/" + id.yazıya()
+    değişken yanıt = http.get(url)
+    
+    eğer yanıt.durum.kod == 200 ise yap
+        dön Tamam(yanıt.gövde)
+    son değilse yap
+        dön Hata("Kullanıcı bulunamadı")
+    son
+son
+
+değişken sonuç = kullanıcı_al(123)
+eşleşme sonuç yap
+    Tamam[veri] => yazdır("Kullanıcı: " + veri)
+    Hata[mesaj] => yazdır("Hata: " + mesaj)
+son</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Example 2: RESTful API Server</h3>
+            <pre><code>içe_aktar http, json
+
+değişken kullanıcılar = {
+    "1": {"id": 1, "isim": "Ali", "yaş": 25},
+    "2": {"id": 2, "isim": "Ayşe", "yaş": 30}
+}
+
+değişken sunucu = http.sunucu_oluştur("0.0.0.0", 3000)
+
+// All users
+sunucu.rotala("GET", "/api/users", fonksiyon(istek, yanıt) yap
+    yanıt.json(kullanıcılar)
+son)
+
+// Single user
+sunucu.rotala("GET", "/api/users/:id", fonksiyon(istek, yanıt) yap
+    değişken id = istek.params["id"]
+    
+    eğer kullanıcılar.içerir(id) ise yap
+        yanıt.json(kullanıcılar[id])
+    son değilse yap
+        yanıt.durum(404).json({"hata": "Kullanıcı bulunamadı"})
+    son
+son)
+
+// Add new user
+sunucu.rotala("POST", "/api/users", fonksiyon(istek, yanıt) yap
+    değişken veri = json.parse(istek.gövde)
+    değişken id = (kullanıcılar.uzunluk() + 1).yazıya()
+    
+    kullanıcılar[id] = veri
+    yanıt.durum(201).json(veri)
+son)
+
+// Update user
+sunucu.rotala("PUT", "/api/users/:id", fonksiyon(istek, yanıt) yap
+    değişken id = istek.params["id"]
+    değişken veri = json.parse(istek.gövde)
+    
+    eğer kullanıcılar.içerir(id) ise yap
+        kullanıcılar[id] = veri
+        yanıt.json(veri)
+    son değilse yap
+        yanıt.durum(404).json({"hata": "Kullanıcı bulunamadı"})
+    son
+son)
+
+// Delete user
+sunucu.rotala("DELETE", "/api/users/:id", fonksiyon(istek, yanıt) yap
+    değişken id = istek.params["id"]
+    
+    eğer kullanıcılar.içerir(id) ise yap
+        kullanıcılar.sil(id)
+        yanıt.durum(204).gönder()
+    son değilse yap
+        yanıt.durum(404).json({"hata": "Kullanıcı bulunamadı"})
+    son
+son)
+
+yazdır("RESTful API Server http://localhost:3000 çalışıyor...")
+sunucu.başlat()</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Example 3: Middleware and CORS</h3>
+            <pre><code>içe_aktar http
+
+değişken sunucu = http.sunucu_oluştur("0.0.0.0", 8080)
+
+// CORS middleware
+sunucu.middleware(fonksiyon(istek, yanıt, ileri) yap
+    yanıt.başlık_ekle("Access-Control-Allow-Origin", "*")
+    yanıt.başlık_ekle("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    yanıt.başlık_ekle("Access-Control-Allow-Headers", "Content-Type")
+    
+    eğer istek.metod == "OPTIONS" ise yap
+        yanıt.durum(204).gönder()
+    son değilse yap
+        ileri()
+    son
+son)
+
+// Logging middleware
+sunucu.middleware(fonksiyon(istek, yanıt, ileri) yap
+    değişken başlangıç = time.şimdi()
+    
+    ileri()
+    
+    değişken süre = time.şimdi() - başlangıç
+    yazdır(istek.metod + " " + istek.yol + " - " + süre.yazıya() + "ms")
+son)
+
+// Routes
+sunucu.rotala("GET", "/api/data", fonksiyon(istek, yanıt) yap
+    yanıt.json({"data": "BERK HTTP Server"})
+son)
+
+sunucu.başlat()</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="index-en.html">← All Modules</a> | 
+            <a href="../index-en.html">Home</a>
+        </p>
+    </main>
+</div>
+</body>
+</html>

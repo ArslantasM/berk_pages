@@ -305,8 +305,10 @@ echo 'export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17' &gt;&gt; ~/.bashrc
 <li>
 <p><strong>İndir:</strong></p>
 <ul>
-<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/BERK-lang.exe">BERK-lang.exe (83 MB)</a></li>
-<li>Tek dosya, tüm bağımlılıklar dahil (LLVM statik linkli)</li>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/BERK-lang.exe">BERK-lang.exe (2.2 MB)</a></li>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-lsp.exe">berk-lsp.exe (1.2 MB)</a></li>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-repl.exe">berk-repl.exe (464 KB)</a></li>
+<li>Üç ayrı dosya: Derleyici, LSP, ve REPL (LLVM dynamic linking)</li>
 </ul>
 </li>
 <li>
@@ -337,12 +339,12 @@ Merhaba!
 </ol>
 <p><strong>Özellikler:</strong></p>
 <ul>
-<li>✅ LLVM 17 statik linkli - harici bağımlılık yok</li>
+<li>✅ LLVM 17 dynamic linking - sistem LLVM kullanır</li>
 <li>✅ Tüm 19 hedef platform desteği</li>
 <li>✅ REPL, JIT run, ve native compile modu</li>
 <li>✅ Runtime kütüphaneleri dahil (JSON, Crypto, HTTP)</li>
 </ul>
-<p><strong>Not:</strong> LLVM statik linking nedeniyle dosya 83 MB'tır.</p>
+<p><strong>Not:</strong> LLVM dynamic linking kullanıldığı için toplam boyut ~3.8 MB'a düştü (v0.8.0'da 83 MB idi).</p>
 <h3 id="method-2-kaynak-koddan-tüm-platformlar"><a class="header" href="#method-2-kaynak-koddan-tüm-platformlar">Method 2: Kaynak Koddan (Tüm Platformlar)</a></h3>
 <p><strong>Linux/macOS veya özelleştirme isteyenler için:</strong></p>
 <pre><code class="language-bash"># Repository'yi klonla
@@ -372,7 +374,7 @@ cargo install BERK-lang --features llvm
 BERK-lang --version
 </code></pre>
 <p>Çıktı:</p>
-<pre><code>🚀 BERK Derleyici v0.8.0
+<pre><code>🚀 BERK Derleyici v1.0.0
    LLVM 17.0.6 (19 Target Support)
 </code></pre>
 <h3 id="hızlı-test-repl"><a class="header" href="#hızlı-test-repl">Hızlı Test: REPL</a></h3>

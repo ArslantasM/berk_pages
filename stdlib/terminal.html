@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,72 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="terminal---terminal-kontrolü"><a class="header" href="#terminal---terminal-kontrolü">terminal - Terminal Kontrolü</a></h1>
+                        <div class="module-header">
+            <h1>🖥️ terminal - Terminal UI</h1>
+            <p>Colors, Cursor, Input, Progress Bar</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">645</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">20 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar terminal
+
+// Colors
+terminal.println(terminal.red("Hata!"))
+terminal.println(terminal.green("Başarılı!"))
+terminal.println(terminal.bold("Kalın yazı"))
+
+// Cursor movement
+terminal.clear()
+terminal.cursor_move(10, 5)
+terminal.print("(10, 5) konumunda")
+
+// Progress bar
+değişken progress = terminal.progress_bar_new(100)
+her i içinde aralık(0, 101) için yap
+    terminal.progress_bar_set(progress, i)
+    time.sleep(50)
+son</code></pre>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Download Progress</h3>
+            <pre><code>içe_aktar terminal, http
+
+fonksiyon dosya_indir(url: yazı, dosya: yazı) yap
+    değişken toplam = 10485760  // 10MB
+    değişken progress = terminal.progress_bar_new(toplam)
+    
+    değişken indirilen = 0
+    döngü yap
+        // Simulate download chunk
+        değişken chunk_size = 65536  // 64KB
+        indirilen = indirilen + chunk_size
+        
+        terminal.progress_bar_set(progress, indirilen)
+        
+        eğer indirilen >= toplam ise yap
+            kır
+        son
+        
+        time.sleep(10)
+    son
+    
+    terminal.println(terminal.green("✓ İndirme tamamlandı!"))
+son
+
+dosya_indir("https://example.com/file.zip", "file.zip")</code></pre>
+        </div>
+
+        <hr />
+        <p style="text-align: center; margin-top: 40px;">
+            <a href="sys.html">← sys</a> | 
+            <a href="iter.html">iter →</a>
+        </p>
 
                     </main>
 

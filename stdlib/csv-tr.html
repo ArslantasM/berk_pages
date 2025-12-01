@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>csv - CSV Parser | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 csv - CSV Parser/Writer</h1>
+<p>Read, Write, Headers, Delimiter</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">487</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">15 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar csv
+
+// Read CSV
+değişken satırlar = csv.oku("data.csv")
+her satır içinde satırlar için yap
+    yazdır(satır[0] + ", " + satır[1])
+son
+
+// Read with headers
+değişken veri = csv.oku_başlıklı("users.csv")
+her kayıt içinde veri için yap
+    yazdır(kayıt["name"] + " - " + kayıt["age"])
+son
+
+// Write CSV
+değişken satırlar = [
+    ["Ali", "25", "İstanbul"],
+    ["Ayşe", "30", "Ankara"]
+]
+csv.yaz("output.csv", satırlar)</code></pre>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Data Processing Pipeline</h3>
+<pre><code>içe_aktar csv, stats
+
+// CSV okuma ve analiz
+değişken veri = csv.oku_başlıklı("sales.csv")
+
+değişken sales = []
+her kayıt içinde veri için yap
+    sales.ekle(kayıt["amount"].kesir())
+son
+
+yazdır("Ortalama: " + stats.ortalama(sales).yazıya())
+yazdır("Toplam: " + stats.toplam(sales).yazıya())
+
+// Filtered export
+değişken filtered = veri.filtrele(fonksiyon(r) yap
+    dön r["amount"].kesir() > 1000.0
+son)
+
+csv.yaz_başlıklı("high_sales.csv", filtered, ["date", "amount", "customer"])</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

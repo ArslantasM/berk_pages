@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>compression - Compression | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🗜️ compression - Compression</h1>
+<p>gzip, zlib, zstd, lz4</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">32</div><div>Functions</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">521</div><div>Lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">16 KB</div><div>Size</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>içe_aktar compression
+
+// gzip
+değişken veri = "Uzun tekrarlayan veri..."
+değişken sıkıştırılmış = compression.gzip_compress(veri)
+değişken açılmış = compression.gzip_decompress(sıkıştırılmış)
+
+// zstd (fast, high ratio)
+değişken zstd = compression.zstd_compress(veri, 3)  // level 3
+
+// lz4 (very fast)
+değişken lz4 = compression.lz4_compress(veri)</code></pre>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>File Archiver</h3>
+<pre><code>içe_aktar compression, fs, io
+
+fonksiyon dosya_sıkıştır(kaynak: yazı, hedef: yazı) yap
+    değişken veri = io.dosya_oku_bytes(kaynak)
+    değişken sıkıştırılmış = compression.zstd_compress(veri, 9)
+    io.dosya_yaz_bytes(hedef, sıkıştırılmış)
+    
+    değişken orijinal_boyut = veri.uzunluk()
+    değişken sıkışık_boyut = sıkıştırılmış.uzunluk()
+    değişken oran = (1.0 - sıkışık_boyut.kesir() / orijinal_boyut.kesir()) * 100.0
+    
+    yazdır("Sıkıştırma: " + orijinal_boyut.yazıya() + " -> " + sıkışık_boyut.yazıya())
+    yazdır("Oran: " + oran.yazıya() + "%")
+son
+
+dosya_sıkıştır("large_file.txt", "large_file.txt.zst")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

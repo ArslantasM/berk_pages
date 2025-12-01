@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>cli - Command-Line Parser | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #3498db;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⌨️ cli</h1>
+<p>Command-Line Argument Parser - Rust clap-Inspired</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~300 satır</span>
+<span class="stat-badge">~25 fonksiyon</span>
+<span class="stat-badge">Auto-Help</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>CLI modülü, Rust'ın clap kütüphanesinden esinlenerek geliştirilmiş modern komut satırı argument parser'ıdır. Otomatik help generation, subcommands, validation ve type-safe parsing sağlar.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Flags (boolean options): --verbose, -v</li>
+<li>Options (key-value): --output=file.txt</li>
+<li>Positional arguments: &lt;input&gt; &lt;output&gt;</li>
+<li>Subcommands: git commit, git push</li>
+<li>Automatic --help and --version</li>
+<li>Default values & environment variables</li>
+<li>Value validation & allowed values</li>
+<li>Error handling with clear messages</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar cli
+
+fonksiyon ana(args: Vektör[yazı]) yap
+    // CLI oluştur
+    değişken app = cli.new("myapp", "1.0.0", "My awesome application")
+    
+    // Arguments tanımla
+    app.add_flag("verbose", 'v', "Enable verbose output")
+    app.add_option("output", 'o', "Output file", varsayılan: "out.txt")
+    app.add_positional("input", "Input file", gerekli: doğru)
+    
+    // Parse et (otomatik --help çıkışı)
+    değişken parsed = app.parse(args)?
+    
+    // Değerleri kullan
+    eğer parsed.get_flag("verbose") ise yap
+        io.println("Verbose mode enabled")
+    son
+    
+    değişken input = parsed.get_positional(0)
+    değişken output = parsed.get_option("output")
+    io.println("Processing {} -> {}", input, output)
+son</code></pre>
+
+<div class="example-box">
+<h3>💡 Örnek 1: File Converter</h3>
+<pre><code>içe_aktar cli, fs
+
+fonksiyon ana(args: Vektör[yazı]) yap
+    değişken app = cli.new("converter", "1.0.0", "File format converter")
+    
+    // Flags
+    app.add_flag("overwrite", 'f', "Force overwrite existing files")
+    app.add_flag("verbose", 'v', "Verbose output")
+    app.add_flag("quiet", 'q', "Suppress output")
+    
+    // Options with validation
+    app.add_option("format", 't', "Target format", yap
+        varsayılan: "json",
+        allowed_values: ["json", "xml", "yaml", "toml"]
+    son)
+    
+    app.add_option("output", 'o', "Output directory", yap
+        varsayılan: ".",
+        env: "OUTPUT_DIR"  // Env variable fallback
+    son)
+    
+    // Positional
+    app.add_positional("files", "Input files", yap
+        gerekli: doğru,
+        multiple: doğru  // Accept multiple files
+    son)
+    
+    değişken parsed = app.parse(args)?
+    
+    // Get values
+    değişken format = parsed.get_option("format")
+    değişken output_dir = parsed.get_option("output")
+    değişken files = parsed.get_positional_all("files")
+    değişken verbose = parsed.get_flag("verbose")
+    değişken overwrite = parsed.get_flag("overwrite")
+    
+    // Process files
+    her file içinde files için yap
+        eğer verbose ise yap
+            io.println("Converting {} to {}...", file, format)
+        son
+        
+        değişken output_path = "{}/{}.{}".formatla(output_dir, 
+            fs.stem(file), format)
+        
+        eğer fs.exists(output_path) ve overwrite değilse yap
+            io.eprintln("Error: {} exists (use -f to overwrite)", output_path)
+            devam et
+        son
+        
+        // Convert file...
+        convert_file(file, output_path, format)?
+        
+        eğer verbose değilse ve parsed.get_flag("quiet") değilse yap
+            io.println("✓ {}", output_path)
+        son
+    son
+son
+
+// Output:
+// $ converter --help
+// converter 1.0.0
+// File format converter
+// 
+// USAGE:
+//     converter [OPTIONS] &lt;files&gt;...
+// 
+// OPTIONS:
+//     -t, --format &lt;value&gt;     Target format [default: json] [possible: json, xml, yaml, toml]
+//     -o, --output &lt;value&gt;     Output directory [default: .] [env: OUTPUT_DIR]
+//     -f, --overwrite          Force overwrite existing files
+//     -v, --verbose            Verbose output
+//     -q, --quiet              Suppress output
+//     -h, --help               Print help
+//     -V, --version            Print version</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Örnek 2: Git-Style Subcommands</h3>
+<pre><code>içe_aktar cli
+
+fonksiyon ana(args: Vektör[yazı]) yap
+    değişken app = cli.new("git-like", "1.0.0", "Git-style CLI tool")
+    
+    // Global flags
+    app.add_flag("verbose", 'v', "Verbose output")
+    
+    // Subcommands
+    değişken commit = app.add_subcommand("commit", "Record changes")
+    commit.add_option("message", 'm', "Commit message", gerekli: doğru)
+    commit.add_flag("amend", 'a', "Amend previous commit")
+    commit.add_flag("all", 'A', "Stage all changes")
+    
+    değişken push = app.add_subcommand("push", "Push to remote")
+    push.add_option("remote", 'r', "Remote name", varsayılan: "origin")
+    push.add_option("branch", 'b', "Branch name")
+    push.add_flag("force", 'f', "Force push")
+    
+    değişken log = app.add_subcommand("log", "Show commit history")
+    log.add_option("limit", 'n', "Number of commits", varsayılan: "10")
+    log.add_flag("oneline", Hiçbir, "One commit per line")
+    
+    // Parse
+    değişken parsed = app.parse(args)?
+    
+    // Handle subcommands
+    eşle parsed.subcommand() yap
+        Bazı("commit") => yap
+            değişken msg = parsed.get_option("message")
+            değişken amend = parsed.get_flag("amend")
+            değişken all = parsed.get_flag("all")
+            
+            eğer all ise yap
+                io.println("Staging all changes...")
+            son
+            
+            eğer amend ise yap
+                io.println("Amending commit: {}", msg)
+            değilse yap
+                io.println("Creating commit: {}", msg)
+            son
+        son,
+        
+        Bazı("push") => yap
+            değişken remote = parsed.get_option("remote")
+            değişken branch = parsed.get_option_or("branch", "main")
+            değişken force = parsed.get_flag("force")
+            
+            eğer force ise yap
+                io.println("Force pushing to {}/{}", remote, branch)
+            değilse yap
+                io.println("Pushing to {}/{}", remote, branch)
+            son
+        son,
+        
+        Bazı("log") => yap
+            değişken limit = parsed.get_option("limit").parse_int()?
+            değişken oneline = parsed.get_flag("oneline")
+            
+            io.println("Showing last {} commits:", limit)
+            // Show log...
+        son,
+        
+        Hiçbir => yap
+            io.eprintln("No subcommand provided. Use --help for usage.")
+            sys.exit(1)
+        son
+    son
+son</code></pre>
+</div>
+
+<h2>⚙️ Argument Types</h2>
+<pre><code>// Flag (boolean)
+app.add_flag(name: yazı, short: char, help: yazı)
+
+// Option (string value)
+app.add_option(name: yazı, short: char, help: yazı, config: OptionConfig)
+
+yapı OptionConfig yap
+    varsayılan: İsteğe_Bağlı[yazı],
+    gerekli: mantıksal,
+    env: İsteğe_Bağlı[yazı],
+    allowed_values: İsteğe_Bağlı[Vektör[yazı]]
+son
+
+// Positional (required arguments)
+app.add_positional(name: yazı, help: yazı, config: PositionalConfig)
+
+yapı PositionalConfig yap
+    gerekli: mantıksal,
+    multiple: mantıksal  // Accept multiple values
+son</code></pre>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><code>sys</code> - Command-line arguments</li>
+<li><code>terminal</code> - Colored output</li>
+<li><code>string</code> - String parsing</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

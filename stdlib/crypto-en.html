@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>crypto - Cryptography | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 crypto - Cryptography</h1>
+<p>Hash, AES, RSA, SHA, HMAC, Digital Signatures</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>Functions</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">950</div><div>Lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28 KB</div><div>Size</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>içe_aktar crypto
+
+// Hash functions
+değişken veri = "Merhaba BERK"
+değişken md5 = crypto.md5(veri)
+değişken sha256 = crypto.sha256(veri)
+değişken sha512 = crypto.sha512(veri)
+
+// HMAC (keyed hash)
+değişken anahtar = "secret_key"
+değişken hmac = crypto.hmac_sha256(veri, anahtar)
+
+// AES encryption (symmetric)
+değişken aes_key = crypto.aes_key_generate(256)
+değişken şifreli = crypto.aes_encrypt(veri, aes_key)
+değişken çözülmüş = crypto.aes_decrypt(şifreli, aes_key)
+
+// RSA encryption (asymmetric)
+değişken (public_key, private_key) = crypto.rsa_keypair_generate(2048)
+değişken encrypted = crypto.rsa_encrypt(veri, public_key)
+değişken decrypted = crypto.rsa_decrypt(encrypted, private_key)
+
+// Digital signature
+değişken imza = crypto.rsa_sign(veri, private_key)
+değişken geçerli = crypto.rsa_verify(veri, imza, public_key)
+
+// Random bytes (secure)
+değişken random = crypto.random_bytes(32)</code></pre>
+<h2>📚 Cryptography Algorithms</h2>
+<ul>
+<li><strong>Hash:</strong> MD5, SHA-1, SHA-256, SHA-512, SHA-3, BLAKE2</li>
+<li><strong>Symmetric:</strong> AES-128/192/256 (CBC, GCM), ChaCha20</li>
+<li><strong>Asymmetric:</strong> RSA-2048/4096, ECC (secp256k1, ed25519)</li>
+<li><strong>HMAC:</strong> HMAC-SHA256, HMAC-SHA512</li>
+<li><strong>Key Derivation:</strong> PBKDF2, Argon2, scrypt</li>
+<li><strong>Random:</strong> CSPRNG (cryptographically secure)</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Password Hashing (Argon2)</h3>
+<pre><code>içe_aktar crypto
+
+fonksiyon şifre_hash(şifre: yazı) -> yazı yap
+    // Argon2id (memory-hard, GPU resistant)
+    değişken salt = crypto.random_bytes(16)
+    değişken hash = crypto.argon2id(şifre, salt, yap
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,  // 64 MB
+        parallellik: 4
+    son)
+    
+    // Combine salt + hash
+    dön crypto.encode_base64(salt) + "$" + crypto.encode_base64(hash)
+son
+
+fonksiyon şifre_doğrula(şifre: yazı, hash: yazı) -> bool yap
+    değişken parçalar = hash.böl("$")
+    değişken salt = crypto.decode_base64(parçalar[0])
+    değişken beklenen = crypto.decode_base64(parçalar[1])
+    
+    değişken hesaplanan = crypto.argon2id(şifre, salt, yap
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,
+        parallellik: 4
+    son)
+    
+    dön crypto.constant_time_compare(hesaplanan, beklenen)
+son
+
+// Usage
+değişken hash = şifre_hash("güçlü_şifre_123")
+yazdır("Hash: " + hash)
+
+değişken geçerli = şifre_doğrula("güçlü_şifre_123", hash)
+yazdır("Doğrulama: " + geçerli.yazıya())  // true</code></pre>
+</div>
+<div class="example-box">
+<h3>Secure Message Exchange (RSA + AES Hybrid)</h3>
+<pre><code>içe_aktar crypto, json
+
+fonksiyon şifreli_mesaj_gönder(mesaj: yazı, alıcı_public_key: RSAPublicKey) -> yazı yap
+    // 1. Generate random AES key
+    değişken aes_key = crypto.aes_key_generate(256)
+    
+    // 2. Encrypt message with AES (fast)
+    değişken şifreli_mesaj = crypto.aes_gcm_encrypt(mesaj, aes_key)
+    
+    // 3. Encrypt AES key with RSA (secure)
+    değişken şifreli_key = crypto.rsa_encrypt(aes_key, alıcı_public_key)
+    
+    // 4. Create package
+    değişken paket = yap
+        "encrypted_message": crypto.encode_base64(şifreli_mesaj),
+        "encrypted_key": crypto.encode_base64(şifreli_key)
+    son
+    
+    dön json.stringify(paket)
+son
+
+fonksiyon şifreli_mesaj_al(paket_json: yazı, private_key: RSAPrivateKey) -> yazı yap
+    // 1. Parse package
+    değişken paket = json.parse(paket_json)
+    değişken şifreli_mesaj = crypto.decode_base64(paket["encrypted_message"])
+    değişken şifreli_key = crypto.decode_base64(paket["encrypted_key"])
+    
+    // 2. Decrypt AES key
+    değişken aes_key = crypto.rsa_decrypt(şifreli_key, private_key)
+    
+    // 3. Decrypt message
+    değişken mesaj = crypto.aes_gcm_decrypt(şifreli_mesaj, aes_key)
+    
+    dön mesaj
+son
+
+// Usage
+değişken (alice_pub, alice_priv) = crypto.rsa_keypair_generate(2048)
+değişken (bob_pub, bob_priv) = crypto.rsa_keypair_generate(2048)
+
+// Alice -> Bob
+değişken paket = şifreli_mesaj_gönder("Gizli mesaj!", bob_pub)
+değişken mesaj = şifreli_mesaj_al(paket, bob_priv)
+yazdır(mesaj)  // "Gizli mesaj!"</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

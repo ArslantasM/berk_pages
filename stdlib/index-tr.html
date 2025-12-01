@@ -1,0 +1,623 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Standart Kütüphane İndeksi | BERK v1.0.0</title>
+        
+        <meta name="description" content="BERK Standart Kütüphanesi - 74 modül, 3,701 fonksiyon, ~39,000 satır kod. Bilimsel hesaplama, web, grafik, sistem programlama, gömülü sistem, runtime extensions.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <style>
+            .hero {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 60px 20px;
+                margin: -20px -20px 40px -20px;
+                border-radius: 8px;
+                text-align: center;
+            }
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                margin: 30px 0;
+            }
+            .stat-card {
+                background: rgba(255,255,255,0.2);
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+            }
+            .stat-number {
+                font-size: 3em;
+                font-weight: bold;
+            }
+            .category-section {
+                margin: 40px 0;
+                padding: 25px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 5px solid var(--links);
+            }
+            .module-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .module-card {
+                background: var(--theme-popup-bg);
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid var(--sidebar-fg);
+                transition: all 0.2s;
+                text-decoration: none;
+                display: block;
+            }
+            .module-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                border-color: var(--links);
+            }
+            .module-name {
+                font-size: 1.2em;
+                font-weight: bold;
+                color: var(--links);
+                margin-bottom: 8px;
+            }
+            .module-stats {
+                font-size: 0.85em;
+                opacity: 0.8;
+                margin-top: 8px;
+            }
+            .module-desc {
+                margin-top: 8px;
+                font-size: 0.9em;
+            }
+            .lang-switcher {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 100;
+                background: var(--sidebar-bg);
+                border: 1px solid var(--sidebar-fg);
+                border-radius: 5px;
+                padding: 8px 15px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="body-container">
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="theme-toggle" class="icon-button" type="button" title="Tema Değiştir">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                    </div>
+                    <h1 class="menu-title">BERK v1.0.0 - Stdlib</h1>
+                    <div class="right-buttons">
+                        <a href="../index-tr.html" title="Ana Sayfa"><i class="fa fa-home"></i></a>
+                        <a href="https://github.com/ArslantasM/berk" title="GitHub" target="_blank"><i class="fa fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="lang-switcher">
+                    <a href="index-en.html" title="Switch to English">🇬🇧 EN</a>
+                </div>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="hero">
+                            <h1>📦 BERK Standart Kütüphanesi</h1>
+                            <p style="font-size: 1.3em; margin-top: 15px;">NumPy/SciPy seviyesinde bilimsel hesaplama gücü</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-number">74</div>
+                                    <div>Modül</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">3,701</div>
+                                    <div>Fonksiyon</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">~39K</div>
+                                    <div>Satır Kod</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">~1.3 MB</div>
+                                    <div>Boyut</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔧 Temel Sistem (14 modül)</h2>
+                            <p>Dosya I/O, string işlemleri, koleksiyonlar, tarih/saat, thread, terminal.</p>
+                            <div class="module-grid">
+                                <a href="io-tr.html" class="module-card">
+                                    <div class="module-name">io</div>
+                                    <div class="module-desc">Dosya girdi/çıktı işlemleri</div>
+                                    <div class="module-stats">64 fonksiyon · 449 satır</div>
+                                </a>
+                                <a href="fs-tr.html" class="module-card">
+                                    <div class="module-name">fs</div>
+                                    <div class="module-desc">Dosya sistemi operasyonları</div>
+                                    <div class="module-stats">76 fonksiyon · 539 satır</div>
+                                </a>
+                                <a href="sys-tr.html" class="module-card">
+                                    <div class="module-name">sys</div>
+                                    <div class="module-desc">Sistem bilgisi ve kontrol</div>
+                                    <div class="module-stats">82 fonksiyon · 607 satır</div>
+                                </a>
+                                <a href="string-tr.html" class="module-card">
+                                    <div class="module-name">string</div>
+                                    <div class="module-desc">UTF-8 string işlemleri</div>
+                                    <div class="module-stats">127 fonksiyon · 953 satır</div>
+                                </a>
+                                <a href="collections-tr.html" class="module-card">
+                                    <div class="module-name">collections</div>
+                                    <div class="module-desc">HashMap, HashSet, BTreeMap</div>
+                                    <div class="module-stats">69 fonksiyon · 517 satır</div>
+                                </a>
+                                <a href="iter-tr.html" class="module-card">
+                                    <div class="module-name">iter</div>
+                                    <div class="module-desc">Iterator ve kombinatörler</div>
+                                    <div class="module-stats">79 fonksiyon · 690 satır</div>
+                                </a>
+                                <a href="result-tr.html" class="module-card">
+                                    <div class="module-name">result</div>
+                                    <div class="module-desc">Hata yönetimi (Result, Option)</div>
+                                    <div class="module-stats">24 fonksiyon · 266 satır</div>
+                                </a>
+                                <a href="fmt-tr.html" class="module-card">
+                                    <div class="module-name">fmt</div>
+                                    <div class="module-desc">Formatlı çıktı ve parsing</div>
+                                    <div class="module-stats">83 fonksiyon · 621 satır</div>
+                                </a>
+                                <a href="time-tr.html" class="module-card">
+                                    <div class="module-name">time</div>
+                                    <div class="module-desc">Tarih, saat ve zaman dilimi</div>
+                                    <div class="module-stats">76 fonksiyon · 540 satır</div>
+                                </a>
+                                <a href="random-tr.html" class="module-card">
+                                    <div class="module-name">random</div>
+                                    <div class="module-desc">Rastgele sayı üretimi</div>
+                                    <div class="module-stats">44 fonksiyon · 474 satır</div>
+                                </a>
+                                <a href="thread-tr.html" class="module-card">
+                                    <div class="module-name">thread</div>
+                                    <div class="module-desc">Çoklu thread ve senkronizasyon</div>
+                                    <div class="module-stats">88 fonksiyon · 604 satır</div>
+                                </a>
+                                <a href="terminal-tr.html" class="module-card">
+                                    <div class="module-name">terminal</div>
+                                    <div class="module-desc">Terminal kontrol ve renkler</div>
+                                    <div class="module-stats">77 fonksiyon · 703 satır</div>
+                                </a>
+                                <a href="math-tr.html" class="module-card">
+                                    <div class="module-name">math</div>
+                                    <div class="module-desc">Matematiksel fonksiyonlar</div>
+                                    <div class="module-stats">111 fonksiyon · 882 satır</div>
+                                </a>
+                                <a href="complex-tr.html" class="module-card">
+                                    <div class="module-name">complex</div>
+                                    <div class="module-desc">Karmaşık sayı aritmetiği</div>
+                                    <div class="module-stats">49 fonksiyon · 443 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔬 Bilimsel Hesaplama (6 modül)</h2>
+                            <p>Lineer cebir, istatistik, optimizasyon, fizik simülasyonu, 3D matematik.</p>
+                            <div class="module-grid">
+                                <a href="linalg-tr.html" class="module-card">
+                                    <div class="module-name">linalg</div>
+                                    <div class="module-desc">Lineer cebir ve matris</div>
+                                    <div class="module-stats">43 fonksiyon · 848 satır</div>
+                                </a>
+                                <a href="stats-tr.html" class="module-card">
+                                    <div class="module-name">stats</div>
+                                    <div class="module-desc">İstatistik ve olasılık</div>
+                                    <div class="module-stats">56 fonksiyon · 820 satır</div>
+                                </a>
+                                <a href="optim-tr.html" class="module-card">
+                                    <div class="module-name">optim</div>
+                                    <div class="module-desc">Optimizasyon algoritmaları</div>
+                                    <div class="module-stats">23 fonksiyon · 875 satır</div>
+                                </a>
+                                <a href="physics-tr.html" class="module-card">
+                                    <div class="module-name">physics</div>
+                                    <div class="module-desc">Fizik simülasyonu</div>
+                                    <div class="module-stats">103 fonksiyon · 748 satır</div>
+                                </a>
+                                <a href="math_3d-tr.html" class="module-card">
+                                    <div class="module-name">math_3d</div>
+                                    <div class="module-desc">3D vektör ve matris</div>
+                                    <div class="module-stats">63 fonksiyon · 593 satır</div>
+                                </a>
+                                <a href="color-tr.html" class="module-card">
+                                    <div class="module-name">color</div>
+                                    <div class="module-desc">Renk uzayları ve dönüşümler</div>
+                                    <div class="module-stats">47 fonksiyon · 560 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🌐 Web ve Veri (12 modül)</h2>
+                            <p>HTTP, JSON, veritabanı, kriptografi, ağ programlama, veri formatları.</p>
+                            <div class="module-grid">
+                                <a href="http-tr.html" class="module-card">
+                                    <div class="module-name">http</div>
+                                    <div class="module-desc">HTTP sunucu/istemci</div>
+                                    <div class="module-stats">76 fonksiyon · 1,549 satır</div>
+                                </a>
+                                <a href="json-tr.html" class="module-card">
+                                    <div class="module-name">json</div>
+                                    <div class="module-desc">JSON parsing ve serialization</div>
+                                    <div class="module-stats">51 fonksiyon · 1,204 satır</div>
+                                </a>
+                                <a href="network-tr.html" class="module-card">
+                                    <div class="module-name">network</div>
+                                    <div class="module-desc">TCP/UDP socket programlama</div>
+                                    <div class="module-stats">87 fonksiyon · 648 satır</div>
+                                </a>
+                                <a href="crypto-tr.html" class="module-card">
+                                    <div class="module-name">crypto</div>
+                                    <div class="module-desc">Kriptografi (AES, RSA, SHA)</div>
+                                    <div class="module-stats">101 fonksiyon · 1,381 satır</div>
+                                </a>
+                                <a href="sqlite-tr.html" class="module-card">
+                                    <div class="module-name">sqlite</div>
+                                    <div class="module-desc">SQLite veritabanı</div>
+                                    <div class="module-stats">62 fonksiyon · 1,296 satır</div>
+                                </a>
+                                <a href="xml-tr.html" class="module-card">
+                                    <div class="module-name">xml</div>
+                                    <div class="module-desc">XML parsing ve oluşturma</div>
+                                    <div class="module-stats">55 fonksiyon · 510 satır</div>
+                                </a>
+                                <a href="yaml-tr.html" class="module-card">
+                                    <div class="module-name">yaml</div>
+                                    <div class="module-desc">YAML parsing ve serialization</div>
+                                    <div class="module-stats">59 fonksiyon · 595 satır</div>
+                                </a>
+                                <a href="csv-tr.html" class="module-card">
+                                    <div class="module-name">csv</div>
+                                    <div class="module-desc">CSV dosya işleme</div>
+                                    <div class="module-stats">53 fonksiyon · 809 satır</div>
+                                </a>
+                                <a href="encoding-tr.html" class="module-card">
+                                    <div class="module-name">encoding</div>
+                                    <div class="module-desc">Base64, Hex, URL encoding</div>
+                                    <div class="module-stats">79 fonksiyon · 832 satır</div>
+                                </a>
+                                <a href="compression-tr.html" class="module-card">
+                                    <div class="module-name">compression</div>
+                                    <div class="module-desc">Gzip, Zlib, Brotli sıkıştırma</div>
+                                    <div class="module-stats">67 fonksiyon · 472 satır</div>
+                                </a>
+                                <a href="logging-tr.html" class="module-card">
+                                    <div class="module-name">logging</div>
+                                    <div class="module-desc">Log sistemi ve formatları</div>
+                                    <div class="module-stats">63 fonksiyon · 514 satır</div>
+                                </a>
+                                <a href="regex-tr.html" class="module-card">
+                                    <div class="module-name">regex</div>
+                                    <div class="module-desc">Düzenli ifadeler</div>
+                                    <div class="module-stats">57 fonksiyon · 472 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🎮 Grafik ve Oyun (7 modül)</h2>
+                            <p>2D/3D grafik, GUI, ses işleme, fizik motoru, görüntü işleme, CAD.</p>
+                            <div class="module-grid">
+                                <a href="graphics-tr.html" class="module-card">
+                                    <div class="module-name">graphics</div>
+                                    <div class="module-desc">2D/3D grafik rendering</div>
+                                    <div class="module-stats">163 fonksiyon · 1,624 satır</div>
+                                </a>
+                                <a href="gui-tr.html" class="module-card">
+                                    <div class="module-name">gui</div>
+                                    <div class="module-desc">GUI widget ve layout</div>
+                                    <div class="module-stats">169 fonksiyon · 1,636 satır</div>
+                                </a>
+                                <a href="audio-tr.html" class="module-card">
+                                    <div class="module-name">audio</div>
+                                    <div class="module-desc">Ses işleme ve efektler</div>
+                                    <div class="module-stats">163 fonksiyon · 1,669 satır</div>
+                                </a>
+                                <a href="physics2d-tr.html" class="module-card">
+                                    <div class="module-name">physics2d</div>
+                                    <div class="module-desc">2D fizik motoru (Box2D benzeri)</div>
+                                    <div class="module-stats">192 fonksiyon · 3,317 satır</div>
+                                </a>
+                                <a href="image-tr.html" class="module-card">
+                                    <div class="module-name">image</div>
+                                    <div class="module-desc">Görüntü işleme ve filtreler</div>
+                                    <div class="module-stats">77 fonksiyon · 1,770 satır</div>
+                                </a>
+                                <a href="mesh-tr.html" class="module-card">
+                                    <div class="module-name">mesh</div>
+                                    <div class="module-desc">3D mesh işleme</div>
+                                    <div class="module-stats">22 fonksiyon · 614 satır</div>
+                                </a>
+                                <a href="cad3d-tr.html" class="module-card">
+                                    <div class="module-name">cad3d</div>
+                                    <div class="module-desc">3D CAD ve geometri</div>
+                                    <div class="module-stats">118 fonksiyon · 1,599 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>⚡ Asenkron ve Test (4 modül)</h2>
+                            <p>Async/await, çoklu thread, kural tabanlı sistem, test framework.</p>
+                            <div class="module-grid">
+                                <a href="async-tr.html" class="module-card">
+                                    <div class="module-name">async</div>
+                                    <div class="module-desc">Asenkron programlama</div>
+                                    <div class="module-stats">71 fonksiyon · 480 satır</div>
+                                </a>
+                                <a href="thread-tr.html" class="module-card">
+                                    <div class="module-name">thread</div>
+                                    <div class="module-desc">Thread ve senkronizasyon</div>
+                                    <div class="module-stats">88 fonksiyon · 604 satır</div>
+                                </a>
+                                <a href="rules-tr.html" class="module-card">
+                                    <div class="module-name">rules</div>
+                                    <div class="module-desc">Kural tabanlı AI motoru</div>
+                                    <div class="module-stats">67 fonksiyon · 657 satır</div>
+                                </a>
+                                <a href="testing-tr.html" class="module-card">
+                                    <div class="module-name">testing</div>
+                                    <div class="module-desc">Unit test framework</div>
+                                    <div class="module-stats">50 fonksiyon · 460 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔌 Runtime Extensions (11 modül)</h2>
+                            <p>Database, serialization, email, websocket, parsing, templates, utilities.</p>
+                            <div class="module-grid">
+                                <a href="email-tr.html" class="module-card">
+                                    <div class="module-name">email</div>
+                                    <div class="module-desc">SMTP/IMAP email istemcisi</div>
+                                    <div class="module-stats">~30 fonksiyon · ~450 satır</div>
+                                </a>
+                                <a href="cli-tr.html" class="module-card">
+                                    <div class="module-name">cli</div>
+                                    <div class="module-desc">Komut satırı argüman parser</div>
+                                    <div class="module-stats">~25 fonksiyon · ~300 satır</div>
+                                </a>
+                                <a href="markdown-tr.html" class="module-card">
+                                    <div class="module-name">markdown</div>
+                                    <div class="module-desc">Markdown to HTML parser</div>
+                                    <div class="module-stats">~35 fonksiyon · ~400 satır</div>
+                                </a>
+                                <a href="msgpack-tr.html" class="module-card">
+                                    <div class="module-name">msgpack</div>
+                                    <div class="module-desc">MessagePack binary serialization</div>
+                                    <div class="module-stats">~40 fonksiyon · ~500 satır</div>
+                                </a>
+                                <a href="postgresql-tr.html" class="module-card">
+                                    <div class="module-name">postgresql</div>
+                                    <div class="module-desc">PostgreSQL veritabanı istemcisi</div>
+                                    <div class="module-stats">~50 fonksiyon · ~600 satır</div>
+                                </a>
+                                <a href="redis-tr.html" class="module-card">
+                                    <div class="module-name">redis</div>
+                                    <div class="module-desc">Redis cache istemcisi</div>
+                                    <div class="module-stats">~60 fonksiyon · ~450 satır</div>
+                                </a>
+                                <a href="websocket-tr.html" class="module-card">
+                                    <div class="module-name">websocket</div>
+                                    <div class="module-desc">WebSocket RFC 6455</div>
+                                    <div class="module-stats">~45 fonksiyon · ~800 satır</div>
+                                </a>
+                                <a href="toml-tr.html" class="module-card">
+                                    <div class="module-name">toml</div>
+                                    <div class="module-desc">TOML v1.0.0 parser</div>
+                                    <div class="module-stats">~30 fonksiyon · ~350 satır</div>
+                                </a>
+                                <a href="template-tr.html" class="module-card">
+                                    <div class="module-name">template</div>
+                                    <div class="module-desc">Template engine (Jinja2-style)</div>
+                                    <div class="module-stats">~20 fonksiyon · ~300 satır</div>
+                                </a>
+                                <a href="pdf-tr.html" class="module-card">
+                                    <div class="module-name">pdf</div>
+                                    <div class="module-desc">PDF döküman oluşturma</div>
+                                    <div class="module-stats">~35 fonksiyon · ~400 satır</div>
+                                </a>
+                                <a href="archive-tr.html" class="module-card">
+                                    <div class="module-name">archive</div>
+                                    <div class="module-desc">ZIP/TAR arşiv desteği</div>
+                                    <div class="module-stats">~25 fonksiyon · ~350 satır</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔩 HAL - Gömülü Sistem (21 modül)</h2>
+                            <p>ARM Cortex-M, STM32, ESP32 donanım soyutlama katmanı.</p>
+                            <div class="module-grid">
+                                <a href="../hal/gpio-tr.html" class="module-card">
+                                    <div class="module-name">hal::gpio</div>
+                                    <div class="module-desc">GPIO pin kontrol</div>
+                                    <div class="module-stats">~8 fonksiyon</div>
+                                </a>
+                                <a href="../hal/adc-tr.html" class="module-card">
+                                    <div class="module-name">hal::adc</div>
+                                    <div class="module-desc">Analog-Digital çevirici</div>
+                                    <div class="module-stats">~6 fonksiyon</div>
+                                </a>
+                                <a href="../hal/dac-tr.html" class="module-card">
+                                    <div class="module-name">hal::dac</div>
+                                    <div class="module-desc">Digital-Analog çevirici</div>
+                                    <div class="module-stats">~5 fonksiyon</div>
+                                </a>
+                                <a href="../hal/pwm-tr.html" class="module-card">
+                                    <div class="module-name">hal::pwm</div>
+                                    <div class="module-desc">PWM sinyal üretimi</div>
+                                    <div class="module-stats">~7 fonksiyon</div>
+                                </a>
+                                <a href="../hal/usart-tr.html" class="module-card">
+                                    <div class="module-name">hal::usart</div>
+                                    <div class="module-desc">UART seri haberleşme</div>
+                                    <div class="module-stats">~9 fonksiyon</div>
+                                </a>
+                                <a href="../hal/i2c-tr.html" class="module-card">
+                                    <div class="module-name">hal::i2c</div>
+                                    <div class="module-desc">I2C bus haberleşme</div>
+                                    <div class="module-stats">~8 fonksiyon</div>
+                                </a>
+                                <a href="../hal/spi-tr.html" class="module-card">
+                                    <div class="module-name">hal::spi</div>
+                                    <div class="module-desc">SPI bus haberleşme</div>
+                                    <div class="module-stats">~7 fonksiyon</div>
+                                </a>
+                                <a href="../hal/timer-tr.html" class="module-card">
+                                    <div class="module-name">hal::timer</div>
+                                    <div class="module-desc">Hardware timer</div>
+                                    <div class="module-stats">~7 fonksiyon</div>
+                                </a>
+                                <a href="../hal/can-tr.html" class="module-card">
+                                    <div class="module-name">hal::can</div>
+                                    <div class="module-desc">CAN bus otomotiv</div>
+                                    <div class="module-stats">~10 fonksiyon</div>
+                                </a>
+                                <a href="../hal/dma-tr.html" class="module-card">
+                                    <div class="module-name">hal::dma</div>
+                                    <div class="module-desc">Direct Memory Access</div>
+                                    <div class="module-stats">~6 fonksiyon</div>
+                                </a>
+                                <a href="../hal/rtc-tr.html" class="module-card">
+                                    <div class="module-name">hal::rtc</div>
+                                    <div class="module-desc">Real-Time Clock</div>
+                                    <div class="module-stats">~8 fonksiyon</div>
+                                </a>
+                                <a href="../hal/watchdog-tr.html" class="module-card">
+                                    <div class="module-name">hal::watchdog</div>
+                                    <div class="module-desc">Watchdog timer</div>
+                                    <div class="module-stats">~5 fonksiyon</div>
+                                </a>
+                                <a href="../hal/flash-tr.html" class="module-card">
+                                    <div class="module-name">hal::flash</div>
+                                    <div class="module-desc">Flash memory</div>
+                                    <div class="module-stats">~7 fonksiyon</div>
+                                </a>
+                                <a href="../hal/nvic-tr.html" class="module-card">
+                                    <div class="module-name">hal::nvic</div>
+                                    <div class="module-desc">Interrupt kontrolcü</div>
+                                    <div class="module-stats">~6 fonksiyon</div>
+                                </a>
+                                <a href="../hal/systick-tr.html" class="module-card">
+                                    <div class="module-name">hal::systick</div>
+                                    <div class="module-desc">System tick timer</div>
+                                    <div class="module-stats">~5 fonksiyon</div>
+                                </a>
+                                <a href="../hal/exti-tr.html" class="module-card">
+                                    <div class="module-name">hal::exti</div>
+                                    <div class="module-desc">External interrupt</div>
+                                    <div class="module-stats">~6 fonksiyon</div>
+                                </a>
+                                <a href="../hal/power-tr.html" class="module-card">
+                                    <div class="module-name">hal::power</div>
+                                    <div class="module-desc">Güç yönetimi</div>
+                                    <div class="module-stats">~7 fonksiyon</div>
+                                </a>
+                                <a href="../hal/clock-tr.html" class="module-card">
+                                    <div class="module-name">hal::clock</div>
+                                    <div class="module-desc">Clock konfigürasyonu</div>
+                                    <div class="module-stats">~6 fonksiyon</div>
+                                </a>
+                                <a href="../hal/rng-tr.html" class="module-card">
+                                    <div class="module-name">hal::rng</div>
+                                    <div class="module-desc">Hardware RNG</div>
+                                    <div class="module-stats">~4 fonksiyon</div>
+                                </a>
+                                <a href="../hal/crc-tr.html" class="module-card">
+                                    <div class="module-name">hal::crc</div>
+                                    <div class="module-desc">Hardware CRC</div>
+                                    <div class="module-stats">~5 fonksiyon</div>
+                                </a>
+                                <a href="../hal/usb-tr.html" class="module-card">
+                                    <div class="module-name">hal::usb</div>
+                                    <div class="module-desc">USB device/host</div>
+                                    <div class="module-stats">~9 fonksiyon</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <hr style="margin: 60px 0;">
+
+                        <h2 id="kullanim"><a class="header" href="#kullanim">📖 Nasıl Kullanılır?</a></h2>
+
+                        <h3>1. Modül İçe Aktarma</h3>
+                        <pre><code class="language-berk">// Tek modül
+içe_aktar math
+
+// Çoklu modül
+içe_aktar math, stats, linalg
+
+// Alias kullanımı
+içe_aktar math olarak m
+içe_aktar http olarak h</code></pre>
+
+                        <h3>2. Fonksiyon Çağırma</h3>
+                        <pre><code class="language-berk">// Tam isim
+değişken sonuç = math.sqrt(16.0)
+
+// Alias ile
+içe_aktar math olarak m
+değişken sonuç = m.sqrt(16.0)</code></pre>
+
+                        <h3>3. Sabit Kullanımı</h3>
+                        <pre><code class="language-berk">içe_aktar math
+
+yazdır(math.PI)        // 3.14159...
+yazdır(math.E)         // 2.71828...
+yazdır(math.TAU)       // 6.28318... (2π)</code></pre>
+
+                        <hr style="margin: 60px 0;">
+
+                        <p style="text-align: center; font-size: 1.1em;">
+                            <strong>Yeni Başlıyor musunuz?</strong><br>
+                            <a href="../intro.html">📚 BERK Giriş Rehberi</a> | 
+                            <a href="../examples/index-tr.html">💡 Örnekler</a> | 
+                            <a href="../installation.html">⬇️ Kurulum</a>
+                        </p>
+
+                        <p style="text-align: center; color: #888; margin-top: 30px; font-size: 0.9em;">
+                            BERK v1.0.0 Standart Kütüphanesi<br>
+                            74 modül (42 stdlib + 21 HAL + 11 runtime) · 3,701 fonksiyon · ~39,000 satır · ~1.3 MB<br>
+                            Son güncelleme: Aralık 2025
+                        </p>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    </body>
+</html>

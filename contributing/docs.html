@@ -182,6 +182,341 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="dokümantasyon-katkısı"><a class="header" href="#dokümantasyon-katkısı">Dokümantasyon Katkısı</a></h1>
+                        
+                        <p>BERK'in dokümantasyonunu geliştirmeye katkıda bulunmak için rehber. Her türlü dokümantasyon katkısı değerlidir!</p>
+
+                        <h2>📚 Dokümantasyon Türleri</h2>
+
+                        <h3>1. mdBook Dokümantasyonu</h3>
+                        <p>Ana dokümantasyon kitabı (şu anda okuduğunuz)</p>
+                        <ul>
+                            <li><strong>Konum:</strong> <code>berk-lang/book/src/</code></li>
+                            <li><strong>Format:</strong> Markdown (.md)</li>
+                            <li><strong>Tool:</strong> mdBook</li>
+                        </ul>
+
+                        <h3>2. API Dokümantasyonu</h3>
+                        <p>Rust kod içi doc comments</p>
+                        <ul>
+                            <li><strong>Konum:</strong> <code>berk-lang/src/</code></li>
+                            <li><strong>Format:</strong> Rustdoc comments (///)</li>
+                            <li><strong>Tool:</strong> cargo doc</li>
+                        </ul>
+
+                        <h3>3. Stdlib Dokümantasyonu</h3>
+                        <p>Standard library modül açıklamaları</p>
+                        <ul>
+                            <li><strong>Konum:</strong> <code>stdlib/*.berk</code></li>
+                            <li><strong>Format:</strong> BERK doc comments (///)</li>
+                        </ul>
+
+                        <h3>4. GitHub Pages</h3>
+                        <p>Publish edilmiş HTML dökümanlar</p>
+                        <ul>
+                            <li><strong>Konum:</strong> <code>berk_pages</code> repository</li>
+                            <li><strong>URL:</strong> https://arslantasm.github.io/berk_pages/</li>
+                        </ul>
+
+                        <h2>🛠️ Dokümantasyon Geliştirme Ortamı</h2>
+
+                        <h3>mdBook Kurulumu</h3>
+                        <pre><code class="language-bash"># mdBook yükleme
+cargo install mdbook
+
+# Opsiyonel: Live reload için
+cargo install mdbook-serve</code></pre>
+
+                        <h3>Dokümantasyonu Yerel Olarak Görüntüleme</h3>
+                        <pre><code class="language-bash">cd berk-lang/book
+
+# Build
+mdbook build
+
+# Serve (localhost:3000)
+mdbook serve
+
+# Tarayıcıda aç
+# http://localhost:3000</code></pre>
+
+                        <h2>📝 Markdown Stil Rehberi</h2>
+
+                        <h3>Başlıklar</h3>
+                        <pre><code class="language-markdown"># Ana Başlık (H1) - Sadece sayfa başlığı için
+
+## Bölüm Başlığı (H2) - Ana konular
+
+### Alt Başlık (H3) - Alt konular
+
+#### Küçük Başlık (H4) - Detaylar</code></pre>
+
+                        <h3>Kod Blokları</h3>
+                        <pre><code class="language-markdown">```berk
+fonksiyon merhaba() {
+    yazdır("Merhaba Dünya!")
+}
+```
+
+```rust
+pub fn hello() {
+    println!("Hello World!");
+}
+```
+
+```bash
+cargo build --release
+```</code></pre>
+
+                        <h3>Inline Kod</h3>
+                        <pre><code class="language-markdown">`değişken`, `fonksiyon`, `Result<T, E>` gibi inline kod için backtick kullanın.</code></pre>
+
+                        <h3>Linkler</h3>
+                        <pre><code class="language-markdown">// İç link
+[Anahtar Kelimeler](./reference/keywords.md)
+
+// Dış link
+[Rust Documentation](https://doc.rust-lang.org)
+
+// Anchor link
+[Bölüm 2](#bölüm-2)</code></pre>
+
+                        <h3>Listeler</h3>
+                        <pre><code class="language-markdown">// Sırasız liste
+- Birinci öğe
+- İkinci öğe
+  - Alt öğe
+  - Alt öğe 2
+
+// Sıralı liste
+1. İlk adım
+2. İkinci adım
+3. Üçüncü adım</code></pre>
+
+                        <h3>Tablolar</h3>
+                        <pre><code class="language-markdown">| Türkçe | İngilizce | Açıklama |
+|--------|-----------|----------|
+| `değişken` | `let` | Değişken tanımlama |
+| `fonksiyon` | `fn` | Fonksiyon tanımlama |</code></pre>
+
+                        <h3>Admonitions (Uyarılar)</h3>
+                        <pre><code class="language-markdown">&gt; **💡 Not:** Bu önemli bir bilgidir.
+
+&gt; **⚠️ Uyarı:** Bu tehlikeli olabilir.
+
+&gt; **✅ İpucu:** Bunu deneyin!</code></pre>
+
+                        <h2>📖 İçerik Yazma Rehberi</h2>
+
+                        <h3>Dil ve Ton</h3>
+                        <ul>
+                            <li>✅ <strong>Açık ve net</strong> olun</li>
+                            <li>✅ <strong>Örneklerle</strong> açıklayın</li>
+                            <li>✅ <strong>Başlangıç seviyesine</strong> uygun yazın</li>
+                            <li>✅ <strong>Teknik terimler</strong> için açıklama ekleyin</li>
+                            <li>❌ Jargon kullanmaktan kaçının (gerekmedikçe)</li>
+                        </ul>
+
+                        <h3>Yapı</h3>
+                        <ol>
+                            <li><strong>Giriş</strong> - Konuyu tanıtın</li>
+                            <li><strong>Temel Kavramlar</strong> - Öğrenilecekler</li>
+                            <li><strong>Örnekler</strong> - Pratik kullanım</li>
+                            <li><strong>Best Practices</strong> - İpuçları</li>
+                            <li><strong>İleri Konular</strong> - Detaylı bilgi</li>
+                        </ol>
+
+                        <h3>Örnek Şablon</h3>
+                        <pre><code class="language-markdown"># Başlık
+
+## Giriş
+Kısa tanıtım paragrafı...
+
+## Temel Kullanım
+```berk
+// Basit örnek
+```
+
+## Parametreler
+| Parametre | Tip | Açıklama |
+|-----------|-----|----------|
+| `x` | `tam` | Giriş değeri |
+
+## Örnekler
+
+### Örnek 1: Basit Kullanım
+```berk
+// Kod
+```
+
+### Örnek 2: İleri Seviye
+```berk
+// Kod
+```
+
+## Best Practices
+&gt; **💡 İpucu:** ...
+
+## İlgili Kaynaklar
+- [Link 1](...)
+- [Link 2](...)</code></pre>
+
+                        <h2>🔧 Stdlib Dokümantasyonu</h2>
+
+                        <h3>Fonksiyon Dokümantasyonu</h3>
+                        <pre><code class="language-berk">/// İki sayıyı toplar ve sonucu döndürür.
+///
+/// Bu fonksiyon iki tam sayı alır ve toplamlarını hesaplar.
+/// Overflow kontrolü yapmaz.
+///
+/// # Parametreler
+/// * `a` - İlk sayı
+/// * `b` - İkinci sayı
+///
+/// # Döndürür
+/// İki sayının toplamı
+///
+/// # Örnekler
+/// ```berk
+/// değişken sonuç = topla(5, 3)  // 8
+/// değişken büyük = topla(1000000, 2000000)  // 3000000
+/// ```
+///
+/// # Hata Durumları
+/// Overflow durumunda tanımsız davranış
+fonksiyon topla(a: tam, b: tam) -> tam {
+    döndür a + b
+}</code></pre>
+
+                        <h3>Modül Dokümantasyonu</h3>
+                        <pre><code class="language-berk">/// # math - Matematik Fonksiyonları
+///
+/// Temel ve ileri matematiksel işlemler için fonksiyon koleksiyonu.
+///
+/// ## Kategoriler
+/// - **Temel:** toplam, çıkar, çarp, böl
+/// - **Trigonometri:** sin, cos, tan
+/// - **Logaritma:** log, ln, log10
+/// - **Üs:** pow, sqrt, cbrt
+///
+/// ## Kullanım
+/// ```berk
+/// içe_aktar math
+///
+/// değişken sonuç = math.pow(2, 10)  // 1024
+/// değişken kök = math.sqrt(16)      // 4.0
+/// ```
+
+// Modül kodu...</code></pre>
+
+                        <h2>🎨 HTML Sayfaları (GitHub Pages)</h2>
+
+                        <h3>Yapı</h3>
+                        <p>mdBook tarafından otomatik generate edilir, ancak özel sayfalar için:</p>
+
+                        <pre><code class="language-html">&lt;!-- stdlib/yeni-modul.html --&gt;
+&lt;div class="module-header"&gt;
+    &lt;h1&gt;📦 yeni-modul - Modül Açıklaması&lt;/h1&gt;
+    &lt;p&gt;Kısa tanıtım&lt;/p&gt;
+    &lt;div class="module-stats"&gt;
+        &lt;div class="stat-badge"&gt;
+            &lt;div style="font-size:2em"&gt;15&lt;/div&gt;
+            &lt;div&gt;Fonksiyon&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+                        <h2>✅ Dokümantasyon Checklist</h2>
+
+                        <h3>Yeni Sayfa Eklerken</h3>
+                        <ul>
+                            <li>☑️ <code>SUMMARY.md</code>'ye eklendi mi?</li>
+                            <li>☑️ Başlık ve meta bilgiler doğru mu?</li>
+                            <li>☑️ Kod örnekleri test edildi mi?</li>
+                            <li>☑️ Linkler çalışıyor mu?</li>
+                            <li>☑️ Görseller varsa yüklendi mi?</li>
+                            <li>☑️ Yazım hatası kontrolü yapıldı mı?</li>
+                        </ul>
+
+                        <h3>Düzenleme Yaparken</h3>
+                        <ul>
+                            <li>☑️ Değişiklik anlamlı mı?</li>
+                            <li>☑️ Eski bilgiler güncel mi?</li>
+                            <li>☑️ Yeni özellikler eklendi mi?</li>
+                            <li>☑️ Deprecated bilgiler kaldırıldı mı?</li>
+                        </ul>
+
+                        <h2>🚀 Dokümantasyon Publish</h2>
+
+                        <h3>GitHub Pages Güncelleme</h3>
+                        <pre><code class="language-bash"># mdBook build
+cd berk-lang/book
+mdbook build
+
+# berk_pages repository'ye kopyala
+cp -r book/html/* ../../berk_pages/
+
+# Commit ve push
+cd ../../berk_pages
+git add .
+git commit -m "docs: dokümantasyon güncellendi"
+git push origin main
+
+# GitHub Pages otomatik deploy eder (~2-3 dakika)</code></pre>
+
+                        <h3>API Docs Publish</h3>
+                        <pre><code class="language-bash"># Rustdoc oluşturma
+cd berk-lang
+cargo doc --no-deps --open
+
+# docs/ klasörüne kopyala
+cp -r target/doc docs/api</code></pre>
+
+                        <h2>💡 İyi Pratikler</h2>
+
+                        <ul>
+                            <li>✅ Her örnek <strong>çalışır olmalı</strong></li>
+                            <li>✅ Örnekler <strong>minimal</strong> olmalı (tek konsept)</li>
+                            <li>✅ <strong>Türkçe ve İngilizce</strong> örnekler verin</li>
+                            <li>✅ <strong>Hata durumları</strong>nı açıklayın</li>
+                            <li>✅ <strong>Performans notları</strong> ekleyin (gerekiyorsa)</li>
+                            <li>✅ <strong>İlgili sayfalara link</strong> verin</li>
+                            <li>✅ <strong>Görseller</strong> kullanın (diagram, screenshot)</li>
+                        </ul>
+
+                        <h2>📊 Kalite Metrikleri</h2>
+
+                        <ul>
+                            <li><strong>Coverage:</strong> Tüm public API dokümante edilmeli</li>
+                            <li><strong>Örnekler:</strong> Her fonksiyon minimum 1 örnek</li>
+                            <li><strong>Güncellik:</strong> Deprecated özellikler işaretlenmeli</li>
+                            <li><strong>Bağlantılar:</strong> Kırık link olmamalı</li>
+                        </ul>
+
+                        <div style="padding: 20px; background: var(--sidebar-bg); border-radius: 8px; margin: 20px 0;">
+                            <h3>🎯 Katkı İpuçları</h3>
+                            <ul>
+                                <li>Küçük PR'lar gönderin (bir sayfa/bölüm)</li>
+                                <li>Yazım hatası PR'ları herzaman hoş karşılanır</li>
+                                <li>Örnek ekleme en kolay katkıdır</li>
+                                <li>Görsel/diagram eklemek çok değerlidir</li>
+                                <li>İngilizce çeviri yardımı istenir</li>
+                            </ul>
+                        </div>
+
+                        <h2>📞 Dokümantasyon Sorunları</h2>
+                        <ul>
+                            <li><strong>Eksik bilgi mi var?</strong> Issue açın</li>
+                            <li><strong>Yanlış bilgi mi?</strong> PR gönderin</li>
+                            <li><strong>Anlaşılmaz mı?</strong> Discussion başlatın</li>
+                            <li><strong>Çeviri hatası mı?</strong> Düzeltin ve PR açın</li>
+                        </ul>
+
+                        <h2>🔗 Kaynaklar</h2>
+                        <ul>
+                            <li><a href="https://rust-lang.github.io/mdBook/">mdBook Documentation</a></li>
+                            <li><a href="https://doc.rust-lang.org/rustdoc/">Rustdoc Guide</a></li>
+                            <li><a href="https://www.writethedocs.org/">Write the Docs</a></li>
+                            <li><a href="https://developers.google.com/tech-writing">Google Technical Writing</a></li>
+                        </ul>
 
                     </main>
 

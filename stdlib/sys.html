@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,81 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="sys---sistem-bilgisi"><a class="header" href="#sys---sistem-bilgisi">sys - Sistem Bilgisi</a></h1>
+                        <div class="module-header">
+            <h1>⚙️ sys - Sistem İşlemleri</h1>
+            <p>Process, Environment, Command Line, Platform</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">62</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">801</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">25 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar sys
+
+// Command line arguments
+değişken args = sys.args()
+yazdır("Program: " + args[0])
+
+// Environment variables
+değişken path = sys.env("PATH")
+sys.set_env("MY_VAR", "value")
+
+// Process execution
+değişken sonuç = sys.exec("ls", ["-la"])
+yazdır("Çıktı: " + sonuç.stdout)
+yazdır("Exit code: " + sonuç.exit_code.yazıya())
+
+// Platform info
+yazdır("OS: " + sys.os())  // "linux", "windows", "macos"
+yazdır("Arch: " + sys.arch())  // "x86_64", "aarch64"</code></pre>
+
+        <h2>📚 Özellikler</h2>
+        <ul>
+            <li>Process management (spawn, exec, kill)</li>
+            <li>Environment variables</li>
+            <li>Command line arguments</li>
+            <li>Exit codes</li>
+            <li>Platform detection</li>
+        </ul>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Build Script</h3>
+            <pre><code>içe_aktar sys, fs
+
+fonksiyon build() -> Sonuç yap
+    yazdır("Building project...")
+    
+    // Clean
+    eğer fs.var_mı("build") ise yap
+        fs.dizin_sil_recursive("build")
+    son
+    fs.dizin_oluştur("build")
+    
+    // Compile
+    değişken sonuç = sys.exec("rustc", ["--crate-type", "lib", "src/lib.rs", "-o", "build/libmy.so"])
+    
+    eğer sonuç.exit_code != 0 ise yap
+        yazdır("Build failed:")
+        yazdır(sonuç.stderr)
+        dön Hata("Compilation error")
+    son
+    
+    yazdır("Build successful!")
+    dön Tamam(yok)
+son
+
+build()</code></pre>
+        </div>
+
+        <hr />
+        <p style="text-align: center; margin-top: 40px;">
+            <a href="thread.html">← thread</a> | 
+            <a href="terminal.html">terminal →</a>
+        </p>
 
                     </main>
 

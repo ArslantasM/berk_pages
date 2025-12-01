@@ -182,6 +182,194 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="operatör-Önceliği"><a class="header" href="#operatör-Önceliği">Operatör Önceliği</a></h1>
+                        
+                        <p>BERK programlama dilinde operatörlerin öncelik sırası ve birleşme yönleri. Öncelik seviyesi arttıkça operatörler önce değerlendirilir.</p>
+
+                        <h2>📊 Öncelik Tablosu</h2>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Öncelik</th>
+                                    <th>Operatör</th>
+                                    <th>Açıklama</th>
+                                    <th>Birleşme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>1 (En Yüksek)</strong></td>
+                                    <td><code>()</code> <code>[]</code> <code>.</code></td>
+                                    <td>Parantez, Dizin, Üye erişimi</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>2</strong></td>
+                                    <td><code>++</code> <code>--</code> <code>!</code> <code>~</code> <code>+</code> <code>-</code></td>
+                                    <td>Unary operatörler (artır, azalt, değil, bitwise not, tekli +/-)</td>
+                                    <td>Sağdan sola</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>3</strong></td>
+                                    <td><code>**</code></td>
+                                    <td>Üs alma</td>
+                                    <td>Sağdan sola</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>4</strong></td>
+                                    <td><code>*</code> <code>/</code> <code>%</code></td>
+                                    <td>Çarpma, bölme, mod</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>5</strong></td>
+                                    <td><code>+</code> <code>-</code></td>
+                                    <td>Toplama, çıkarma</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>6</strong></td>
+                                    <td><code>&lt;&lt;</code> <code>&gt;&gt;</code></td>
+                                    <td>Bit kaydırma (shift)</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>7</strong></td>
+                                    <td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td>
+                                    <td>İlişkisel karşılaştırma</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>8</strong></td>
+                                    <td><code>==</code> <code>!=</code></td>
+                                    <td>Eşitlik kontrolü</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>9</strong></td>
+                                    <td><code>&</code></td>
+                                    <td>Bitwise AND</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>10</strong></td>
+                                    <td><code>^</code></td>
+                                    <td>Bitwise XOR</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>11</strong></td>
+                                    <td><code>|</code></td>
+                                    <td>Bitwise OR</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>12</strong></td>
+                                    <td><code>&&</code> <code>ve</code> <code>and</code></td>
+                                    <td>Mantıksal VE</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>13</strong></td>
+                                    <td><code>||</code> <code>veya</code> <code>or</code></td>
+                                    <td>Mantıksal VEYA</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>14</strong></td>
+                                    <td><code>? :</code></td>
+                                    <td>Ternary koşul operatörü</td>
+                                    <td>Sağdan sola</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>15</strong></td>
+                                    <td><code>=</code> <code>+=</code> <code>-=</code> <code>*=</code> <code>/=</code> <code>%=</code></td>
+                                    <td>Atama operatörleri</td>
+                                    <td>Sağdan sola</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>16 (En Düşük)</strong></td>
+                                    <td><code>,</code></td>
+                                    <td>Virgül operatörü</td>
+                                    <td>Soldan sağa</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>💡 Örnekler</h2>
+
+                        <h3>Öncelik Sırası</h3>
+                        <pre><code class="language-berk">// Çarpma toplama önce gelir
+değişken sonuç = 5 + 3 * 2  // = 5 + 6 = 11 (not 16)
+
+// Parantez en yüksek önceliğe sahip
+değişken sonuç2 = (5 + 3) * 2  // = 8 * 2 = 16
+
+// Üs alma çarpmadan önce
+değişken sonuç3 = 2 * 3 ** 2  // = 2 * 9 = 18
+
+// Mantıksal operatörler
+değişken koşul = doğru veya yanlış ve yanlış  // = doğru (ve önce)
+değişken koşul2 = (doğru veya yanlış) ve yanlış  // = yanlış</code></pre>
+
+                        <h3>Birleşme Yönü</h3>
+                        <pre><code class="language-berk">// Soldan sağa (çoğu operatör)
+değişken a = 10 - 5 - 2  // = (10 - 5) - 2 = 3
+
+// Sağdan sola (atama)
+değişken x, y, z
+x = y = z = 5  // Sağdan başlar: z=5, y=5, x=5
+
+// Sağdan sola (üs alma)
+değişken b = 2 ** 3 ** 2  // = 2 ** (3 ** 2) = 2 ** 9 = 512</code></pre>
+
+                        <h3>Karmaşık İfadeler</h3>
+                        <pre><code class="language-berk">değişken result = 10 + 5 * 2 - 3 ** 2 / 3
+// Adım adım:
+// 1. 3 ** 2 = 9 (üs alma)
+// 2. 5 * 2 = 10 (çarpma)
+// 3. 9 / 3 = 3 (bölme)
+// 4. 10 + 10 = 20 (toplama)
+// 5. 20 - 3 = 17 (çıkarma)
+// Sonuç: 17
+
+// Parantezle netleştirme
+değişken result2 = ((10 + (5 * 2)) - ((3 ** 2) / 3))  // Daha okunabilir</code></pre>
+
+                        <h3>Mantıksal Operatörler</h3>
+                        <pre><code class="language-berk">değişken x = 5
+değişken y = 10
+değişken z = 15
+
+// && (ve) || (veya) önce gelir
+değişken sonuç = x < y || y > z && z > x
+// = (x < y) || ((y > z) && (z > x))
+// = doğru || (yanlış && doğru)
+// = doğru || yanlış
+// = doğru
+
+// Parantez kullanımı önerilir
+değişken açık = (x < y) || ((y > z) && (z > x))</code></pre>
+
+                        <h3>Bitwise Operatörler</h3>
+                        <pre><code class="language-berk">değişken a = 0b1100  // 12
+değişken b = 0b1010  // 10
+
+// Bitwise operatörler mantıksal operatörlerden önce
+değişken sonuç = a & b | a ^ b
+// = (a & b) | (a ^ b)
+// = (0b1000) | (0b0110)
+// = 0b1110 = 14</code></pre>
+
+                        <div style="padding: 20px; background: var(--sidebar-bg); border-radius: 8px; margin: 20px 0;">
+                            <h3>⚠️ İyi Pratikler</h3>
+                            <ul>
+                                <li>Karmaşık ifadelerde <strong>parantez</strong> kullanın - okunabilirliği artırır</li>
+                                <li>Bir satırda <strong>çok fazla operatör</strong> kullanmaktan kaçının</li>
+                                <li>Öncelik sırası <strong>belirsizse parantez</strong> ekleyin</li>
+                                <li>Kod inceleme sırasında <strong>operatör önceliği</strong> hatalarına dikkat edin</li>
+                            </ul>
+                        </div>
 
                     </main>
 

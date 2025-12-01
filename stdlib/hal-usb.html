@@ -1,0 +1,654 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>hal-usb - USB Device - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-usb.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🔌 hal::usb</h1>
+<p>USB 2.0 Full Speed - Device/Host/OTG Controller</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~420 satır</span>
+<span class="stat-badge">~25 fonksiyon</span>
+<span class="stat-badge">STM32F4/F7/H7</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>USB modülü, USB 2.0 Full Speed (12 Mbps) iletişimi sağlar. CDC (Virtual COM), HID (Keyboard/Mouse), MSC (Mass Storage) device classları ile PC bağlantısı kurar. Host mode ile USB flash disk, keyboard okuma yapılabilir. IoT data logging, debug console, firmware update ve user interface için kritiktir.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li><strong>USB 2.0 Full Speed:</strong> 12 Mbps (Low Speed 1.5 Mbps de desteklenir)</li>
+<li><strong>Device Mode:</strong> PC'ye bağlanarak virtual device olur</li>
+<li><strong>Host Mode:</strong> USB periferalleri bağlanabilir (flash, keyboard)</li>
+<li><strong>OTG Support:</strong> Device ve Host modları arasında dinamik geçiş</li>
+<li><strong>Device Classes:</strong> CDC, HID, MSC, Audio, Custom</li>
+<li><strong>DMA Support:</strong> High-speed data transfer</li>
+<li><strong>VBUS Detection:</strong> USB cable takılma algılama</li>
+<li><strong>Self/Bus Powered:</strong> Güç yönetimi esnekliği</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::usb, hal::gpio
+
+// USB pins: PA11 (D-), PA12 (D+)
+gpio.pin_init(gpio.PORT_A, 11, yap
+    mode: gpio.MODE_AF,
+    af: gpio.AF10_USB
+son)
+
+gpio.pin_init(gpio.PORT_A, 12, yap
+    mode: gpio.MODE_AF,
+    af: gpio.AF10_USB
+son)
+
+// Initialize USB CDC (Virtual COM Port)
+usb.init_cdc(yap
+    vid: 0x0483,  // ST Microelectronics VID
+    pid: 0x5740,  // CDC PID
+    manufacturer: "BERK Embedded",
+    product: "Virtual COM Port"
+son)
+
+// Connect to PC
+usb.connect()
+
+// Wait for enumeration
+döngü yap
+    eğer usb.is_configured() yap
+        kır
+    son
+son
+
+io.yazdir_satır("USB connected!")
+
+// Send data to PC
+usb.cdc_write("Hello from BERK!\r\n")</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// USB Mode
+enum Mode {
+    DEVICE,    // Device mode (slave)
+    HOST,      // Host mode (master)
+    OTG        // On-The-Go (dynamic)
+}
+
+// Device Classes
+enum DeviceClass {
+    CDC,       // Communication Device Class (Virtual COM)
+    HID,       // Human Interface Device (Keyboard/Mouse)
+    MSC,       // Mass Storage Class (USB Disk)
+    AUDIO,     // Audio Class
+    CUSTOM     // Custom class
+}
+
+// USB Speed
+enum Speed {
+    LOW_SPEED,   // 1.5 Mbps
+    FULL_SPEED,  // 12 Mbps
+    HIGH_SPEED   // 480 Mbps (USB 2.0 HS only)
+}
+
+// Power Mode
+enum PowerMode {
+    SELF_POWERED,   // External power supply
+    BUS_POWERED     // Powered from USB cable (max 500 mA)
+}
+
+yapı USBConfig yap
+    mode: Mode = DEVICE,
+    device_class: DeviceClass = CDC,
+    speed: Speed = FULL_SPEED,
+    power_mode: PowerMode = BUS_POWERED,
+    max_power_ma: sayı = 100,
+    vid: sayı16 = 0x0483,
+    pid: sayı16 = 0x5740
+son</code></pre>
+
+<h2>💡 Örnek 1: USB CDC Virtual COM Port (Debug Console)</h2>
+<div class="example-box">
+<h3>Problem: PC ile seri haberleşme için UART yerine USB kullanmak</h3>
+<pre><code>içe_aktar hal::usb
+
+değişken usb_rx_buffer: Dizi&lt;sayı8&gt; = Dizi.yeni(256)
+değişken usb_rx_index: sayı = 0
+
+fonksiyon usb_console_init() yap
+    usb.init_cdc(yap
+        vid: 0x0483,
+        pid: 0x5740,
+        manufacturer: "BERK",
+        product: "Debug Console",
+        serial_number: "BERK-001"
+    son)
+    
+    // Set receive callback
+    usb.cdc_set_rx_callback(usb_console_rx_handler)
+    
+    usb.connect()
+    
+    // Wait for enumeration
+    döngü yap
+        eğer usb.is_configured() yap
+            kır
+        son
+        delay_ms(100)
+    son
+    
+    usb.cdc_write("\r\n=== BERK Embedded Debug Console ===\r\n")
+    usb.cdc_write("Type 'help' for commands\r\n> ")
+son
+
+fonksiyon usb_console_rx_handler(data: Dizi&lt;sayı8&gt;) yap
+    için byte içinde data yap
+        eğer byte == 13 yap  // Enter key
+            // Process command
+            usb.cdc_write("\r\n")
+            
+            değişken cmd = Metin.from_bytes(usb_rx_buffer, usb_rx_index)
+            usb_console_process_command(cmd)
+            
+            usb_rx_index = 0
+            usb.cdc_write("> ")
+        yoksa eğer byte == 8 veya byte == 127 yap  // Backspace
+            eğer usb_rx_index > 0 yap
+                usb_rx_index = usb_rx_index - 1
+                usb.cdc_write("\b \b")  // Erase character
+            son
+        yoksa yap
+            eğer usb_rx_index < 256 yap
+                usb_rx_buffer[usb_rx_index] = byte
+                usb_rx_index = usb_rx_index + 1
+                usb.cdc_write_byte(byte)  // Echo
+            son
+        son
+    son
+son
+
+fonksiyon usb_console_process_command(cmd: Metin) yap
+    eşleştir cmd yap
+        "help" => yap
+            usb.cdc_write("Commands:\r\n")
+            usb.cdc_write("  help    - Show this help\r\n")
+            usb.cdc_write("  status  - System status\r\n")
+            usb.cdc_write("  reset   - Reset system\r\n")
+        son,
+        
+        "status" => yap
+            usb.cdc_write("CPU: STM32F407\r\n")
+            usb.cdc_write("Clock: 168 MHz\r\n")
+            usb.cdc_write("Uptime: " + systick.get_ms().metne() + " ms\r\n")
+        son,
+        
+        "reset" => yap
+            usb.cdc_write("Resetting...\r\n")
+            delay_ms(100)
+            nvic.system_reset()
+        son,
+        
+        _ => yap
+            usb.cdc_write("Unknown command: " + cmd + "\r\n")
+        son
+    son
+son</code></pre>
+<p><strong>Kullanım:</strong> PC'de PuTTY/TeraTerm ile /dev/ttyACM0 veya COM3 açın. 115200 baud ayarı gereksiz (USB CDC).</p>
+</div>
+
+<h2>💡 Örnek 2: USB HID Keyboard Emulation</h2>
+<div class="example-box">
+<h3>Problem: MCU'yu USB klavye gibi göstermek (otomatik yazma)</h3>
+<pre><code>içe_aktar hal::usb
+
+fonksiyon usb_keyboard_init() yap
+    usb.init_hid(yap
+        vid: 0x0483,
+        pid: 0x5750,
+        manufacturer: "BERK",
+        product: "USB Keyboard",
+        hid_type: usb.HID_KEYBOARD
+    son)
+    
+    usb.connect()
+    
+    // Wait for enumeration
+    döngü yap
+        eğer usb.is_configured() yap
+            kır
+        son
+        delay_ms(100)
+    son
+son
+
+fonksiyon keyboard_press(key: sayı8) yap
+    // HID keyboard report: [modifier, reserved, key1-6]
+    değişken report: Dizi&lt;sayı8&gt; = [0, 0, key, 0, 0, 0, 0, 0]
+    
+    // Send key press
+    usb.hid_send_report(report)
+    
+    delay_ms(50)
+    
+    // Send key release
+    report[2] = 0
+    usb.hid_send_report(report)
+    
+    delay_ms(50)
+son
+
+fonksiyon keyboard_type_string(text: Metin) yap
+    için karakter içinde text yap
+        // Convert ASCII to HID keycode
+        değişken keycode = ascii_to_hid_keycode(karakter)
+        keyboard_press(keycode)
+    son
+son
+
+fonksiyon ana() yap
+    usb_keyboard_init()
+    
+    io.yazdir_satır("USB Keyboard ready")
+    
+    // Wait for button press
+    döngü yap
+        eğer button_pressed() yap
+            // Type "Hello World!" on host PC
+            keyboard_type_string("Hello World!")
+            keyboard_press(0x28)  // Enter key
+            
+            delay_ms(1000)
+        son
+    son
+son</code></pre>
+<p><strong>Sonuç:</strong> PC'ye takıldığında gerçek klavye gibi algılanır. Otomatik yazma, macro sistemi.</p>
+</div>
+
+<h2>💡 Örnek 3: USB MSC - Mass Storage (USB Disk Emulation)</h2>
+<div class="example-box">
+<h3>Problem: SD card'ı USB flash disk gibi göstermek</h3>
+<pre><code>içe_aktar hal::usb, hal::sdio
+
+fonksiyon usb_msc_init() yap
+    // Initialize SD card
+    sdio.init()
+    
+    // Get SD card info
+    değişken sd_info = sdio.get_card_info()
+    
+    io.yazdir_satır("SD Card: " + (sd_info.capacity / 1024 / 1024).metne() + " MB")
+    
+    // Initialize USB MSC
+    usb.init_msc(yap
+        vid: 0x0483,
+        pid: 0x5720,
+        product: "BERK USB Disk",
+        block_count: sd_info.block_count,
+        block_size: sd_info.block_size,
+        read_callback: msc_read_block,
+        write_callback: msc_write_block
+    son)
+    
+    usb.connect()
+    
+    io.yazdir_satır("USB Mass Storage ready")
+son
+
+fonksiyon msc_read_block(block_num: sayı, buffer: Dizi&lt;sayı8&gt;) -> mantık yap
+    // Read block from SD card
+    dön sdio.read_blocks(block_num, 1, buffer)
+son
+
+fonksiyon msc_write_block(block_num: sayı, data: Dizi&lt;sayı8&gt;) -> mantık yap
+    // Write block to SD card
+    dön sdio.write_blocks(block_num, 1, data)
+son
+
+fonksiyon ana() yap
+    usb_msc_init()
+    
+    döngü yap
+        // Handle USB events
+        usb.poll()
+        
+        // LED blink when active
+        eğer usb.is_active() yap
+            led_toggle()
+        son
+        
+        delay_ms(100)
+    son
+son</code></pre>
+<p><strong>Kullanım:</strong> PC'ye takıldığında USB flash disk gibi görünür. Dosya kopyalama çalışır.</p>
+</div>
+
+<h2>📚 API Referansı</h2>
+<h3>Temel Fonksiyonlar</h3>
+<pre><code>// USB Initialization
+fonksiyon init_cdc(config: CDCConfig)
+fonksiyon init_hid(config: HIDConfig)
+fonksiyon init_msc(config: MSCConfig)
+
+// Connection
+fonksiyon connect()
+fonksiyon disconnect()
+fonksiyon is_configured() -> mantık
+
+// CDC Functions
+fonksiyon cdc_write(data: Metin)
+fonksiyon cdc_write_bytes(data: Dizi&lt;sayı8&gt;)
+fonksiyon cdc_read() -> Dizi&lt;sayı8&gt;
+fonksiyon cdc_set_rx_callback(callback: fonksiyon(Dizi&lt;sayı8&gt;))
+
+// HID Functions
+fonksiyon hid_send_report(report: Dizi&lt;sayı8&gt;)
+fonksiyon hid_get_report() -> Dizi&lt;sayı8&gt;
+
+// Status
+fonksiyon get_state() -> USBState
+fonksiyon is_active() -> mantık
+fonksiyon poll()  // Process USB events</code></pre>
+
+<div class="warning">
+<strong>⚠️ Önemli Notlar:</strong>
+<ul>
+<li><strong>48 MHz Clock:</strong> USB için tam 48 MHz clock gerekli (tolerance ±0.25%)</li>
+<li><strong>VID/PID:</strong> Production'da kendi VID/PID'nizi alın (USB-IF'den)</li>
+<li><strong>Enumeration Time:</strong> PC tanıma süresi 1-3 saniye sürebilir</li>
+<li><strong>Interrupt Priority:</strong> USB interrupt yüksek öncelikli olmalı</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Desteği</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>USB Support</th>
+<th>Speed</th>
+<th>Endpoints</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ FS</td>
+<td>12 Mbps</td>
+<td>8 EP</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ FS/HS</td>
+<td>12/480 Mbps</td>
+<td>6 EP (FS), 8 EP (HS)</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ FS/HS</td>
+<td>12/480 Mbps</td>
+<td>6 EP (FS), 8 EP (HS)</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ FS/HS</td>
+<td>12/480 Mbps</td>
+<td>9 EP</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>CDC for debug:</strong> UART yerine USB CDC kullan (kablo gereksinimi aynı)</li>
+<li>✅ <strong>HID for UI:</strong> Basit kontrol için HID keyboard/mouse kullan</li>
+<li>✅ <strong>MSC for data:</strong> Log dosyaları için MSC kullan (FAT32)</li>
+<li>✅ <strong>Disconnect before reset:</strong> Reset öncesi usb.disconnect() çağır</li>
+<li>❌ <strong>Float operations:</strong> USB interrupt'ta floating-point kullanma</li>
+<li>❌ <strong>Long callbacks:</strong> USB callback'leri kısa tutun (<1 ms)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-clock-tr.html">hal::clock</a> - 48 MHz USB clock configuration</li>
+<li><a href="hal-gpio-tr.html">hal::gpio</a> - USB D+/D- pin setup</li>
+<li><a href="hal-sdio-tr.html">hal::sdio</a> - SD card for USB MSC backend</li>
+<li><a href="hal-dma-tr.html">hal::dma</a> - DMA for high-speed USB transfers</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-usb-en.html">🌐 English</a>
+</p>
+</main>
+</div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hal-can.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hal-dma.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hal-can.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hal-dma.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

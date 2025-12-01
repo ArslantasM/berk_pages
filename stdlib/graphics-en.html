@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphics - Graphics and Rendering | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎨 graphics - Graphics and Rendering</h1>
+<p>OpenGL, Vulkan, 2D/3D Graphics, Shaders, Textures</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">163</div><div>Functions</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,624</div><div>Lines</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">53 KB</div><div>Size</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>içe_aktar graphics
+
+// Create window
+değişken pencere = graphics.window_create("BERK Graphics", 800, 600)
+
+// OpenGL context
+değişken gl = graphics.gl_context_create(pencere)
+graphics.gl_make_current(gl)
+
+// Shader program
+değişken vertex_shader = graphics.shader_compile(VERTEX_SHADER, vertex_code)
+değişken fragment_shader = graphics.shader_compile(FRAGMENT_SHADER, fragment_code)
+değişken program = graphics.program_link(vertex_shader, fragment_shader)
+
+// Vertex data
+değişken vertices = [
+    -0.5, -0.5, 0.0,  // bottom left
+     0.5, -0.5, 0.0,  // bottom right
+     0.0,  0.5, 0.0   // top
+]
+
+değişken vbo = graphics.buffer_create()
+graphics.buffer_data(vbo, vertices)
+
+// Render loop
+döngü yap
+    graphics.clear(0.2, 0.3, 0.3, 1.0)
+    
+    graphics.program_use(program)
+    graphics.draw_arrays(TRIANGLES, 0, 3)
+    
+    graphics.window_swap_buffers(pencere)
+    graphics.poll_events()
+    
+    eğer graphics.window_should_close(pencere) ise yap
+        kır
+    son
+son</code></pre>
+<h2>📚 Features</h2>
+<ul>
+<li><strong>OpenGL 3.3+:</strong> Modern OpenGL API</li>
+<li><strong>Vulkan:</strong> Low-level graphics API (experimental)</li>
+<li><strong>Shaders:</strong> GLSL vertex/fragment/geometry/compute shaders</li>
+<li><strong>Textures:</strong> 2D/3D textures, mipmaps, filtering</li>
+<li><strong>Framebuffers:</strong> Render-to-texture, post-processing</li>
+<li><strong>3D Math:</strong> Matrices, vectors, quaternions</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Textured Cube with Camera</h3>
+<pre><code>içe_aktar graphics, math, image
+
+// Cube vertices with texture coordinates
+değişken cube_vertices = [
+    // position        // texcoord
+    -0.5, -0.5, -0.5,  0.0, 0.0,
+     0.5, -0.5, -0.5,  1.0, 0.0,
+     0.5,  0.5, -0.5,  1.0, 1.0,
+    // ... (other faces)
+]
+
+// Load texture
+değişken texture = graphics.texture_create()
+değişken img = image.load("crate.png")
+graphics.texture_data(texture, img.genişlik, img.yükseklik, img.veri)
+graphics.texture_set_filter(texture, LINEAR, LINEAR_MIPMAP_LINEAR)
+graphics.texture_generate_mipmap(texture)
+
+// Camera
+değişken kamera = yap
+    pozisyon: [0.0, 0.0, 3.0],
+    hedef: [0.0, 0.0, 0.0],
+    yukarı: [0.0, 1.0, 0.0]
+son
+
+// Transformation matrices
+değişken model = math.mat4_rotate_y(graphics.time() * 50.0)
+değişken view = math.mat4_look_at(kamera.pozisyon, kamera.hedef, kamera.yukarı)
+değişken projection = math.mat4_perspective(45.0, 800.0/600.0, 0.1, 100.0)
+
+// Render
+graphics.program_use(program)
+graphics.program_set_mat4(program, "model", model)
+graphics.program_set_mat4(program, "view", view)
+graphics.program_set_mat4(program, "projection", projection)
+graphics.texture_bind(texture, 0)
+graphics.draw_arrays(TRIANGLES, 0, 36)</code></pre>
+</div>
+<div class="example-box">
+<h3>Post-Processing Effect</h3>
+<pre><code>içe_aktar graphics
+
+// Create framebuffer
+değişken fbo = graphics.framebuffer_create()
+değişken color_texture = graphics.texture_create()
+graphics.texture_data(color_texture, 800, 600, yok)
+graphics.framebuffer_attach_texture(fbo, color_texture)
+
+// Post-processing shader (grayscale)
+değişken post_shader = graphics.program_create("
+    #version 330
+    in vec2 TexCoord;
+    out vec4 FragColor;
+    uniform sampler2D screenTexture;
+    
+    void main() {
+        vec3 color = texture(screenTexture, TexCoord).rgb;
+        float gray = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
+        FragColor = vec4(gray, gray, gray, 1.0);
+    }
+")
+
+// Render loop
+döngü yap
+    // 1. Render scene to framebuffer
+    graphics.framebuffer_bind(fbo)
+    graphics.clear(0.1, 0.1, 0.1, 1.0)
+    render_scene()
+    
+    // 2. Apply post-processing
+    graphics.framebuffer_bind_default()
+    graphics.clear(0.0, 0.0, 0.0, 1.0)
+    graphics.program_use(post_shader)
+    graphics.texture_bind(color_texture, 0)
+    graphics.draw_fullscreen_quad()
+    
+    graphics.window_swap_buffers(pencere)
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

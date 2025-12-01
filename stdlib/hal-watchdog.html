@@ -1,0 +1,587 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>hal-watchdog - Watchdog Timer - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-watchdog.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🐕 hal::watchdog</h1>
+<p>Watchdog Timer - Sistem Güvenilirliği ve Reset Yönetimi</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~280 satır</span>
+<span class="stat-badge">~8 fonksiyon</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Watchdog timer, yazılım hatalarından kaynaklanan sistem donmalarını otomatik olarak tespit edip sistemi resetler. Mikrokontrolcü beklenmedik bir duruma girerse (sonsuz döngü, kilitlenme), watchdog sayacı sıfırlanmadığı için timeout olur ve sistem yeniden başlatılır.</p>
+
+<p>İki tip watchdog vardır: <strong>IWDG</strong> (Independent Watchdog - LSI saatle çalışır, düşük güç modlarında bile aktif) ve <strong>WWDG</strong> (Window Watchdog - pencere kontrolü ile daha hassas zamanlama).</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Independent watchdog (IWDG) - LSI clock (32 kHz)</li>
+<li>Window watchdog (WWDG) - APB1 clock</li>
+<li>Konfigüre edilebilir timeout (ms - saniyeler)</li>
+<li>Early warning interrupt (WWDG)</li>
+<li>Reset source detection</li>
+<li>Debug mode freeze desteği</li>
+<li>Sleep/Stop mode'da çalışma</li>
+<li>Prescaler ayarları (4 - 256)</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::watchdog, hal::core
+
+// Independent watchdog (4 saniye timeout)
+değişken wdg = watchdog.init_iwdg(yap
+    timeout_ms: 4000,
+    window_mode: yanlış
+son)
+
+// Ana döngü
+döngü yap
+    // Normal işlemler
+    core.delay_ms(500)
+    
+    // Watchdog'u besle (refresh)
+    watchdog.refresh(wdg)
+    
+    // Eğer bu satır çalışmazsa sistem 4 saniye içinde resetlenir
+son</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Watchdog Tipi
+enum WatchdogType {
+    IWDG,  // Independent watchdog
+    WWDG   // Window watchdog
+}
+
+// Prescaler değerleri
+enum Prescaler {
+    DIV_4,
+    DIV_8,
+    DIV_16,
+    DIV_32,
+    DIV_64,
+    DIV_128,
+    DIV_256
+}
+
+// Reset Source
+enum ResetSource {
+    POWER_ON,      // Power-on reset
+    PIN_RESET,     // External pin reset
+    SOFTWARE,      // Software reset
+    IWDG_RESET,    // Independent watchdog
+    WWDG_RESET,    // Window watchdog
+    LOW_POWER,     // Low-power reset
+    BROWNOUT       // Brown-out reset
+}
+
+yapı WatchdogConfig yap
+    type: WatchdogType,
+    timeout_ms: sayı,       // Milliseconds
+    window_mode: mantık,    // Window watchdog only
+    prescaler: Prescaler,
+    reload_value: sayı
+son</code></pre>
+
+<h2>💡 Örnek 1: Basic IWDG Kullanımı</h2>
+<div class="example-box">
+<h3>2 saniyelik watchdog ile sistem koruması</h3>
+<pre><code>içe_aktar hal::watchdog, hal::gpio, hal::core
+
+değişken led_green = gpio.pin_init(gpio.PORT_C, 13, gpio.MODE_OUTPUT)
+değişken led_red = gpio.pin_init(gpio.PORT_C, 14, gpio.MODE_OUTPUT)
+
+fonksiyon ana() yap
+    // Check reset source
+    değişken reset_cause = watchdog.get_reset_source()
+    
+    eğer reset_cause == watchdog.IWDG_RESET ise yap
+        // Watchdog reset occurred!
+        gpio.pin_write(led_red, gpio.HIGH)
+        core.delay_ms(2000)
+        gpio.pin_write(led_red, gpio.LOW)
+    son
+    
+    // Initialize watchdog (2 second timeout)
+    değişken wdg = watchdog.init_iwdg(yap
+        timeout_ms: 2000,
+        window_mode: yanlış
+    son)
+    
+    // Main loop
+    döngü yap
+        // Normal operation
+        gpio.pin_toggle(led_green)
+        core.delay_ms(100)
+        
+        // Feed watchdog every 100ms (well before 2s timeout)
+        watchdog.refresh(wdg)
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 2: Task Monitor ile Watchdog</h2>
+<div class="example-box">
+<h3>Çoklu task izleme ve watchdog besleme</h3>
+<pre><code>içe_aktar hal::watchdog, hal::time
+
+değişken son_beslenme_zamani: Zaman
+değişken watchdog_aktif = doğru
+
+fonksiyon kritik_gorev_1() yap
+    // Kritik işlemler
+    core.delay_ms(50)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+son
+
+fonksiyon kritik_gorev_2() yap
+    // Başka kritik işlemler
+    core.delay_ms(75)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+son
+
+fonksiyon watchdog_besleme_istegi() yap
+    son_beslenme_zamani = time.now()
+son
+
+fonksiyon watchdog_yonetici(wdg: WatchdogHandle) yap
+    döngü yap
+        // Check if tasks are healthy
+        değişken elapsed = time.now() - son_beslenme_zamani
+        
+        eğer elapsed < time.milliseconds(500) ise yap
+            // Tasks are running OK, feed watchdog
+            watchdog.refresh(wdg)
+        yoksa yap
+            // Tasks hung! Let watchdog reset the system
+            io.println("UYARI: Görevler askıda! Watchdog resetleyecek...")
+        son
+        
+        core.delay_ms(100)
+    son
+son
+
+fonksiyon ana() yap
+    // 1 saniye watchdog timeout
+    değişken wdg = watchdog.init_iwdg(yap
+        timeout_ms: 1000,
+        window_mode: yanlış
+    son)
+    
+    son_beslenme_zamani = time.now()
+    
+    // Start tasks
+    thread.spawn(|| kritik_gorev_1())
+    thread.spawn(|| kritik_gorev_2())
+    thread.spawn(|| watchdog_yonetici(wdg))
+    
+    thread.join_all()
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 3: Window Watchdog (WWDG)</h2>
+<div class="example-box">
+<h3>Pencere kontrolü ile hassas zamanlama</h3>
+<pre><code>içe_aktar hal::watchdog
+
+// WWDG: Hem çok erken hem çok geç beslemeyi engeller
+fonksiyon wwdg_demo() yap
+    // Window: 50-100ms aralığında beslenmeli
+    değişken wwdg = watchdog.init_wwdg(yap
+        timeout_ms: 100,
+        window_ms: 50,  // Pencere başlangıcı
+        early_wakeup_interrupt: doğru
+    son)
+    
+    // Early warning interrupt handler
+    watchdog.set_interrupt_handler(wwdg, || yap
+        io.println("Watchdog erken uyarı!")
+        // Burası early wakeup interrupt (zamanında besle)
+    son)
+    
+    değişken sayac = 0
+    döngü yap
+        // İşlemler
+        core.delay_ms(30)
+        
+        // 30ms + 30ms = 60ms (pencere içinde: 50-100ms ✓)
+        core.delay_ms(30)
+        
+        // Watchdog'u besle
+        watchdog.refresh(wwdg)
+        
+        sayac += 1
+        
+        // Simulate hang every 10 iterations
+        eğer sayac % 10 == 0 ise yap
+            io.println("Simüle edilen gecikme...")
+            core.delay_ms(150)  // Too late! WWDG will reset
+        son
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 4: Watchdog + Backup Register</h2>
+<div class="example-box">
+<h3>Reset nedeni kaydetme ve analiz</h3>
+<pre><code>içe_aktar hal::watchdog, hal::rtc
+
+yapı ResetInfo yap
+    count: sayı,
+    last_reason: ResetSource,
+    timestamp: sayı
+son
+
+fonksiyon reset_bilgisi_kaydet() yap
+    değişken reason = watchdog.get_reset_source()
+    
+    // Backup register'dan önceki bilgiyi oku
+    değişken reset_count = rtc.backup_read(0)
+    reset_count += 1
+    
+    // Yeni bilgiyi kaydet
+    rtc.backup_write(0, reset_count)
+    rtc.backup_write(1, reason.to_int())
+    rtc.backup_write(2, time.timestamp())
+    
+    io.println("Reset sayısı: " + reset_count.yazıya())
+    io.println("Reset nedeni: " + reason.to_string())
+son
+
+fonksiyon ana() yap
+    // Initialize RTC for backup registers
+    rtc.init()
+    
+    // Log reset information
+    reset_bilgisi_kaydet()
+    
+    // Check for excessive resets
+    değişken reset_count = rtc.backup_read(0)
+    eğer reset_count > 10 ise yap
+        io.println("HATA: Çok fazla reset! Sistem unstable.")
+        // Enter safe mode or disable some features
+        rtc.backup_write(0, 0)  // Reset counter
+    son
+    
+    // Initialize watchdog
+    değişken wdg = watchdog.init_iwdg(yap
+        timeout_ms: 3000,
+        window_mode: yanlış
+    son)
+    
+    // Normal operation
+    döngü yap
+        // Your code here
+        watchdog.refresh(wdg)
+        core.delay_ms(500)
+    son
+son</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Initialization</h3>
+<pre><code>fonksiyon init_iwdg(config: WatchdogConfig) -> WatchdogHandle
+fonksiyon init_wwdg(config: WatchdogConfig) -> WatchdogHandle
+fonksiyon deinit(handle: WatchdogHandle)</code></pre>
+
+<h3>Control</h3>
+<pre><code>fonksiyon refresh(handle: WatchdogHandle)
+fonksiyon start(handle: WatchdogHandle)
+fonksiyon is_running(handle: WatchdogHandle) -> mantık</code></pre>
+
+<h3>Reset Information</h3>
+<pre><code>fonksiyon get_reset_source() -> ResetSource
+fonksiyon clear_reset_flags()
+fonksiyon software_reset()</code></pre>
+
+<h3>Window Watchdog (WWDG Only)</h3>
+<pre><code>fonksiyon set_interrupt_handler(handle: WatchdogHandle, callback: Fonksiyon)
+fonksiyon get_counter(handle: WatchdogHandle) -> sayı</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>IWDG</th><th>WWDG</th><th>Max Timeout</th></tr>
+<tr><td>STM32F4</td><td>✓</td><td>✓</td><td>32 saniye</td></tr>
+<tr><td>STM32F1</td><td>✓</td><td>✓</td><td>26 saniye</td></tr>
+<tr><td>ESP32</td><td>✓</td><td>✗</td><td>configurable</td></tr>
+<tr><td>GD32VF103</td><td>✓</td><td>✓</td><td>26 saniye</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Timeout seçimi:</strong> En uzun task süresinin 2-3 katı olmalı</li>
+<li><strong>Beslenme sıklığı:</strong> Timeout süresinin %50-75'i aralıklarla besleyin</li>
+<li><strong>Debug mode:</strong> Geliştirme sırasında watchdog'u freeze edin (debugger breakpoint'lerde)</li>
+<li><strong>Critical sections:</strong> Interrupt disable edilen yerlerde watchdog timeout'u hesaplayın</li>
+<li><strong>Reset logging:</strong> Reset nedenlerini backup register'da saklayın</li>
+<li><strong>IWDG vs WWDG:</strong> Production'da IWDG (LSI bağımsız), critical timing için WWDG</li>
+<li><strong>Power modes:</strong> IWDG low-power modlarda çalışır, WWDG durur</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>IWDG bir kez başlatıldı mı durdurulamaz (hardware restriction)</li>
+<li>Debug sırasında watchdog reset'lerini önlemek için DBGMCU_APB1_FZ register'ını ayarlayın</li>
+<li>LSI clock toleransı %40'a kadar olabilir - timeout hesaplamalarında dikkate alın</li>
+<li>Flash programming sırasında watchdog'u disable edin (erase uzun sürebilir)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-rtc-tr.html">hal::rtc</a> - Backup register for reset logging</li>
+<li><a href="hal-power-tr.html">hal::power</a> - Low-power modes and watchdog</li>
+<li><a href="hal-clock-tr.html">hal::clock</a> - LSI clock configuration</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-watchdog-en.html">🇬🇧 English</a>
+</p>
+</main>
+</div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hal-systick.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hal-dev.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hal-systick.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hal-dev.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

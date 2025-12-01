@@ -1,0 +1,254 @@
+﻿[
+    {
+        "name":  "physics2d",
+        "lines":  3317,
+        "size_kb":  109.7,
+        "functions":  192
+    },
+    {
+        "name":  "image",
+        "lines":  1770,
+        "size_kb":  61.7,
+        "functions":  77
+    },
+    {
+        "name":  "audio",
+        "lines":  1669,
+        "size_kb":  55.6,
+        "functions":  163
+    },
+    {
+        "name":  "gui",
+        "lines":  1636,
+        "size_kb":  53.6,
+        "functions":  169
+    },
+    {
+        "name":  "graphics",
+        "lines":  1624,
+        "size_kb":  56.5,
+        "functions":  163
+    },
+    {
+        "name":  "cad3d",
+        "lines":  1599,
+        "size_kb":  52.8,
+        "functions":  118
+    },
+    {
+        "name":  "http",
+        "lines":  1549,
+        "size_kb":  50.3,
+        "functions":  76
+    },
+    {
+        "name":  "crypto",
+        "lines":  1381,
+        "size_kb":  49,
+        "functions":  101
+    },
+    {
+        "name":  "sqlite",
+        "lines":  1296,
+        "size_kb":  40.3,
+        "functions":  62
+    },
+    {
+        "name":  "json",
+        "lines":  1204,
+        "size_kb":  37.1,
+        "functions":  51
+    },
+    {
+        "name":  "string",
+        "lines":  953,
+        "size_kb":  26.1,
+        "functions":  127
+    },
+    {
+        "name":  "math",
+        "lines":  882,
+        "size_kb":  27.5,
+        "functions":  111
+    },
+    {
+        "name":  "optim",
+        "lines":  875,
+        "size_kb":  26.6,
+        "functions":  23
+    },
+    {
+        "name":  "linalg",
+        "lines":  848,
+        "size_kb":  25.4,
+        "functions":  43
+    },
+    {
+        "name":  "encoding",
+        "lines":  832,
+        "size_kb":  26.5,
+        "functions":  79
+    },
+    {
+        "name":  "stats",
+        "lines":  820,
+        "size_kb":  24.5,
+        "functions":  56
+    },
+    {
+        "name":  "csv",
+        "lines":  809,
+        "size_kb":  24,
+        "functions":  53
+    },
+    {
+        "name":  "physics",
+        "lines":  748,
+        "size_kb":  25.5,
+        "functions":  103
+    },
+    {
+        "name":  "terminal",
+        "lines":  703,
+        "size_kb":  17.7,
+        "functions":  77
+    },
+    {
+        "name":  "iter",
+        "lines":  690,
+        "size_kb":  19.7,
+        "functions":  79
+    },
+    {
+        "name":  "rules",
+        "lines":  657,
+        "size_kb":  18.2,
+        "functions":  67
+    },
+    {
+        "name":  "network",
+        "lines":  648,
+        "size_kb":  18.5,
+        "functions":  87
+    },
+    {
+        "name":  "fmt",
+        "lines":  621,
+        "size_kb":  17.9,
+        "functions":  83
+    },
+    {
+        "name":  "mesh",
+        "lines":  614,
+        "size_kb":  20.5,
+        "functions":  22
+    },
+    {
+        "name":  "sys",
+        "lines":  607,
+        "size_kb":  16.8,
+        "functions":  82
+    },
+    {
+        "name":  "thread",
+        "lines":  604,
+        "size_kb":  15.4,
+        "functions":  88
+    },
+    {
+        "name":  "yaml",
+        "lines":  595,
+        "size_kb":  15.7,
+        "functions":  59
+    },
+    {
+        "name":  "math_3d",
+        "lines":  593,
+        "size_kb":  16.2,
+        "functions":  63
+    },
+    {
+        "name":  "color",
+        "lines":  560,
+        "size_kb":  17.2,
+        "functions":  47
+    },
+    {
+        "name":  "time",
+        "lines":  540,
+        "size_kb":  14.4,
+        "functions":  76
+    },
+    {
+        "name":  "fs",
+        "lines":  539,
+        "size_kb":  14.5,
+        "functions":  76
+    },
+    {
+        "name":  "collections",
+        "lines":  517,
+        "size_kb":  13.1,
+        "functions":  69
+    },
+    {
+        "name":  "logging",
+        "lines":  514,
+        "size_kb":  14,
+        "functions":  63
+    },
+    {
+        "name":  "xml",
+        "lines":  510,
+        "size_kb":  14.5,
+        "functions":  55
+    },
+    {
+        "name":  "async",
+        "lines":  480,
+        "size_kb":  13,
+        "functions":  71
+    },
+    {
+        "name":  "random",
+        "lines":  474,
+        "size_kb":  15.1,
+        "functions":  44
+    },
+    {
+        "name":  "compression",
+        "lines":  472,
+        "size_kb":  15,
+        "functions":  67
+    },
+    {
+        "name":  "regex",
+        "lines":  472,
+        "size_kb":  12.5,
+        "functions":  57
+    },
+    {
+        "name":  "testing",
+        "lines":  460,
+        "size_kb":  12.9,
+        "functions":  50
+    },
+    {
+        "name":  "io",
+        "lines":  449,
+        "size_kb":  11.8,
+        "functions":  64
+    },
+    {
+        "name":  "complex",
+        "lines":  443,
+        "size_kb":  15.9,
+        "functions":  49
+    },
+    {
+        "name":  "result",
+        "lines":  266,
+        "size_kb":  7.4,
+        "functions":  24
+    }
+]

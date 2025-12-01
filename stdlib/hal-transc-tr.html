@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::transc - RF Transceivers | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎵 hal::transc</h1>
+<p>RF Transceivers & Wireless Communication</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 satır</span>
+<span class="stat-badge">nRF24/LoRa</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>RF transceiver drivers: nRF24L01, LoRa, Bluetooth.</p>
+
+<h2>🚀 Kullanım</h2>
+<pre><code>içe_aktar hal::transc
+
+// Initialize nRF24L01
+değişken nrf = transc.nrf24_init(yap
+    ce_pin: gpio.PA0,
+    csn_pin: gpio.PA1,
+    spi: spi1,
+    channel: 76,
+    data_rate: transc.DR_2MBPS
+son)
+
+// Send packet
+transc.nrf24_send(nrf, [0x01, 0x02, 0x03])
+
+// Receive packet
+eğer data = transc.nrf24_receive(nrf, 100) ise yap
+    io.println("Received: {:?}", data)
+son
+
+// LoRa module
+değişken lora = transc.lora_init(yap
+    frequency: 915_000_000,  // 915 MHz
+    bandwidth: transc.BW_125KHZ,
+    spreading_factor: 7
+son)
+
+transc.lora_send(lora, "Hello LoRa!")</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

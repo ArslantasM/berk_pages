@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>sqlite - SQLite Veritabanı | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🗄️ sqlite - SQLite Veritabanı</h1>
+<p>Embedded SQL Database, Transactions, Prepared Statements</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">42</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,167</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar sqlite
+
+// Veritabanı aç
+değişken db = sqlite.open("app.db")
+
+// Tablo oluştur
+sqlite.exec(db, "CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    age INTEGER
+)")
+
+// Insert
+sqlite.exec(db, "INSERT INTO users (name, email, age) VALUES ('Ali', 'ali@test.com', 25)")
+
+// Prepared statement (SQL injection koruması)
+değişken stmt = sqlite.prepare(db, "INSERT INTO users (name, email, age) VALUES (?, ?, ?)")
+sqlite.bind(stmt, ["Ayşe", "ayse@test.com", 30])
+sqlite.step(stmt)
+sqlite.finalize(stmt)
+
+// Query
+değişken sonuçlar = sqlite.query(db, "SELECT * FROM users WHERE age > 20")
+her satır içinde sonuçlar için yap
+    yazdır(satır["name"] + " - " + satır["email"])
+son
+
+// Transaction
+sqlite.begin(db)
+dene yap
+    sqlite.exec(db, "UPDATE users SET age = age + 1")
+    sqlite.commit(db)
+son yakala hata yap
+    sqlite.rollback(db)
+    yazdır("Hata: " + hata.mesaj())
+son
+
+sqlite.close(db)</code></pre>
+<h2>📚 Özellikler</h2>
+<ul>
+<li>SQLite 3.x embedded database</li>
+<li>Full SQL support (SELECT, INSERT, UPDATE, DELETE, JOIN, etc.)</li>
+<li>Prepared statements (SQL injection prevention)</li>
+<li>Transactions (ACID properties)</li>
+<li>Type safety</li>
+<li>Connection pooling</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>User Management System</h3>
+<pre><code>içe_aktar sqlite
+
+sınıf UserDB yap
+    değişken db: Database
+    
+    fonksiyon yeni(dosya_yolu: yazı) yap
+        self.db = sqlite.open(dosya_yolu)
+        self.init_schema()
+    son
+    
+    fonksiyon init_schema() yap
+        sqlite.exec(self.db, "
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        ")
+    son
+    
+    fonksiyon kullanıcı_ekle(username: yazı, email: yazı, password_hash: yazı) -> Sonuç yap
+        değişken stmt = sqlite.prepare(self.db,
+            "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)")
+        
+        sqlite.bind(stmt, [username, email, password_hash])
+        
+        eğer sqlite.step(stmt) ise yap
+            değişken id = sqlite.last_insert_id(self.db)
+            sqlite.finalize(stmt)
+            dön Tamam(id)
+        son değilse yap
+            sqlite.finalize(stmt)
+            dön Hata("Kullanıcı eklenemedi")
+        son
+    son
+    
+    fonksiyon kullanıcı_bul(username: yazı) -> Seçenek yap
+        değişken stmt = sqlite.prepare(self.db,
+            "SELECT * FROM users WHERE username = ?")
+        sqlite.bind(stmt, [username])
+        
+        eğer sqlite.step(stmt) ise yap
+            değişken user = yap
+                "id": sqlite.column_int(stmt, 0),
+                "username": sqlite.column_text(stmt, 1),
+                "email": sqlite.column_text(stmt, 2),
+                "password_hash": sqlite.column_text(stmt, 3),
+                "created_at": sqlite.column_int(stmt, 4)
+            son
+            sqlite.finalize(stmt)
+            dön Bazı(user)
+        son değilse yap
+            sqlite.finalize(stmt)
+            dön Hiç
+        son
+    son
+    
+    fonksiyon tüm_kullanıcılar() -> Dizi yap
+        dön sqlite.query(self.db, "SELECT id, username, email FROM users")
+    son
+    
+    fonksiyon kullanıcı_sil(id: tamsayı) -> bool yap
+        değişken stmt = sqlite.prepare(self.db, "DELETE FROM users WHERE id = ?")
+        sqlite.bind(stmt, [id])
+        değişken başarılı = sqlite.step(stmt)
+        sqlite.finalize(stmt)
+        dön başarılı
+    son
+son
+
+// Kullanım
+değişken user_db = UserDB.yeni("users.db")
+user_db.kullanıcı_ekle("berk_dev", "berk@example.com", "hash_buraya")
+
+değişken kullanıcı = user_db.kullanıcı_bul("berk_dev")
+eğer kullanıcı ise yap
+    yazdır("Kullanıcı bulundu: " + kullanıcı.değer()["email"])
+son</code></pre>
+</div>
+<div class="example-box">
+<h3>Transaction ile Batch Insert</h3>
+<pre><code>içe_aktar sqlite, csv
+
+fonksiyon csv_import(db: Database, csv_dosya: yazı, tablo: yazı) yap
+    değişken satırlar = csv.oku(csv_dosya)
+    
+    sqlite.begin(db)
+    
+    dene yap
+        değişken stmt = sqlite.prepare(db,
+            "INSERT INTO " + tablo + " VALUES (?, ?, ?)")
+        
+        her satır içinde satırlar için yap
+            sqlite.bind(stmt, satır)
+            sqlite.step(stmt)
+            sqlite.reset(stmt)
+        son
+        
+        sqlite.finalize(stmt)
+        sqlite.commit(db)
+        yazdır("Import başarılı: " + satırlar.uzunluk().yazıya() + " satır")
+    son yakala hata yap
+        sqlite.rollback(db)
+        yazdır("Import başarısız: " + hata.mesaj())
+    son
+son
+
+değişken db = sqlite.open("data.db")
+csv_import(db, "users.csv", "users")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

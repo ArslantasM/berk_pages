@@ -3975,20 +3975,113 @@ yazdır("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
 <hr />
 <p><strong>Hazır mısınız?</strong> Bir sonraki bölümde modülleri detaylı olarak inceleyelim!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="io---girişÇıkış"><a class="header" href="#io---girişÇıkış">io - Giriş/Çıkış</a></h1>
+<p><strong>Modül:</strong> <code>io.berk</code> (12 KB)<br />
+<strong>Kategori:</strong> Sistem / I/O<br />
+<strong>Fonksiyonlar:</strong> 64</p>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar io
+
+// Dosya okuma
+değişken içerik = io.dosya_oku("data.txt")
+yazdır(içerik)
+
+// Dosya yazma
+io.dosya_yaz("output.txt", "Merhaba BERK!")
+
+// Satır satır okuma
+değişken satırlar = io.satırları_oku("data.txt")
+için satır içinde satırlar yap
+    yazdır(satır)
+son
+</code></pre>
+
+<h2>📚 Fonksiyon Kategorileri</h2>
+<h3>Basit Dosya İşlemleri</h3>
+<p><code>dosya_oku()</code>, <code>dosya_yaz()</code>, <code>dosya_ekle()</code>, <code>satırları_oku()</code></p>
+
+<h3>Dosya Handle İşlemleri</h3>
+<p><code>aç()</code>, <code>kapat()</code>, <code>oku()</code>, <code>yaz()</code>, <code>flush()</code></p>
+
+<h3>Buffered I/O</h3>
+<p><code>buffered_reader()</code>, <code>buffered_writer()</code>, <code>satır_oku()</code>, <code>buffer_flush()</code></p>
+
+<h3>Console I/O</h3>
+<p><code>yazdır()</code>, <code>yazdır_satır()</code>, <code>hata_yazdır()</code>, <code>girdi_al()</code></p>
+
+<h3>Binary I/O</h3>
+<p><code>bayt_oku()</code>, <code>bayt_yaz()</code>, <code>seek()</code>, <code>tell()</code></p>
+
 <div style="break-before: page; page-break-before: always;"></div><h1 id="string---string-İşlemleri"><a class="header" href="#string---string-İşlemleri">string - String İşlemleri</a></h1>
+<p><strong>Modül:</strong> <code>string.berk</code><br />
+<strong>Fonksiyonlar:</strong> String manipülasyonu, arama, format, encoding</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>uzunluk()</code>, <code>büyük_harf()</code>, <code>küçük_harf()</code>, <code>trim()</code>, <code>split()</code>, <code>join()</code>, <code>replace()</code>, <code>contains()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="collections---koleksiyonlar"><a class="header" href="#collections---koleksiyonlar">collections - Koleksiyonlar</a></h1>
+<p><strong>Modül:</strong> <code>collections.berk</code><br />
+<strong>Fonksiyonlar:</strong> Veri yapıları (Vector, HashMap, HashSet, LinkedList)</p>
+<h3>Veri Yapıları</h3>
+<p><code>Vec</code>, <code>HashMap</code>, <code>HashSet</code>, <code>LinkedList</code>, <code>BTreeMap</code>, <code>Queue</code>, <code>Stack</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="result---hata-yönetimi"><a class="header" href="#result---hata-yönetimi">result - Hata Yönetimi</a></h1>
+<p><strong>Modül:</strong> <code>result.berk</code><br />
+<strong>Fonksiyonlar:</strong> Result&lt;T, E&gt; ve Option&lt;T&gt; tipleri</p>
+<h3>Temel Tipler</h3>
+<p><code>Result::Ok()</code>, <code>Result::Err()</code>, <code>Option::Some()</code>, <code>Option::None()</code>, <code>unwrap()</code>, <code>expect()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="time---zaman-İşlemleri"><a class="header" href="#time---zaman-İşlemleri">time - Zaman İşlemleri</a></h1>
+<p><strong>Modül:</strong> <code>time.berk</code><br />
+<strong>Fonksiyonlar:</strong> Tarih/saat işlemleri, timestamp, duration</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>şimdi()</code>, <code>timestamp()</code>, <code>sleep()</code>, <code>format()</code>, <code>parse()</code>, <code>diff()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fs---dosya-sistemi"><a class="header" href="#fs---dosya-sistemi">fs - Dosya Sistemi</a></h1>
+<p><strong>Modül:</strong> <code>fs.berk</code><br />
+<strong>Fonksiyonlar:</strong> Dosya/dizin operasyonları, metadata, permissions</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>exists()</code>, <code>create_dir()</code>, <code>remove()</code>, <code>copy()</code>, <code>move()</code>, <code>metadata()</code>, <code>list_dir()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="thread---Çoklu-İş-parçacığı"><a class="header" href="#thread---Çoklu-İş-parçacığı">thread - Çoklu İş Parçacığı</a></h1>
+<p><strong>Modül:</strong> <code>thread.berk</code><br />
+<strong>Fonksiyonlar:</strong> Thread oluşturma, senkronizasyon, mutex, channels</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>spawn()</code>, <code>join()</code>, <code>sleep()</code>, <code>Mutex</code>, <code>Channel</code>, <code>Arc</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sys---sistem-bilgisi"><a class="header" href="#sys---sistem-bilgisi">sys - Sistem Bilgisi</a></h1>
+<p><strong>Modül:</strong> <code>sys.berk</code><br />
+<strong>Fonksiyonlar:</strong> OS bilgisi, environment variables, process info</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>os()</code>, <code>arch()</code>, <code>env_get()</code>, <code>env_set()</code>, <code>pid()</code>, <code>exit()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="terminal---terminal-kontrolü"><a class="header" href="#terminal---terminal-kontrolü">terminal - Terminal Kontrolü</a></h1>
+<p><strong>Modül:</strong> <code>terminal.berk</code><br />
+<strong>Fonksiyonlar:</strong> Terminal renklendirme, cursor kontrolü, input</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>clear()</code>, <code>color()</code>, <code>cursor_pos()</code>, <code>size()</code>, <code>read_key()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="iter---İteratörler"><a class="header" href="#iter---İteratörler">iter - İteratörler</a></h1>
+<p><strong>Modül:</strong> <code>iter.berk</code><br />
+<strong>Fonksiyonlar:</strong> Iterator patterns, map, filter, reduce</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>map()</code>, <code>filter()</code>, <code>fold()</code>, <code>zip()</code>, <code>enumerate()</code>, <code>collect()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fmt---gelişmiş-formatlama"><a class="header" href="#fmt---gelişmiş-formatlama">fmt - Gelişmiş Formatlama</a></h1>
+<p><strong>Modül:</strong> <code>fmt.berk</code><br />
+<strong>Fonksiyonlar:</strong> String formatting, printf-style, templates</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>format()</code>, <code>sprintf()</code>, <code>pad()</code>, <code>align()</code>, <code>number_format()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="math---matematik"><a class="header" href="#math---matematik">math - Matematik</a></h1>
+<p><strong>Modül:</strong> <code>math.berk</code> (40.9 KB)<br />
+<strong>Fonksiyonlar:</strong> 143 (trigonometry, calculus, special functions)</p>
+<h3>Kategoriler</h3>
+<p><code>sin()</code>, <code>cos()</code>, <code>tan()</code>, <code>exp()</code>, <code>log()</code>, <code>sqrt()</code>, <code>pow()</code>, <code>factorial()</code>, <code>gcd()</code>, <code>lcm()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="physics---fizik"><a class="header" href="#physics---fizik">physics - Fizik</a></h1>
+<p><strong>Modül:</strong> <code>physics.berk</code> (28.5 KB)<br />
+<strong>Fonksiyonlar:</strong> Fizik sabitleri, birim dönüşümleri, kinematik</p>
+<h3>Temel Fonksiyonlar</h3>
+<p>Fizik sabitleri (c, G, h, k), birim dönüşümleri, kinematik hesaplamalar</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="complex---kompleks-sayılar"><a class="header" href="#complex---kompleks-sayılar">complex - Kompleks Sayılar</a></h1>
+<p><strong>Modül:</strong> <code>complex.berk</code> (14.5 KB)<br />
+<strong>Fonksiyonlar:</strong> Kompleks sayı aritmetiği, polar form, trigonometry</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>Complex</code> tipi, <code>add()</code>, <code>mul()</code>, <code>abs()</code>, <code>arg()</code>, <code>conjugate()</code>, <code>polar()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="random---rastgele-sayılar"><a class="header" href="#random---rastgele-sayılar">random - Rastgele Sayılar</a></h1>
+<p><strong>Modül:</strong> <code>random.berk</code> (32.5 KB)<br />
+<strong>Fonksiyonlar:</strong> PRNG, distributions (uniform, normal, exponential)</p>
+<h3>Temel Fonksiyonlar</h3>
+<p><code>rand()</code>, <code>seed()</code>, <code>uniform()</code>, <code>normal()</code>, <code>choice()</code>, <code>shuffle()</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="linalg---doğrusal-cebir"><a class="header" href="#linalg---doğrusal-cebir">linalg - Doğrusal Cebir</a></h1>
 <p><strong>Modül:</strong> <code>linalg.berk</code> (25.4 KB)<br />
 <strong>Kategori:</strong> Bilimsel Hesaplama<br />
@@ -4970,12 +5063,95 @@ değişken fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess,
 <hr />
 <p><strong>İleri okuma:</strong> <a href="stdlib/../examples/machine-learning.html">Makine Öğrenmesi örnekleri</a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="anahtar-kelimeler"><a class="header" href="#anahtar-kelimeler">Anahtar Kelimeler</a></h1>
+<p>BERK dilinde kullanılan anahtar kelimeler (Türkçe/İngilizce):</p>
+<h3>Kontrol Yapıları</h3>
+<p><code>eğer/if</code>, <code>değilse/else</code>, <code>iken/while</code>, <code>için/for</code>, <code>kır/break</code>, <code>devam/continue</code></p>
+<h3>Fonksiyonlar</h3>
+<p><code>fonksiyon/function</code>, <code>yap/do</code>, <code>son/end</code>, <code>dön/return</code></p>
+<h3>Değişkenler</h3>
+<p><code>değişken/var</code>, <code>sabit/const</code></p>
+<h3>Modüller</h3>
+<p><code>içe_aktar/import</code>, <code>kullan/use</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="operatör-Önceliği-1"><a class="header" href="#operatör-Önceliği-1">Operatör Önceliği</a></h1>
+<p>BERK operatörlerinin öncelik sıralaması (yüksekten düşüğe):</p>
+<ol>
+<li><strong>Parantez</strong>: <code>()</code>, <code>[]</code></li>
+<li><strong>Üst</strong>: <code>**</code></li>
+<li><strong>Tekli</strong>: <code>-</code>, <code>!</code></li>
+<li><strong>Çarpma/Bölme</strong>: <code>*</code>, <code>/</code>, <code>%</code></li>
+<li><strong>Toplama/Çıkarma</strong>: <code>+</code>, <code>-</code></li>
+<li><strong>Karşılaştırma</strong>: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></li>
+<li><strong>Eşitlik</strong>: <code>==</code>, <code>!=</code></li>
+<li><strong>Mantıksal AND</strong>: <code>&amp;&amp;</code></li>
+<li><strong>Mantıksal OR</strong>: <code>||</code></li>
+<li><strong>Atama</strong>: <code>=</code>, <code>+=</code>, <code>-=</code></li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="standart-kütüphane"><a class="header" href="#standart-kütüphane">Standart Kütüphane</a></h1>
+<p>BERK Standard Library: 75 modül (42 stdlib + 33 HAL), 4100+ fonksiyon</p>
+<h3>Temel Modüller</h3>
+<p><code>io</code>, <code>string</code>, <code>collections</code>, <code>result</code>, <code>time</code>, <code>fs</code>, <code>thread</code>, <code>sys</code></p>
+<h3>Bilimsel Hesaplama</h3>
+<p><code>math</code>, <code>physics</code>, <code>complex</code>, <code>random</code>, <code>linalg</code>, <code>statistics</code>, <code>plot</code></p>
+<h3>Ağ ve Veri</h3>
+<p><code>network</code>, <code>http</code>, <code>json</code>, <code>xml</code>, <code>csv</code>, <code>sqlite</code>, <code>crypto</code></p>
+<h3>Gömülü Sistemler (HAL)</h3>
+<p>33 HAL modülü (GPIO, SPI, I2C, UART, ADC, PWM, Timer...)</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hata-mesajları"><a class="header" href="#hata-mesajları">Hata Mesajları</a></h1>
+<p>BERK derleyicisinin ürettiği hata mesajları ve çözümleri:</p>
+<h3>Syntax Hataları</h3>
+<p><code>E001: Unexpected token</code> - Beklenmeyen sembol<br />
+<code>E002: Missing semicolon</code> - Noktalı virgül eksik</p>
+<h3>Tip Hataları</h3>
+<p><code>E101: Type mismatch</code> - Tip uyuşmazlığı<br />
+<code>E102: Undefined variable</code> - Tanımsız değişken</p>
+<h3>Bellek Hataları</h3>
+<p><code>E201: Null pointer</code> - Boş pointer erişimi<br />
+<code>E202: Out of bounds</code> - Dizi sınırı aşımı</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="geliştirme-ortamı-kurulumu"><a class="header" href="#geliştirme-ortamı-kurulumu">Geliştirme Ortamı Kurulumu</a></h1>
+<p>BERK geliştirme ortamı kurulum adımları:</p>
+<h3>Gereksinimler</h3>
+<ul>
+<li>Windows 10/11 (64-bit)</li>
+<li>LLVM 17.0.6+</li>
+<li>Visual Studio Build Tools (opsiyonel)</li>
+</ul>
+<h3>Kurulum</h3>
+<ol>
+<li>BERK-lang.exe dosyasını indirin</li>
+<li>PATH'e ekleyin: <code>setx PATH "%PATH%;C:\berk\bin"</code></li>
+<li>VS Code Extension'u yükleyin (v0.4.0)</li>
+<li><code>berk --version</code> komutuyla test edin</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="kod-katkısı-nasıl-yapılır"><a class="header" href="#kod-katkısı-nasıl-yapılır">Kod Katkısı Nasıl Yapılır</a></h1>
+<p>BERK projesine kod katkısı yapmak için:</p>
+<ol>
+<li><strong>Fork</strong>: GitHub'da repository'yi fork edin</li>
+<li><strong>Clone</strong>: <code>git clone https://github.com/YOUR_USERNAME/berk.git</code></li>
+<li><strong>Branch</strong>: <code>git checkout -b feature/my-feature</code></li>
+<li><strong>Code</strong>: Değişikliklerinizi yapın, test edin</li>
+<li><strong>Commit</strong>: <code>git commit -m "feat: add new feature"</code></li>
+<li><strong>Push</strong>: <code>git push origin feature/my-feature</code></li>
+<li><strong>Pull Request</strong>: GitHub'da PR açın</li>
+</ol>
+<h3>Kodlama Standartları</h3>
+<p>Rust kodları için <code>rustfmt</code> kullanın, testler ekleyin, dokümantasyon yazın.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="dokümantasyon-katkısı"><a class="header" href="#dokümantasyon-katkısı">Dokümantasyon Katkısı</a></h1>
+<p>Dokümantasyon geliştirmek için:</p>
+<h3>Yapı</h3>
+<ul>
+<li>mdBook formatında Markdown dosyaları</li>
+<li><code>berk-lang/book/src/</code> dizini</li>
+<li>Türkçe ve İngilizce sürümler</li>
+</ul>
+<h3>Kılavuz</h3>
+<ol>
+<li>Markdown dosyasını düzenleyin</li>
+<li><code>mdbook build</code> ile HTML oluşturun</li>
+<li>Değişiklikleri kontrol edin</li>
+<li>Pull request açın</li>
+</ol>
+<h3>Standartlar</h3>
+<p>Açık ve anlaşılır dil, örnekler ekleyin, kod bloklarini test edin.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sık-sorulan-sorular"><a class="header" href="#sık-sorulan-sorular">Sık Sorulan Sorular</a></h1>
 <h2 id="genel-sorular"><a class="header" href="#genel-sorular">Genel Sorular</a></h2>
 <h3 id="berk-nedir"><a class="header" href="#berk-nedir">BERK nedir?</a></h3>

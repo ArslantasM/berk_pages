@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>hal::pipe - Data Pipes | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔀 hal::pipe</h1>
+<p>Data Pipes & Stream Processing</p>
+<div style="margin-top:15px">
+<span class="stat-badge">369 satır</span>
+<span class="stat-badge">Streaming</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Data pipes, stream processing ve buffering.</p>
+
+<h2>🚀 Kullanım</h2>
+<pre><code>içe_aktar hal::pipe
+
+// Create pipe
+değişken pipe = pipe.create(1024)  // 1KB buffer
+
+// Write data
+pipe.write(pipe, [1, 2, 3, 4, 5])
+
+// Read data
+değişken data = pipe.read(pipe, 5)
+
+// Pipe status
+değişken available = pipe.available(pipe)
+değişken is_full = pipe.is_full(pipe)
+
+// Clear pipe
+pipe.clear(pipe)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a>
+</p>
+</main>
+</div>
+</body>
+</html>

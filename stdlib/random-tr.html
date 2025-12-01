@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>random - Rastgele Sayı Üretimi | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎲 random - Rastgele Sayı Üretimi</h1>
+<p>RNG, Distributions, Sampling, Shuffle</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">44</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">598</div><div>Satır</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">19 KB</div><div>Boyut</div></div>
+</div>
+</div>
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar random
+
+// Random integer [0, 100)
+değişken x = random.aralık(0, 100)
+
+// Random float [0.0, 1.0)
+değişken f = random.kesir()
+
+// Random boolean
+değişken b = random.bool()
+
+// Random choice
+değişken renkler = ["kırmızı", "yeşil", "mavi"]
+değişken seçilen = random.seç(renkler)
+
+// Shuffle
+değişken deste = [1, 2, 3, 4, 5]
+random.karıştır(deste)
+
+// Seed (reproducible)
+random.seed(42)
+yazdır(random.aralık(0, 100))  // Her zaman aynı sonuç
+
+// Distributions
+değişken normal = random.normal(0.0, 1.0)  // μ=0, σ=1
+değişken uniform = random.uniform(10.0, 20.0)
+değişken exponential = random.exponential(1.5)</code></pre>
+<h2>📚 RNG Algoritmaları</h2>
+<ul>
+<li><strong>PCG:</strong> Default RNG (fast, good quality)</li>
+<li><strong>Xorshift:</strong> Very fast</li>
+<li><strong>Mersenne Twister:</strong> High quality</li>
+<li><strong>ChaCha:</strong> Cryptographically secure</li>
+</ul>
+<h2>💡 Örnekler</h2>
+<div class="example-box">
+<h3>Monte Carlo Simülasyonu (Pi Tahmini)</h3>
+<pre><code>içe_aktar random, math
+
+fonksiyon pi_tahmini(numune_sayısı: tamsayı) -> kesir yap
+    değişken daire_içi = 0
+    
+    her i içinde aralık(0, numune_sayısı) için yap
+        değişken x = random.kesir()
+        değişken y = random.kesir()
+        
+        // Nokta birim daire içinde mi?
+        eğer (x*x + y*y) < 1.0 ise yap
+            daire_içi = daire_içi + 1
+        son
+    son
+    
+    // Pi ≈ 4 * (daire içi nokta sayısı / toplam nokta sayısı)
+    dön 4.0 * daire_içi.kesir() / numune_sayısı.kesir()
+son
+
+değişken tahmin = pi_tahmini(1000000)
+yazdır("Pi tahmini: " + tahmin.yazıya())
+yazdır("Gerçek Pi: " + math.PI.yazıya())
+yazdır("Hata: " + math.abs(tahmin - math.PI).yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>Weighted Random Selection</h3>
+<pre><code>içe_aktar random
+
+fonksiyon weighted_choice(items: Dizi, weights: Dizi) -> herhangi yap
+    // Kümülatif ağırlıklar
+    değişken total = 0.0
+    değişken cumulative = []
+    
+    her w içinde weights için yap
+        total = total + w
+        cumulative.ekle(total)
+    son
+    
+    // Random seçim
+    değişken r = random.kesir() * total
+    
+    her i içinde aralık(0, cumulative.uzunluk()) için yap
+        eğer r < cumulative[i] ise yap
+            dön items[i]
+        son
+    son
+    
+    dön items[items.uzunluk() - 1]
+son
+
+// Örnek: Loot sistemi (oyun)
+değişken loot = ["Common", "Uncommon", "Rare", "Epic", "Legendary"]
+değişken chances = [50.0, 30.0, 15.0, 4.0, 1.0]  // %
+
+değişken bulunan = yap son
+her i içinde aralık(0, 100) için yap
+    değişken item = weighted_choice(loot, chances)
+    
+    eğer bulunan.içerir_mi(item) ise yap
+        bulunan[item] = bulunan[item] + 1
+    son değilse yap
+        bulunan[item] = 1
+    son
+son
+
+her (item, count) içinde bulunan için yap
+    yazdır(item + ": " + count.yazıya() + " (" + (count.kesir()).yazıya() + "%)")
+son</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← Tüm Modüller</a>
+</p>
+</main>
+</div>
+</body>
+</html>

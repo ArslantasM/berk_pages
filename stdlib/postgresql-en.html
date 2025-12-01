@@ -1,0 +1,183 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>postgresql - PostgreSQL Database | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#336791 0%,#2e5d7e 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #336791;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🐘 postgresql</h1>
+<p>PostgreSQL Database Client - Production Ready</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~600 lines</span>
+<span class="stat-badge">~50 function</span>
+<span class="stat-badge">Wire Protocol</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>PostgreSQL modülü, wire protocol üzerinden tam özellikli PostgreSQL database client sağlar. Prepared statements, transactions, connection pooling and type-safe queries destekler.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Full SQL support (SELECT, INSERT, UPDATE, DELETE)</li>
+<li>Prepared statements with parameters</li>
+<li>Transactions (BEGIN, COMMIT, ROLLBACK)</li>
+<li>Connection pooling</li>
+<li>Type conversion (int, bigint, float, bool, text, bytea)</li>
+<li>NULL handling</li>
+<li>Result set iteration</li>
+<li>Async queries (planned)</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import postgresql olarakpg
+
+// Connect
+let conn = pg.connect("host=localhost dbname=mydb user=postgres password=pass")?
+
+// Query
+let result = conn.query("SELECT id, name, email FROM users WHERE active = $1", [true])?
+
+each row in result for do
+    let id = row.get_int("id")?
+    let name = row.get_string("name")?
+    io.println("{}: {}", id, name)
+end
+
+conn.close()</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: User Management System</h3>
+<pre><code>import postgresql olarakpg, crypto
+
+struct User do
+    id: int,
+    username: str,
+    email: str,
+    password_hash: str,
+    created_at: time.DateTime
+end
+
+function db_init() -> Result[pg.Connection, Error] do
+    let conn = pg.connect(
+        "host=localhost port=5432 dbname=users user=app password=secret"
+    )?
+    
+    // Create tables
+    conn.exec("
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(50) UNIQUE NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
+            password_hash VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ")?
+    
+    return Ok(conn)
+end
+
+function create_user(conn: pg.Connection, username: str, email: str, password: str) 
+    -> Result[int, Error] do
+    // Hash password
+    let hash = crypto.argon2_hash(password)?
+    
+    // Insert with prepared statement
+    let result = conn.query_one("
+        INSERT INTO users (username, email, password_hash)
+        VALUES ($1, $2, $3)
+        RETURNING id
+    ", [username, email, hash])?
+    
+    return result.get_int("id")
+end
+
+function get_user_by_username(conn: pg.Connection, username: str) 
+    -> Result[Optional[User], Error] do
+    let result = conn.query_one("
+        SELECT id, username, email, password_hash, created_at
+        FROM users WHERE username = $1
+    ", [username])
+    
+    match result do
+        Ok(row) => return Ok(Some(User do
+            id: row.get_int("id")?,
+            username: row.get_string("username")?,
+            email: row.get_string("email")?,
+            password_hash: row.get_string("password_hash")?,
+            created_at: row.get_timestamp("created_at")?
+        end)),
+        Error(_) => return Ok(None)
+    end
+end
+
+function authenticate(conn: pg.Connection, username: str, password: str) 
+    -> Result[bool, Error] do
+    let user = get_user_by_username(conn, username)?
+    
+    if user.is_none()  do
+        return Ok(false)
+    end
+    
+    let u = user.unwrap()
+    return Ok(crypto.argon2_verify(password, u.password_hash)?)
+end
+
+function main() do
+    let conn = db_init()?
+    
+    // Create user
+    let user_id = create_user(conn, "alice", "alice@example.com", "secret123")?
+    io.println("Created user: {}", user_id)
+    
+    // Authenticate
+    if authenticate(conn, "alice", "secret123")?  do
+        io.println("✓ Authentication successful")
+    else do
+        io.println("✗ Authentication failed")
+    end
+    
+    conn.close()
+end</code></pre>
+</div>
+
+<h2>💼 Transaction Management</h2>
+<pre><code>// Begin transaction
+conn.begin()?
+
+dene do
+    conn.exec("INSERT INTO accounts (user_id, balance) VALUES ($1, $2)", [1, 1000])?
+    conn.exec("INSERT INTO transactions (account_id, amount) VALUES ($1, $2)", [1, 100])?
+    conn.exec("UPDATE accounts SET balance = balance - $1 WHERE id = $2", [100, 1])?
+    
+    conn.commit()?
+    io.println("Transaction completed")
+yakala e do
+    conn.rollback()?
+    io.eprintln("Transaction failed: {}", e)
+end</code></pre>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code>sqlite</code> - SQLite database</li>
+<li><code>redis</code> - Redis cache</li>
+<li><code>crypto</code> - Password hashing</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+</body>
+</html>

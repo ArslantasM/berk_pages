@@ -30,6 +30,13 @@
 
         <!-- Custom theme stylesheets -->
 
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
 
         <!-- Provide site root and default themes to javascript -->
         <script>
@@ -181,7 +188,103 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="random---rastgele-sayılar"><a class="header" href="#random---rastgele-sayılar">random - Rastgele Sayılar</a></h1>
+                        <div class="module-header">
+            <h1>🎲 random - Rastgele Sayılar</h1>
+            <p>RNG, Distributions, Sampling</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">45</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">623</div><div>Satır</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">19 KB</div><div>Boyut</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Hızlı Başlangıç</h2>
+        <pre><code>içe_aktar random
+
+// Seed ayarla (reproducible results)
+random.seed(42)
+
+// Temel RNG
+değişken x = random.rand()  // [0, 1) arası
+değişken y = random.randint(1, 100)  // [1, 100] arası tamsayı
+değişken z = random.uniform(10.0, 20.0)  // [10, 20) arası
+
+// Dağılımlar
+değişken normal = random.normal(0.0, 1.0)  // μ=0, σ=1
+değişken exp = random.exponential(1.5)  // λ=1.5
+değişken gauss = random.gaussian(100.0, 15.0)  // IQ dağılımı
+
+// Diziden seçim
+değişken liste = ["elma", "armut", "kiraz", "üzüm"]
+değişken seçim = random.choice(liste)
+değişken örnek = random.sample(liste, 2)  // 2 elemanlı örnek</code></pre>
+
+        <h2>📚 Kategoriler</h2>
+        <ul>
+            <li><strong>Temel RNG:</strong> rand, randint, uniform</li>
+            <li><strong>Dağılımlar:</strong> normal, exponential, poisson, binomial</li>
+            <li><strong>Örnekleme:</strong> choice, sample, shuffle</li>
+            <li><strong>Seed:</strong> seed, get_state, set_state</li>
+        </ul>
+
+        <h2>💡 Örnekler</h2>
+
+        <div class="example-box">
+            <h3>Monte Carlo Pi Estimation</h3>
+            <pre><code>içe_aktar random
+
+fonksiyon estimate_pi(n: tamsayı) -> ondalık yap
+    değişken içerde = 0
+    
+    her i içinde aralık(0, n) için yap
+        değişken x = random.uniform(-1.0, 1.0)
+        değişken y = random.uniform(-1.0, 1.0)
+        
+        // Çemberin içinde mi?
+        eğer (x*x + y*y) <= 1.0 ise yap
+            içerde = içerde + 1
+        son
+    son
+    
+    // π ≈ 4 * (içerdekiler / toplam)
+    dön 4.0 * içerde.kesir() / n.kesir()
+son
+
+random.seed(42)
+değişken pi_tahmin = estimate_pi(1000000)
+yazdır("π tahmini: " + pi_tahmin.yazıya())  // ~3.141592</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Simulated Die Rolls</h3>
+            <pre><code>içe_aktar random, collections
+
+// 10000 kez zar at ve frekansları say
+değişken frekans = collections.HashMap_new()
+
+her i içinde aralık(0, 10000) için yap
+    değişken zar = random.randint(1, 6)
+    değişken mevcut = collections.HashMap_get(frekans, zar.yazıya())
+    
+    eğer mevcut == yok ise yap
+        collections.HashMap_set(frekans, zar.yazıya(), 1)
+    yoksa yap
+        collections.HashMap_set(frekans, zar.yazıya(), mevcut + 1)
+    son
+son
+
+// Sonuçları göster
+her (yüz, adet) içinde frekans için yap
+    değişken yüzde = (adet.kesir() / 10000.0) * 100.0
+    yazdır(yüz + ": " + adet.yazıya() + " (" + yüzde.yazıya() + "%)")
+son</code></pre>
+        </div>
+
+        <hr />
+        <p style="text-align: center; margin-top: 40px;">
+            <a href="complex.html">← complex</a> | 
+            <a href="linalg.html">linalg →</a>
+        </p>
 
                     </main>
 

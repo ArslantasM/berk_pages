@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>sys - System Information | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ sys</h1>
+<p>System Information & Control</p>
+<div style="margin-top:15px">
+<span class="stat-badge">82 functions</span>
+<span class="stat-badge">607 lines</span>
+<span class="stat-badge">Cross-platform</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>System information: OS details, CPU/memory/disk usage, environment variables, process control, system monitoring.</p>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import sys
+
+// System info
+println("OS: {}", sys.os_name())
+println("CPU: {}%", sys.cpu_usage())
+println("Memory: {} MB", sys.memory_usage())
+
+// Environment
+let home = sys.env("HOME")?
+sys.set_env("MY_VAR", "value")</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="index-en.html">← All Modules</a> | <a href="sys-tr.html">🇹🇷 Türkçe</a>
+</p>
+</main>
+</div>
+</body>
+</html>
