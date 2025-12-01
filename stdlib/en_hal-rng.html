@@ -1,0 +1,561 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>hal-rng - Random Number Generator - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-rng.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🎲 hal::rng</h1>
+<p>Hardware True Random Number Generator</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~380 satır</span>
+<span class="stat-badge">~14 fonksiyon</span>
+<span class="stat-badge">STM32F4/F7/H7</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>RNG modülü, hardware tabanlı gerçek rastgele sayı üretir. Analog noise source kullanarak kriptografik kalitede random değerler sağlar. IoT güvenliği, UUID generation, cryptographic key generation ve Monte Carlo simülasyonları için kritiktir.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li><strong>True Random:</strong> Pseudo-random değil, analog gürültü kaynağı</li>
+<li><strong>32-bit Output:</strong> Her okumada tam 32-bit random değer</li>
+<li><strong>FIPS 140-2 Compliant:</strong> Kriptografik standartlara uygun</li>
+<li><strong>Single Cycle:</strong> 40 CPU cycle'da yeni random değer</li>
+<li><strong>Clock Error Detection:</strong> Clock problemi tespit edilir</li>
+<li><strong>Seed Error Detection:</strong> Entropi hatası algılanır</li>
+<li><strong>Interrupt Support:</strong> Data ready interrupt</li>
+<li><strong>DMA Compatible:</strong> Continuous random stream</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::rng, hal::rcc
+
+// Enable RNG clock
+rcc.periph_clock_enable(rcc.PERIPH_RNG)
+
+// Initialize RNG
+rng.init()
+
+// Get random 32-bit value
+değişken rastgele = rng.get_random()
+io.yazdir_satır("Random: 0x" + rastgele.onaltılıya())
+
+// Random range [0, max)
+fonksiyon random_range(max: sayı) -> sayı yap
+    dön (rng.get_random() % max)
+son</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// RNG Flags
+enum Flag {
+    FLAG_DRDY,    // Data ready
+    FLAG_CECS,    // Clock error current status
+    FLAG_SECS     // Seed error current status
+}
+
+// RNG Interrupts
+enum Interrupt {
+    IT_CEI,       // Clock error interrupt
+    IT_SEI        // Seed error interrupt
+}
+
+yapı RNGConfig yap
+    clock_enable: mantık = doğru,
+    interrupt_enable: mantık = yanlış,
+    error_callback: fonksiyon(Flag) = boş
+son</code></pre>
+
+<h2>💡 Örnek 1: UUID Generation (RFC 4122)</h2>
+<div class="example-box">
+<h3>Problem: Unique identifier oluşturmak (IoT device ID)</h3>
+<pre><code>içe_aktar hal::rng
+
+yapı UUID yap
+    data: Dizi&lt;sayı8&gt; = Dizi.yeni(16)
+son
+
+fonksiyon uuid_v4_generate() -> UUID yap
+    değişken uuid = UUID yap son
+    
+    // Generate 128 bits (16 bytes) of random data
+    için i içinde 0..4 yap
+        değişken rand32 = rng.get_random()
+        
+        // Split into 4 bytes
+        uuid.data[i*4 + 0] = (rand32 >> 24) & 0xFF kayıt sayı8
+        uuid.data[i*4 + 1] = (rand32 >> 16) & 0xFF kayıt sayı8
+        uuid.data[i*4 + 2] = (rand32 >> 8) & 0xFF kayıt sayı8
+        uuid.data[i*4 + 3] = rand32 & 0xFF kayıt sayı8
+    son
+    
+    // Set version (4) and variant (RFC 4122)
+    uuid.data[6] = (uuid.data[6] & 0x0F) | 0x40  // Version 4
+    uuid.data[8] = (uuid.data[8] & 0x3F) | 0x80  // Variant RFC4122
+    
+    dön uuid
+son
+
+fonksiyon uuid_to_string(uuid: UUID) -> Metin yap
+    // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+    değişken hex = ""
+    için i içinde 0..16 yap
+        hex = hex + uuid.data[i].onaltılıya(2)
+        eğer (i == 3 veya i == 5 veya i == 7 veya i == 9) yap
+            hex = hex + "-"
+        son
+    son
+    dön hex
+son
+
+fonksiyon ana() yap
+    rng.init()
+    
+    için i içinde 0..5 yap
+        değişken uuid = uuid_v4_generate()
+        io.yazdir_satır("UUID: " + uuid_to_string(uuid))
+    son
+son</code></pre>
+<p><strong>Çıktı:</strong> UUID: 550e8400-e29b-41d4-a716-446655440000 (benzersiz her çalıştırmada)</p>
+</div>
+
+<h2>💡 Örnek 2: Cryptographic Key Generation</h2>
+<div class="example-box">
+<h3>Problem: AES-256 için 256-bit random key oluşturmak</h3>
+<pre><code>içe_aktar hal::rng, hal::crypto
+
+sabit AES256_KEY_SIZE: sayı = 32  // 256 bit = 32 bytes
+
+yapı CryptoKey yap
+    data: Dizi&lt;sayı8&gt;,
+    size: sayı
+son
+
+fonksiyon generate_aes256_key() -> CryptoKey yap
+    değişken key = CryptoKey yap
+        data: Dizi.yeni(AES256_KEY_SIZE),
+        size: AES256_KEY_SIZE
+    son
+    
+    // Generate 256 bits of cryptographic random data
+    için i içinde 0..8 yap  // 8 * 32 bits = 256 bits
+        değişken rand = rng.get_random()
+        
+        eğer rng.get_flag(rng.FLAG_CECS) veya rng.get_flag(rng.FLAG_SECS) yap
+            io.yazdir_satır("RNG ERROR: Clock or seed error!")
+            dön key  // Invalid key
+        son
+        
+        key.data[i*4 + 0] = (rand >> 24) & 0xFF kayıt sayı8
+        key.data[i*4 + 1] = (rand >> 16) & 0xFF kayıt sayı8
+        key.data[i*4 + 2] = (rand >> 8) & 0xFF kayıt sayı8
+        key.data[i*4 + 3] = rand & 0xFF kayıt sayı8
+    son
+    
+    dön key
+son
+
+fonksiyon key_to_hex(key: CryptoKey) -> Metin yap
+    değişken hex = ""
+    için byte içinde key.data yap
+        hex = hex + byte.onaltılıya(2)
+    son
+    dön hex
+son
+
+fonksiyon ana() yap
+    rng.init()
+    
+    io.yazdir_satır("Generating AES-256 key...")
+    değişken key = generate_aes256_key()
+    io.yazdir_satır("Key: " + key_to_hex(key))
+    
+    // Use key for AES encryption
+    crypto.aes_init(crypto.AES256, key.data)
+son</code></pre>
+<p><strong>Güvenlik:</strong> Hardware RNG kullanımı software PRNG'den çok daha güvenlidir.</p>
+</div>
+
+<h2>💡 Örnek 3: Random Number Distribution (Dice Roll)</h2>
+<div class="example-box">
+<h3>Problem: Uniform distribution ile dice roll simulation</h3>
+<pre><code>içe_aktar hal::rng
+
+// Random in range [min, max]
+fonksiyon random_range(min: sayı, max: sayı) -> sayı yap
+    değişken range = max - min + 1
+    değişken rand = rng.get_random()
+    
+    // Avoid modulo bias using rejection sampling
+    değişken limit = 0xFFFF_FFFF - (0xFFFF_FFFF % range)
+    
+    döngü yap
+        eğer rand < limit yap
+            dön min + (rand % range)
+        son
+        rand = rng.get_random()
+    son
+son
+
+fonksiyon dice_roll() -> sayı yap
+    dön random_range(1, 6)
+son
+
+fonksiyon test_distribution() yap
+    değişken histogram: Dizi&lt;sayı&gt; = Dizi.yeni(6, 0)
+    sabit ROLLS: sayı = 10000
+    
+    için i içinde 0..ROLLS yap
+        değişken roll = dice_roll()
+        histogram[roll - 1] = histogram[roll - 1] + 1
+    son
+    
+    io.yazdir_satır("Dice roll distribution (" + ROLLS.metne() + " rolls):")
+    için i içinde 0..6 yap
+        değişken face = i + 1
+        değişken count = histogram[i]
+        değişken percent = (count kayıt kesir / ROLLS kayıt kesir) * 100.0
+        
+        io.yazdir_satır("  [" + face.metne() + "]: " + count.metne() +
+                        " (" + percent.metne() + "%)")
+    son
+son
+
+fonksiyon ana() yap
+    rng.init()
+    test_distribution()
+son</code></pre>
+<p><strong>Sonuç:</strong> Uniform distribution ~16.67% her yüz için (ideal: 16.666...%).</p>
+</div>
+
+<h2>📚 API Referansı</h2>
+<h3>Temel Fonksiyonlar</h3>
+<pre><code>// RNG initialization and control
+fonksiyon init()
+fonksiyon deinit()
+fonksiyon enable()
+fonksiyon disable()
+
+// Random number generation
+fonksiyon get_random() -> sayı              // Blocking read
+fonksiyon get_random_async() -> Seçenek&lt;sayı&gt;  // Non-blocking
+
+// Status and error checking
+fonksiyon is_ready() -> mantık
+fonksiyon get_flag(flag: Flag) -> mantık
+fonksiyon clear_flag(flag: Flag)
+
+// Interrupt handling
+fonksiyon interrupt_enable(it: Interrupt)
+fonksiyon interrupt_disable(it: Interrupt)</code></pre>
+
+<div class="warning">
+<strong>⚠️ Önemli Notlar:</strong>
+<ul>
+<li><strong>Clock Required:</strong> RNG için 48 MHz clock gerekli (PLL'den)</li>
+<li><strong>Error Handling:</strong> CECS/SECS flagleri kontrol edilmeli</li>
+<li><strong>First Read:</strong> İlk random değer için ~40 cycle bekleme</li>
+<li><strong>Modulo Bias:</strong> Range işlemlerinde rejection sampling kullan</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Desteği</h2>
+<table>
+<tr>
+<th>Platform</th>
+<th>RNG Support</th>
+<th>Clock Source</th>
+<th>Performance</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>❌ Yok</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>40 cycles</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>40 cycles</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ Var</td>
+<td>PLL 48 MHz</td>
+<td>32 cycles</td>
+</tr>
+<tr>
+<td>STM32L4</td>
+<td>✅ Var</td>
+<td>MSI/HSI48</td>
+<td>40 cycles</td>
+</tr>
+</table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>Error check:</strong> CECS/SECS flaglerini kontrol et</li>
+<li>✅ <strong>Seeding:</strong> PRNG seed için RNG kullan</li>
+<li>✅ <strong>Key generation:</strong> Crypto keyler için RNG şart</li>
+<li>✅ <strong>Rejection sampling:</strong> Modulo bias'tan kaçın</li>
+<li>❌ <strong>Predictable değil:</strong> RNG debug'da bile predictable değil</li>
+<li>❌ <strong>Clock dependency:</strong> 48 MHz clock olmadan çalışmaz</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-crypto-tr.html">hal::crypto</a> - AES/DES encryption with random keys</li>
+<li><a href="hal-clock-tr.html">hal::clock</a> - 48 MHz clock configuration</li>
+<li><a href="stdlib/math-tr.html">math</a> - Statistical distribution functions</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-rng-en.html">🌐 English</a>
+</p>
+</main>
+</div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hal-rtc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hal-crc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hal-rtc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hal-crc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

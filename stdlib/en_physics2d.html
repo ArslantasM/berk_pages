@@ -1,0 +1,592 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>physics2d - 2D Fizik Motoru - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/physics2d.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+
+                                            <main>
+
+                                                <div class="module-header">
+            <h1>⚙️ physics2d - 2D Fizik Motoru</h1>
+            <p>Gerçekçi 2D fizik simülasyonu, çarpışma tespiti ve dinamik nesneler</p>
+            <div class="module-stats">
+                <span class="stat-badge">📦 192 Fonksiyon</span>
+                <span class="stat-badge">📝 3317 Satır</span>
+                <span class="stat-badge">💾 109.7 KB</span>
+            </div>
+        </div>
+
+        <h2>📋 Genel Bakış</h2>
+        <p><code>physics2d</code> modülü, oyunlar ve simülasyonlar için tam özellikli 2D fizik motoru sağlar. Rijit cisim dinamiği, çarpışma tespiti, kuvvetler, tork ve eklemler içerir.</p>
+
+        <div class="function-group">
+            <h3>🌍 Fizik Dünyası</h3>
+            <ul>
+                <li><strong>physics2d.Dünya()</strong> - Fizik dünyası oluşturma</li>
+                <li><strong>physics2d.yerçekimi_ayarla()</strong> - Yerçekimi vektörü</li>
+                <li><strong>physics2d.güncelle()</strong> - Fizik simülasyonu adımı</li>
+                <li><strong>physics2d.zaman_adımı()</strong> - Delta time ayarlama</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>📦 Rijit Cisimler</h3>
+            <ul>
+                <li><strong>physics2d.RijitCisim()</strong> - Dinamik nesne oluşturma</li>
+                <li><strong>physics2d.StatikCisim()</strong> - Sabit nesne (zemin, duvar)</li>
+                <li><strong>physics2d.kütle_ayarla()</strong> - Kütle ve eylemsizlik</li>
+                <li><strong>physics2d.hız_ayarla()</strong> - Doğrusal hız</li>
+                <li><strong>physics2d.açısal_hız_ayarla()</strong> - Dönüş hızı</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔷 Şekiller ve Çarpışma</h3>
+            <ul>
+                <li><strong>physics2d.Kutu()</strong> - Dikdörtgen şekil</li>
+                <li><strong>physics2d.Daire()</strong> - Dairesel şekil</li>
+                <li><strong>physics2d.Çokgen()</strong> - Özel çokgen</li>
+                <li><strong>physics2d.çarpışma_filtresi()</strong> - Katman bazlı çarpışma</li>
+                <li><strong>physics2d.sürtünme()</strong> - Sürtünme katsayısı</li>
+                <li><strong>physics2d.elastikiyet()</strong> - Zıplama katsayısı</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>💪 Kuvvetler ve Tork</h3>
+            <ul>
+                <li><strong>physics2d.kuvvet_uygula()</strong> - Merkez kuvvet</li>
+                <li><strong>physics2d.impuls_uygula()</strong> - Anlık ivme</li>
+                <li><strong>physics2d.tork_uygula()</strong> - Dönme kuvveti</li>
+                <li><strong>physics2d.hız_sönümleme()</strong> - Hava direnci</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔗 Eklemler (Joints)</h3>
+            <ul>
+                <li><strong>physics2d.MenteşeEklemi()</strong> - Döner eklem</li>
+                <li><strong>physics2d.UzaklıkEklemi()</strong> - Sabit mesafe</li>
+                <li><strong>physics2d.PistonEklemi()</strong> - Sürgülü eklem</li>
+                <li><strong>physics2d.YayEklemi()</strong> - Esnek bağlantı</li>
+            </ul>
+        </div>
+
+        <h2>💡 Kullanım Örnekleri</h2>
+
+        <div class="example-box">
+            <h3>Basit Fizik Simülasyonu</h3>
+            <pre><code class="language-berk">kullan physics2d
+kullan graphics
+
+// Fizik dünyası oluştur
+değer dünya = physics2d.Dünya()
+dünya.yerçekimi_ayarla(0.0, -9.81)  // 9.81 m/s² aşağı
+
+// Zemin oluştur (statik)
+değer zemin = physics2d.StatikCisim()
+zemin.şekil_ekle(physics2d.Kutu(genişlik: 20.0, yükseklik: 0.5))
+zemin.konum_ayarla(0.0, -5.0)
+dünya.cisim_ekle(zemin)
+
+// Düşen kutu oluştur (dinamik)
+değer kutu = physics2d.RijitCisim()
+kutu.kütle_ayarla(1.0)
+kutu.şekil_ekle(physics2d.Kutu(genişlik: 1.0, yükseklik: 1.0))
+kutu.konum_ayarla(0.0, 5.0)
+kutu.elastikiyet_ayarla(0.5)  // Yarı elastik
+dünya.cisim_ekle(kutu)
+
+// Simülasyon döngüsü
+değer canvas = graphics.Canvas(800, 600)
+değer fps = 60.0
+değer zaman_adımı = 1.0 / fps
+
+için kare içinde 0..300 {
+    // Fizik güncelle
+    dünya.güncelle(zaman_adımı)
+    
+    // Çiz
+    canvas.arkaplan_ayarla(color.BEYAZ)
+    
+    // Zemin çiz
+    canvas.dolgu_ayarla(color.SİYAH)
+    canvas.dikdörtgen(300, 500, 400, 10, dolgu: doğru)
+    
+    // Kutu çiz
+    değer kutu_konum = kutu.konum()
+    değer kutu_açı = kutu.açı()
+    
+    canvas.kaydet()
+    canvas.çevir(kutu_konum.x * 20 + 400, -kutu_konum.y * 20 + 300)
+    canvas.döndür(kutu_açı)
+    canvas.dolgu_ayarla(color.KIRMIZI)
+    canvas.dikdörtgen(-10, -10, 20, 20, dolgu: doğru)
+    canvas.geri_yükle()
+    
+    canvas.png_olarak_kaydet(f"fizik_{kare:04}.png")
+}
+
+yazdır("✓ Simülasyon tamamlandı!")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Angry Birds Tarzı Oyun</h3>
+            <pre><code class="language-berk">kullan physics2d
+kullan math
+
+sınıf AngryBirdsOyun {
+    değer dünya: physics2d.Dünya
+    değer kuşlar: Liste&lt;physics2d.RijitCisim&gt;
+    değer kutular: Liste&lt;physics2d.RijitCisim&gt;
+    
+    fonksiyon yeni() -> AngryBirdsOyun {
+        değer dünya = physics2d.Dünya()
+        dünya.yerçekimi_ayarla(0.0, -9.81)
+        
+        dön AngryBirdsOyun {
+            dünya: dünya,
+            kuşlar: [],
+            kutular: []
+        }
+    }
+    
+    fonksiyon zemin_oluştur() {
+        değer zemin = physics2d.StatikCisim()
+        zemin.şekil_ekle(physics2d.Kutu(genişlik: 50.0, yükseklik: 1.0))
+        zemin.konum_ayarla(0.0, -10.0)
+        bu.dünya.cisim_ekle(zemin)
+    }
+    
+    fonksiyon kule_inşa_et(x: Gerçek, y: Gerçek) {
+        // 3 katlı kutu kulesi
+        için kat içinde 0..3 {
+            için sütun içinde 0..3 {
+                değer kutu = physics2d.RijitCisim()
+                kutu.kütle_ayarla(0.5)
+                kutu.şekil_ekle(physics2d.Kutu(genişlik: 1.0, yükseklik: 1.0))
+                kutu.konum_ayarla(
+                    x + sütun.gerçek() * 1.1,
+                    y + kat.gerçek() * 1.1
+                )
+                kutu.sürtünme_ayarla(0.7)
+                kutu.elastikiyet_ayarla(0.1)
+                
+                bu.dünya.cisim_ekle(kutu)
+                bu.kutular.ekle(kutu)
+            }
+        }
+    }
+    
+    fonksiyon kuş_fırlat(hız_x: Gerçek, hız_y: Gerçek) {
+        değer kuş = physics2d.RijitCisim()
+        kuş.kütle_ayarla(2.0)
+        kuş.şekil_ekle(physics2d.Daire(yarıçap: 0.5))
+        kuş.konum_ayarla(-15.0, 0.0)
+        kuş.hız_ayarla(hız_x, hız_y)
+        kuş.elastikiyet_ayarla(0.8)
+        
+        bu.dünya.cisim_ekle(kuş)
+        bu.kuşlar.ekle(kuş)
+        
+        yazdır(f"🐦 Kuş fırlatıldı! Hız: ({hız_x:.1f}, {hız_y:.1f})")
+    }
+    
+    fonksiyon güncelle(delta_zaman: Gerçek) {
+        bu.dünya.güncelle(delta_zaman)
+    }
+    
+    fonksiyon yıkılma_kontrol() -> Tam {
+        değer yıkılan = 0
+        için kutu içinde bu.kutular {
+            değer konum = kutu.konum()
+            eğer konum.y < -5.0 {
+                yıkılan += 1
+            }
+        }
+        dön yıkılan
+    }
+}
+
+// Oyunu başlat
+değer oyun = AngryBirdsOyun.yeni()
+oyun.zemin_oluştur()
+oyun.kule_inşa_et(10.0, 0.0)
+
+// Kuş fırlat (45 derece açıyla)
+değer hız = 20.0
+değer açı = math.radyan(45.0)
+oyun.kuş_fırlat(hız * math.cos(açı), hız * math.sin(açı))
+
+// Simülasyon
+için i içinde 0..300 {
+    oyun.güncelle(1.0 / 60.0)
+    
+    eğer i % 60 == 0 {
+        değer yıkılan = oyun.yıkılma_kontrol()
+        yazdır(f"⏱️  {i / 60}s - Yıkılan kutu: {yıkılan}")
+    }
+}
+
+değer toplam_yıkılan = oyun.yıkılma_kontrol()
+yazdır(f"\n🎯 Sonuç: {toplam_yıkılan} kutu yıkıldı!")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Araba Simülasyonu</h3>
+            <pre><code class="language-berk">kullan physics2d
+
+sınıf Araba {
+    değer gövde: physics2d.RijitCisim
+    değer tekerlekler: Liste&lt;physics2d.RijitCisim&gt;
+    değer motor_gücü: Gerçek = 100.0
+    
+    fonksiyon yeni(dünya: physics2d.Dünya, x: Gerçek, y: Gerçek) -> Araba {
+        // Araba gövdesi
+        değer gövde = physics2d.RijitCisim()
+        gövde.kütle_ayarla(10.0)
+        gövde.şekil_ekle(physics2d.Kutu(genişlik: 3.0, yükseklik: 1.0))
+        gövde.konum_ayarla(x, y)
+        dünya.cisim_ekle(gövde)
+        
+        // Tekerlekler
+        değer tekerlekler = []
+        
+        için (i, offset_x) içinde [(-1.2, "sol"), (1.2, "sağ")].numaralandır() {
+            değer tekerlek = physics2d.RijitCisim()
+            tekerlek.kütle_ayarla(1.0)
+            tekerlek.şekil_ekle(physics2d.Daire(yarıçap: 0.4))
+            tekerlek.konum_ayarla(x + offset_x, y - 0.6)
+            tekerlek.sürtünme_ayarla(2.0)  // Yüksek sürtünme
+            dünya.cisim_ekle(tekerlek)
+            
+            // Menteşe eklemi ile bağla
+            değer eklem = physics2d.MenteşeEklemi(
+                gövde,
+                tekerlek,
+                bağlantı_noktası: (offset_x, -0.6)
+            )
+            eklem.motor_aktif(doğru)
+            dünya.eklem_ekle(eklem)
+            
+            tekerlekler.ekle(tekerlek)
+        }
+        
+        dön Araba {
+            gövde: gövde,
+            tekerlekler: tekerlekler,
+            motor_gücü: 100.0
+        }
+    }
+    
+    fonksiyon gaz_ver() {
+        için tekerlek içinde bu.tekerlekler {
+            tekerlek.tork_uygula(bu.motor_gücü)
+        }
+    }
+    
+    fonksiyon fren() {
+        için tekerlek içinde bu.tekerlekler {
+            değer hız = tekerlek.açısal_hız()
+            tekerlek.tork_uygula(-hız * 50.0)
+        }
+    }
+    
+    fonksiyon konum() -> (Gerçek, Gerçek) {
+        değer konum = bu.gövde.konum()
+        dön (konum.x, konum.y)
+    }
+}
+
+// Simülasyon
+değer dünya = physics2d.Dünya()
+dünya.yerçekimi_ayarla(0.0, -9.81)
+
+// Tepeli yol oluştur
+değer zemin = physics2d.StatikCisim()
+zemin.şekil_ekle(physics2d.Kutu(genişlik: 100.0, yükseklik: 1.0))
+zemin.konum_ayarla(0.0, -5.0)
+dünya.cisim_ekle(zemin)
+
+// Tepe
+değer tepe = physics2d.StatikCisim()
+tepe.şekil_ekle(physics2d.Kutu(genişlik: 10.0, yükseklik: 3.0))
+tepe.konum_ayarla(20.0, -2.5)
+tepe.açı_ayarla(math.radyan(15.0))
+dünya.cisim_ekle(tepe)
+
+// Araba oluştur
+değer araba = Araba.yeni(dünya, -30.0, 0.0)
+
+yazdır("🚗 Araba simülasyonu başladı")
+
+için i içinde 0..500 {
+    // İlk 3 saniye gaz ver
+    eğer i < 180 {
+        araba.gaz_ver()
+    }
+    
+    dünya.güncelle(1.0 / 60.0)
+    
+    eğer i % 60 == 0 {
+        değer (x, y) = araba.konum()
+        yazdır(f"⏱️  {i / 60}s - Konum: ({x:.1f}, {y:.1f})")
+    }
+}
+
+yazdır("✓ Simülasyon tamamlandı")</code></pre>
+        </div>
+
+        <h2>🎯 İyi Uygulamalar</h2>
+        <ul>
+            <li>Sabit zaman adımı kullanın (örn: 1/60 saniye)</li>
+            <li>Çarpışma katmanları ile performansı optimize edin</li>
+            <li>Çok hızlı nesneler için sürekli çarpışma tespiti aktifleştirin</li>
+            <li>Uygun sürtünme ve elastikiyet değerleri kullanın</li>
+            <li>Çok karmaşık şekiller yerine basit şekiller birleştirin</li>
+            <li>Fizik ve render döngülerini ayırın</li>
+        </ul>
+
+        <h2>🔗 İlgili Modüller</h2>
+        <ul>
+            <li><a href="graphics.html">graphics</a> - 2D çizim</li>
+            <li><a href="math.html">math</a> - Matematik fonksiyonları</li>
+            <li><a href="gui.html">gui</a> - Kullanıcı arayüzü</li>
+        </ul>
+    </div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/physics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/cad3d.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/physics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/cad3d.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,617 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>hal-flash - Flash Memory - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-flash.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>💾 hal::flash</h1>
+<p>Flash Memory Programming - Program Storage and Data Persistence</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~340 satır</span>
+<span class="stat-badge">~15 fonksiyon</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 Genel Bakış</h2>
+<p>Flash memory modülü, mikrokontrolcünün dahili flash belleğine program kodu yazma, okuma ve silme işlemlerini sağlar. Kalıcı veri saklama, firmware güncelleme (OTA), konfigürasyon ayarları ve EEPROM emülasyonu için kullanılır.</p>
+
+<h2>🔑 Temel Özellikler</h2>
+<ul>
+<li>Program memory read/write/erase</li>
+<li>Page/sector based erase operations</li>
+<li>Mass erase support</li>
+<li>Write protection mechanisms</li>
+<li>Option bytes programming</li>
+<li>Dual-bank flash (F4/F7)</li>
+<li>ECC error detection</li>
+<li>Flash memory locking</li>
+</ul>
+
+<h2>🚀 Hızlı Başlangıç</h2>
+<pre><code>içe_aktar hal::flash
+
+// Unlock flash for writing
+flash.unlock()
+
+// Erase a page
+flash.erase_page(0x0801F800)  // Last page
+
+// Write data
+değişken data = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+flash.write(0x0801F800, data)
+
+// Lock flash
+flash.lock()
+
+// Read back
+değişken value = flash.read_word(0x0801F800)
+io.println("Okunan değer: 0x" + value.to_hex())</code></pre>
+
+<h2>📦 Tipler ve Enum'lar</h2>
+<pre><code>// Flash Latency
+enum Latency {
+    WS0,  // 0 wait state
+    WS1,  // 1 wait state
+    WS2,  // 2 wait states
+    WS3,  // 3 wait states
+    WS4,  // 4 wait states
+    WS5   // 5 wait states
+}
+
+// Flash Bank
+enum Bank {
+    BANK_1,
+    BANK_2
+}
+
+// Sector Size (STM32F4)
+enum SectorSize {
+    SECTOR_16K,
+    SECTOR_64K,
+    SECTOR_128K
+}
+
+yapı FlashInfo yap
+    total_size: sayı,      // Bytes
+    page_size: sayı,       // Bytes
+    num_pages: sayı,
+    write_alignment: sayı  // 1, 2, 4, 8 bytes
+son</code></pre>
+
+<h2>💡 Örnek 1: EEPROM Emulation</h2>
+<div class="example-box">
+<h3>Flash'ta key-value storage sistemi</h3>
+<pre><code>içe_aktar hal::flash
+
+sabit EEPROM_START = 0x0801F000  // Son 4KB
+sabit EEPROM_END = 0x08020000
+sabit MAGIC_HEADER = 0xDEADBEEF
+
+yapı EEPROMEntry yap
+    key: sayı,
+    value: sayı,
+    checksum: sayı
+son
+
+fonksiyon eeprom_write(key: sayı, value: sayı) yap
+    flash.unlock()
+    
+    // Boş slot bul
+    değişken addr = EEPROM_START
+    döngü addr < EEPROM_END için yap
+        değişken magic = flash.read_word(addr)
+        eğer magic == 0xFFFFFFFF ise yap
+            // Boş slot bulundu
+            flash.write_word(addr, MAGIC_HEADER)
+            flash.write_word(addr + 4, key)
+            flash.write_word(addr + 8, value)
+            flash.write_word(addr + 12, key ^ value)  // Checksum
+            
+            çık
+        son
+        addr += 16  // Entry size
+    son
+    
+    flash.lock()
+son
+
+fonksiyon eeprom_read(key: sayı) -> Seçenek[sayı] yap
+    değişken addr = EEPROM_START
+    döngü addr < EEPROM_END için yap
+        değişken magic = flash.read_word(addr)
+        eğer magic == MAGIC_HEADER ise yap
+            değişken stored_key = flash.read_word(addr + 4)
+            eğer stored_key == key ise yap
+                değişken value = flash.read_word(addr + 8)
+                değişken checksum = flash.read_word(addr + 12)
+                
+                // Verify checksum
+                eğer checksum == (key ^ value) ise yap
+                    dön Bazı(value)
+                son
+            son
+        son
+        addr += 16
+    son
+    
+    dön Hiçbiri
+son
+
+fonksiyon eeprom_format() yap
+    flash.unlock()
+    flash.erase_page(EEPROM_START)
+    flash.lock()
+    
+    io.println("EEPROM formatted")
+son
+
+fonksiyon ana() yap
+    // Write configuration
+    eeprom_write(1, 12345)  // key=1, value=12345
+    eeprom_write(2, 67890)
+    
+    // Read back
+    eğer değişken val = eeprom_read(1) ise yap
+        io.println("Key 1: " + val.yazıya())
+    son
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 2: Firmware Update (Bootloader)</h2>
+<div class="example-box">
+<h3>OTA firmware güncelleme</h3>
+<pre><code>içe_aktar hal::flash, hal::crc
+
+sabit APP_START = 0x08010000  // Application start
+sabit APP_SIZE = 0x00030000   // 192 KB
+sabit UPDATE_START = 0x08040000  // Update area
+
+yapı FirmwareHeader yap
+    magic: sayı,        // 0x42455247 (BERK)
+    version: sayı,
+    size: sayı,
+    crc32: sayı
+son
+
+fonksiyon firmware_validate(addr: sayı) -> mantık yap
+    // Read header
+    değişken header = flash.read_struct::<FirmwareHeader>(addr)
+    
+    eğer header.magic != 0x42455247 ise yap
+        dön yanlış
+    son
+    
+    // Calculate CRC
+    değişken calculated_crc = crc.calculate(
+        addr + sizeofreşitli, 
+        header.size
+    )
+    
+    dön calculated_crc == header.crc32
+son
+
+fonksiyon firmware_copy(src: sayı, dest: sayı, size: sayı) yap
+    flash.unlock()
+    
+    // Erase destination
+    değişken pages = (size + 2047) / 2048
+    için i içinde 0..pages için yap
+        flash.erase_page(dest + i * 2048)
+    son
+    
+    // Copy data
+    değişken offset = 0
+    döngü offset < size için yap
+        değişken data = flash.read_word(src + offset)
+        flash.write_word(dest + offset, data)
+        offset += 4
+    son
+    
+    flash.lock()
+son
+
+fonksiyon bootloader_ana() yap
+    io.println("Bootloader başlatılıyor...")
+    
+    // Check for update
+    eğer firmware_validate(UPDATE_START) ise yap
+        io.println("Yeni firmware bulundu, güncelleniyor...")
+        
+        değişken header = flash.read_struct::<FirmwareHeader>(UPDATE_START)
+        
+        // Copy new firmware to application area
+        firmware_copy(
+            UPDATE_START,
+            APP_START,
+            header.size
+        )
+        
+        // Verify
+        eğer firmware_validate(APP_START) ise yap
+            io.println("Güncelleme başarılı!")
+            
+            // Clear update area
+            flash.unlock()
+            flash.erase_sector(UPDATE_START)
+            flash.lock()
+        yoksa yap
+            io.println("Güncelleme başarısız!")
+            dön
+        son
+    son
+    
+    // Jump to application
+    io.println("Uygulamaya atlanıyor...")
+    jump_to_application(APP_START)
+son
+
+fonksiyon jump_to_application(addr: sayı) yap
+    // Read stack pointer and reset vector
+    değişken sp = flash.read_word(addr)
+    değişken reset_handler = flash.read_word(addr + 4)
+    
+    // Disable interrupts
+    asm!("cpsid i")
+    
+    // Set stack pointer
+    asm!("msr msp, {}", in(reg) sp)
+    
+    // Jump to reset handler
+    değişken jump: fonksiyon() = transmute(reset_handler)
+    jump()
+son</code></pre>
+</div>
+
+<h2>💡 Örnek 3: Option Bytes Programming</h2>
+<div class="example-box">
+<h3>Read protection ve write protection ayarları</h3>
+<pre><code>içe_aktar hal::flash
+
+enum ReadProtection {
+    LEVEL_0,  // No protection
+    LEVEL_1,  // Memory read protection
+    LEVEL_2   // Permanent protection (irreversible!)
+}
+
+fonksiyon set_read_protection(level: ReadProtection) yap
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    eğer level == ReadProtection.LEVEL_1 ise yap
+        flash.set_option_byte(flash.OB_RDP, 0x00)
+        io.println("UYARI: Read protection Level 1 etkinleştirildi")
+    yoksa eğer level == ReadProtection.LEVEL_2 ise yap
+        io.println("UYARI: Level 2 GERİ ALINAMAZ! Devam edilsin mi? (y/n)")
+        // Level 2 is permanent - chip cannot be debugged anymore!
+    son
+    
+    flash.lock_option_bytes()
+    flash.lock()
+son
+
+fonksiyon protect_bootloader() yap
+    // Protect first 16KB (bootloader area)
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    flash.set_write_protection(yap
+        sectors: [flash.SECTOR_0, flash.SECTOR_1],
+        enable: doğru
+    son)
+    
+    flash.lock_option_bytes()
+    flash.lock()
+    
+    io.println("Bootloader koruması etkinleştirildi")
+son</code></pre>
+</div>
+
+<h2>📊 API Referansı</h2>
+
+<h3>Lock/Unlock</h3>
+<pre><code>fonksiyon unlock()
+fonksiyon lock()
+fonksiyon is_locked() -> mantık</code></pre>
+
+<h3>Erase Operations</h3>
+<pre><code>fonksiyon erase_page(address: sayı)
+fonksiyon erase_sector(sector: sayı)
+fonksiyon mass_erase()
+fonksiyon mass_erase_bank(bank: Bank)</code></pre>
+
+<h3>Write Operations</h3>
+<pre><code>fonksiyon write_byte(address: sayı, data: u8)
+fonksiyon write_halfword(address: sayı, data: u16)
+fonksiyon write_word(address: sayı, data: u32)
+fonksiyon write_doubleword(address: sayı, data: u64)
+fonksiyon write(address: sayı, data: Dizi[u32])</code></pre>
+
+<h3>Read Operations</h3>
+<pre><code>fonksiyon read_byte(address: sayı) -> u8
+fonksiyon read_halfword(address: sayı) -> u16
+fonksiyon read_word(address: sayı) -> u32
+fonksiyon read(address: sayı, length: sayı) -> Dizi[u8]</code></pre>
+
+<h3>Option Bytes</h3>
+<pre><code>fonksiyon unlock_option_bytes()
+fonksiyon lock_option_bytes()
+fonksiyon set_option_byte(option: sayı, value: sayı)
+fonksiyon get_option_byte(option: sayı) -> sayı</code></pre>
+
+<h2>⚙️ Platform Desteği</h2>
+<table>
+<tr><th>Platform</th><th>Flash Size</th><th>Page Size</th><th>Write Align</th></tr>
+<tr><td>STM32F1</td><td>64-512 KB</td><td>1-2 KB</td><td>2 bytes</td></tr>
+<tr><td>STM32F4</td><td>512 KB-2 MB</td><td>16-128 KB</td><td>4 bytes</td></tr>
+<tr><td>STM32F7</td><td>1-2 MB</td><td>32-256 KB</td><td>4 bytes</td></tr>
+<tr><td>GD32VF103</td><td>64-128 KB</td><td>1 KB</td><td>4 bytes</td></tr>
+</table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Write alignment:</strong> Data her zaman belirtilen alignment'a uygun olmalı</li>
+<li><strong>Erase before write:</strong> Flash sadece 1 → 0 yazabilir, önce erase (0xFF) gerekli</li>
+<li><strong>Wear leveling:</strong> Aynı sayfaya çok sık yazma yapılmamalı (100K cycle limit)</li>
+<li><strong>Power loss:</strong> Yazma sırasında güç kaybında data corruption olabilir</li>
+<li><strong>Interrupts:</strong> Flash programming sırasında interrupt'ları dikkatli kullanın</li>
+<li><strong>Read-while-write:</strong> Bazı MCU'lar yazarken okuma yapamaz</li>
+</ul>
+
+<h2>⚠️ Önemli Notlar</h2>
+<ul>
+<li>Flash programming CPU'yu bloklar (~20-50ms per page)</li>
+<li>Option bytes Level 2 read protection <strong>geri alınamaz!</strong></li>
+<li>Flash endurance tipik 10K-100K erase cycle</li>
+<li>Data retention: 10+ yıl (25°C'de)</li>
+</ul>
+
+<h2>🔗 İlgili Modüller</h2>
+<ul>
+<li><a href="hal-crc-tr.html">hal::crc</a> - CRC verification for stored data</li>
+<li><a href="hal-watchdog-tr.html">hal::watchdog</a> - Disable during flash erase</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-flash-en.html">🇬🇧 English</a>
+</p>
+</main>
+</div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hal-crc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hal-exti.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hal-crc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hal-exti.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,502 @@
+﻿<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>yaml - YAML Islemleri - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/yaml.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                                            <main>
+                                                <div class="module-header">
+            <h1>📝 yaml - YAML İşlemleri</h1>
+            <p>YAML (YAML Ain't Markup Language) dosyalarını okuma ve yazma işlemleri</p>
+            <div class="module-stats">
+                <span class="stat-badge">📦 59 Fonksiyon</span>
+                <span class="stat-badge">📝 595 Satır</span>
+                <span class="stat-badge">💾 15.7 KB</span>
+            </div>
+        </div>
+
+        <h2>📋 Genel Bakış</h2>
+        <p><code>yaml</code> modülü, YAML formatındaki yapılandırma dosyalarını okuma, yazma ve düzenleme için araçlar sağlar. İnsan tarafından okunabilir veri serileştirme formatı olan YAML ile kolay çalışma imkanı sunar.</p>
+
+        <div class="function-group">
+            <h3>📖 YAML Ayrıştırma</h3>
+            <ul>
+                <li><strong>yaml.ayrıştır()</strong> - YAML metnini BERK veri yapısına dönüştürme</li>
+                <li><strong>yaml.dosyadan_yükle()</strong> - YAML dosyasını okuma</li>
+                <li><strong>yaml.güvenli_yükle()</strong> - Güvenli YAML ayrıştırma</li>
+                <li><strong>yaml.çoklu_yükle()</strong> - Birden fazla YAML belgesi yükleme</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>✏️ YAML Oluşturma</h3>
+            <ul>
+                <li><strong>yaml.yaz()</strong> - BERK verisini YAML formatına dönüştürme</li>
+                <li><strong>yaml.dosyaya_yaz()</strong> - YAML dosyasına yazma</li>
+                <li><strong>yaml.çoklu_yaz()</strong> - Birden fazla belgeyi yazma</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔧 Yapılandırma Seçenekleri</h3>
+            <ul>
+                <li><strong>yaml.girinti()</strong> - Girinti seviyesi ayarlama</li>
+                <li><strong>yaml.genişlik()</strong> - Satır genişliği ayarlama</li>
+                <li><strong>yaml.akış_stili()</strong> - Akış veya blok stil seçimi</li>
+                <li><strong>yaml.varsayılan_akış()</strong> - Varsayılan akış stili ayarlama</li>
+            </ul>
+        </div>
+
+        <h2>💡 Kullanım Örnekleri</h2>
+
+        <div class="example-box">
+            <h3>YAML Yapılandırma Dosyası Okuma</h3>
+            <pre><code class="language-berk">kullan yaml
+kullan fs
+
+// config.yaml dosyası:
+// veritabanı:
+//   sunucu: localhost
+//   port: 5432
+//   kullanıcı: admin
+//   parola: güvenli123
+//   veritabanları:
+//     - üretim
+//     - test
+//     - geliştirme
+//
+// uygulama:
+//   ad: BerkApp
+//   sürüm: 1.0.0
+//   ortam: üretim
+//   özellikler:
+//     cache_aktif: true
+//     log_seviye: info
+//     max_bağlantı: 100
+
+değer yapılandırma = yaml.dosyadan_yükle("config.yaml")
+
+// Yapılandırma değerlerini okuma
+değer vt_sunucu = yapılandırma["veritabanı"]["sunucu"]
+değer vt_port = yapılandırma["veritabanı"]["port"]
+değer uygulama_ad = yapılandırma["uygulama"]["ad"]
+
+yazdır(f"Uygulama: {uygulama_ad}")
+yazdır(f"Veritabanı: {vt_sunucu}:{vt_port}")
+
+// Veritabanı listesi
+değer veritabanları = yapılandırma["veritabanı"]["veritabanları"]
+yazdır("\nMevcut veritabanları:")
+için vt içinde veritabanları {
+    yazdır(f"  - {vt}")
+}
+
+// Özellikler
+değer özellikler = yapılandırma["uygulama"]["özellikler"]
+eğer özellikler["cache_aktif"] {
+    yazdır("\nÖnbellek aktif")
+}
+yazdır(f"Log seviyesi: {özellikler['log_seviye']}")
+yazdır(f"Maksimum bağlantı: {özellikler['max_bağlantı']}")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>YAML Yapılandırma Oluşturma</h3>
+            <pre><code class="language-berk">kullan yaml
+
+// Uygulama yapılandırması oluşturma
+değer yapılandırma = {
+    "sunucu": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "ssl": {
+            "aktif": doğru,
+            "sertifika": "/path/to/cert.pem",
+            "anahtar": "/path/to/key.pem"
+        }
+    },
+    "veritabanı": {
+        "sürücü": "postgresql",
+        "bağlantı": {
+            "host": "localhost",
+            "port": 5432,
+            "kullanıcı": "app_user",
+            "parola": "güvenli_parola"
+        },
+        "havuz": {
+            "min_boyut": 5,
+            "max_boyut": 20,
+            "timeout": 30
+        }
+    },
+    "özellikler": {
+        "hata_ayıklama": yanlış,
+        "log_dosyası": "/var/log/app.log",
+        "log_seviye": "info",
+        "izin_verilen_originler": [
+            "https://example.com",
+            "https://api.example.com",
+            "https://admin.example.com"
+        ]
+    },
+    "cache": {
+        "tip": "redis",
+        "sunucu": "localhost:6379",
+        "ttl": 3600,
+        "önbellek_anahtarları": [
+            "kullanıcı_oturumları",
+            "ürün_listesi",
+            "yapılandırma"
+        ]
+    }
+}
+
+// YAML dosyasına yazma
+yaml.dosyaya_yaz(yapılandırma, "app_config.yaml")
+yazdır("Yapılandırma dosyası oluşturuldu!")
+
+// YAML metnine dönüştürme
+değer yaml_metin = yaml.yaz(yapılandırma)
+yazdır("\nYAML içeriği:")
+yazdır(yaml_metin)</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Kubernetes Manifest Yöneticisi</h3>
+            <pre><code class="language-berk">kullan yaml
+
+sınıf K8sManifest {
+    fonksiyon deployment_oluştur(ad: Dize, imaj: Dize, port: Tam, replika: Tam) -> Sözlük {
+        dön {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+                "name": ad,
+                "labels": {
+                    "app": ad
+                }
+            },
+            "spec": {
+                "replicas": replika,
+                "selector": {
+                    "matchLabels": {
+                        "app": ad
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": ad
+                        }
+                    },
+                    "spec": {
+                        "containers": [{
+                            "name": ad,
+                            "image": imaj,
+                            "ports": [{
+                                "containerPort": port
+                            }]
+                        }]
+                    }
+                }
+            }
+        }
+    }
+    
+    fonksiyon service_oluştur(ad: Dize, port: Tam, hedef_port: Tam) -> Sözlük {
+        dön {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "name": f"{ad}-service"
+            },
+            "spec": {
+                "type": "LoadBalancer",
+                "selector": {
+                    "app": ad
+                },
+                "ports": [{
+                    "protocol": "TCP",
+                    "port": port,
+                    "targetPort": hedef_port
+                }]
+            }
+        }
+    }
+}
+
+// Kubernetes manifestleri oluşturma
+değer k8s = K8sManifest {}
+
+değer deployment = k8s.deployment_oluştur(
+    "web-app",
+    "nginx:1.21",
+    80,
+    3
+)
+
+değer service = k8s.service_oluştur("web-app", 80, 80)
+
+// Tek dosyaya birden fazla manifest yazma
+değer manifestler = [deployment, service]
+yaml.dosyaya_yaz(manifestler, "k8s-deployment.yaml")
+
+yazdır("Kubernetes manifestleri oluşturuldu!")
+yazdır(f"Deployment: {deployment['metadata']['name']}")
+yazdır(f"Replika sayısı: {deployment['spec']['replicas']}")
+yazdır(f"Service: {service['metadata']['name']}")</code></pre>
+        </div>
+
+        <h2>🎯 İyi Uygulamalar</h2>
+        <ul>
+            <li>Güvenli olmayan kaynaklardan YAML yüklerken <code>güvenli_yükle()</code> kullanın</li>
+            <li>Yapılandırma dosyalarında hassas bilgileri şifreleyin</li>
+            <li>YAML girinti (2 veya 4 boşluk) tutarlı tutun</li>
+            <li>Karmaşık yapılar için anchors ve aliases kullanın</li>
+            <li>Ortam değişkenlerini yapılandırmaya entegre edin</li>
+            <li>Yapılandırma şemalarını doğrulayın</li>
+        </ul>
+
+        <h2>🔗 İlgili Modüller</h2>
+        <ul>
+            <li><a href="json.html">json</a> - JSON veri formatı</li>
+            <li><a href="xml.html">xml</a> - XML veri formatı</li>
+            <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>
+            <li><a href="encoding.html">encoding</a> - Kodlama dönüşümleri</li>
+        </ul>
+    </div>
+</main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/xml.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/csv.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/xml.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/csv.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
