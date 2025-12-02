@@ -1,14 +1,14 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>İlk Programınızı Yazmak - BERK Programlama Dili</title>
+        <title>Writing Your First Program - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="description" content="Modern, safe, and bilingual (Turkish/English) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -138,7 +138,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -181,32 +181,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="İlk-programınızı-yazmak"><a class="header" href="#İlk-programınızı-yazmak">İlk Programınızı Yazmak</a></h1>
-<p>BERK dilinde basit bir hesaplama programı yazarak başlayalım. Bu Examplete kullanıcıdan iki sayı alıp, çeşitli Mathematicssel işlemler yapacağız.</p>
-<h2 id="Example-hesap-makinesi"><a class="header" href="#Example-hesap-makinesi">Example: Hesap Makinesi</a></h2>
-<p><code>hesapla.berk</code> adında yeni bir dosya oluşturun:</p>
-<pre><code class="language-berk">// İki dilli syntax desteği - Türkçe anahtar kelimelerle
-işlev topla(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri return a + b
+                        <h1 id="writing-your-first-program"><a class="header" href="#writing-your-first-program">Writing Your First Program</a></h1>
+<p>Let's start by writing a simple calculation program in BERK. In this example we'll take two numbers from the user and perform various mathematical operations.</p>
+<h2 id="example-calculator"><a class="header" href="#example-calculator">Example: Calculator</a></h2>
+<p>Create a new file named <code>calculate.berk</code>:</p>
+<pre><code class="language-berk">// Bilingual syntax support - English keywords
+function add(a: Number, b: Number) -&gt; Number {
+    return a + b
 }
 
-işlev çıkar(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri return a - b
+function subtract(a: Number, b: Number) -&gt; Number {
+    return a - b
 }
 
-işlev çarp(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri return a * b
+function multiply(a: Number, b: Number) -&gt; Number {
+    return a * b
 }
 
-işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, string&gt; {
+function divide(a: Number, b: Number) -&gt; Result&lt;Number, String&gt; {
     if b == 0 {
-        hata return "Sıfıra bölme hatası!"
+        error return "Division by zero error!"
     }
-    tamam return a / b
+    ok return a / b
 }
 
-// Ana function
-işlev ana() {
+// Main function
+function main() {
     variable x = 10.0
     variable y = 3.0
     
@@ -214,63 +214,63 @@ işlev ana() {
     print("y = ", y)
     print("")
     
-    print("Toplam: ", topla(x, y))
-    print("Fark: ", çıkar(x, y))
-    print("Çarpım: ", çarp(x, y))
-    
-    // Hata yönetimi ile bölme
-    variable sonuç = böl(x, y)
-    eş sonuç {
-        Tamam(değer) =&gt; print("Section: ", değer),
-        Hata(mesaj) =&gt; print("HATA: ", mesaj)
-    }
-}
-</code></pre>
-<h2 id="İngilizce-syntax-ile-aynı-program"><a class="header" href="#İngilizce-syntax-ile-aynı-program">İngilizce Syntax ile Aynı Program</a></h2>
-<p>BERK'in avantajı iki dilli syntax desteğidir. Aynı programı İngilizce anahtar kelimelerle de yazabilirsiniz:</p>
-<pre><code class="language-berk">function add(a: Number, b: Number) -&gt; Number {
-    return a + b
-}
-
-function divide(a: Number, b: Number) -&gt; Result&lt;Number, String&gt; {
-    if b == 0 {
-        error return "Division by zero!"
-    }
-    ok return a / b
-}
-
-function main() {
-    var x = 10.0
-    var y = 3.0
-    
     print("Sum: ", add(x, y))
+    print("Difference: ", subtract(x, y))
+    print("Product: ", multiply(x, y))
     
-    var result = divide(x, y)
+    // Division with error handling
+    variable result = divide(x, y)
     match result {
-        Ok(value) =&gt; print("Result: ", value),
+        Ok(value) =&gt; print("Quotient: ", value),
         Error(msg) =&gt; print("ERROR: ", msg)
     }
 }
 </code></pre>
-<h2 id="programı-Çalıştırma"><a class="header" href="#programı-Çalıştırma">Programı Çalıştırma</a></h2>
-<pre><code class="language-bash"># Doğrudan çalıştır
-berk run hesapla.berk
+<h2 id="turkish-syntax-version"><a class="header" href="#turkish-syntax-version">Turkish Syntax Version</a></h2>
+<p>BERK's advantage is bilingual syntax support. You can also write the same program with Turkish keywords:</p>
+<pre><code class="language-berk">işlev topla(a: Sayı, b: Sayı) -&gt; Sayı {
+    geri dön a + b
+}
 
-# Derleyip çalıştır
-berk build hesapla.berk -o hesapla.exe
-./hesapla.exe
+işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
+    eğer b == 0 {
+        hata dön "Sıfıra bölme hatası!"
+    }
+    tamam dön a / b
+}
+
+işlev ana() {
+    değişken x = 10.0
+    değişken y = 3.0
+    
+    yazdır("Toplam: ", topla(x, y))
+    
+    değişken sonuç = böl(x, y)
+    eşle sonuç {
+        Tamam(değer) =&gt; yazdır("Sonuç: ", değer),
+        Hata(mesaj) =&gt; yazdır("HATA: ", mesaj)
+    }
+}
 </code></pre>
-<h2 id="beklenen-Çıktı"><a class="header" href="#beklenen-Çıktı">Beklenen Çıktı</a></h2>
+<h2 id="running-the-program"><a class="header" href="#running-the-program">Running the Program</a></h2>
+<pre><code class="language-bash"># Run directly
+berk run calculate.berk
+
+# Build and run
+berk build calculate.berk -o calculate.exe
+./calculate.exe
+</code></pre>
+<h2 id="expected-output"><a class="header" href="#expected-output">Expected Output</a></h2>
 <pre><code>x = 10
 y = 3
 
-Toplam: 13
-Fark: 7
-Çarpım: 30
-Section: 3.333333
+Sum: 13
+Difference: 7
+Product: 30
+Quotient: 3.333333
 </code></pre>
-<h2 id="bir-sonraki-adım"><a class="header" href="#bir-sonraki-adım">Bir Sonraki Adım</a></h2>
-<p>Artık temel syntax'a aşina olduğunuza göre, <a href="./basics/syntax.html">Temel Kavramlar</a> Sectionüyle continue edebilirsiniz. Burada değişkenler, veri tipleri and operatörler hakkında detaylı bilgi bulacaksınız.</p>
+<h2 id="next-step"><a class="header" href="#next-step">Next Step</a></h2>
+<p>Now that you're familiar with basic syntax, you can continue with the <a href="./basics/en_syntax.html">Basic Concepts</a> section. Here you'll find detailed information about variables, data types, and operators.</p>
 
                     </main>
 
@@ -324,3 +324,5 @@ Section: 3.333333
     </div>
     </body>
 </html>
+
+
