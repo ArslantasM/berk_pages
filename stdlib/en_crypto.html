@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>crypto - Kriptografi - BERK Programlama Dili</title>
+        <title>crypto - Kriptografi - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -189,17 +189,17 @@
                 <div id="content" class="content">
                                             <main>
                                                 <div class="module-header">
-            <h1>🔒 crypto - Kriptografi ve Şifreleme</h1>
-            <p>Şifreleme, karma ve dijital imza işlemleri için kapsamlı kriptografi araçları</p>
+            <h1>🔒 crypto - Kriptografi and Şifreleme</h1>
+            <p>Şifreleme, karma and dijital imza işlemleri for kapsamlı kriptografi araçları</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 101 Fonksiyon</span>
+                <span class="stat-badge">📦 101 function</span>
                 <span class="stat-badge">📝 1381 Satır</span>
                 <span class="stat-badge">💾 49 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>crypto</code> modülü, modern kriptografi algoritmaları ile veri şifreleme, karma fonksiyonları, dijital imzalar ve güvenli anahtar yönetimi için kapsamlı araçlar sağlar. AES, RSA, SHA, HMAC ve daha fazlasını destekler.</p>
+        <p><code>crypto</code> modülü, modern kriptografi algoritmaları ile veri şifreleme, karma Functionsı, dijital imzalar and güvenli anahtar yönetimi for kapsamlı araçlar sağlar. AES, RSA, SHA, HMAC and daha fazlasını destekler.</p>
 
         <div class="function-group">
             <h3>🔐 Simetrik Şifreleme</h3>
@@ -222,7 +222,7 @@
         </div>
 
         <div class="function-group">
-            <h3>#️⃣ Karma Fonksiyonları</h3>
+            <h3>#️⃣ Karma Functionsı</h3>
             <ul>
                 <li><strong>crypto.sha256()</strong> - SHA-256 karma</li>
                 <li><strong>crypto.sha512()</strong> - SHA-512 karma</li>
@@ -261,10 +261,10 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>AES Şifreleme ve Şifre Çözme</h3>
+            <h3>AES Şifreleme and Şifre Çözme</h3>
             <pre><code class="language-berk">kullan crypto
 kullan encoding
 
@@ -273,7 +273,7 @@ değer mesaj = "Bu çok gizli bir mesajdır!"
 değer anahtar = crypto.rastgele_bayt(32)  // 256-bit anahtar
 değer nonce = crypto.rastgele_bayt(12)    // 96-bit nonce
 
-yazdır("Orijinal mesaj: " + mesaj)
+print("Orijinal mesaj: " + mesaj)
 
 // Şifreleme
 değer şifreli = crypto.aes_gcm_şifrele(
@@ -283,7 +283,7 @@ değer şifreli = crypto.aes_gcm_şifrele(
 )
 
 değer şifreli_base64 = encoding.base64_kodla(şifreli)
-yazdır(f"\nŞifreli (Base64): {şifreli_base64}")
+print(f"\nŞifreli (Base64): {şifreli_base64}")
 
 // Şifre çözme
 değer çözülmüş = crypto.aes_gcm_çöz(
@@ -293,11 +293,11 @@ değer çözülmüş = crypto.aes_gcm_çöz(
 ).aç()
 
 değer çözülmüş_metin = Dize.bayttan(çözülmüş)
-yazdır(f"Çözülmüş mesaj: {çözülmüş_metin}")
+print(f"Çözülmüş mesaj: {çözülmüş_metin}")
 
-// Anahtar ve nonce'ı güvenli sakla
-yazdır(f"\nAnahtar (hex): {encoding.hex_kodla(anahtar)}")
-yazdır(f"Nonce (hex): {encoding.hex_kodla(nonce)}")</code></pre>
+// Anahtar and nonce'ı güvenli sakla
+print(f"\nAnahtar (hex): {encoding.hex_kodla(anahtar)}")
+print(f"Nonce (hex): {encoding.hex_kodla(nonce)}")</code></pre>
         </div>
 
         <div class="example-box">
@@ -307,30 +307,30 @@ yazdır(f"Nonce (hex): {encoding.hex_kodla(nonce)}")</code></pre>
 // RSA anahtar çifti oluşturma (2048-bit)
 değer (açık_anahtar, özel_anahtar) = crypto.rsa_anahtar_çifti_oluştur(2048)
 
-yazdır("RSA anahtar çifti oluşturuldu!")
+print("RSA anahtar çifti oluşturuldu!")
 
 // Açık anahtarla şifreleme
 değer mesaj = "Gizli veriler: hesap bakiyesi = 10000 TL"
 değer şifreli = crypto.rsa_şifrele(mesaj.bayt(), açık_anahtar)
 
-yazdır(f"\nMesaj şifrelendi ({şifreli.uzunluk} bayt)")
+print(f"\nMesaj şifrelendi ({şifreli.uzunluk} bayt)")
 
 // Özel anahtarla şifre çözme
 değer çözülmüş = crypto.rsa_çöz(şifreli, özel_anahtar).aç()
 değer çözülmüş_metin = Dize.bayttan(çözülmüş)
 
-yazdır(f"Çözülmüş: {çözülmüş_metin}")
+print(f"Çözülmüş: {çözülmüş_metin}")
 
 // Dijital imza oluşturma
 değer imza = crypto.rsa_imzala(mesaj.bayt(), özel_anahtar)
-yazdır(f"\nDijital imza oluşturuldu ({imza.uzunluk} bayt)")
+print(f"\nDijital imza oluşturuldu ({imza.uzunluk} bayt)")
 
 // İmza doğrulama
 değer geçerli = crypto.rsa_doğrula(mesaj.bayt(), imza, açık_anahtar)
-eğer geçerli {
-    yazdır("✓ İmza geçerli!")
-} yoksa {
-    yazdır("✗ İmza geçersiz!")
+if geçerli {
+    print("✓ İmza geçerli!")
+} elseif {
+    print("✗ İmza geçersiz!")
 }</code></pre>
         </div>
 
@@ -339,67 +339,67 @@ eğer geçerli {
             <pre><code class="language-berk">kullan crypto
 kullan time
 
-sınıf ParolaYöneticisi {
+class ParolaYöneticisi {
     değer parola_karmaları: Sözlük&lt;Dize, Dize&gt;
     
-    fonksiyon yeni() -> ParolaYöneticisi {
-        dön ParolaYöneticisi {
+    function yeni() -> ParolaYöneticisi {
+        return ParolaYöneticisi {
             parola_karmaları: {}
         }
     }
     
-    fonksiyon kullanıcı_ekle(kullanıcı_adı: Dize, parola: Dize) -> Sonuç&lt;Boş, Hata&gt; {
+    function kullanıcı_ekle(kullanıcı_adı: Dize, parola: Dize) -> Sonuç&lt;null, Hata&gt; {
         // Parola gücünü kontrol et
-        eğer parola.uzunluk < 8 {
-            dön Hata("Parola en az 8 karakter olmalı")
+        if parola.uzunluk < 8 {
+            return Hata("Parola en az 8 karakter olmalı")
         }
         
         // Argon2id ile güvenli karma oluştur
-        değer başlangıç = time.şimdi()
+        değer Getting Started = time.şimdi()
         değer karma = crypto.parola_karma(parola, maliyet: 15)
-        değer süre = time.şimdi() - başlangıç
+        değer süre = time.şimdi() - Getting Started
         
         bu.parola_karmaları[kullanıcı_adı] = karma
-        yazdır(f"Parola karması oluşturuldu ({süre.milisaniye}ms)")
+        print(f"Parola karması oluşturuldu ({süre.milisaniye}ms)")
         
-        dön Tamam(boş)
+        return Tamam(null)
     }
     
-    fonksiyon giriş_yap(kullanıcı_adı: Dize, parola: Dize) -> Mantıksal {
-        eğer kullanıcı_adı !içinde bu.parola_karmaları {
-            dön yanlış
+    function Introduction_yap(kullanıcı_adı: Dize, parola: Dize) -> boolean {
+        if kullanıcı_adı !içinde bu.parola_karmaları {
+            return false
         }
         
         değer karma = bu.parola_karmaları[kullanıcı_adı]
-        değer başlangıç = time.şimdi()
+        değer Getting Started = time.şimdi()
         değer geçerli = crypto.parola_doğrula(parola, karma)
-        değer süre = time.şimdi() - başlangıç
+        değer süre = time.şimdi() - Getting Started
         
-        yazdır(f"Parola doğrulama: {süre.milisaniye}ms")
-        dön geçerli
+        print(f"Parola doğrulama: {süre.milisaniye}ms")
+        return geçerli
     }
 }
 
-// Kullanım
+// Usage
 değer yönetici = ParolaYöneticisi.yeni()
 
 // Kullanıcı ekleme
 yönetici.kullanıcı_ekle("ahmet", "Güçlü_P@rol@_123").aç()
 yönetici.kullanıcı_ekle("ayşe", "Başka_Güçlü_P@ss").aç()
 
-// Giriş denemeleri
-yazdır("\n--- Giriş Denemeleri ---")
+// Introduction denemeleri
+print("\n--- Introduction Denemeleri ---")
 
-eğer yönetici.giriş_yap("ahmet", "Güçlü_P@rol@_123") {
-    yazdır("✓ Ahmet başarıyla giriş yaptı")
-} yoksa {
-    yazdır("✗ Giriş başarısız")
+if yönetici.Introduction_yap("ahmet", "Güçlü_P@rol@_123") {
+    print("✓ Ahmet başarıyla Introduction yaptı")
+} elseif {
+    print("✗ Introduction başarısız")
 }
 
-eğer yönetici.giriş_yap("ahmet", "yanlış_parola") {
-    yazdır("✓ Giriş başarılı")
-} yoksa {
-    yazdır("✗ Yanlış parola!")
+if yönetici.Introduction_yap("ahmet", "yanlış_parola") {
+    print("✓ Introduction başarılı")
+} elseif {
+    print("✗ false parola!")
 }</code></pre>
         </div>
 
@@ -409,13 +409,13 @@ eğer yönetici.giriş_yap("ahmet", "yanlış_parola") {
 kullan fs
 kullan encoding
 
-sınıf DosyaŞifreleyici {
-    fonksiyon dosya_şifrele(
+class DosyaŞifreleyici {
+    function dosya_şifrele(
         kaynak: Dize,
         hedef: Dize,
         parola: Dize
-    ) -> Sonuç&lt;Boş, Hata&gt; {
-        // Dosyayı oku
+    ) -> Sonuç&lt;null, Hata&gt; {
+        // Dosyayı read
         değer içerik = fs.dosya_oku(kaynak)?
         
         // Parola'dan anahtar türet
@@ -427,7 +427,7 @@ sınıf DosyaŞifreleyici {
             uzunluk: 32
         )
         
-        // Şifreleme için nonce oluştur
+        // Şifreleme for nonce oluştur
         değer nonce = crypto.rastgele_bayt(12)
         
         // AES-GCM ile şifrele
@@ -441,21 +441,21 @@ sınıf DosyaŞifreleyici {
         değer çıktı = tuz + nonce + şifreli
         fs.dosya_yaz(hedef, çıktı)?
         
-        yazdır(f"✓ Dosya şifrelendi: {kaynak} -> {hedef}")
-        yazdır(f"  Boyut: {içerik.uzunluk} -> {çıktı.uzunluk} bayt")
+        print(f"✓ Dosya şifrelendi: {kaynak} -> {hedef}")
+        print(f"  Boyut: {içerik.uzunluk} -> {çıktı.uzunluk} bayt")
         
-        dön Tamam(boş)
+        return Tamam(null)
     }
     
-    fonksiyon dosya_çöz(
+    function dosya_çöz(
         kaynak: Dize,
         hedef: Dize,
         parola: Dize
-    ) -> Sonuç&lt;Boş, Hata&gt; {
-        // Şifreli dosyayı oku
+    ) -> Sonuç&lt;null, Hata&gt; {
+        // Şifreli dosyayı read
         değer veri = fs.dosya_oku(kaynak)?
         
-        // Tuz ve nonce'ı ayıkla
+        // Tuz and nonce'ı ayıkla
         değer tuz = veri[0..16]
         değer nonce = veri[16..28]
         değer şifreli = veri[28..]
@@ -478,14 +478,14 @@ sınıf DosyaŞifreleyici {
         // Dosyaya yaz
         fs.dosya_yaz(hedef, içerik)?
         
-        yazdır(f"✓ Dosya çözüldü: {kaynak} -> {hedef}")
-        yazdır(f"  Boyut: {veri.uzunluk} -> {içerik.uzunluk} bayt")
+        print(f"✓ Dosya çözüldü: {kaynak} -> {hedef}")
+        print(f"  Boyut: {veri.uzunluk} -> {içerik.uzunluk} bayt")
         
-        dön Tamam(boş)
+        return Tamam(null)
     }
 }
 
-// Kullanım
+// Usage
 değer şifreleyici = DosyaŞifreleyici {}
 
 // Dosya şifreleme
@@ -505,11 +505,11 @@ değer şifreleyici = DosyaŞifreleyici {}
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
-            <li>Asla özel anahtarları veya parolaları sabit kodlamayın</li>
-            <li>Kimlik doğrulamalı şifreleme için AES-GCM kullanın</li>
-            <li>Parola karması için Argon2id veya bcrypt tercih edin</li>
-            <li>Rastgele sayı üretimi için <code>crypto.rastgele_bayt()</code> kullanın</li>
-            <li>RSA için en az 2048-bit anahtar boyutu kullanın</li>
+            <li>Asla özel anahtarları or parolaları constant kodlamayın</li>
+            <li>Kimlik doğrulamalı şifreleme for AES-GCM kullanın</li>
+            <li>Parola karması for Argon2id or bcrypt tercih edin</li>
+            <li>Rastgele sayı üretimi for <code>crypto.rastgele_bayt()</code> kullanın</li>
+            <li>RSA for en az 2048-bit anahtar boyutu kullanın</li>
             <li>Anahtarları güvenli anahtar yönetim sistemlerinde saklayın</li>
             <li>Düzenli olarak anahtarları döndürün</li>
             <li>Eski kriptografi algoritmalarından (MD5, SHA1, DES) kaçının</li>
@@ -517,9 +517,9 @@ değer şifreleyici = DosyaŞifreleyici {}
 
         <h2>⚠️ Güvenlik Uyarıları</h2>
         <ul>
-            <li>🔴 Özel anahtarları asla paylaşmayın veya kaynak koduna eklemeyin</li>
-            <li>🔴 Parola veya anahtar üretiminde standart <code>random</code> kullanmayın</li>
-            <li>🔴 Şifreli verileri değiştirme saldırılarına karşı HMAC veya GCM kullanın</li>
+            <li>🔴 Özel anahtarları asla paylaşmayın or kaynak koduna eklemeyin</li>
+            <li>🔴 Parola or anahtar üretiminde standart <code>random</code> kullanmayın</li>
+            <li>🔴 Şifreli verileri değiştirme saldırılarına karşı HMAC or GCM kullanın</li>
             <li>🔴 Hassas verileri bellekte tutarken dikkatli olun (bellek dökümleri)</li>
         </ul>
 
@@ -528,7 +528,7 @@ değer şifreleyici = DosyaŞifreleyici {}
             <li><a href="encoding.html">encoding</a> - Base64, Hex kodlama</li>
             <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>
             <li><a href="random.html">random</a> - Rastgele sayı üretimi</li>
-            <li><a href="http.html">http</a> - HTTPS ve TLS</li>
+            <li><a href="http.html">http</a> - HTTPS and TLS</li>
         </ul>
     </div>
 </main>

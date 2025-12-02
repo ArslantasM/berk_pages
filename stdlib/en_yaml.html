@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>yaml - YAML Islemleri - BERK Programlama Dili</title>
+        <title>yaml - YAML Islemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,16 +190,16 @@
                                             <main>
                                                 <div class="module-header">
             <h1>📝 yaml - YAML İşlemleri</h1>
-            <p>YAML (YAML Ain't Markup Language) dosyalarını okuma ve yazma işlemleri</p>
+            <p>YAML (YAML Ain't Markup Language) dosyalarını okuma and yazma işlemleri</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 59 Fonksiyon</span>
+                <span class="stat-badge">📦 59 function</span>
                 <span class="stat-badge">📝 595 Satır</span>
                 <span class="stat-badge">💾 15.7 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>yaml</code> modülü, YAML formatındaki yapılandırma dosyalarını okuma, yazma ve düzenleme için araçlar sağlar. İnsan tarafından okunabilir veri serileştirme formatı olan YAML ile kolay çalışma imkanı sunar.</p>
+        <p><code>yaml</code> modülü, YAML formatındaki yapılandırma dosyalarını okuma, yazma and düzenleme for araçlar sağlar. İnsan tarafından okunabilir veri serileştirme formatı olan YAML ile kolay çalışma imkanı sunar.</p>
 
         <div class="function-group">
             <h3>📖 YAML Ayrıştırma</h3>
@@ -225,12 +225,12 @@
             <ul>
                 <li><strong>yaml.girinti()</strong> - Girinti seviyesi ayarlama</li>
                 <li><strong>yaml.genişlik()</strong> - Satır genişliği ayarlama</li>
-                <li><strong>yaml.akış_stili()</strong> - Akış veya blok stil seçimi</li>
+                <li><strong>yaml.akış_stili()</strong> - Akış or blok stil seçimi</li>
                 <li><strong>yaml.varsayılan_akış()</strong> - Varsayılan akış stili ayarlama</li>
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>YAML Yapılandırma Dosyası Okuma</h3>
@@ -264,23 +264,23 @@ değer vt_sunucu = yapılandırma["veritabanı"]["sunucu"]
 değer vt_port = yapılandırma["veritabanı"]["port"]
 değer uygulama_ad = yapılandırma["uygulama"]["ad"]
 
-yazdır(f"Uygulama: {uygulama_ad}")
-yazdır(f"Veritabanı: {vt_sunucu}:{vt_port}")
+print(f"Uygulama: {uygulama_ad}")
+print(f"Veritabanı: {vt_sunucu}:{vt_port}")
 
 // Veritabanı listesi
 değer veritabanları = yapılandırma["veritabanı"]["veritabanları"]
-yazdır("\nMevcut veritabanları:")
-için vt içinde veritabanları {
-    yazdır(f"  - {vt}")
+print("\nMevcut veritabanları:")
+for vt içinde veritabanları {
+    print(f"  - {vt}")
 }
 
 // Özellikler
 değer özellikler = yapılandırma["uygulama"]["özellikler"]
-eğer özellikler["cache_aktif"] {
-    yazdır("\nÖnbellek aktif")
+if özellikler["cache_aktif"] {
+    print("\nÖnbellek aktif")
 }
-yazdır(f"Log seviyesi: {özellikler['log_seviye']}")
-yazdır(f"Maksimum bağlantı: {özellikler['max_bağlantı']}")</code></pre>
+print(f"Log seviyesi: {özellikler['log_seviye']}")
+print(f"Maksimum bağlantı: {özellikler['max_bağlantı']}")</code></pre>
         </div>
 
         <div class="example-box">
@@ -293,7 +293,7 @@ değer yapılandırma = {
         "host": "0.0.0.0",
         "port": 8080,
         "ssl": {
-            "aktif": doğru,
+            "aktif": true,
             "sertifika": "/path/to/cert.pem",
             "anahtar": "/path/to/key.pem"
         }
@@ -313,7 +313,7 @@ değer yapılandırma = {
         }
     },
     "özellikler": {
-        "hata_ayıklama": yanlış,
+        "hata_ayıklama": false,
         "log_dosyası": "/var/log/app.log",
         "log_seviye": "info",
         "izin_verilen_originler": [
@@ -336,21 +336,21 @@ değer yapılandırma = {
 
 // YAML dosyasına yazma
 yaml.dosyaya_yaz(yapılandırma, "app_config.yaml")
-yazdır("Yapılandırma dosyası oluşturuldu!")
+print("Yapılandırma dosyası oluşturuldu!")
 
 // YAML metnine dönüştürme
 değer yaml_metin = yaml.yaz(yapılandırma)
-yazdır("\nYAML içeriği:")
-yazdır(yaml_metin)</code></pre>
+print("\nYAML içeriği:")
+print(yaml_metin)</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Kubernetes Manifest Yöneticisi</h3>
             <pre><code class="language-berk">kullan yaml
 
-sınıf K8sManifest {
-    fonksiyon deployment_oluştur(ad: Dize, imaj: Dize, port: Tam, replika: Tam) -> Sözlük {
-        dön {
+class K8sManifest {
+    function deployment_oluştur(ad: Dize, imaj: Dize, port: Tam, replika: Tam) -> Sözlük {
+        return {
             "apiVersion": "apps/v1",
             "kind": "Deployment",
             "metadata": {
@@ -386,8 +386,8 @@ sınıf K8sManifest {
         }
     }
     
-    fonksiyon service_oluştur(ad: Dize, port: Tam, hedef_port: Tam) -> Sözlük {
-        dön {
+    function service_oluştur(ad: Dize, port: Tam, hedef_port: Tam) -> Sözlük {
+        return {
             "apiVersion": "v1",
             "kind": "Service",
             "metadata": {
@@ -424,18 +424,18 @@ değer service = k8s.service_oluştur("web-app", 80, 80)
 değer manifestler = [deployment, service]
 yaml.dosyaya_yaz(manifestler, "k8s-deployment.yaml")
 
-yazdır("Kubernetes manifestleri oluşturuldu!")
-yazdır(f"Deployment: {deployment['metadata']['name']}")
-yazdır(f"Replika sayısı: {deployment['spec']['replicas']}")
-yazdır(f"Service: {service['metadata']['name']}")</code></pre>
+print("Kubernetes manifestleri oluşturuldu!")
+print(f"Deployment: {deployment['metadata']['name']}")
+print(f"Replika sayısı: {deployment['spec']['replicas']}")
+print(f"Service: {service['metadata']['name']}")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
             <li>Güvenli olmayan kaynaklardan YAML yüklerken <code>güvenli_yükle()</code> kullanın</li>
             <li>Yapılandırma dosyalarında hassas bilgileri şifreleyin</li>
-            <li>YAML girinti (2 veya 4 boşluk) tutarlı tutun</li>
-            <li>Karmaşık yapılar için anchors ve aliases kullanın</li>
+            <li>YAML girinti (2 or 4 boşluk) tutarlı tutun</li>
+            <li>Karmaşık yapılar for anchors and aliases kullanın</li>
             <li>Ortam değişkenlerini yapılandırmaya entegre edin</li>
             <li>Yapılandırma şemalarını doğrulayın</li>
         </ul>

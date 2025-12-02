@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -182,35 +182,35 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="veri-tipleri"><a class="header" href="#veri-tipleri">Veri Tipleri</a></h1>
-<p>BERK statik tipli bir dildir ve çeşitli built-in veri tipleri sunar.</p>
+<p>BERK statik tipli bir dildir and çeşitli built-in veri tipleri sunar.</p>
 <h2 id="temel-tipler"><a class="header" href="#temel-tipler">Temel Tipler</a></h2>
 <h3 id="sayı-number"><a class="header" href="#sayı-number">Sayı (Number)</a></h3>
-<p>Tamsayı ve ondalıklı sayılar için:</p>
-<pre><code class="language-berk">değişken tam = 42
-değişken ondalık = 3.14
-değişken negatif = -100
-değişken bilimsel = 1.5e10  // 15000000000
+<p>integer and ondalıklı sayılar for:</p>
+<pre><code class="language-berk">variable tam = 42
+variable float = 3.14
+variable negatif = -100
+variable bilimsel = 1.5e10  // 15000000000
 </code></pre>
-<h3 id="yazı-string"><a class="header" href="#yazı-string">Yazı (String)</a></h3>
+<h3 id="string-string"><a class="header" href="#string-string">string (String)</a></h3>
 <p>Metin değerleri:</p>
-<pre><code class="language-berk">değişken isim = "Ahmet"
-değişken mesaj = 'Merhaba Dünya!'
-değişken çok_satır = """
+<pre><code class="language-berk">variable isim = "Ahmet"
+variable mesaj = 'Merhaba Dünya!'
+variable çok_satır = """
     Bu
     çok satırlı
     bir metindir
 """
 </code></pre>
 <p>String interpolation:</p>
-<pre><code class="language-berk">değişken ad = "Ali"
-değişken yaş = 25
-yazdır("Benim adım {ad} ve {yaş} yaşındayım")
-// Çıktı: Benim adım Ali ve 25 yaşındayım
+<pre><code class="language-berk">variable ad = "Ali"
+variable yaş = 25
+print("Benim adım {ad} and {yaş} yaşındayım")
+// Çıktı: Benim adım Ali and 25 yaşındayım
 </code></pre>
-<h3 id="boolean-mantıksal"><a class="header" href="#boolean-mantıksal">Boolean (Mantıksal)</a></h3>
-<p>Doğru/yanlış değerleri:</p>
-<pre><code class="language-berk">değişken doğru_mu = doğru  // true
-değişken yanlış_mı = yanlış  // false
+<h3 id="boolean-boolean"><a class="header" href="#boolean-boolean">Boolean (boolean)</a></h3>
+<p>true/false değerleri:</p>
+<pre><code class="language-berk">variable doğru_mu = true  // true
+variable yanlış_mı = false  // false
 
 // İngilizce
 var is_valid = true
@@ -218,126 +218,126 @@ var is_empty = false
 </code></pre>
 <h3 id="null"><a class="header" href="#null">Null</a></h3>
 <p>Değer yokluğu:</p>
-<pre><code class="language-berk">değişken değer = null
-değişken sonuç: Sayı? = null  // Nullable tip
+<pre><code class="language-berk">variable değer = null
+variable sonuç: Sayı? = null  // Nullable tip
 </code></pre>
 <h2 id="koleksiyon-tipleri"><a class="header" href="#koleksiyon-tipleri">Koleksiyon Tipleri</a></h2>
 <h3 id="liste-list"><a class="header" href="#liste-list">Liste (List)</a></h3>
 <p>Sıralı elemanlar koleksiyonu:</p>
-<pre><code class="language-berk">değişken sayılar = [1, 2, 3, 4, 5]
-değişken isimler: Liste&lt;Yazı&gt; = ["Ahmet", "Mehmet", "Ayşe"]
-değişken karışık = [1, "iki", 3.0, doğru]  // Mixed types
+<pre><code class="language-berk">variable sayılar = [1, 2, 3, 4, 5]
+variable isimler: Liste&lt;string&gt; = ["Ahmet", "Mehmet", "Ayşe"]
+variable karışık = [1, "iki", 3.0, true]  // Mixed types
 
 // Erişim
-yazdır(sayılar[0])   // 1
-yazdır(isimler[2])   // Ayşe
+print(sayılar[0])   // 1
+print(isimler[2])   // Ayşe
 
 // Değiştirme
 sayılar[0] = 10
 
 // Uzunluk
-yazdır(sayılar.uzunluk)  // 5
+print(sayılar.uzunluk)  // 5
 </code></pre>
 <p>Liste metodları:</p>
-<pre><code class="language-berk">değişken liste = [1, 2, 3]
+<pre><code class="language-berk">variable liste = [1, 2, 3]
 
 liste.ekle(4)           // [1, 2, 3, 4]
 liste.çıkar(1)          // [1, 3, 4]
-liste.içerir(3)         // doğru
+liste.içerir(3)         // true
 liste.temizle()         // []
 </code></pre>
 <h3 id="demet-tuple"><a class="header" href="#demet-tuple">Demet (Tuple)</a></h3>
-<p>Sabit boyutlu, farklı tipli elemanlar:</p>
-<pre><code class="language-berk">değişken konum = (41.0082, 28.9784)  // (lat, lon)
-değişken kişi = ("Ahmet", 30, "İstanbul")
+<p>constant boyutlu, farklı tipli elemanlar:</p>
+<pre><code class="language-berk">variable konum = (41.0082, 28.9784)  // (lat, lon)
+variable kişi = ("Ahmet", 30, "İstanbul")
 
 // Destructuring
-değişken (lat, lon) = konum
-değişken (ad, yaş, şehir) = kişi
+variable (lat, lon) = konum
+variable (ad, yaş, şehir) = kişi
 
 // İndeks erişimi
-yazdır(konum.0)  // 41.0082
-yazdır(kişi.1)   // 30
+print(konum.0)  // 41.0082
+print(kişi.1)   // 30
 </code></pre>
 <h3 id="harita-mapdictionary"><a class="header" href="#harita-mapdictionary">Harita (Map/Dictionary)</a></h3>
 <p>Anahtar-değer çiftleri:</p>
-<pre><code class="language-berk">değişken sözlük = {
+<pre><code class="language-berk">variable sözlük = {
     "ad": "Ahmet",
     "yaş": 30,
     "şehir": "İstanbul"
 }
 
 // Erişim
-yazdır(sözlük["ad"])  // Ahmet
+print(sözlük["ad"])  // Ahmet
 
 // Ekleme/Güncelleme
 sözlük["meslek"] = "Mühendis"
 sözlük["yaş"] = 31
 
 // Kontrol
-eğer sözlük.içerir("ad") {
-    yazdır("Ad bulundu")
+if sözlük.içerir("ad") {
+    print("Ad bulundu")
 }
 
 // Tip belirtimi
-değişken notlar: Harita&lt;Yazı, Sayı&gt; = {
-    "Matematik": 85,
+variable notlar: Harita&lt;string, Sayı&gt; = {
+    "Mathematics": 85,
     "Fizik": 90,
     "Kimya": 78
 }
 </code></pre>
 <h3 id="küme-set"><a class="header" href="#küme-set">Küme (Set)</a></h3>
 <p>Benzersiz elemanlar koleksiyonu:</p>
-<pre><code class="language-berk">değişken kume = {1, 2, 3, 3, 2, 1}  // {1, 2, 3}
+<pre><code class="language-berk">variable kume = {1, 2, 3, 3, 2, 1}  // {1, 2, 3}
 
 kume.ekle(4)      // {1, 2, 3, 4}
 kume.çıkar(2)     // {1, 3, 4}
-kume.içerir(3)    // doğru
+kume.içerir(3)    // true
 
 // Set işlemleri
-değişken a = {1, 2, 3}
-değişken b = {2, 3, 4}
+variable a = {1, 2, 3}
+variable b = {2, 3, 4}
 
-değişken birleşim = a | b     // {1, 2, 3, 4}
-değişken kesişim = a &amp; b      // {2, 3}
-değişken fark = a - b         // {1}
+variable birleşim = a | b     // {1, 2, 3, 4}
+variable kesişim = a &amp; b      // {2, 3}
+variable fark = a - b         // {1}
 </code></pre>
 <h2 id="struct-tipleri"><a class="header" href="#struct-tipleri">Struct Tipleri</a></h2>
 <p>Özel veri yapıları tanımlama:</p>
 <pre><code class="language-berk">tür Kişi = struct {
-    ad: Yazı,
+    ad: string,
     yaş: Sayı,
-    email: Yazı
+    email: string
 }
 
 // Instance oluşturma
-değişken kişi = Kişi {
+variable kişi = Kişi {
     ad: "Ahmet",
     yaş: 30,
     email: "ahmet@example.com"
 }
 
 // Alan erişimi
-yazdır(kişi.ad)      // Ahmet
-yazdır(kişi.yaş)     // 30
+print(kişi.ad)      // Ahmet
+print(kişi.yaş)     // 30
 
 // Güncelleme
 kişi.yaş = 31
 </code></pre>
 <h2 id="enum-tipleri"><a class="header" href="#enum-tipleri">Enum Tipleri</a></h2>
-<p>Sabit değerler kümesi:</p>
+<p>constant değerler kümesi:</p>
 <pre><code class="language-berk">tür Renk = enum {
     Kırmızı,
     Yeşil,
     Mavi
 }
 
-değişken favori = Renk.Kırmızı
+variable favori = Renk.Kırmızı
 
 eş favori {
-    Renk.Kırmızı =&gt; yazdır("Kırmızı seçildi"),
-    Renk.Yeşil =&gt; yazdır("Yeşil seçildi"),
-    Renk.Mavi =&gt; yazdır("Mavi seçildi")
+    Renk.Kırmızı =&gt; print("Kırmızı seçildi"),
+    Renk.Yeşil =&gt; print("Yeşil seçildi"),
+    Renk.Mavi =&gt; print("Mavi seçildi")
 }
 </code></pre>
 <p>Enum değerlerle:</p>
@@ -347,27 +347,27 @@ eş favori {
     Sunucu Hatası = 500
 }
 
-değişken durum = HttpDurum.Tamam
-yazdır(durum.değer)  // 200
+variable durum = HttpDurum.Tamam
+print(durum.değer)  // 200
 </code></pre>
 <h2 id="sonuç-tipi-result"><a class="header" href="#sonuç-tipi-result">Sonuç Tipi (Result)</a></h2>
-<p>Hata yönetimi için:</p>
+<p>Hata yönetimi for:</p>
 <pre><code class="language-berk">tür Sonuç&lt;T, E&gt; = enum {
     Tamam(T),
     Hata(E)
 }
 
-işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
-    eğer b == 0 {
-        hata dön "Sıfıra bölme!"
+işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, string&gt; {
+    if b == 0 {
+        hata return "Sıfıra bölme!"
     }
-    tamam dön a / b
+    tamam return a / b
 }
 
-değişken sonuç = böl(10, 2)
+variable sonuç = böl(10, 2)
 eş sonuç {
-    Tamam(değer) =&gt; yazdır("Sonuç: ", değer),
-    Hata(mesaj) =&gt; yazdır("HATA: ", mesaj)
+    Tamam(değer) =&gt; print("Sonuç: ", değer),
+    Hata(mesaj) =&gt; print("HATA: ", mesaj)
 }
 </code></pre>
 <h2 id="seçenek-tipi-option"><a class="header" href="#seçenek-tipi-option">Seçenek Tipi (Option)</a></h2>
@@ -378,115 +378,115 @@ eş sonuç {
 }
 
 işlev bul(liste: Liste&lt;Sayı&gt;, hedef: Sayı) -&gt; Seçenek&lt;Sayı&gt; {
-    döngü i 0'dan liste.uzunluk'a kadar {
-        eğer liste[i] == hedef {
-            geri dön Bazı(i)
+    loop i 0'dan liste.uzunluk'a kadar {
+        if liste[i] == hedef {
+            geri return Bazı(i)
         }
     }
-    geri dön Hiç
+    geri return Hiç
 }
 
-değişken indeks = bul([1, 2, 3, 4], 3)
+variable indeks = bul([1, 2, 3, 4], 3)
 eş indeks {
-    Bazı(i) =&gt; yazdır("Bulundu: ", i),
-    Hiç =&gt; yazdır("Bulunamadı")
+    Bazı(i) =&gt; print("Bulundu: ", i),
+    Hiç =&gt; print("Bulunamadı")
 }
 </code></pre>
 <h2 id="tip-dönüşümleri"><a class="header" href="#tip-dönüşümleri">Tip Dönüşümleri</a></h2>
 <h3 id="açık-dönüşüm-casting"><a class="header" href="#açık-dönüşüm-casting">Açık Dönüşüm (Casting)</a></h3>
-<pre><code class="language-berk">değişken x = 10
-değişken y = x as Ondalık  // 10.0
+<pre><code class="language-berk">variable x = 10
+variable y = x as float  // 10.0
 
-değişken metin = "42"
-değişken sayı = metin.parse&lt;Sayı&gt;()  // 42
+variable metin = "42"
+variable sayı = metin.parse&lt;Sayı&gt;()  // 42
 </code></pre>
 <h3 id="tip-kontrol"><a class="header" href="#tip-kontrol">Tip Kontrol</a></h3>
-<pre><code class="language-berk">değişken değer: Any = "Hello"
+<pre><code class="language-berk">variable değer: Any = "Hello"
 
-eğer değer is Yazı {
-    yazdır("Bu bir string")
+if değer is string {
+    print("Bu bir string")
 }
 
-eğer değer is Sayı {
-    yazdır("Bu bir sayı")
+if değer is Sayı {
+    print("Bu bir sayı")
 }
 </code></pre>
 <h2 id="tip-takma-adları-type-alias"><a class="header" href="#tip-takma-adları-type-alias">Tip Takma Adları (Type Alias)</a></h2>
 <pre><code class="language-berk">tür KullanıcıID = Sayı
-tür Email = Yazı
+tür Email = string
 tür Koordinat = (Sayı, Sayı)
 
-değişken id: KullanıcıID = 12345
-değişken email: Email = "user@example.com"
-değişken konum: Koordinat = (41.0, 29.0)
+variable id: KullanıcıID = 12345
+variable email: Email = "user@example.com"
+variable konum: Koordinat = (41.0, 29.0)
 </code></pre>
-<h2 id="boyutlar-ve-sınırlar"><a class="header" href="#boyutlar-ve-sınırlar">Boyutlar ve Sınırlar</a></h2>
-<pre><code class="language-berk">sabit SAYI_MIN = -9223372036854775808  // i64 min
-sabit SAYI_MAX = 9223372036854775807   // i64 max
+<h2 id="boyutlar-and-sınırlar"><a class="header" href="#boyutlar-and-sınırlar">Boyutlar and Sınırlar</a></h2>
+<pre><code class="language-berk">constant SAYI_MIN = -9223372036854775808  // i64 min
+constant SAYI_MAX = 9223372036854775807   // i64 max
 
-sabit ONDALIK_MIN = -1.7976931348623157e+308  // f64 min
-sabit ONDALIK_MAX = 1.7976931348623157e+308   // f64 max
+constant ONDALIK_MIN = -1.7976931348623157e+308  // f64 min
+constant ONDALIK_MAX = 1.7976931348623157e+308   // f64 max
 
-sabit YAZI_MAX_UZUNLUK = 2147483647  // ~2GB
+constant YAZI_MAX_UZUNLUK = 2147483647  // ~2GB
 </code></pre>
 <h2 id="tip-Çıkarımı"><a class="header" href="#tip-Çıkarımı">Tip Çıkarımı</a></h2>
 <p>BERK güçlü tip çıkarımı yapar:</p>
 <pre><code class="language-berk">// Tip otomatik belirlenir
-değişken sayı = 42            // Sayı
-değişken pi = 3.14            // Ondalık
-değişken isim = "Ahmet"       // Yazı
-değişken doğru_mu = doğru     // Boolean
-değişken liste = [1, 2, 3]    // Liste&lt;Sayı&gt;
+variable sayı = 42            // Sayı
+variable pi = 3.14            // float
+variable isim = "Ahmet"       // string
+variable doğru_mu = true     // Boolean
+variable liste = [1, 2, 3]    // Liste&lt;Sayı&gt;
 
 // Karmaşık çıkarımlar
-değişken harita = {           // Harita&lt;Yazı, Sayı&gt;
+variable harita = {           // Harita&lt;string, Sayı&gt;
     "a": 1,
     "b": 2
 }
 
-değişken fonksiyon = (x) =&gt; x * 2  // (Sayı) -&gt; Sayı
+variable function = (x) =&gt; x * 2  // (Sayı) -&gt; Sayı
 </code></pre>
 <h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
 <h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Yapılması Gerekenler</a></h3>
 <pre><code class="language-berk">// Açık tip belirtimi karmaşık durumlarda
-değişken kullanıcılar: Liste&lt;Kullanıcı&gt; = []
+variable kullanıcılar: Liste&lt;Kullanıcı&gt; = []
 
-// Immutable veri için const kullan
-sabit API_ANAHTARI = "gizli_anahtar"
+// Immutable veri for const kullan
+constant API_ANAHTARI = "gizli_anahtar"
 
-// Result tipi hata yönetimi için
-işlev dosya_oku(yol: Yazı) -&gt; Sonuç&lt;Yazı, Hata&gt; { ... }
+// Result tipi hata yönetimi for
+işlev dosya_oku(yol: string) -&gt; Sonuç&lt;string, Hata&gt; { ... }
 </code></pre>
 <h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Kaçınılması Gerekenler</a></h3>
 <pre><code class="language-berk">// Gereksiz tip belirtimi
-değişken x: Sayı = 10  // "değişken x = 10" yeterli
+variable x: Sayı = 10  // "variable x = 10" yeterli
 
 // Any tipini fazla kullanmak
-değişken karışık: Any = ...  // Mümkünse spesifik tip kullan
+variable karışık: Any = ...  // Mümkünse spesifik tip kullan
 
 // Null yerine Option kullan
-değişken değer = null  // Option&lt;T&gt; tercih et
+variable değer = null  // Option&lt;T&gt; tercih et
 </code></pre>
 <h2 id="Örnek-tüm-tipler"><a class="header" href="#Örnek-tüm-tipler">Örnek: Tüm Tipler</a></h2>
 <pre><code class="language-berk">işlev ana() {
     // Temel tipler
-    değişken sayı: Sayı = 42
-    değişken ondalık: Ondalık = 3.14
-    değişken metin: Yazı = "Hello"
-    değişken bool: Boolean = doğru
+    variable sayı: Sayı = 42
+    variable float: float = 3.14
+    variable metin: string = "Hello"
+    variable bool: Boolean = true
     
     // Koleksiyonlar
-    değişken liste: Liste&lt;Sayı&gt; = [1, 2, 3]
-    değişken demet: (Sayı, Yazı) = (1, "bir")
-    değişken harita: Harita&lt;Yazı, Sayı&gt; = {"a": 1}
-    değişken küme: Küme&lt;Sayı&gt; = {1, 2, 3}
+    variable liste: Liste&lt;Sayı&gt; = [1, 2, 3]
+    variable demet: (Sayı, string) = (1, "bir")
+    variable harita: Harita&lt;string, Sayı&gt; = {"a": 1}
+    variable küme: Küme&lt;Sayı&gt; = {1, 2, 3}
     
     // Özel tipler
     tür Nokta = struct { x: Sayı, y: Sayı }
-    değişken p = Nokta { x: 10, y: 20 }
+    variable p = Nokta { x: 10, y: 20 }
     
     // Sonuç tipi
-    değişken sonuç: Sonuç&lt;Sayı, Yazı&gt; = Tamam(42)
+    variable sonuç: Sonuç&lt;Sayı, string&gt; = Tamam(42)
 }
 </code></pre>
 <h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Bir Sonraki</a></h2>

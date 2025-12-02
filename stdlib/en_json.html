@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>json - JSON Isleme - BERK Programlama Dili</title>
+        <title>json - JSON Isleme - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,28 +192,28 @@
             <h1>📦 json - JSON İşleme</h1>
             <p>Parse, Stringify, Schema Validation</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">51</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">51</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1204</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">37.1 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar json
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import json
 
 // Parse JSON
-değişken json_str = '{"isim": "BERK", "versiyon": 1.4, "aktif": doğru}'
-değişken veri = json.parse(json_str)
-yazdır(veri["isim"])  // "BERK"
+variable json_str = '{"isim": "BERK", "versiyon": 1.4, "aktif": true}'
+variable veri = json.parse(json_str)
+print(veri["isim"])  // "BERK"
 
 // Stringify
-değişken nesne = {
+variable nesne = {
     "kullanıcı": "ahmet",
     "yaş": 25,
     "diller": ["BERK", "Python", "Rust"]
 }
-değişken json_çıktı = json.stringify(nesne)
-değişken json_güzel = json.stringify(nesne, 2)  // Pretty print</code></pre>
+variable json_çıktı = json.stringify(nesne)
+variable json_güzel = json.stringify(nesne, 2)  // Pretty print</code></pre>
 
         <h2>📚 Özellikler</h2>
         <ul>
@@ -224,27 +224,27 @@ değişken json_güzel = json.stringify(nesne, 2)  // Pretty print</code></pre>
             <li><strong>Stream:</strong> Large JSON files</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Config File Manager</h3>
-            <pre><code>içe_aktar json, fs
+            <pre><code>import json, fs
 
-fonksiyon config_oku(dosya: yazı) -> Sonuç yap
-    değişken içerik = fs.dosya_oku(dosya)?
-    değişken config = json.parse(içerik)?
-    dön Tamam(config)
-son
+function config_oku(dosya: string) -> Sonuç do
+    variable içerik = fs.dosya_oku(dosya)?
+    variable config = json.parse(içerik)?
+    return Tamam(config)
+end
 
-fonksiyon config_yaz(dosya: yazı, config: Obje) -> Sonuç yap
-    değişken json_str = json.stringify(config, 2)
+function config_yaz(dosya: string, config: Obje) -> Sonuç do
+    variable json_str = json.stringify(config, 2)
     fs.dosya_yaz(dosya, json_str)?
-    dön Tamam(yok)
-son
+    return Tamam(yok)
+end
 
-// Kullanım
-değişken config = config_oku("config.json")?
-config["debug"] = doğru
+// Usage
+variable config = config_oku("config.json")?
+config["debug"] = true
 config_yaz("config.json", config)?</code></pre>
         </div>
 

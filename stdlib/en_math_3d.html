@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>math_3d - 3D Matematik - BERK Programlama Dili</title>
+        <title>math_3d - 3D Mathematics - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -191,17 +191,17 @@
                                             <main>
 
                                                 <div class="module-header">
-            <h1>📐 math_3d - 3D Matematik</h1>
-            <p>3D vektörler, matrisler, quaternion'lar ve dönüşümler</p>
+            <h1>📐 math_3d - 3D Mathematics</h1>
+            <p>3D vektörler, matrisler, quaternion'lar and dönüşümler</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 63 Fonksiyon</span>
+                <span class="stat-badge">📦 63 function</span>
                 <span class="stat-badge">📝 593 Satır</span>
                 <span class="stat-badge">💾 16.2 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>math_3d</code> modülü, 3D grafik ve oyun geliştirme için vektör matematiği, matris işlemleri ve dönüşümler sağlar.</p>
+        <p><code>math_3d</code> modülü, 3D grafik and oyun geliştirme for vektör matematiği, matris işlemleri and dönüşümler sağlar.</p>
 
         <div class="function-group">
             <h3>📊 3D Vektörler</h3>
@@ -232,19 +232,19 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>3D Kamera Sistemi</h3>
             <pre><code class="language-berk">kullan math_3d
 
-sınıf Kamera {
+class Kamera {
     değer konum: math_3d.Vec3
     değer yön: math_3d.Vec3
     değer yukarı: math_3d.Vec3
     
-    fonksiyon görüntüleme_matrisi() -> math_3d.Mat4 {
-        dön math_3d.bakış_matrisi(bu.konum, bu.yön, bu.yukarı)
+    function görüntüleme_matrisi() -> math_3d.Mat4 {
+        return math_3d.bakış_matrisi(bu.konum, bu.yön, bu.yukarı)
     }
 }
 
@@ -255,12 +255,12 @@ değer kamera = Kamera {
 }
 
 değer görüntü = kamera.görüntüleme_matrisi()
-yazdır("✓ Kamera matrisi oluşturuldu")</code></pre>
+print("✓ Kamera matrisi oluşturuldu")</code></pre>
         </div>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
-            <li><a href="math.html">math</a> - Temel matematik</li>
+            <li><a href="math.html">math</a> - Temel Mathematics</li>
             <li><a href="linalg.html">linalg</a> - Doğrusal cebir</li>
             <li><a href="cad3d.html">cad3d</a> - 3D modelleme</li>
         </ul>

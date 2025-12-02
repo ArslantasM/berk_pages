@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-std - HAL Module - BERK Programlama Dili</title>
+        <title>hal-std - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -201,45 +201,45 @@
 <p>HAL standard library: common types, error codes, utilities.</p>
 
 <h2>📦 Common Types</h2>
-<pre><code>içe_aktar hal::std
+<pre><code>import hal::std
 
 // Result type
-enum HalResult[T] yap
+enum HalResult[T] do
     Ok(T),
     Err(HalError)
-son
+end
 
 // Error codes
-enum HalError yap
+enum HalError do
     HAL_OK,
     HAL_ERROR,
     HAL_BUSY,
     HAL_TIMEOUT,
     HAL_UNSUPPORTED
-son
+end
 
 // Handle types
-yapı GpioHandle yap
+struct GpioHandle do
     port: Port,
     pin: sayı,
     config: PinConfig
-son
+end
 
-yapı TimerHandle yap
+struct TimerHandle do
     instance: Timer,
     channel: Channel,
     frequency: sayı
-son</code></pre>
+end</code></pre>
 
 <h2>🛠️ Utilities</h2>
 <pre><code>// Bit manipulation
-fonksiyon set_bit(reg: *u32, bit: sayı)
-fonksiyon clear_bit(reg: *u32, bit: sayı)
-fonksiyon toggle_bit(reg: *u32, bit: sayı)
+function set_bit(reg: *u32, bit: sayı)
+function clear_bit(reg: *u32, bit: sayı)
+function toggle_bit(reg: *u32, bit: sayı)
 
 // Conversion helpers
-fonksiyon voltage_to_adc(voltage: kesir) -> u16
-fonksiyon adc_to_voltage(adc_value: u16) -> kesir</code></pre>
+function voltage_to_adc(voltage: kesir) -> u16
+function adc_to_voltage(adc_value: u16) -> kesir</code></pre>
 
 <p style="text-align:center;margin-top:40px">
 <a href="hal-index-tr.html">← HAL Modülleri</a>

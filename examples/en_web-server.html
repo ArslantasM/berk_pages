@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -186,18 +186,18 @@
 <pre><code class="language-berk">import http
 
 işlev ana() {
-    değişken sunucu = http.sunucu_oluştur()
+    variable sunucu = http.sunucu_oluştur()
     
     sunucu.rota("/", (istek, yanıt) =&gt; {
         yanıt.gönder("Merhaba Dünya!")
     })
     
     sunucu.rota("/api/zaman", (istek, yanıt) =&gt; {
-        değişken şimdi = time.now()
+        variable şimdi = time.now()
         yanıt.json({ "zaman": şimdi })
     })
     
-    yazdır("Sunucu başlatıldı: http://localhost:3000")
+    print("Sunucu başlatıldı: http://localhost:3000")
     sunucu.dinle(3000)
 }
 </code></pre>
@@ -206,14 +206,14 @@ işlev ana() {
 
 tür Kullanıcı = struct {
     id: Sayı,
-    ad: Yazı,
-    email: Yazı
+    ad: string,
+    email: string
 }
 
-değişken kullanıcılar: Liste&lt;Kullanıcı&gt; = []
+variable kullanıcılar: Liste&lt;Kullanıcı&gt; = []
 
 işlev ana() {
-    değişken app = http.sunucu_oluştur()
+    variable app = http.sunucu_oluştur()
     
     // Tüm kullanıcıları getir
     app.get("/api/kullanıcılar", (req, res) =&gt; {
@@ -222,7 +222,7 @@ işlev ana() {
     
     // Yeni kullanıcı ekle
     app.post("/api/kullanıcılar", (req, res) =&gt; {
-        değişken yeni = json.parse&lt;Kullanıcı&gt;(req.body)
+        variable yeni = json.parse&lt;Kullanıcı&gt;(req.body)
         kullanıcılar.ekle(yeni)
         res.json(yeni)
     })
@@ -234,13 +234,13 @@ işlev ana() {
 <pre><code class="language-berk">import ws
 
 işlev ana() {
-    değişken sunucu = ws.sunucu_oluştur()
+    variable sunucu = ws.sunucu_oluştur()
     
     sunucu.bağlantı((socket) =&gt; {
-        yazdır("Yeni bağlantı")
+        print("Yeni bağlantı")
         
         socket.mesaj((data) =&gt; {
-            yazdır("Alındı: ", data)
+            print("Alındı: ", data)
             socket.gönder("Echo: " + data)
         })
     })

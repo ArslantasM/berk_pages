@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>cad3d - 3D CAD Modelleme - BERK Programlama Dili</title>
+        <title>cad3d - 3D CAD Modelleme - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -191,17 +191,17 @@
                                             <main>
 
                                                 <div class="module-header">
-            <h1>🏗️ cad3d - 3D CAD ve Modelleme</h1>
-            <p>3D katı modelleme, CSG operasyonları ve teknik çizim</p>
+            <h1>🏗️ cad3d - 3D CAD and Modelleme</h1>
+            <p>3D katı modelleme, CSG operasyonları and teknik çizim</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 118 Fonksiyon</span>
+                <span class="stat-badge">📦 118 function</span>
                 <span class="stat-badge">📝 1599 Satır</span>
                 <span class="stat-badge">💾 52.8 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>cad3d</code> modülü, 3D katı modelleme, CSG (Constructive Solid Geometry) operasyonları ve parametrik tasarım için araçlar sağlar. STL, OBJ, STEP formatlarını destekler.</p>
+        <p><code>cad3d</code> modülü, 3D katı modelleme, CSG (Constructive Solid Geometry) operasyonları and parametrik tasarım for araçlar sağlar. STL, OBJ, STEP formatlarını destekler.</p>
 
         <div class="function-group">
             <h3>📦 Temel Şekiller</h3>
@@ -252,7 +252,7 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>Basit Mekanik Parça</h3>
@@ -265,7 +265,7 @@ değer gövde = cad3d.Küp(
     yükseklik: 10.0
 )
 
-// Delikler için silindirler
+// Delikler for silindirler
 değer delik1 = cad3d.Silindir(
     yarıçap: 4.0,
     yükseklik: 12.0
@@ -283,7 +283,7 @@ değer parça = gövde
 
 // STL dosyası olarak kaydet
 cad3d.stl_dışa_aktar(parça, "mekanik_parça.stl")
-yazdır("✓ Parça oluşturuldu: mekanik_parça.stl")</code></pre>
+print("✓ Parça oluşturuldu: mekanik_parça.stl")</code></pre>
         </div>
 
         <div class="example-box">
@@ -291,7 +291,7 @@ yazdır("✓ Parça oluşturuldu: mekanik_parça.stl")</code></pre>
             <pre><code class="language-berk">kullan cad3d
 kullan math
 
-fonksiyon vida_oluştur(
+function vida_oluştur(
     çap: Gerçek,
     uzunluk: Gerçek,
     adım: Gerçek,
@@ -317,12 +317,12 @@ fonksiyon vida_oluştur(
         kenar_sayısı: 6
     ).öteleme(0.0, 0.0, uzunluk + çap * 0.3)
     
-    // Parçaları birleştir ve yuvayı çıkar
+    // Parçaları birleştir and yuvayı çıkar
     değer vida = gövde
         .birleştir(başı)
         .çıkar(yuva)
     
-    dön vida
+    return vida
 }
 
 // M6 vida oluştur
@@ -334,14 +334,14 @@ değer m6_vida = vida_oluştur(
 )
 
 cad3d.stl_dışa_aktar(m6_vida, "m6_vida.stl")
-yazdır("✓ M6 vida oluşturuldu")</code></pre>
+print("✓ M6 vida oluşturuldu")</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Kutu Tasarımı (Kapak ile)</h3>
             <pre><code class="language-berk">kullan cad3d
 
-fonksiyon kutu_tasarla(
+function kutu_tasarla(
     genişlik: Gerçek,
     derinlik: Gerçek,
     yükseklik: Gerçek,
@@ -376,7 +376,7 @@ fonksiyon kutu_tasarla(
     // Kapağı kutunun üstüne yerleştir
     kapak = kapak.öteleme(0.0, 0.0, yükseklik)
     
-    dön (alt_kutu, kapak)
+    return (alt_kutu, kapak)
 }
 
 // 100x80x50mm kutu oluştur
@@ -391,25 +391,25 @@ değer (kutu, kapak) = kutu_tasarla(
 cad3d.stl_dışa_aktar(kutu, "kutu_alt.stl")
 cad3d.stl_dışa_aktar(kapak, "kutu_kapak.stl")
 
-yazdır("✓ Kutu ve kapak oluşturuldu")
-yazdır("  - kutu_alt.stl")
-yazdır("  - kutu_kapak.stl")</code></pre>
+print("✓ Kutu and kapak oluşturuldu")
+print("  - kutu_alt.stl")
+print("  - kutu_kapak.stl")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
-            <li>3D yazıcı için duvar kalınlığı en az 2mm olmalı</li>
-            <li>Hareketli parçalar için 0.2-0.5mm tolerans bırakın</li>
+            <li>3D yazıcı for duvar kalınlığı en az 2mm olmalı</li>
+            <li>Hareketli parçalar for 0.2-0.5mm tolerans bırakın</li>
             <li>Karmaşık modelleri basit şekillere bölün</li>
             <li>Boolean operasyonlar sonrası mesh kalitesini kontrol edin</li>
             <li>STL export'ta yeterli çözünürlük kullanın</li>
-            <li>Parametrik tasarım için fonksiyonlar oluşturun</li>
+            <li>Parametrik tasarım for Functions oluşturun</li>
         </ul>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
             <li><a href="mesh.html">mesh</a> - Mesh işlemleri</li>
-            <li><a href="math_3d.html">math_3d</a> - 3D matematik</li>
+            <li><a href="math_3d.html">math_3d</a> - 3D Mathematics</li>
             <li><a href="graphics.html">graphics</a> - Render</li>
         </ul>
     </div>

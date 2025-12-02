@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -185,32 +185,32 @@
 <h2 id="metin-analizi"><a class="header" href="#metin-analizi">Metin Analizi</a></h2>
 <pre><code class="language-berk">import string
 
-işlev kelime_sayısı(metin: Yazı) -&gt; Sayı {
-    değişken kelimeler = metin.böl(" ")
-    geri dön kelimeler.uzunluk
+işlev kelime_sayısı(metin: string) -&gt; Sayı {
+    variable kelimeler = metin.böl(" ")
+    geri return kelimeler.uzunluk
 }
 
 işlev ana() {
-    değişken metin = "BERK modern bir programlama dilidir"
+    variable metin = "BERK modern bir programlama dilidir"
     
-    yazdır("Kelime sayısı: ", kelime_sayısı(metin))
-    yazdır("Karakter sayısı: ", metin.uzunluk)
-    yazdır("Büyük harf: ", metin.büyük_harf())
+    print("Kelime sayısı: ", kelime_sayısı(metin))
+    print("Karakter sayısı: ", metin.uzunluk)
+    print("Büyük harf: ", metin.büyük_harf())
 }
 </code></pre>
 <h2 id="palindrom-kontrolü"><a class="header" href="#palindrom-kontrolü">Palindrom Kontrolü</a></h2>
-<pre><code class="language-berk">işlev palindrom_mu(metin: Yazı) -&gt; Boolean {
-    değişken temiz = metin.küçük_harf().sadece_harf()
-    değişken ters = temiz.ters()
-    geri dön temiz == ters
+<pre><code class="language-berk">işlev palindrom_mu(metin: string) -&gt; Boolean {
+    variable temiz = metin.küçük_harf().sadece_harf()
+    variable ters = temiz.ters()
+    geri return temiz == ters
 }
 
 işlev ana() {
-    değişken kelimeler = ["kayak", "radar", "merhaba", "ey edip adana da pide ye"]
+    variable kelimeler = ["kayak", "radar", "merhaba", "ey edip adana da pide ye"]
     
-    döngü kelime kelimelerde {
-        eğer palindrom_mu(kelime) {
-            yazdır(kelime, " bir palindromdur")
+    loop kelime kelimelerde {
+        if palindrom_mu(kelime) {
+            print(kelime, " bir palindromdur")
         }
     }
 }
@@ -219,11 +219,11 @@ işlev ana() {
 <pre><code class="language-berk">import fmt
 
 işlev ana() {
-    değişken isim = "Ahmet"
-    değişken yaş = 25
-    değişken maaş = 12500.50
+    variable isim = "Ahmet"
+    variable yaş = 25
+    variable maaş = 12500.50
     
-    yazdır(fmt.format("Ad: {}, Yaş: {}, Maaş: {:.2f} TL", isim, yaş, maaş))
+    print(fmt.format("Ad: {}, Yaş: {}, Maaş: {:.2f} TL", isim, yaş, maaş))
 }
 </code></pre>
 

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>physics2d - 2D Fizik Motoru - BERK Programlama Dili</title>
+        <title>physics2d - 2D Fizik Motoru - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,16 +192,16 @@
 
                                                 <div class="module-header">
             <h1>⚙️ physics2d - 2D Fizik Motoru</h1>
-            <p>Gerçekçi 2D fizik simülasyonu, çarpışma tespiti ve dinamik nesneler</p>
+            <p>Gerçekçi 2D fizik simülasyonu, çarpışma tespiti and dinamik nesneler</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 192 Fonksiyon</span>
+                <span class="stat-badge">📦 192 function</span>
                 <span class="stat-badge">📝 3317 Satır</span>
                 <span class="stat-badge">💾 109.7 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>physics2d</code> modülü, oyunlar ve simülasyonlar için tam özellikli 2D fizik motoru sağlar. Rijit cisim dinamiği, çarpışma tespiti, kuvvetler, tork ve eklemler içerir.</p>
+        <p><code>physics2d</code> modülü, oyunlar and simülasyonlar for tam özellikli 2D fizik motoru sağlar. Rijit cisim dinamiği, çarpışma tespiti, kuvvetler, tork and eklemler içerir.</p>
 
         <div class="function-group">
             <h3>🌍 Fizik Dünyası</h3>
@@ -217,15 +217,15 @@
             <h3>📦 Rijit Cisimler</h3>
             <ul>
                 <li><strong>physics2d.RijitCisim()</strong> - Dinamik nesne oluşturma</li>
-                <li><strong>physics2d.StatikCisim()</strong> - Sabit nesne (zemin, duvar)</li>
-                <li><strong>physics2d.kütle_ayarla()</strong> - Kütle ve eylemsizlik</li>
+                <li><strong>physics2d.StatikCisim()</strong> - constant nesne (zemin, duvar)</li>
+                <li><strong>physics2d.kütle_ayarla()</strong> - Kütle and eylemsizlik</li>
                 <li><strong>physics2d.hız_ayarla()</strong> - Doğrusal hız</li>
                 <li><strong>physics2d.açısal_hız_ayarla()</strong> - Dönüş hızı</li>
             </ul>
         </div>
 
         <div class="function-group">
-            <h3>🔷 Şekiller ve Çarpışma</h3>
+            <h3>🔷 Şekiller and Çarpışma</h3>
             <ul>
                 <li><strong>physics2d.Kutu()</strong> - Dikdörtgen şekil</li>
                 <li><strong>physics2d.Daire()</strong> - Dairesel şekil</li>
@@ -237,7 +237,7 @@
         </div>
 
         <div class="function-group">
-            <h3>💪 Kuvvetler ve Tork</h3>
+            <h3>💪 Kuvvetler and Tork</h3>
             <ul>
                 <li><strong>physics2d.kuvvet_uygula()</strong> - Merkez kuvvet</li>
                 <li><strong>physics2d.impuls_uygula()</strong> - Anlık ivme</li>
@@ -250,13 +250,13 @@
             <h3>🔗 Eklemler (Joints)</h3>
             <ul>
                 <li><strong>physics2d.MenteşeEklemi()</strong> - Döner eklem</li>
-                <li><strong>physics2d.UzaklıkEklemi()</strong> - Sabit mesafe</li>
+                <li><strong>physics2d.UzaklıkEklemi()</strong> - constant mesafe</li>
                 <li><strong>physics2d.PistonEklemi()</strong> - Sürgülü eklem</li>
                 <li><strong>physics2d.YayEklemi()</strong> - Esnek bağlantı</li>
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>Basit Fizik Simülasyonu</h3>
@@ -286,7 +286,7 @@ değer canvas = graphics.Canvas(800, 600)
 değer fps = 60.0
 değer zaman_adımı = 1.0 / fps
 
-için kare içinde 0..300 {
+for kare içinde 0..300 {
     // Fizik güncelle
     dünya.güncelle(zaman_adımı)
     
@@ -295,7 +295,7 @@ için kare içinde 0..300 {
     
     // Zemin çiz
     canvas.dolgu_ayarla(color.SİYAH)
-    canvas.dikdörtgen(300, 500, 400, 10, dolgu: doğru)
+    canvas.dikdörtgen(300, 500, 400, 10, dolgu: true)
     
     // Kutu çiz
     değer kutu_konum = kutu.konum()
@@ -305,13 +305,13 @@ için kare içinde 0..300 {
     canvas.çevir(kutu_konum.x * 20 + 400, -kutu_konum.y * 20 + 300)
     canvas.döndür(kutu_açı)
     canvas.dolgu_ayarla(color.KIRMIZI)
-    canvas.dikdörtgen(-10, -10, 20, 20, dolgu: doğru)
+    canvas.dikdörtgen(-10, -10, 20, 20, dolgu: true)
     canvas.geri_yükle()
     
     canvas.png_olarak_kaydet(f"fizik_{kare:04}.png")
 }
 
-yazdır("✓ Simülasyon tamamlandı!")</code></pre>
+print("✓ Simülasyon tamamlandı!")</code></pre>
         </div>
 
         <div class="example-box">
@@ -319,33 +319,33 @@ yazdır("✓ Simülasyon tamamlandı!")</code></pre>
             <pre><code class="language-berk">kullan physics2d
 kullan math
 
-sınıf AngryBirdsOyun {
+class AngryBirdsOyun {
     değer dünya: physics2d.Dünya
     değer kuşlar: Liste&lt;physics2d.RijitCisim&gt;
     değer kutular: Liste&lt;physics2d.RijitCisim&gt;
     
-    fonksiyon yeni() -> AngryBirdsOyun {
+    function yeni() -> AngryBirdsOyun {
         değer dünya = physics2d.Dünya()
         dünya.yerçekimi_ayarla(0.0, -9.81)
         
-        dön AngryBirdsOyun {
+        return AngryBirdsOyun {
             dünya: dünya,
             kuşlar: [],
             kutular: []
         }
     }
     
-    fonksiyon zemin_oluştur() {
+    function zemin_oluştur() {
         değer zemin = physics2d.StatikCisim()
         zemin.şekil_ekle(physics2d.Kutu(genişlik: 50.0, yükseklik: 1.0))
         zemin.konum_ayarla(0.0, -10.0)
         bu.dünya.cisim_ekle(zemin)
     }
     
-    fonksiyon kule_inşa_et(x: Gerçek, y: Gerçek) {
+    function kule_inşa_et(x: Gerçek, y: Gerçek) {
         // 3 katlı kutu kulesi
-        için kat içinde 0..3 {
-            için sütun içinde 0..3 {
+        for kat içinde 0..3 {
+            for sütun içinde 0..3 {
                 değer kutu = physics2d.RijitCisim()
                 kutu.kütle_ayarla(0.5)
                 kutu.şekil_ekle(physics2d.Kutu(genişlik: 1.0, yükseklik: 1.0))
@@ -362,7 +362,7 @@ sınıf AngryBirdsOyun {
         }
     }
     
-    fonksiyon kuş_fırlat(hız_x: Gerçek, hız_y: Gerçek) {
+    function kuş_fırlat(hız_x: Gerçek, hız_y: Gerçek) {
         değer kuş = physics2d.RijitCisim()
         kuş.kütle_ayarla(2.0)
         kuş.şekil_ekle(physics2d.Daire(yarıçap: 0.5))
@@ -373,22 +373,22 @@ sınıf AngryBirdsOyun {
         bu.dünya.cisim_ekle(kuş)
         bu.kuşlar.ekle(kuş)
         
-        yazdır(f"🐦 Kuş fırlatıldı! Hız: ({hız_x:.1f}, {hız_y:.1f})")
+        print(f"🐦 Kuş fırlatıldı! Hız: ({hız_x:.1f}, {hız_y:.1f})")
     }
     
-    fonksiyon güncelle(delta_zaman: Gerçek) {
+    function güncelle(delta_zaman: Gerçek) {
         bu.dünya.güncelle(delta_zaman)
     }
     
-    fonksiyon yıkılma_kontrol() -> Tam {
+    function yıkılma_kontrol() -> Tam {
         değer yıkılan = 0
-        için kutu içinde bu.kutular {
+        for kutu içinde bu.kutular {
             değer konum = kutu.konum()
-            eğer konum.y < -5.0 {
+            if konum.y < -5.0 {
                 yıkılan += 1
             }
         }
-        dön yıkılan
+        return yıkılan
     }
 }
 
@@ -403,29 +403,29 @@ değer açı = math.radyan(45.0)
 oyun.kuş_fırlat(hız * math.cos(açı), hız * math.sin(açı))
 
 // Simülasyon
-için i içinde 0..300 {
+for i içinde 0..300 {
     oyun.güncelle(1.0 / 60.0)
     
-    eğer i % 60 == 0 {
+    if i % 60 == 0 {
         değer yıkılan = oyun.yıkılma_kontrol()
-        yazdır(f"⏱️  {i / 60}s - Yıkılan kutu: {yıkılan}")
+        print(f"⏱️  {i / 60}s - Yıkılan kutu: {yıkılan}")
     }
 }
 
 değer toplam_yıkılan = oyun.yıkılma_kontrol()
-yazdır(f"\n🎯 Sonuç: {toplam_yıkılan} kutu yıkıldı!")</code></pre>
+print(f"\n🎯 Sonuç: {toplam_yıkılan} kutu yıkıldı!")</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Araba Simülasyonu</h3>
             <pre><code class="language-berk">kullan physics2d
 
-sınıf Araba {
+class Araba {
     değer gövde: physics2d.RijitCisim
     değer tekerlekler: Liste&lt;physics2d.RijitCisim&gt;
     değer motor_gücü: Gerçek = 100.0
     
-    fonksiyon yeni(dünya: physics2d.Dünya, x: Gerçek, y: Gerçek) -> Araba {
+    function yeni(dünya: physics2d.Dünya, x: Gerçek, y: Gerçek) -> Araba {
         // Araba gövdesi
         değer gövde = physics2d.RijitCisim()
         gövde.kütle_ayarla(10.0)
@@ -436,7 +436,7 @@ sınıf Araba {
         // Tekerlekler
         değer tekerlekler = []
         
-        için (i, offset_x) içinde [(-1.2, "sol"), (1.2, "sağ")].numaralandır() {
+        for (i, offset_x) içinde [(-1.2, "sol"), (1.2, "sağ")].numaralandır() {
             değer tekerlek = physics2d.RijitCisim()
             tekerlek.kütle_ayarla(1.0)
             tekerlek.şekil_ekle(physics2d.Daire(yarıçap: 0.4))
@@ -450,35 +450,35 @@ sınıf Araba {
                 tekerlek,
                 bağlantı_noktası: (offset_x, -0.6)
             )
-            eklem.motor_aktif(doğru)
+            eklem.motor_aktif(true)
             dünya.eklem_ekle(eklem)
             
             tekerlekler.ekle(tekerlek)
         }
         
-        dön Araba {
+        return Araba {
             gövde: gövde,
             tekerlekler: tekerlekler,
             motor_gücü: 100.0
         }
     }
     
-    fonksiyon gaz_ver() {
-        için tekerlek içinde bu.tekerlekler {
+    function gaz_ver() {
+        for tekerlek içinde bu.tekerlekler {
             tekerlek.tork_uygula(bu.motor_gücü)
         }
     }
     
-    fonksiyon fren() {
-        için tekerlek içinde bu.tekerlekler {
+    function fren() {
+        for tekerlek içinde bu.tekerlekler {
             değer hız = tekerlek.açısal_hız()
             tekerlek.tork_uygula(-hız * 50.0)
         }
     }
     
-    fonksiyon konum() -> (Gerçek, Gerçek) {
+    function konum() -> (Gerçek, Gerçek) {
         değer konum = bu.gövde.konum()
-        dön (konum.x, konum.y)
+        return (konum.x, konum.y)
     }
 }
 
@@ -502,39 +502,39 @@ dünya.cisim_ekle(tepe)
 // Araba oluştur
 değer araba = Araba.yeni(dünya, -30.0, 0.0)
 
-yazdır("🚗 Araba simülasyonu başladı")
+print("🚗 Araba simülasyonu başladı")
 
-için i içinde 0..500 {
+for i içinde 0..500 {
     // İlk 3 saniye gaz ver
-    eğer i < 180 {
+    if i < 180 {
         araba.gaz_ver()
     }
     
     dünya.güncelle(1.0 / 60.0)
     
-    eğer i % 60 == 0 {
+    if i % 60 == 0 {
         değer (x, y) = araba.konum()
-        yazdır(f"⏱️  {i / 60}s - Konum: ({x:.1f}, {y:.1f})")
+        print(f"⏱️  {i / 60}s - Konum: ({x:.1f}, {y:.1f})")
     }
 }
 
-yazdır("✓ Simülasyon tamamlandı")</code></pre>
+print("✓ Simülasyon tamamlandı")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
-            <li>Sabit zaman adımı kullanın (örn: 1/60 saniye)</li>
+            <li>constant zaman adımı kullanın (örn: 1/60 saniye)</li>
             <li>Çarpışma katmanları ile performansı optimize edin</li>
-            <li>Çok hızlı nesneler için sürekli çarpışma tespiti aktifleştirin</li>
-            <li>Uygun sürtünme ve elastikiyet değerleri kullanın</li>
+            <li>Çok hızlı nesneler for sürekli çarpışma tespiti aktifleştirin</li>
+            <li>Uygun sürtünme and elastikiyet değerleri kullanın</li>
             <li>Çok karmaşık şekiller yerine basit şekiller birleştirin</li>
-            <li>Fizik ve render döngülerini ayırın</li>
+            <li>Fizik and render döngülerini ayırın</li>
         </ul>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
             <li><a href="graphics.html">graphics</a> - 2D çizim</li>
-            <li><a href="math.html">math</a> - Matematik fonksiyonları</li>
+            <li><a href="math.html">math</a> - Mathematics Functionsı</li>
             <li><a href="gui.html">gui</a> - Kullanıcı arayüzü</li>
         </ul>
     </div>

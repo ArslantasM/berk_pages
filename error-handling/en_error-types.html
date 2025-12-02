@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -183,63 +183,63 @@
                     <main>
                         <h1 id="hata-türleri"><a class="header" href="#hata-türleri">Hata Türleri</a></h1>
 <h2 id="result-tipi"><a class="header" href="#result-tipi">Result Tipi</a></h2>
-<p>Başarı veya hata döndüren fonksiyonlar:</p>
+<p>Başarı or hata döndüren Functions:</p>
 <pre><code class="language-berk">tür Sonuç&lt;T, E&gt; = enum {
     Tamam(T),
     Hata(E)
 }
 
-işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
-    eğer b == 0 {
-        hata dön "Sıfıra bölme"
+işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, string&gt; {
+    if b == 0 {
+        hata return "Sıfıra bölme"
     }
-    tamam dön a / b
+    tamam return a / b
 }
 
 eş böl(10, 2) {
-    Tamam(x) =&gt; yazdır("Sonuç: ", x),
-    Hata(e) =&gt; yazdır("Hata: ", e)
+    Tamam(x) =&gt; print("Sonuç: ", x),
+    Hata(e) =&gt; print("Hata: ", e)
 }
 </code></pre>
 <h2 id="option-tipi"><a class="header" href="#option-tipi">Option Tipi</a></h2>
-<p>Değer olabilir veya olmayabilir:</p>
+<p>Değer olabilir or olmayabilir:</p>
 <pre><code class="language-berk">tür Seçenek&lt;T&gt; = enum {
     Bazı(T),
     Hiç
 }
 
 işlev bul(liste: Liste&lt;Sayı&gt;, değer: Sayı) -&gt; Seçenek&lt;Sayı&gt; {
-    döngü (i, x) listede {
-        eğer x == değer {
-            geri dön Bazı(i)
+    loop (i, x) listede {
+        if x == değer {
+            geri return Bazı(i)
         }
     }
-    geri dön Hiç
+    geri return Hiç
 }
 </code></pre>
 <h2 id="Özel-hata-tipleri"><a class="header" href="#Özel-hata-tipleri">Özel Hata Tipleri</a></h2>
 <pre><code class="language-berk">tür DosyaHatası = enum {
-    Bulunamadı(Yazı),
+    Bulunamadı(string),
     İzinReddedildi,
-    Okuma Hatası(Yazı)
+    Okuma Hatası(string)
 }
 
-işlev dosya_oku(yol: Yazı) -&gt; Sonuç&lt;Yazı, DosyaHatası&gt; {
-    eğer !dosya_var(yol) {
-        hata dön DosyaHatası.Bulunamadı(yol)
+işlev dosya_oku(yol: string) -&gt; Sonuç&lt;string, DosyaHatası&gt; {
+    if !dosya_var(yol) {
+        hata return DosyaHatası.Bulunamadı(yol)
     }
     // ...
 }
 </code></pre>
 <h2 id="unwrap-metodları"><a class="header" href="#unwrap-metodları">Unwrap Metodları</a></h2>
-<pre><code class="language-berk">// Panic atar eğer hata varsa
-değişken değer = sonuç.unwrap()
+<pre><code class="language-berk">// Panic atar if hata varsa
+variable değer = sonuç.unwrap()
 
 // Varsayılan değer kullan
-değişken değer = sonuç.unwrap_or(0)
+variable değer = sonuç.unwrap_or(0)
 
 // Hata dönüştür
-değişken değer = sonuç.expect("Hesaplama başarısız")
+variable değer = sonuç.expect("Hesaplama başarısız")
 </code></pre>
 
                     </main>

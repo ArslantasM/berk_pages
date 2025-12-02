@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-pipe - HAL Module - BERK Programlama Dili</title>
+        <title>hal-pipe - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -198,23 +198,23 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Data pipes, stream processing ve buffering.</p>
+<p>Data pipes, stream processing and buffering.</p>
 
-<h2>🚀 Kullanım</h2>
-<pre><code>içe_aktar hal::pipe
+<h2>🚀 Usage</h2>
+<pre><code>import hal::pipe
 
 // Create pipe
-değişken pipe = pipe.create(1024)  // 1KB buffer
+variable pipe = pipe.create(1024)  // 1KB buffer
 
 // Write data
 pipe.write(pipe, [1, 2, 3, 4, 5])
 
 // Read data
-değişken data = pipe.read(pipe, 5)
+variable data = pipe.read(pipe, 5)
 
 // Pipe status
-değişken available = pipe.available(pipe)
-değişken is_full = pipe.is_full(pipe)
+variable available = pipe.available(pipe)
+variable is_full = pipe.is_full(pipe)
 
 // Clear pipe
 pipe.clear(pipe)</code></pre>

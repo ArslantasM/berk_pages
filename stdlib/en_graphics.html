@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>graphics - 2D Grafik - BERK Programlama Dili</title>
+        <title>graphics - 2D Grafik - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -189,17 +189,17 @@
                 <div id="content" class="content">
                                             <main>
                                                 <div class="module-header">
-            <h1>🎨 graphics - 2D Grafik ve Çizim</h1>
-            <p>Vektör grafikleri, şekiller, renkler ve 2D render işlemleri</p>
+            <h1>🎨 graphics - 2D Grafik and Çizim</h1>
+            <p>Vektör grafikleri, şekiller, renkler and 2D render işlemleri</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 163 Fonksiyon</span>
+                <span class="stat-badge">📦 163 function</span>
                 <span class="stat-badge">📝 1624 Satır</span>
                 <span class="stat-badge">💾 56.5 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>graphics</code> modülü, 2D grafik çizimi, şekiller, renkler, dönüşümler ve render işlemleri için kapsamlı araçlar sağlar. Canvas üzerine çizim, animasyon ve görselleştirme yapın.</p>
+        <p><code>graphics</code> modülü, 2D grafik çizimi, şekiller, renkler, dönüşümler and render işlemleri for kapsamlı araçlar sağlar. Canvas üzerine çizim, animasyon and görselleştirme yapın.</p>
 
         <div class="function-group">
             <h3>🖌️ Temel Çizim</h3>
@@ -214,7 +214,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🎨 Renk ve Stil</h3>
+            <h3>🎨 Renk and Stil</h3>
             <ul>
                 <li><strong>graphics.renk_ayarla()</strong> - Çizim rengi ayarlama</li>
                 <li><strong>graphics.dolgu_ayarla()</strong> - Dolgu rengi</li>
@@ -225,7 +225,7 @@
         </div>
 
         <div class="function-group">
-            <h3>✏️ Metin ve Font</h3>
+            <h3>✏️ Metin and Font</h3>
             <ul>
                 <li><strong>graphics.metin_yaz()</strong> - Metin çizme</li>
                 <li><strong>graphics.font_ayarla()</strong> - Font ayarlama</li>
@@ -245,7 +245,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🖼️ Görüntü ve Bitmap</h3>
+            <h3>🖼️ Görüntü and Bitmap</h3>
             <ul>
                 <li><strong>graphics.görüntü_yükle()</strong> - Görüntü yükleme</li>
                 <li><strong>graphics.görüntü_çiz()</strong> - Görüntü çizme</li>
@@ -253,10 +253,10 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>Temel Şekiller ve Renkler</h3>
+            <h3>Temel Şekiller and Renkler</h3>
             <pre><code class="language-berk">kullan graphics
 kullan color
 
@@ -266,21 +266,21 @@ canvas.arkaplan_ayarla(color.BEYAZ)
 
 // Renkli dikdörtgenler
 canvas.dolgu_ayarla(color.rgb(255, 0, 0))  // Kırmızı
-canvas.dikdörtgen(50, 50, 200, 150, dolgu: doğru)
+canvas.dikdörtgen(50, 50, 200, 150, dolgu: true)
 
 canvas.dolgu_ayarla(color.rgb(0, 255, 0))  // Yeşil
-canvas.dikdörtgen(300, 50, 200, 150, dolgu: doğru)
+canvas.dikdörtgen(300, 50, 200, 150, dolgu: true)
 
 canvas.dolgu_ayarla(color.rgb(0, 0, 255))  // Mavi
-canvas.dikdörtgen(550, 50, 200, 150, dolgu: doğru)
+canvas.dikdörtgen(550, 50, 200, 150, dolgu: true)
 
 // Çerçeveli daireler
 canvas.renk_ayarla(color.SİYAH)
 canvas.çizgi_kalınlığı(3)
-canvas.daire(150, 350, 80, dolgu: yanlış)
+canvas.daire(150, 350, 80, dolgu: false)
 
 canvas.renk_ayarla(color.rgb(255, 165, 0))  // Turuncu
-canvas.daire(400, 350, 80, dolgu: doğru)
+canvas.daire(400, 350, 80, dolgu: true)
 
 // Yıldız şekli (çokgen)
 değer yıldız_noktaları = [
@@ -290,7 +290,7 @@ değer yıldız_noktaları = [
     (630, 350)
 ]
 canvas.dolgu_ayarla(color.rgb(255, 215, 0))  // Altın
-canvas.çokgen(yıldız_noktaları, dolgu: doğru)
+canvas.çokgen(yıldız_noktaları, dolgu: true)
 
 // Gradyan çizgi
 değer gradyan = graphics.doğrusal_gradyan(
@@ -303,7 +303,7 @@ canvas.çizgi(100, 500, 700, 500)
 
 // Canvas'ı kaydet
 canvas.png_olarak_kaydet("şekiller.png")
-yazdır("✓ Grafik oluşturuldu: şekiller.png")</code></pre>
+print("✓ Grafik oluşturuldu: şekiller.png")</code></pre>
         </div>
 
         <div class="example-box">
@@ -311,36 +311,36 @@ yazdır("✓ Grafik oluşturuldu: şekiller.png")</code></pre>
             <pre><code class="language-berk">kullan graphics
 kullan color
 
-sınıf ÇubukGrafik {
+class ÇubukGrafik {
     değer canvas: graphics.Canvas
     değer genişlik: Tam
     değer yükseklik: Tam
     
-    fonksiyon yeni(genişlik: Tam, yükseklik: Tam) -> ÇubukGrafik {
+    function yeni(genişlik: Tam, yükseklik: Tam) -> ÇubukGrafik {
         değer canvas = graphics.Canvas(genişlik, yükseklik)
         canvas.arkaplan_ayarla(color.BEYAZ)
         
-        dön ÇubukGrafik {
+        return ÇubukGrafik {
             canvas: canvas,
             genişlik: genişlik,
             yükseklik: yükseklik
         }
     }
     
-    fonksiyon çiz(veri: Liste&lt;(Dize, Gerçek)&gt;, başlık: Dize) {
+    function çiz(veri: Liste&lt;(Dize, Gerçek)&gt;, başlık: Dize) {
         değer kenar_boşluk = 50
         değer grafik_genişlik = bu.genişlik - 2 * kenar_boşluk
         değer grafik_yükseklik = bu.yükseklik - 2 * kenar_boşluk
         
         // Başlık
-        bu.canvas.font_ayarla("Arial", 24, kalın: doğru)
+        bu.canvas.font_ayarla("Arial", 24, kalın: true)
         bu.canvas.renk_ayarla(color.SİYAH)
         bu.canvas.metin_yaz(başlık, bu.genişlik / 2, 30, hizalama: "merkez")
         
         // Maksimum değeri bul
         değer max_değer = 0.0
-        için (_, değer) içinde veri {
-            eğer değer > max_değer {
+        for (_, değer) içinde veri {
+            if değer > max_değer {
                 max_değer = değer
             }
         }
@@ -368,14 +368,14 @@ sınıf ÇubukGrafik {
             color.rgb(255, 159, 64)    // Turuncu
         ]
         
-        için (i, (etiket, değer)) içinde veri.numaralandır() {
+        for (i, (etiket, değer)) içinde veri.numaralandır() {
             değer x = kenar_boşluk + boşluk + i * (çubuk_genişlik + boşluk)
             değer çubuk_yükseklik = (değer / max_değer) * grafik_yükseklik
             değer y = bu.yükseklik - kenar_boşluk - çubuk_yükseklik
             
             // Çubuğu çiz
             bu.canvas.dolgu_ayarla(renkler[i % renkler.uzunluk])
-            bu.canvas.dikdörtgen(x, y, çubuk_genişlik, çubuk_yükseklik, dolgu: doğru)
+            bu.canvas.dikdörtgen(x, y, çubuk_genişlik, çubuk_yükseklik, dolgu: true)
             
             // Etiket
             bu.canvas.font_ayarla("Arial", 12)
@@ -389,12 +389,12 @@ sınıf ÇubukGrafik {
         }
     }
     
-    fonksiyon kaydet(dosya_adı: Dize) {
+    function kaydet(dosya_adı: Dize) {
         bu.canvas.png_olarak_kaydet(dosya_adı)
     }
 }
 
-// Kullanım
+// Usage
 değer satış_verileri = [
     ("Ocak", 12500.0),
     ("Şubat", 15800.0),
@@ -408,17 +408,17 @@ değer grafik = ÇubukGrafik.yeni(800, 500)
 grafik.çiz(satış_verileri, "Aylık Satış Grafiği")
 grafik.kaydet("satış_grafiği.png")
 
-yazdır("✓ Grafik oluşturuldu!")</code></pre>
+print("✓ Grafik oluşturuldu!")</code></pre>
         </div>
 
         <div class="example-box">
-            <h3>Animasyon ve Partikül Sistemi</h3>
+            <h3>Animasyon and Partikül Sistemi</h3>
             <pre><code class="language-berk">kullan graphics
 kullan color
 kullan random
 kullan math
 
-sınıf Partikül {
+class Partikül {
     değer x: Gerçek
     değer y: Gerçek
     değer hız_x: Gerçek
@@ -427,14 +427,14 @@ sınıf Partikül {
     değer renk: color.Renk
     değer ömür: Gerçek
     
-    fonksiyon güncelle(delta_zaman: Gerçek) {
+    function güncelle(delta_zaman: Gerçek) {
         bu.x += bu.hız_x * delta_zaman
         bu.y += bu.hız_y * delta_zaman
         bu.hız_y += 0.5  // Yerçekimi
         bu.ömür -= delta_zaman
     }
     
-    fonksiyon çiz(canvas: graphics.Canvas) {
+    function çiz(canvas: graphics.Canvas) {
         değer alfa = (bu.ömür / 2.0).kısıtla(0.0, 1.0)
         değer renk_alfa = color.rgba(
             bu.renk.kırmızı(),
@@ -443,27 +443,27 @@ sınıf Partikül {
             (alfa * 255).tam()
         )
         canvas.dolgu_ayarla(renk_alfa)
-        canvas.daire(bu.x, bu.y, bu.yarıçap, dolgu: doğru)
+        canvas.daire(bu.x, bu.y, bu.yarıçap, dolgu: true)
     }
     
-    fonksiyon canlı_mı() -> Mantıksal {
-        dön bu.ömür > 0
+    function canlı_mı() -> boolean {
+        return bu.ömür > 0
     }
 }
 
-sınıf PartikülSistemi {
+class PartikülSistemi {
     değer canvas: graphics.Canvas
     değer partiküller: Liste&lt;Partikül&gt;
     
-    fonksiyon yeni(genişlik: Tam, yükseklik: Tam) -> PartikülSistemi {
-        dön PartikülSistemi {
+    function yeni(genişlik: Tam, yükseklik: Tam) -> PartikülSistemi {
+        return PartikülSistemi {
             canvas: graphics.Canvas(genişlik, yükseklik),
             partiküller: []
         }
     }
     
-    fonksiyon partikül_oluştur(x: Gerçek, y: Gerçek, sayı: Tam) {
-        için _ içinde 0..sayı {
+    function partikül_oluştur(x: Gerçek, y: Gerçek, sayı: Tam) {
+        for _ içinde 0..sayı {
             değer açı = random.gerçek(0.0, 2.0 * math.PI)
             değer hız = random.gerçek(50.0, 150.0)
             
@@ -485,9 +485,9 @@ sınıf PartikülSistemi {
         }
     }
     
-    fonksiyon güncelle(delta_zaman: Gerçek) {
+    function güncelle(delta_zaman: Gerçek) {
         // Partikülleri güncelle
-        için partikül içinde bu.partiküller {
+        for partikül içinde bu.partiküller {
             partikül.güncelle(delta_zaman)
         }
         
@@ -495,18 +495,18 @@ sınıf PartikülSistemi {
         bu.partiküller = bu.partiküller.filtrele(|p| p.canlı_mı())
     }
     
-    fonksiyon çiz() {
-        // Arkaplanı temizle (solma efekti için)
+    function çiz() {
+        // Arkaplanı temizle (solma efekti for)
         bu.canvas.dolgu_ayarla(color.rgba(0, 0, 0, 10))
-        bu.canvas.dikdörtgen(0, 0, bu.canvas.genişlik, bu.canvas.yükseklik, dolgu: doğru)
+        bu.canvas.dikdörtgen(0, 0, bu.canvas.genişlik, bu.canvas.yükseklik, dolgu: true)
         
         // Partikülleri çiz
-        için partikül içinde bu.partiküller {
+        for partikül içinde bu.partiküller {
             partikül.çiz(bu.canvas)
         }
     }
     
-    fonksiyon kare_kaydet(kare_no: Tam) {
+    function kare_kaydet(kare_no: Tam) {
         bu.canvas.png_olarak_kaydet(f"partikül_{kare_no:04}.png")
     }
 }
@@ -516,11 +516,11 @@ değer sistem = PartikülSistemi.yeni(800, 600)
 değer fps = 60.0
 değer toplam_kare = 300  // 5 saniye
 
-yazdır("Animasyon oluşturuluyor...")
+print("Animasyon oluşturuluyor...")
 
-için kare içinde 0..toplam_kare {
+for kare içinde 0..toplam_kare {
     // Her 10 karede bir partikül patlaması
-    eğer kare % 10 == 0 {
+    if kare % 10 == 0 {
         sistem.partikül_oluştur(400.0, 300.0, 30)
     }
     
@@ -528,22 +528,22 @@ için kare içinde 0..toplam_kare {
     sistem.çiz()
     sistem.kare_kaydet(kare)
     
-    eğer kare % 60 == 0 {
-        yazdır(f"  {kare / 60 + 1}. saniye tamamlandı")
+    if kare % 60 == 0 {
+        print(f"  {kare / 60 + 1}. saniye tamamlandı")
     }
 }
 
-yazdır("✓ Animasyon kareleri oluşturuldu!")
-yazdır("ffmpeg ile video oluşturmak için:")
-yazdır("  ffmpeg -framerate 60 -i partikül_%04d.png -c:v libx264 output.mp4")</code></pre>
+print("✓ Animasyon kareleri oluşturuldu!")
+print("ffmpeg ile video oluşturmak for:")
+print("  ffmpeg -framerate 60 -i partikül_%04d.png -c:v libx264 output.mp4")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
-            <li>Büyük çizimler için canvas'ı katmanlara ayırın</li>
+            <li>Büyük çizimler for canvas'ı katmanlara ayırın</li>
             <li>Animasyonlarda double buffering kullanın</li>
-            <li>Renk geçişleri için gradyanları tercih edin</li>
-            <li>Performans için vektör yerine bitmap kullanmayı düşünün</li>
+            <li>Renk geçişleri for gradyanları tercih edin</li>
+            <li>Performans for vektör yerine bitmap kullanmayı düşünün</li>
             <li>Anti-aliasing ile daha pürüzsüz çizimler elde edin</li>
             <li>Dönüşüm matrislerini save/restore ile yönetin</li>
         </ul>
@@ -553,7 +553,7 @@ yazdır("  ffmpeg -framerate 60 -i partikül_%04d.png -c:v libx264 output.mp4")<
             <li><a href="gui.html">gui</a> - Grafik arayüz</li>
             <li><a href="image.html">image</a> - Görüntü işleme</li>
             <li><a href="color.html">color</a> - Renk işlemleri</li>
-            <li><a href="math.html">math</a> - Matematiksel hesaplamalar</li>
+            <li><a href="math.html">math</a> - Mathematicssel hesaplamalar</li>
         </ul>
     </div>
 </main>

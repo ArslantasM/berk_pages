@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>physics - Fizik - BERK Programlama Dili</title>
+        <title>physics - Fizik - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,32 +192,32 @@
             <h1>⚛️ physics - Fizik Hesaplamaları</h1>
             <p>Kinematik, Dinamik, Elektromanyetik, Termodinamik</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">78</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">78</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">734</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">22 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar physics, math
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import physics, math
 
 // Kinematik
-değişken v = physics.velocity(100.0, 5.0)  // v = s/t
-değişken a = physics.acceleration(20.0, 0.0, 4.0)  // a = Δv/Δt
+variable v = physics.velocity(100.0, 5.0)  // v = s/t
+variable a = physics.acceleration(20.0, 0.0, 4.0)  // a = Δv/Δt
 
 // Serbest düşüş
-değişken h = physics.free_fall_distance(3.0)  // h = ½gt²
-değişken vf = physics.free_fall_velocity(3.0)  // v = gt
+variable h = physics.free_fall_distance(3.0)  // h = ½gt²
+variable vf = physics.free_fall_velocity(3.0)  // v = gt
 
 // Newton mekaniği
-değişken F = physics.force(10.0, 2.0)  // F = ma
-değişken W = physics.work(50.0, 20.0, 0.0)  // W = F·s
-değişken P = physics.power(1000.0, 10.0)  // P = W/t
+variable F = physics.force(10.0, 2.0)  // F = ma
+variable W = physics.work(50.0, 20.0, 0.0)  // W = F·s
+variable P = physics.power(1000.0, 10.0)  // P = W/t
 
-// Momentum ve enerji
-değişken p = physics.momentum(5.0, 10.0)  // p = mv
-değişken KE = physics.kinetic_energy(5.0, 10.0)  // KE = ½mv²
-değişken PE = physics.potential_energy(5.0, 10.0)  // PE = mgh</code></pre>
+// Momentum and enerji
+variable p = physics.momentum(5.0, 10.0)  // p = mv
+variable KE = physics.kinetic_energy(5.0, 10.0)  // KE = ½mv²
+variable PE = physics.potential_energy(5.0, 10.0)  // PE = mgh</code></pre>
 
         <h2>📚 Kategoriler</h2>
         <ul>
@@ -229,35 +229,35 @@ değişken PE = physics.potential_energy(5.0, 10.0)  // PE = mgh</code></pre>
             <li><strong>Termodinamik:</strong> heat, entropy, ideal_gas</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Projectile Motion (Mermı Hareketi)</h3>
-            <pre><code>içe_aktar physics, math
+            <pre><code>import physics, math
 
-fonksiyon projectile_range(v0: ondalık, açı: ondalık) -> ondalık yap
+function projectile_range(v0: float, açı: float) -> float do
     // Menzil formülü: R = v₀² sin(2θ) / g
-    değişken rad = açı * math.PI / 180.0
-    değişken g = 9.81
+    variable rad = açı * math.PI / 180.0
+    variable g = 9.81
     
-    dön (v0 * v0 * math.sin(2.0 * rad)) / g
-son
+    return (v0 * v0 * math.sin(2.0 * rad)) / g
+end
 
-fonksiyon projectile_max_height(v0: ondalık, açı: ondalık) -> ondalık yap
+function projectile_max_height(v0: float, açı: float) -> float do
     // Maksimum yükseklik: H = v₀²sin²θ / 2g
-    değişken rad = açı * math.PI / 180.0
-    değişken g = 9.81
-    değişken vy = v0 * math.sin(rad)
+    variable rad = açı * math.PI / 180.0
+    variable g = 9.81
+    variable vy = v0 * math.sin(rad)
     
-    dön (vy * vy) / (2.0 * g)
-son
+    return (vy * vy) / (2.0 * g)
+end
 
 // Test: 45° açı ile 20 m/s hızda atılan cisim
-değişken menzil = projectile_range(20.0, 45.0)
-değişken yükseklik = projectile_max_height(20.0, 45.0)
+variable menzil = projectile_range(20.0, 45.0)
+variable yükseklik = projectile_max_height(20.0, 45.0)
 
-yazdır("Menzil: " + menzil.yazıya() + " m")  // ~40.8 m
-yazdır("Max yükseklik: " + yükseklik.yazıya() + " m")  // ~10.2 m</code></pre>
+print("Menzil: " + menzil.yazıya() + " m")  // ~40.8 m
+print("Max yükseklik: " + yükseklik.yazıya() + " m")  // ~10.2 m</code></pre>
         </div>
 
         <hr />

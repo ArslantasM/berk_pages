@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -182,46 +182,46 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="kontrol-yapıları"><a class="header" href="#kontrol-yapıları">Kontrol Yapıları</a></h1>
-<p>BERK'te program akışını kontrol etmek için çeşitli yapılar sunulur.</p>
-<h2 id="İçindekiler"><a class="header" href="#İçindekiler">İçindekiler</a></h2>
+<p>BERK'te program akışını kontrol etmek for çeşitli yapılar sunulur.</p>
+<h2 id="Contents"><a class="header" href="#Contents">Contents</a></h2>
 <h3 id="if-else-koşulları"><a class="header" href="#if-else-koşulları"><a href="./if-else.html">If-Else Koşulları</a></a></h3>
-<p>Koşullu ifadeler ve dallanma:</p>
-<pre><code class="language-berk">eğer x &gt; 0 {
-    yazdır("Pozitif")
-} değilse {
-    yazdır("Negatif veya sıfır")
+<p>Koşullu ifadeler and dallanma:</p>
+<pre><code class="language-berk">if x &gt; 0 {
+    print("Pozitif")
+} else {
+    print("Negatif or sıfır")
 }
 </code></pre>
 <h3 id="döngüler"><a class="header" href="#döngüler"><a href="./loops.html">Döngüler</a></a></h3>
-<p>Tekrarlı işlemler için döngü yapıları:</p>
+<p>Tekrarlı işlemler for loop yapıları:</p>
 <ul>
-<li><code>döngü</code> (for)</li>
-<li><code>iken</code> (while)</li>
-<li><code>yap-iken</code> (do-while)</li>
+<li><code>loop</code> (for)</li>
+<li><code>while</code> (while)</li>
+<li><code>do-while</code> (do-while)</li>
 </ul>
-<pre><code class="language-berk">döngü i 0'dan 5'e kadar {
-    yazdır(i)
+<pre><code class="language-berk">loop i 0'dan 5'e kadar {
+    print(i)
 }
 </code></pre>
 <h3 id="pattern-matching"><a class="header" href="#pattern-matching"><a href="./pattern-matching.html">Pattern Matching</a></a></h3>
-<p>Gelişmiş eşleştirme ve yıkımlandırma:</p>
+<p>Gelişmiş eşleştirme and yıkımlandırma:</p>
 <pre><code class="language-berk">eş deđfer {
-    Tamam(x) =&gt; yazdır("Başarılı: ", x),
-    Hata(e) =&gt; yazdır("Hata: ", e)
+    Tamam(x) =&gt; print("Başarılı: ", x),
+    Hata(e) =&gt; print("Hata: ", e)
 }
 </code></pre>
 <h2 id="hızlı-karşılaştırma"><a class="header" href="#hızlı-karşılaştırma">Hızlı Karşılaştırma</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Yapı</th><th>Türkçe</th><th>İngilizce</th><th>Kullanım</th></tr></thead><tbody>
-<tr><td>Koşullu</td><td><code>eğer</code>...<code>değilse</code></td><td><code>if</code>...<code>else</code></td><td>Dallanma</td></tr>
-<tr><td>For döngüsü</td><td><code>döngü</code></td><td><code>for</code></td><td>Sayım</td></tr>
-<tr><td>While döngüsü</td><td><code>iken</code></td><td><code>while</code></td><td>Koşullu tekrar</td></tr>
+<div class="table-wrapper"><table><thead><tr><th>struct</th><th>Türkçe</th><th>İngilizce</th><th>Usage</th></tr></thead><tbody>
+<tr><td>Koşullu</td><td><code>if</code>...<code>else</code></td><td><code>if</code>...<code>else</code></td><td>Dallanma</td></tr>
+<tr><td>For döngüsü</td><td><code>loop</code></td><td><code>for</code></td><td>Sayım</td></tr>
+<tr><td>While döngüsü</td><td><code>while</code></td><td><code>while</code></td><td>Koşullu tekrar</td></tr>
 <tr><td>Pattern match</td><td><code>eş</code></td><td><code>match</code></td><td>Eşleştirme</td></tr>
-<tr><td>Break</td><td><code>kır</code></td><td><code>break</code></td><td>Döngüden çık</td></tr>
-<tr><td>Continue</td><td><code>devam</code></td><td><code>continue</code></td><td>Sonraki iterasyon</td></tr>
+<tr><td>Break</td><td><code>break</code></td><td><code>break</code></td><td>Döngüden çık</td></tr>
+<tr><td>Continue</td><td><code>continue</code></td><td><code>continue</code></td><td>Sonraki iterasyon</td></tr>
 </tbody></table>
 </div>
 <h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Bir Sonraki</a></h2>
-<p>Detaylı bilgi için alt sayfaları inceleyin.</p>
+<p>Detaylı bilgi for alt sayfaları inceleyin.</p>
 
                     </main>
 

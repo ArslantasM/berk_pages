@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -185,21 +185,21 @@
 <p>Özel veri tipleri tanımlama.</p>
 <h2 id="tanımlama"><a class="header" href="#tanımlama">Tanımlama</a></h2>
 <pre><code class="language-berk">tür Kişi = struct {
-    ad: Yazı,
+    ad: string,
     yaş: Sayı,
-    email: Yazı
+    email: string
 }
 </code></pre>
 <h2 id="instance-oluşturma"><a class="header" href="#instance-oluşturma">Instance Oluşturma</a></h2>
-<pre><code class="language-berk">değişken kişi = Kişi {
+<pre><code class="language-berk">variable kişi = Kişi {
     ad: "Ahmet",
     yaş: 30,
     email: "ahmet@example.com"
 }
 </code></pre>
 <h2 id="alan-erişimi"><a class="header" href="#alan-erişimi">Alan Erişimi</a></h2>
-<pre><code class="language-berk">yazdır(kişi.ad)      // Ahmet
-yazdır(kişi.yaş)     // 30
+<pre><code class="language-berk">print(kişi.ad)      // Ahmet
+print(kişi.yaş)     // 30
 
 kişi.yaş = 31         // Güncelleme
 </code></pre>
@@ -211,40 +211,40 @@ kişi.yaş = 31         // Güncelleme
 
 impl Dikdörtgen {
     işlev alan(self) -&gt; Sayı {
-        geri dön self.genişlik * self.yükseklik
+        geri return self.genişlik * self.yükseklik
     }
     
     işlev çevre(self) -&gt; Sayı {
-        geri dön 2 * (self.genişlik + self.yükseklik)
+        geri return 2 * (self.genişlik + self.yükseklik)
     }
 }
 
-değişken dikdörtgen = Dikdörtgen { genişlik: 10, yükseklik: 5 }
-yazdır(dikdörtgen.alan())    // 50
-yazdır(dikdörtgen.çevre())  // 30
+variable dikdörtgen = Dikdörtgen { genişlik: 10, yükseklik: 5 }
+print(dikdörtgen.alan())    // 50
+print(dikdörtgen.çevre())  // 30
 </code></pre>
 <h2 id="varsayılan-değerler"><a class="header" href="#varsayılan-değerler">Varsayılan Değerler</a></h2>
 <pre><code class="language-berk">tür Ayarlar = struct {
-    tema: Yazı = "koyu",
-    dil: Yazı = "tr",
+    tema: string = "koyu",
+    dil: string = "tr",
     boyut: Sayı = 14
 }
 
-değişken ayar1 = Ayarlar {}  // Tüm varsayılanlar
-değişken ayar2 = Ayarlar { tema: "açık" }  // Sadece tema değişti
+variable ayar1 = Ayarlar {}  // Tüm varsayılanlar
+variable ayar2 = Ayarlar { tema: "açık" }  // Sadece tema değişti
 </code></pre>
 <h2 id="nested-structs"><a class="header" href="#nested-structs">Nested Structs</a></h2>
 <pre><code class="language-berk">tür Adres = struct {
-    cadde: Yazı,
-    şehir: Yazı
+    cadde: string,
+    şehir: string
 }
 
 tür Kullanıcı = struct {
-    ad: Yazı,
+    ad: string,
     adres: Adres
 }
 
-değişken kullanıcı = Kullanıcı {
+variable kullanıcı = Kullanıcı {
     ad: "Ali",
     adres: Adres {
         cadde: "Merkez Caddesi",
@@ -252,7 +252,7 @@ değişken kullanıcı = Kullanıcı {
     }
 }
 
-yazdır(kullanıcı.adres.şehir)  // İstanbul
+print(kullanıcı.adres.şehir)  // İstanbul
 </code></pre>
 
                     </main>

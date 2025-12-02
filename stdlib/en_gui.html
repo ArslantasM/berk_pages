@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>gui - Grafik Kullanici Arayuzu - BERK Programlama Dili</title>
+        <title>gui - Grafik Kullanici Arayuzu - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,16 +190,16 @@
                                             <main>
                                                 <div class="module-header">
             <h1>🖥️ gui - Grafik Kullanıcı Arayüzü</h1>
-            <p>Pencere, buton, menü ve diğer GUI bileşenleri ile masaüstü uygulamaları</p>
+            <p>Pencere, buton, menü and diğer GUI bileşenleri ile masaüstü uygulamaları</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 169 Fonksiyon</span>
+                <span class="stat-badge">📦 169 function</span>
                 <span class="stat-badge">📝 1636 Satır</span>
                 <span class="stat-badge">💾 53.6 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>gui</code> modülü, modern grafik kullanıcı arayüzleri oluşturmak için kapsamlı widget ve pencere yönetimi araçları sağlar. Native görünümlü, çapraz platform masaüstü uygulamaları geliştirin.</p>
+        <p><code>gui</code> modülü, modern grafik kullanıcı arayüzleri oluşturmak for kapsamlı widget and pencere yönetimi araçları sağlar. Native görünümlü, çapraz platform masaüstü uygulamaları geliştirin.</p>
 
         <div class="function-group">
             <h3>🪟 Pencere Yönetimi</h3>
@@ -217,7 +217,7 @@
             <ul>
                 <li><strong>gui.Buton()</strong> - Tıklanabilir buton</li>
                 <li><strong>gui.Etiket()</strong> - Metin etiketi</li>
-                <li><strong>gui.GirişKutusu()</strong> - Tek satır metin girişi</li>
+                <li><strong>gui.IntroductionKutusu()</strong> - Tek satır metin Introductioni</li>
                 <li><strong>gui.MetinAlanı()</strong> - Çok satırlı metin alanı</li>
                 <li><strong>gui.OnayKutusu()</strong> - Checkbox (işaret kutusu)</li>
                 <li><strong>gui.RadyoDüğmesi()</strong> - Radio button</li>
@@ -225,7 +225,7 @@
         </div>
 
         <div class="function-group">
-            <h3>📋 Liste ve Seçim</h3>
+            <h3>📋 Liste and Seçim</h3>
             <ul>
                 <li><strong>gui.AçılanListe()</strong> - Dropdown/ComboBox</li>
                 <li><strong>gui.Liste()</strong> - Liste görünümü</li>
@@ -245,7 +245,7 @@
         </div>
 
         <div class="function-group">
-            <h3>📁 Dosya ve Dialog</h3>
+            <h3>📁 Dosya and Dialog</h3>
             <ul>
                 <li><strong>gui.dosya_aç_dialog()</strong> - Dosya seçme dialogu</li>
                 <li><strong>gui.dosya_kaydet_dialog()</strong> - Dosya kaydetme dialogu</li>
@@ -256,7 +256,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🎨 Menü ve Toolbar</h3>
+            <h3>🎨 Menü and Toolbar</h3>
             <ul>
                 <li><strong>gui.MenuÇubuğu()</strong> - Menü çubuğu</li>
                 <li><strong>gui.Menü()</strong> - Dropdown menü</li>
@@ -265,20 +265,20 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>Basit Hesap Makinesi</h3>
             <pre><code class="language-berk">kullan gui
 
-sınıf HesapMakinesi {
+class HesapMakinesi {
     değer pencere: gui.Pencere
     değer sonuç_etiketi: gui.Etiket
     değer işlem: Dize = ""
     değer ilk_sayı: Gerçek = 0.0
     değer operatör: Dize = ""
     
-    fonksiyon yeni() -> HesapMakinesi {
+    function yeni() -> HesapMakinesi {
         değer pencere = gui.Pencere()
         pencere.başlık_ayarla("Hesap Makinesi")
         pencere.boyut_ayarla(300, 400)
@@ -288,7 +288,7 @@ sınıf HesapMakinesi {
         sonuç_etiketi.yazı_boyutu_ayarla(24)
         sonuç_etiketi.hizalama_ayarla(gui.Hizalama.SAĞ)
         
-        dön HesapMakinesi {
+        return HesapMakinesi {
             pencere: pencere,
             sonuç_etiketi: sonuç_etiketi,
             işlem: "",
@@ -297,21 +297,21 @@ sınıf HesapMakinesi {
         }
     }
     
-    fonksiyon rakam_tıkla(rakam: Dize) {
+    function rakam_tıkla(rakam: Dize) {
         bu.işlem += rakam
         bu.sonuç_etiketi.metin_ayarla(bu.işlem)
     }
     
-    fonksiyon operatör_tıkla(op: Dize) {
-        eğer bu.işlem != "" {
+    function operatör_tıkla(op: Dize) {
+        if bu.işlem != "" {
             bu.ilk_sayı = bu.işlem.gerçeğe()
             bu.operatör = op
             bu.işlem = ""
         }
     }
     
-    fonksiyon eşittir_tıkla() {
-        eğer bu.işlem != "" ve bu.operatör != "" {
+    function eşittir_tıkla() {
+        if bu.işlem != "" and bu.operatör != "" {
             değer ikinci_sayı = bu.işlem.gerçeğe()
             değer sonuç = 0.0
             
@@ -328,14 +328,14 @@ sınıf HesapMakinesi {
         }
     }
     
-    fonksiyon temizle() {
+    function temizle() {
         bu.işlem = ""
         bu.ilk_sayı = 0.0
         bu.operatör = ""
         bu.sonuç_etiketi.metin_ayarla("0")
     }
     
-    fonksiyon arayüz_oluştur() {
+    function arayüz_oluştur() {
         değer düzen = gui.DikeySandık()
         düzen.ekle(bu.sonuç_etiketi)
         
@@ -347,20 +347,20 @@ sınıf HesapMakinesi {
             ["C", "0", "=", "+"]
         ]
         
-        için satır içinde rakamlar {
+        for satır içinde rakamlar {
             değer yatay = gui.YataySandık()
             
-            için değer içinde satır {
+            for değer içinde satır {
                 değer buton = gui.Buton(değer)
                 buton.min_boyut_ayarla(60, 50)
                 
-                eğer değer == "C" {
+                if değer == "C" {
                     buton.tıklandı_bağla(|| bu.temizle())
-                } yoksa eğer değer == "=" {
+                } elseif if değer == "=" {
                     buton.tıklandı_bağla(|| bu.eşittir_tıkla())
-                } yoksa eğer değer içinde ["+", "-", "*", "/"] {
+                } elseif if değer içinde ["+", "-", "*", "/"] {
                     buton.tıklandı_bağla(|| bu.operatör_tıkla(değer))
-                } yoksa {
+                } elseif {
                     buton.tıklandı_bağla(|| bu.rakam_tıkla(değer))
                 }
                 
@@ -373,7 +373,7 @@ sınıf HesapMakinesi {
         bu.pencere.düzen_ayarla(düzen)
     }
     
-    fonksiyon göster() {
+    function göster() {
         bu.arayüz_oluştur()
         bu.pencere.göster()
     }
@@ -391,12 +391,12 @@ uygulama.çalıştır()</code></pre>
             <pre><code class="language-berk">kullan gui
 kullan fs
 
-sınıf MetinEditörü {
+class MetinEditörü {
     değer pencere: gui.Pencere
     değer metin_alanı: gui.MetinAlanı
-    değer geçerli_dosya: Opsiyonel&lt;Dize&gt; = boş
+    değer geçerli_dosya: Opsiyonel&lt;Dize&gt; = null
     
-    fonksiyon yeni() -> MetinEditörü {
+    function yeni() -> MetinEditörü {
         değer pencere = gui.Pencere()
         pencere.başlık_ayarla("Metin Editörü")
         pencere.boyut_ayarla(800, 600)
@@ -405,40 +405,40 @@ sınıf MetinEditörü {
         değer metin_alanı = gui.MetinAlanı()
         metin_alanı.yazı_tipi_ayarla("Courier New", 12)
         
-        dön MetinEditörü {
+        return MetinEditörü {
             pencere: pencere,
             metin_alanı: metin_alanı,
-            geçerli_dosya: boş
+            geçerli_dosya: null
         }
     }
     
-    fonksiyon yeni_dosya() {
-        eğer bu.değişiklik_var() {
+    function yeni_dosya() {
+        if bu.değişiklik_var() {
             değer cevap = gui.onay_kutusu(
                 "Kaydetmeden önce",
                 "Değişiklikler kaydedilsin mi?",
                 gui.Butonlar.EVET_HAYIR_İPTAL
             )
             
-            eğer cevap == gui.Yanıt.EVET {
+            if cevap == gui.Yanıt.EVET {
                 bu.kaydet()
-            } yoksa eğer cevap == gui.Yanıt.İPTAL {
-                dön
+            } elseif if cevap == gui.Yanıt.İPTAL {
+                return
             }
         }
         
         bu.metin_alanı.temizle()
-        bu.geçerli_dosya = boş
+        bu.geçerli_dosya = null
         bu.pencere.başlık_ayarla("Metin Editörü - Yeni Dosya")
     }
     
-    fonksiyon aç() {
+    function aç() {
         değer dosya_yolu = gui.dosya_aç_dialog(
             başlık: "Dosya Aç",
             filtreler: [("Metin Dosyaları", "*.txt"), ("Tüm Dosyalar", "*.*")]
         )
         
-        eğer dosya_yolu.var_mı() {
+        if dosya_yolu.var_mı() {
             değer içerik = fs.dosya_oku_metin(dosya_yolu.aç())
             bu.metin_alanı.metin_ayarla(içerik)
             bu.geçerli_dosya = dosya_yolu
@@ -446,40 +446,40 @@ sınıf MetinEditörü {
         }
     }
     
-    fonksiyon kaydet() {
-        eğer bu.geçerli_dosya.var_mı() {
+    function kaydet() {
+        if bu.geçerli_dosya.var_mı() {
             bu.dosyaya_kaydet(bu.geçerli_dosya.aç())
-        } yoksa {
+        } elseif {
             bu.farklı_kaydet()
         }
     }
     
-    fonksiyon farklı_kaydet() {
+    function farklı_kaydet() {
         değer dosya_yolu = gui.dosya_kaydet_dialog(
             başlık: "Farklı Kaydet",
             varsayılan_ad: "yeni_dosya.txt",
             filtreler: [("Metin Dosyaları", "*.txt")]
         )
         
-        eğer dosya_yolu.var_mı() {
+        if dosya_yolu.var_mı() {
             bu.dosyaya_kaydet(dosya_yolu.aç())
             bu.geçerli_dosya = dosya_yolu
         }
     }
     
-    fonksiyon dosyaya_kaydet(dosya_yolu: Dize) {
+    function dosyaya_kaydet(dosya_yolu: Dize) {
         değer içerik = bu.metin_alanı.metin_al()
         fs.dosya_yaz_metin(dosya_yolu, içerik)
         gui.mesaj_kutusu("Başarılı", "Dosya kaydedildi!", gui.MesajTipi.BİLGİ)
         bu.pencere.başlık_ayarla(f"Metin Editörü - {dosya_yolu}")
     }
     
-    fonksiyon değişiklik_var() -> Mantıksal {
+    function değişiklik_var() -> boolean {
         // Basitleştirilmiş - gerçek uygulamada değişiklik takibi yapılır
-        dön bu.metin_alanı.metin_al().uzunluk > 0
+        return bu.metin_alanı.metin_al().uzunluk > 0
     }
     
-    fonksiyon menü_oluştur() {
+    function menü_oluştur() {
         değer menü_çubuğu = gui.MenuÇubuğu()
         
         // Dosya menüsü
@@ -495,7 +495,7 @@ sınıf MetinEditörü {
         bu.pencere.menü_çubuğu_ayarla(menü_çubuğu)
     }
     
-    fonksiyon göster() {
+    function göster() {
         bu.menü_oluştur()
         
         değer düzen = gui.DikeySandık()
@@ -516,16 +516,16 @@ uygulama.çalıştır()</code></pre>
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
             <li>Layout yöneticileri kullanarak responsive arayüzler oluşturun</li>
-            <li>Uzun işlemler için progress bar gösterin</li>
+            <li>Uzun işlemler for progress bar gösterin</li>
             <li>Kısayol tuşları (accelerator) ekleyin</li>
-            <li>Erişilebilirlik için tooltip ve etiketler kullanın</li>
+            <li>Erişilebilirlik for tooltip and etiketler kullanın</li>
             <li>Thread'lerde GUI güncellemelerini yapmaktan kaçının</li>
-            <li>Native görünüm için platform stillerini kullanın</li>
+            <li>Native görünüm for platform stillerini kullanın</li>
         </ul>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
-            <li><a href="graphics.html">graphics</a> - 2D çizim ve grafik</li>
+            <li><a href="graphics.html">graphics</a> - 2D çizim and grafik</li>
             <li><a href="image.html">image</a> - Görüntü işleme</li>
             <li><a href="fs.html">fs</a> - Dosya sistemi</li>
             <li><a href="thread.html">thread</a> - Çoklu iş parçacığı</li>

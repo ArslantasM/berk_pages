@@ -185,47 +185,47 @@
 <p>Her programlama dilinde gelenek, ilk programın "Merhaba Dünya!" yazdırması olmuştur. BERK'ta da bu geleneği sürdürüyoruz!</p>
 <h2 id="İlk-programınız"><a class="header" href="#İlk-programınız">İlk Programınız</a></h2>
 <p>Favori metin editörünüzde <code>merhaba.berk</code> adında bir dosya oluşturun:</p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba Dünya!")
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    print("Merhaba Dünya!")
+    return 0
+end
 </code></pre>
 <h2 id="kodu-anlayalım"><a class="header" href="#kodu-anlayalım">Kodu Anlayalım</a></h2>
 <p>Satır satır inceleyelim:</p>
-<h3 id="1-fonksiyon-tanımı"><a class="header" href="#1-fonksiyon-tanımı">1. Fonksiyon Tanımı</a></h3>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
+<h3 id="1-function-tanımı"><a class="header" href="#1-function-tanımı">1. function Tanımı</a></h3>
+<pre><code class="language-berk">function ana() -&gt; integer
 </code></pre>
 <ul>
-<li><code>fonksiyon</code> (veya <code>function</code>): Fonksiyon tanımlar</li>
-<li><code>ana</code> (veya <code>main</code>): Fonksiyonun adı. Program <code>ana()</code> fonksiyonundan başlar</li>
-<li><code>()</code>: Parametre listesi (boş)</li>
-<li><code>-&gt; tamsayı</code>: Dönüş tipi (integer)</li>
+<li><code>function</code> (or <code>function</code>): function tanımlar</li>
+<li><code>ana</code> (or <code>main</code>): Fonksiyonun adı. Program <code>ana()</code> fonksiyonundan başlar</li>
+<li><code>()</code>: Parametre listesi (null)</li>
+<li><code>-&gt; integer</code>: Dönüş tipi (integer)</li>
 </ul>
-<h3 id="2-fonksiyon-gövdesi"><a class="header" href="#2-fonksiyon-gövdesi">2. Fonksiyon Gövdesi</a></h3>
-<pre><code class="language-berk">yap
+<h3 id="2-function-gövdesi"><a class="header" href="#2-function-gövdesi">2. function Gövdesi</a></h3>
+<pre><code class="language-berk">do
     ...
-son
+end
 </code></pre>
 <ul>
-<li><code>yap</code> (veya <code>do</code>): Fonksiyonun başlangıcı</li>
-<li><code>son</code> (veya <code>end</code>): Fonksiyonun bitişi</li>
+<li><code>do</code> (or <code>do</code>): Fonksiyonun başlangıcı</li>
+<li><code>end</code> (or <code>end</code>): Fonksiyonun bitişi</li>
 </ul>
 <h3 id="3-yazdırma"><a class="header" href="#3-yazdırma">3. Yazdırma</a></h3>
-<pre><code class="language-berk">yazdır("Merhaba Dünya!")
+<pre><code class="language-berk">print("Merhaba Dünya!")
 </code></pre>
 <ul>
-<li><code>yazdır()</code> (veya <code>print()</code>): Ekrana yazdırır</li>
+<li><code>print()</code> (or <code>print()</code>): Ekrana yazdırır</li>
 <li><code>"Merhaba Dünya!"</code>: String literal</li>
 </ul>
-<h3 id="4-dönüş-değeri"><a class="header" href="#4-dönüş-değeri">4. Dönüş Değeri</a></h3>
-<pre><code class="language-berk">dön 0
+<h3 id="4-dönüş-değeri"><a class="header" href="#4-dönüş-değeri">4. Return Value</a></h3>
+<pre><code class="language-berk">return 0
 </code></pre>
 <ul>
-<li><code>dön</code> (veya <code>return</code>): Fonksiyondan çıkış</li>
+<li><code>return</code> (or <code>return</code>): Fonksiyondan çıkış</li>
 <li><code>0</code>: Başarılı programlar 0 döner (Unix geleneği)</li>
 </ul>
-<h2 id="derleme-ve-Çalıştırma"><a class="header" href="#derleme-ve-Çalıştırma">Derleme ve Çalıştırma</a></h2>
+<h2 id="derleme-and-Çalıştırma"><a class="header" href="#derleme-and-Çalıştırma">Derleme and Çalıştırma</a></h2>
 <h3 id="adım-1-derleme"><a class="header" href="#adım-1-derleme">Adım 1: Derleme</a></h3>
 <pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba.exe
 </code></pre>
@@ -233,7 +233,7 @@ son
 <pre><code>🚀 BERK Derleyici v1.0.0
    LLVM 17.0.6 (19 Target Support)
 =========================================
-📂 Giriş: merhaba.berk
+📂 Introduction: merhaba.berk
 📤 Çıkış: merhaba.exe
 🎯 Emit: Executable
 ⚡ Optimizasyon: O0
@@ -267,18 +267,18 @@ end
 <p>Çıktı:</p>
 <pre><code>Hello World!
 </code></pre>
-<h2 id="karışık-kullanım"><a class="header" href="#karışık-kullanım">Karışık Kullanım</a></h2>
-<p>Hatta Türkçe ve İngilizce'yi karıştırabilirsiniz:</p>
-<pre><code class="language-berk">function ana() -&gt; tamsayı
-yap
+<h2 id="karışık-Usage"><a class="header" href="#karışık-Usage">Karışık Usage</a></h2>
+<p>Hatta Türkçe and İngilizce'yi karıştırabilirsiniz:</p>
+<pre><code class="language-berk">function ana() -&gt; integer
+do
     print("Hello Dünya!")
     return 0
-son
+end
 </code></pre>
 <p>Bu da geçerli bir BERK kodudur!</p>
 <h2 id="derleme-seçenekleri"><a class="header" href="#derleme-seçenekleri">Derleme Seçenekleri</a></h2>
 <h3 id="verbose-mode"><a class="header" href="#verbose-mode">Verbose Mode</a></h3>
-<p>Derleme adımlarını görmek için:</p>
+<p>Derleme adımlarını görmek for:</p>
 <pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba.exe -v
 </code></pre>
 <p>Çıktı:</p>
@@ -332,7 +332,7 @@ son
 <p>Etkileşimli kabukta da deneyebilirsiniz:</p>
 <pre><code class="language-bash">BERK-repl
 </code></pre>
-<pre><code class="language-berk">BERK&gt; yazdır("Merhaba REPL!")
+<pre><code class="language-berk">BERK&gt; print("Merhaba REPL!")
 Merhaba REPL!
 =&gt; Result: Void
 
@@ -345,103 +345,103 @@ Güle güle!
 <h2 id="alıştırmalar"><a class="header" href="#alıştırmalar">Alıştırmalar</a></h2>
 <h3 id="alıştırma-1-kişiselleştirme"><a class="header" href="#alıştırma-1-kişiselleştirme">Alıştırma 1: Kişiselleştirme</a></h3>
 <p>Programı kendi adınızı yazdıracak şekilde değiştirin:</p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba, [ADINIZ]!")
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    print("Merhaba, [ADINIZ]!")
+    return 0
+end
 </code></pre>
 <h3 id="alıştırma-2-Çoklu-yazdırma"><a class="header" href="#alıştırma-2-Çoklu-yazdırma">Alıştırma 2: Çoklu Yazdırma</a></h3>
 <p>Birden fazla satır yazdırın:</p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba Dünya!")
-    yazdır("BERK'a hoş geldiniz!")
-    yazdır("İyi kodlamalar!")
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    print("Merhaba Dünya!")
+    print("BERK'a hoş geldiniz!")
+    print("İyi kodlamalar!")
+    return 0
+end
 </code></pre>
-<h3 id="alıştırma-3-değişken-kullanımı"><a class="header" href="#alıştırma-3-değişken-kullanımı">Alıştırma 3: Değişken Kullanımı</a></h3>
+<h3 id="alıştırma-3-variable-Usageı"><a class="header" href="#alıştırma-3-variable-Usageı">Alıştırma 3: variable Usageı</a></h3>
 <p>String'i bir değişkende saklayın:</p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    değişken mesaj = "Merhaba Dünya!"
-    yazdır(mesaj)
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    variable mesaj = "Merhaba Dünya!"
+    print(mesaj)
+    return 0
+end
 </code></pre>
 <h3 id="alıştırma-4-string-birleştirme"><a class="header" href="#alıştırma-4-string-birleştirme">Alıştırma 4: String Birleştirme</a></h3>
 <p>İki string'i birleştirin:</p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    değişken selamlama = "Merhaba"
-    değişken isim = "Ahmet"
-    yazdır(selamlama + ", " + isim + "!")
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    variable selamlama = "Merhaba"
+    variable isim = "Ahmet"
+    print(selamlama + ", " + isim + "!")
+    return 0
+end
 </code></pre>
 <h2 id="yaygın-hatalar"><a class="header" href="#yaygın-hatalar">Yaygın Hatalar</a></h2>
 <h3 id="hata-1-noktalı-virgül-yok"><a class="header" href="#hata-1-noktalı-virgül-yok">Hata 1: Noktalı Virgül Yok</a></h3>
 <p>BERK'ta noktalı virgül <strong>gerekmez</strong>:</p>
-<pre><code class="language-berk">// ❌ Yanlış
-yazdır("Merhaba");
+<pre><code class="language-berk">// ❌ false
+print("Merhaba");
 
-// ✅ Doğru
-yazdır("Merhaba")
+// ✅ true
+print("Merhaba")
 </code></pre>
 <h3 id="hata-2-parantez-eksikliği"><a class="header" href="#hata-2-parantez-eksikliği">Hata 2: Parantez Eksikliği</a></h3>
-<pre><code class="language-berk">// ❌ Yanlış
-yazdır "Merhaba"
+<pre><code class="language-berk">// ❌ false
+print "Merhaba"
 
-// ✅ Doğru
-yazdır("Merhaba")
+// ✅ true
+print("Merhaba")
 </code></pre>
 <h3 id="hata-3-ana-fonksiyonu-yok"><a class="header" href="#hata-3-ana-fonksiyonu-yok">Hata 3: ana() Fonksiyonu Yok</a></h3>
-<pre><code class="language-berk">// ❌ Yanlış - ana() fonksiyonu yok
-yazdır("Merhaba")
+<pre><code class="language-berk">// ❌ false - ana() fonksiyonu yok
+print("Merhaba")
 
-// ✅ Doğru - ana() fonksiyonu var
-fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba")
-    dön 0
-son
+// ✅ true - ana() fonksiyonu var
+function ana() -&gt; integer
+do
+    print("Merhaba")
+    return 0
+end
 </code></pre>
-<h3 id="hata-4-dönüş-değeri-eksik"><a class="header" href="#hata-4-dönüş-değeri-eksik">Hata 4: Dönüş Değeri Eksik</a></h3>
-<pre><code class="language-berk">// ❌ Yanlış - return eksik
-fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba")
-son
+<h3 id="hata-4-dönüş-değeri-eksik"><a class="header" href="#hata-4-dönüş-değeri-eksik">Hata 4: Return Value Eksik</a></h3>
+<pre><code class="language-berk">// ❌ false - return eksik
+function ana() -&gt; integer
+do
+    print("Merhaba")
+end
 
-// ✅ Doğru - return var
-fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba")
-    dön 0
-son
+// ✅ true - return var
+function ana() -&gt; integer
+do
+    print("Merhaba")
+    return 0
+end
 </code></pre>
 <h2 id="sonraki-adımlar"><a class="header" href="#sonraki-adımlar">Sonraki Adımlar</a></h2>
 <p>Tebrikler! İlk BERK programınızı yazdınız!</p>
 <p>Şimdi daha fazlasını öğrenmeye hazırsınız:</p>
 <ol>
 <li><strong><a href="./first-program.html">İlk Programınızı Yazmak</a></strong> - Daha karmaşık bir program</li>
-<li><strong><a href="./basics/variables.html">Değişkenler ve Sabitler</a></strong> - Veri saklama</li>
+<li><strong><a href="./basics/variables.html">Değişkenler and Sabitler</a></strong> - Veri saklama</li>
 <li><strong><a href="./basics/data-types.html">Veri Tipleri</a></strong> - Tipler hakkında daha fazla</li>
 </ol>
 <h2 id="Özet"><a class="header" href="#Özet">Özet</a></h2>
 <p>Bu bölümde öğrendikleriniz:</p>
 <ul>
 <li>✅ Basit bir BERK programı yazmak</li>
-<li>✅ Program derlemek ve çalıştırmak</li>
-<li>✅ <code>fonksiyon</code>, <code>yap</code>, <code>son</code> anahtar kelimeleri</li>
-<li>✅ <code>yazdır()</code> fonksiyonu</li>
-<li>✅ <code>dön</code> statement</li>
-<li>✅ İki dilli syntax kullanımı</li>
-<li>✅ Yaygın hatalar ve çözümleri</li>
+<li>✅ Program derlemek and çalıştırmak</li>
+<li>✅ <code>function</code>, <code>do</code>, <code>end</code> anahtar kelimeleri</li>
+<li>✅ <code>print()</code> fonksiyonu</li>
+<li>✅ <code>return</code> statement</li>
+<li>✅ İki dilli syntax Usageı</li>
+<li>✅ Yaygın hatalar and çözümleri</li>
 </ul>
 <hr />
-<p><strong>Önceki:</strong> <a href="./installation.html">Kurulum</a> | <strong>Sonraki:</strong> <a href="./first-program.html">İlk Programınızı Yazmak</a></p>
+<p><strong>Önceki:</strong> <a href="./installation.html">Installation</a> | <strong>Sonraki:</strong> <a href="./first-program.html">İlk Programınızı Yazmak</a></p>
 
                     </main>
 

@@ -181,7 +181,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="kurulum"><a class="header" href="#kurulum">Kurulum</a></h1>
+                        <h1 id="Installation"><a class="header" href="#Installation">Installation</a></h1>
 <p>Bu bölümde BERK programlama dilini sisteminize nasıl kuracağınızı öğreneceksiniz.</p>
 <h2 id="gereksinimler"><a class="header" href="#gereksinimler">Gereksinimler</a></h2>
 <h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
@@ -191,7 +191,7 @@
 <li><a href="https://visualstudio.microsoft.com/downloads/">Visual Studio Build Tools 2022</a></li>
 <li><a href="https://llvm.org/">LLVM 17.0.6</a></li>
 <li>Git</li>
-<li>Minimum 8GB RAM (derleme için)</li>
+<li>Minimum 8GB RAM (derleme for)</li>
 </ul>
 <h3 id="linux"><a class="header" href="#linux">Linux</a></h3>
 <ul>
@@ -204,19 +204,19 @@
 </ul>
 <h3 id="macos"><a class="header" href="#macos">macOS</a></h3>
 <ul>
-<li>macOS 11 (Big Sur) veya üzeri</li>
+<li>macOS 11 (Big Sur) or üzeri</li>
 <li>Rust toolchain (1.70+)</li>
 <li>Xcode Command Line Tools</li>
 <li>LLVM 17.0.6 (Homebrew)</li>
 <li>Git</li>
 <li>Minimum 4GB RAM</li>
 </ul>
-<h2 id="rust-kurulumu"><a class="header" href="#rust-kurulumu">Rust Kurulumu</a></h2>
+<h2 id="rust-Installationu"><a class="header" href="#rust-Installationu">Rust Installationu</a></h2>
 <p>BERK, Rust ile yazılmıştır. Önce Rust'ı kurmanız gerekir:</p>
 <h3 id="windowslinuxmacos"><a class="header" href="#windowslinuxmacos">Windows/Linux/macOS</a></h3>
 <pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 </code></pre>
-<p>Kurulum sonrası:</p>
+<p>Installation sonrası:</p>
 <pre><code class="language-bash">rustc --version
 cargo --version
 </code></pre>
@@ -224,8 +224,8 @@ cargo --version
 <pre><code>rustc 1.75.0 (1.75.0 2024-01-01)
 cargo 1.75.0 (1.75.0 2024-01-01)
 </code></pre>
-<h2 id="llvm-kurulumu"><a class="header" href="#llvm-kurulumu">LLVM Kurulumu</a></h2>
-<p>BERK, native kod üretimi için LLVM 17 kullanır.</p>
+<h2 id="llvm-Installationu"><a class="header" href="#llvm-Installationu">LLVM Installationu</a></h2>
+<p>BERK, native kod üretimi for LLVM 17 kullanır.</p>
 <h3 id="windows-Ön-derlenmiş"><a class="header" href="#windows-Ön-derlenmiş">Windows (Ön-derlenmiş)</a></h3>
 <ol>
 <li>
@@ -240,7 +240,7 @@ cargo 1.75.0 (1.75.0 2024-01-01)
 <ul>
 <li>Installer'ı çalıştırın</li>
 <li>"Add LLVM to system PATH" seçeneğini işaretleyin</li>
-<li>Kurulum yolu: <code>C:\Program Files\LLVM</code> (varsayılan)</li>
+<li>Installation yolu: <code>C:\Program Files\LLVM</code> (varsayılan)</li>
 </ul>
 </li>
 <li>
@@ -250,7 +250,7 @@ cargo 1.75.0 (1.75.0 2024-01-01)
 </li>
 </ol>
 <h3 id="windows-kaynak-koddan"><a class="header" href="#windows-kaynak-koddan">Windows (Kaynak Koddan)</a></h3>
-<p>Detaylı kurulum için: <a href="../LLVM_SETUP.html">LLVM_SETUP.md</a></p>
+<p>Detaylı Installation for: <a href="../LLVM_SETUP.html">LLVM_SETUP.md</a></p>
 <pre><code class="language-powershell"># LLVM kaynak kodunu indir
 git clone --depth 1 --branch llvmorg-17.0.6 https://github.com/llvm/llvm-project.git
 
@@ -289,7 +289,7 @@ echo 'export PATH="/opt/homebrew/opt/llvm@17/bin:$PATH"' &gt;&gt; ~/.zshrc
 source ~/.zshrc
 </code></pre>
 <h3 id="llvm-environment-variables"><a class="header" href="#llvm-environment-variables">LLVM Environment Variables</a></h3>
-<p>Kurulum sonrası environment variable'ları ayarlayın:</p>
+<p>Installation sonrası environment variable'ları ayarlayın:</p>
 <p><strong>Windows (PowerShell):</strong></p>
 <pre><code class="language-powershell">$env:LLVM_SYS_170_PREFIX = "C:\llvm-17"
 [Environment]::SetEnvironmentVariable("LLVM_SYS_170_PREFIX", "C:\llvm-17", "User")
@@ -298,9 +298,9 @@ source ~/.zshrc
 <pre><code class="language-bash">export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17
 echo 'export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17' &gt;&gt; ~/.bashrc
 </code></pre>
-<h2 id="berk-kurulumu"><a class="header" href="#berk-kurulumu">BERK Kurulumu</a></h2>
+<h2 id="berk-Installationu"><a class="header" href="#berk-Installationu">BERK Installationu</a></h2>
 <h3 id="method-1-pre-built-binary-windows---Önerilen-"><a class="header" href="#method-1-pre-built-binary-windows---Önerilen-">Method 1: Pre-built Binary (Windows - Önerilen) ⚡</a></h3>
-<p><strong>Windows x64 kullanıcıları için en hızlı yol:</strong></p>
+<p><strong>Windows x64 kullanıcıları for en hızlı yol:</strong></p>
 <ol>
 <li>
 <p><strong>İndir:</strong></p>
@@ -308,7 +308,7 @@ echo 'export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17' &gt;&gt; ~/.bashrc
 <li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/BERK-lang.exe">BERK-lang.exe (2.2 MB)</a></li>
 <li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-lsp.exe">berk-lsp.exe (1.2 MB)</a></li>
 <li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-repl.exe">berk-repl.exe (464 KB)</a></li>
-<li>Üç ayrı dosya: Derleyici, LSP, ve REPL (LLVM dynamic linking)</li>
+<li>Üç ayrı dosya: Derleyici, LSP, and REPL (LLVM dynamic linking)</li>
 </ul>
 </li>
 <li>
@@ -324,7 +324,7 @@ Move-Item .\BERK-lang.exe C:\BERK\
     "User"
 )
 
-# Yeni terminal açın ve test edin
+# Yeni terminal açın and test edin
 BERK-lang --version
 </code></pre>
 </li>
@@ -332,7 +332,7 @@ BERK-lang --version
 <p><strong>Hızlı Test:</strong></p>
 <pre><code class="language-powershell"># REPL ile anında test
 BERK-lang repl
-&gt;&gt;&gt; yazdır("Merhaba!")
+&gt;&gt;&gt; print("Merhaba!")
 Merhaba!
 </code></pre>
 </li>
@@ -341,12 +341,12 @@ Merhaba!
 <ul>
 <li>✅ LLVM 17 dynamic linking - sistem LLVM kullanır</li>
 <li>✅ Tüm 19 hedef platform desteği</li>
-<li>✅ REPL, JIT run, ve native compile modu</li>
+<li>✅ REPL, JIT run, and native compile modu</li>
 <li>✅ Runtime kütüphaneleri dahil (JSON, Crypto, HTTP)</li>
 </ul>
-<p><strong>Not:</strong> LLVM dynamic linking kullanıldığı için toplam boyut ~3.8 MB'a düştü (v0.8.0'da 83 MB idi).</p>
+<p><strong>Not:</strong> LLVM dynamic linking kullanıldığı for toplam boyut ~3.8 MB'a düştü (v0.8.0'da 83 MB idi).</p>
 <h3 id="method-2-kaynak-koddan-tüm-platformlar"><a class="header" href="#method-2-kaynak-koddan-tüm-platformlar">Method 2: Kaynak Koddan (Tüm Platformlar)</a></h3>
-<p><strong>Linux/macOS veya özelleştirme isteyenler için:</strong></p>
+<p><strong>Linux/macOS or özelleştirme isteyenler for:</strong></p>
 <pre><code class="language-bash"># Repository'yi klonla
 git clone https://github.com/ArslantasM/berk.git
 cd berk/berk-lang
@@ -365,11 +365,11 @@ sudo ln -s $(pwd)/target/release/BERK-lang /usr/local/bin/BERK-lang
 </code></pre>
 <p><strong>Derleme Süresi:</strong> ~40 saniye (release build)</p>
 <h3 id="method-3-cargo-install-gelecek"><a class="header" href="#method-3-cargo-install-gelecek">Method 3: Cargo Install (Gelecek)</a></h3>
-<pre><code class="language-bash"># Planlanan özellik
+<pre><code class="language-bash"># Planlanan trait
 cargo install BERK-lang --features llvm
 </code></pre>
-<h2 id="kurulum-doğrulama"><a class="header" href="#kurulum-doğrulama">Kurulum Doğrulama</a></h2>
-<p>Kurulumun başarılı olduğunu doğrulayın:</p>
+<h2 id="Installation-doğrulama"><a class="header" href="#Installation-doğrulama">Installation Doğrulama</a></h2>
+<p>Installationun başarılı olduğunu doğrulayın:</p>
 <pre><code class="language-bash"># Derleyici versiyonu
 BERK-lang --version
 </code></pre>
@@ -382,26 +382,26 @@ BERK-lang --version
 <pre><code class="language-bash">BERK-lang repl
 </code></pre>
 <p>REPL'de test edin:</p>
-<pre><code class="language-berk">&gt;&gt;&gt; yazdır("Kurulum başarılı! 🎉")
-Kurulum başarılı! 🎉
+<pre><code class="language-berk">&gt;&gt;&gt; print("Installation başarılı! 🎉")
+Installation başarılı! 🎉
 
-&gt;&gt;&gt; değişken x = 42
-&gt;&gt;&gt; yazdır(x * 2)
+&gt;&gt;&gt; variable x = 42
+&gt;&gt;&gt; print(x * 2)
 84
 
-&gt;&gt;&gt; fonksiyon kare(n: tamsayı) -&gt; tamsayı { dön n * n }
-&gt;&gt;&gt; yazdır(kare(5))
+&gt;&gt;&gt; function kare(n: integer) -&gt; integer { return n * n }
+&gt;&gt;&gt; print(kare(5))
 25
 </code></pre>
-<p>Çıkmak için: <code>:quit</code> veya Ctrl+C</p>
+<p>Çıkmak for: <code>:quit</code> or Ctrl+C</p>
 <h3 id="test-programı-derleme"><a class="header" href="#test-programı-derleme">Test Programı (Derleme)</a></h3>
 <p><strong>Dosyadan çalıştırma:</strong></p>
 <p><strong>test.berk:</strong></p>
-<pre><code class="language-berk">fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Kurulum başarılı! 🎉")
-    dön 0
-son
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    print("Installation başarılı! 🎉")
+    return 0
+end
 </code></pre>
 <p><strong>Seçenek 1: JIT çalıştırma (hızlı)</strong></p>
 <pre><code class="language-bash">BERK-lang run test.berk
@@ -411,14 +411,14 @@ son
 ./test.exe
 </code></pre>
 <p>Her iki durumda çıktı:</p>
-<pre><code>Kurulum başarılı! 🎉
+<pre><code>Installation başarılı! 🎉
 </code></pre>
 <h2 id="vs-code-eklentisi-opsiyonel"><a class="header" href="#vs-code-eklentisi-opsiyonel">VS Code Eklentisi (Opsiyonel)</a></h2>
 <p>VS Code kullanıyorsanız, BERK eklentisini kurun:</p>
 <h3 id="method-1-marketplace-yakında"><a class="header" href="#method-1-marketplace-yakında">Method 1: Marketplace (Yakında)</a></h3>
 <pre><code>VS Code → Extensions → "BERK" ara → Install
 </code></pre>
-<h3 id="method-2-manuel-kurulum"><a class="header" href="#method-2-manuel-kurulum">Method 2: Manuel Kurulum</a></h3>
+<h3 id="method-2-manuel-Installation"><a class="header" href="#method-2-manuel-Installation">Method 2: Manuel Installation</a></h3>
 <pre><code class="language-bash">cd berk/berk-vscode
 npm install
 npm run compile
@@ -432,7 +432,7 @@ code --install-extension BERK-lang-0.1.0.vsix
 <li>Run/Debug commands</li>
 <li>Status bar integration</li>
 </ul>
-<h2 id="repl-kullanımı"><a class="header" href="#repl-kullanımı">REPL Kullanımı</a></h2>
+<h2 id="repl-Usageı"><a class="header" href="#repl-Usageı">REPL Usageı</a></h2>
 <p>REPL (Read-Eval-Print Loop) ana derleyici ile birlikte gelir:</p>
 <pre><code class="language-bash"># REPL'i başlat
 BERK-lang repl
@@ -448,7 +448,7 @@ Kullanılabilir komutlar:
   :lang &lt;tr|en&gt;  - Dil değiştir (Türkçe/English)
   :type &lt;expr&gt;   - İfadenin tipini göster
 </code></pre>
-<h3 id="repl-Örnekleri"><a class="header" href="#repl-Örnekleri">REPL Örnekleri</a></h3>
+<h3 id="repl-Examplesi"><a class="header" href="#repl-Examplesi">REPL Examplesi</a></h3>
 <p><strong>Basit hesaplamalar:</strong></p>
 <pre><code class="language-berk">&gt;&gt;&gt; 5 + 3
 8
@@ -457,12 +457,12 @@ Kullanılabilir komutlar:
 25.0
 </code></pre>
 <p><strong>Değişkenler:</strong></p>
-<pre><code class="language-berk">&gt;&gt;&gt; değişken isim = "BERK"
-&gt;&gt;&gt; yazdır("Merhaba, " + isim)
+<pre><code class="language-berk">&gt;&gt;&gt; variable isim = "BERK"
+&gt;&gt;&gt; print("Merhaba, " + isim)
 Merhaba, BERK
 </code></pre>
-<p><strong>Fonksiyonlar:</strong></p>
-<pre><code class="language-berk">&gt;&gt;&gt; fonksiyon topla(a: tamsayı, b: tamsayı) -&gt; tamsayı { dön a + b }
+<p><strong>Functions:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; function topla(a: integer, b: integer) -&gt; integer { return a + b }
 &gt;&gt;&gt; topla(10, 20)
 30
 </code></pre>
@@ -483,7 +483,7 @@ Dil Türkçe'ye değiştirildi
 <pre><code>error: could not find native static library `LLVM-17`
 </code></pre>
 <p><strong>Çözüm:</strong></p>
-<pre><code class="language-bash"># LLVM_SYS_170_PREFIX doğru ayarlı mı?
+<pre><code class="language-bash"># LLVM_SYS_170_PREFIX true ayarlı mı?
 echo $LLVM_SYS_170_PREFIX  # Linux/macOS
 echo $env:LLVM_SYS_170_PREFIX  # Windows
 
@@ -511,7 +511,7 @@ export CARGO_INCREMENTAL=1
 cargo build --features llvm
 </code></pre>
 <h3 id="macos-arm-m1m2-sorunları"><a class="header" href="#macos-arm-m1m2-sorunları">macOS ARM (M1/M2) Sorunları</a></h3>
-<pre><code class="language-bash"># Rosetta 2 kurulumu
+<pre><code class="language-bash"># Rosetta 2 Installationu
 softwareupdate --install-rosetta
 
 # ARM native LLVM
@@ -521,7 +521,7 @@ brew install llvm@17
 arch
 # Çıktı: arm64
 </code></pre>
-<h2 id="ek-kurulum-adımları"><a class="header" href="#ek-kurulum-adımları">Ek Kurulum Adımları</a></h2>
+<h2 id="ek-Installation-adımları"><a class="header" href="#ek-Installation-adımları">Ek Installation Adımları</a></h2>
 <h3 id="debugger-gelecek"><a class="header" href="#debugger-gelecek">Debugger (Gelecek)</a></h3>
 <pre><code class="language-bash"># GDB (Linux)
 sudo apt install gdb
@@ -536,10 +536,10 @@ sudo apt install valgrind
 # Instruments (macOS)
 # Xcode ile birlikte gelir
 </code></pre>
-<h2 id="kurulum-tamamlandı"><a class="header" href="#kurulum-tamamlandı">Kurulum Tamamlandı!</a></h2>
+<h2 id="Installation-tamamlandı"><a class="header" href="#Installation-tamamlandı">Installation Tamamlandı!</a></h2>
 <p>Artık BERK ile kod yazmaya hazırsınız!</p>
 <p><strong>Sonraki Adım:</strong> <a href="./hello-world.html">Merhaba Dünya!</a> programınızı yazın</p>
-<h2 id="yardım-ve-destek"><a class="header" href="#yardım-ve-destek">Yardım ve Destek</a></h2>
+<h2 id="yardım-and-destek"><a class="header" href="#yardım-and-destek">Yardım and Destek</a></h2>
 <p>Sorun mu yaşıyorsunuz?</p>
 <ul>
 <li><a href="./faq.html">FAQ</a> - Sık sorulan sorular</li>
@@ -548,7 +548,7 @@ sudo apt install valgrind
 <li>Email: BERK-support@example.com</li>
 </ul>
 <hr />
-<p><strong>Önceki:</strong> <a href="./intro.html">Giriş</a> | <strong>Sonraki:</strong> <a href="./hello-world.html">Merhaba Dünya!</a></p>
+<p><strong>Önceki:</strong> <a href="./intro.html">Introduction</a> | <strong>Sonraki:</strong> <a href="./hello-world.html">Merhaba Dünya!</a></p>
 
                     </main>
 

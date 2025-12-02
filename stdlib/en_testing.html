@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>testing - Test Framework - BERK Programlama Dili</title>
+        <title>testing - Test Framework - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,33 +192,33 @@
             <h1>🧪 testing - Test Framework</h1>
             <p>Unit Tests, Assertions, Mocking, Coverage</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">50</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">50</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">460</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12.9 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar testing
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import testing
 
 // Test suite
-test.suite("Matematik Testleri", fonksiyon() yap
-    test.test("Toplama işlemi", fonksiyon() yap
+test.suite("Mathematics Testleri", function() do
+    test.test("Toplama işlemi", function() do
         test.assert_eq(2 + 2, 4)
         test.assert_eq(10 + 5, 15)
-    son)
+    end)
     
-    test.test("Çarpma işlemi", fonksiyon() yap
+    test.test("Çarpma işlemi", function() do
         test.assert_eq(3 * 4, 12)
         test.assert_ne(5 * 5, 24)
-    son)
+    end)
     
-    test.test("Bölme sıfıra", fonksiyon() yap
-        test.assert_panic(fonksiyon() yap
-            değişken x = 10 / 0
-        son)
-    son)
-son)
+    test.test("Bölme sıfıra", function() do
+        test.assert_panic(function() do
+            variable x = 10 / 0
+        end)
+    end)
+end)
 
 // Run tests
 test.çalıştır()</code></pre>
@@ -226,34 +226,34 @@ test.çalıştır()</code></pre>
         <h2>📚 Assertions</h2>
         <ul>
             <li><strong>assert_eq:</strong> Eşitlik kontrolü</li>
-            <li><strong>assert_ne:</strong> Eşit değil</li>
+            <li><strong>assert_ne:</strong> Eşit not</li>
             <li><strong>assert_true/false:</strong> Boolean</li>
             <li><strong>assert_panic:</strong> Hata fırlatma</li>
             <li><strong>assert_approx:</strong> Float yaklaşık eşitlik</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Unit Test Example</h3>
-            <pre><code>içe_aktar testing, string
+            <pre><code>import testing, string
 
-fonksiyon email_normalize(email: yazı) -> yazı yap
-    dön string.küçük_harf(string.trim(email))
-son
+function email_normalize(email: string) -> string do
+    return string.küçük_harf(string.trim(email))
+end
 
-test.suite("Email Testleri", fonksiyon() yap
-    test.test("Normal email", fonksiyon() yap
+test.suite("Email Testleri", function() do
+    test.test("Normal email", function() do
         test.assert_eq(
             email_normalize("  User@EXAMPLE.com  "),
             "user@example.com"
         )
-    son)
+    end)
     
-    test.test("Boş email", fonksiyon() yap
+    test.test("null email", function() do
         test.assert_eq(email_normalize(""), "")
-    son)
-son)
+    end)
+end)
 
 test.çalıştır()</code></pre>
         </div>

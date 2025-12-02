@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>http - HTTP Istemci/Sunucu - BERK Programlama Dili</title>
+        <title>http - HTTP Istemci/Sunucu - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,36 +192,36 @@
             <h1>🌐 http - HTTP İstemci/Sunucu</h1>
             <p>Client, Server, REST API, WebSocket</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">76</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">76</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1549</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">50.3 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar http
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import http
 
 // HTTP GET request
-değişken yanıt = http.get("https://api.github.com/users/berkdev")
-eğer yanıt.durum == 200 ise yap
-    yazdır(yanıt.gövde)
-son
+variable yanıt = http.get("https://api.github.com/users/berkdev")
+if yanıt.durum == 200 ise do
+    print(yanıt.gövde)
+end
 
 // POST request
-değişken veri = {"isim": "BERK", "versiyon": "1.4"}
-değişken yanıt2 = http.post("https://api.example.com/data", veri)
+variable veri = {"isim": "BERK", "versiyon": "1.4"}
+variable yanıt2 = http.post("https://api.example.com/data", veri)
 
 // HTTP Server
-değişken sunucu = http.Sunucu_new(8080)
+variable sunucu = http.Sunucu_new(8080)
 
-sunucu.rotala("GET", "/", fonksiyon(istek, yanıt) yap
+sunucu.rotala("GET", "/", function(istek, yanıt) do
     yanıt.html("<h1>Merhaba BERK!</h1>")
-son)
+end)
 
-sunucu.rotala("GET", "/api/user/:id", fonksiyon(istek, yanıt) yap
-    değişken user_id = istek.params["id"]
+sunucu.rotala("GET", "/api/user/:id", function(istek, yanıt) do
+    variable user_id = istek.params["id"]
     yanıt.json({"id": user_id, "name": "User " + user_id})
-son)
+end)
 
 sunucu.başlat()</code></pre>
 
@@ -235,73 +235,73 @@ sunucu.başlat()</code></pre>
             <li><strong>WebSocket:</strong> Real-time communication</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>REST API Client</h3>
-            <pre><code>içe_aktar http, json
+            <pre><code>import http, json
 
-fonksiyon kullanıcı_getir(id: tamsayı) -> Sonuç yap
-    değişken url = "https://jsonplaceholder.typicode.com/users/" + id.yazıya()
-    değişken yanıt = http.get(url)
+function kullanıcı_getir(id: integer) -> Sonuç do
+    variable url = "https://jsonplaceholder.typicode.com/users/" + id.yazıya()
+    variable yanıt = http.get(url)
     
-    eğer yanıt.durum != 200 ise yap
-        dön Hata("HTTP " + yanıt.durum.yazıya())
-    son
+    if yanıt.durum != 200 ise do
+        return Hata("HTTP " + yanıt.durum.yazıya())
+    end
     
-    değişken veri = json.parse(yanıt.gövde)
-    dön Tamam(veri)
-son
+    variable veri = json.parse(yanıt.gövde)
+    return Tamam(veri)
+end
 
-// Kullanım
-değişken sonuç = kullanıcı_getir(1)
-eşleştir sonuç yap
-    Tamam(user) => yazdır("Kullanıcı: " + user["name"]),
-    Hata(e) => yazdır("Hata: " + e)
-son</code></pre>
+// Usage
+variable sonuç = kullanıcı_getir(1)
+eşleştir sonuç do
+    Tamam(user) => print("Kullanıcı: " + user["name"]),
+    Hata(e) => print("Hata: " + e)
+end</code></pre>
         </div>
 
         <div class="example-box">
             <h3>REST API Server with Middleware</h3>
-            <pre><code>içe_aktar http, time, collections
+            <pre><code>import http, time, collections
 
-değişken sunucu = http.Sunucu_new(3000)
-değişken veritabanı = collections.HashMap_new()
+variable sunucu = http.Sunucu_new(3000)
+variable veritabanı = collections.HashMap_new()
 
 // CORS Middleware
-sunucu.middleware(fonksiyon(istek, yanıt, ileri) yap
+sunucu.middleware(function(istek, yanıt, ileri) do
     yanıt.header_ekle("Access-Control-Allow-Origin", "*")
     yanıt.header_ekle("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
     
-    eğer istek.metod == "OPTIONS" ise yap
+    if istek.metod == "OPTIONS" ise do
         yanıt.durum(204).gönder()
-    yoksa yap
+    elseif do
         ileri()
-    son
-son)
+    end
+end)
 
 // Logging middleware
-sunucu.middleware(fonksiyon(istek, yanıt, ileri) yap
-    değişken başlangıç = time.şimdi()
+sunucu.middleware(function(istek, yanıt, ileri) do
+    variable Getting Started = time.şimdi()
     ileri()
-    değişken süre = time.şimdi() - başlangıç
-    yazdır(istek.metod + " " + istek.yol + " - " + süre.yazıya() + "ms")
-son)
+    variable süre = time.şimdi() - Getting Started
+    print(istek.metod + " " + istek.yol + " - " + süre.yazıya() + "ms")
+end)
 
 // Routes
-sunucu.rotala("GET", "/api/users", fonksiyon(istek, yanıt) yap
+sunucu.rotala("GET", "/api/users", function(istek, yanıt) do
     yanıt.json(collections.HashMap_values(veritabanı))
-son)
+end)
 
-sunucu.rotala("POST", "/api/users", fonksiyon(istek, yanıt) yap
-    değişken user = json.parse(istek.gövde)
-    değişken id = collections.HashMap_size(veritabanı) + 1
+sunucu.rotala("POST", "/api/users", function(istek, yanıt) do
+    variable user = json.parse(istek.gövde)
+    variable id = collections.HashMap_size(veritabanı) + 1
     user["id"] = id
     collections.HashMap_set(veritabanı, id.yazıya(), user)
     yanıt.durum(201).json(user)
-son)
+end)
 
-yazdır("Sunucu http://localhost:3000 adresinde çalışıyor")
+print("Sunucu http://localhost:3000 adresinde çalışıyor")
 sunucu.başlat()</code></pre>
         </div>
 

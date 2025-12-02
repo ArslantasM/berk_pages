@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>HAL Overview - Embedded Systems - BERK Programlama Dili</title>
+        <title>HAL Overview - Embedded Systems - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,7 +190,7 @@
                     <main>
                         <div class="module-header">
 <h1>🔧 HAL - Hardware Abstraction Layer</h1>
-<p>Gömülü Sistemler için Donanım Soyutlama Katmanı</p>
+<p>Gömülü Sistemler for Hardware Abstraction Layer</p>
 <div style="margin-top:20px">
 <span class="platform-badge">STM32</span>
 <span class="platform-badge">ESP32</span>
@@ -200,7 +200,7 @@
 </div>
 </div>
 
-<h2>📋 HAL Modülleri (21 Modül)</h2>
+<h2>📋 HAL Modülleri (21 module)</h2>
 
 <div class="hal-grid">
 <div class="hal-card">
@@ -330,89 +330,89 @@
 </div>
 </div>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::gpio, hal::timer
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::gpio, hal::timer
 
 // GPIO LED blink
-değişken led_pin = gpio.pin_init(gpio.PORT_A, 5, gpio.MODE_OUTPUT)
+variable led_pin = gpio.pin_init(gpio.PORT_A, 5, gpio.MODE_OUTPUT)
 gpio.pin_write(led_pin, gpio.HIGH)
 
 // Timer PWM
-değişken pwm = timer.pwm_init(timer.TIM1, timer.CH1, 1000)  // 1kHz
+variable pwm = timer.pwm_init(timer.TIM1, timer.CH1, 1000)  // 1kHz
 timer.pwm_set_duty(pwm, 50)  // 50% duty cycle
 timer.pwm_start(pwm)</code></pre>
 
 <h2>💡 Örnek: STM32 LED Blink</h2>
-<pre><code>içe_aktar hal::core, hal::gpio, hal::timer
+<pre><code>import hal::core, hal::gpio, hal::timer
 
-fonksiyon ana() yap
+function ana() do
     // System initialization
     core.system_init()
     core.clock_config(72_000_000)  // 72MHz
     
     // GPIO setup
     gpio.clock_enable(gpio.PORT_C)
-    değişken led = gpio.pin_init(gpio.PORT_C, 13, yap
+    variable led = gpio.pin_init(gpio.PORT_C, 13, do
         mode: gpio.MODE_OUTPUT,
         speed: gpio.SPEED_LOW,
         pull: gpio.PULL_NONE
-    son)
+    end)
     
     // Blink loop
-    döngü yap
+    loop do
         gpio.pin_toggle(led)
         core.delay_ms(500)
-    son
-son</code></pre>
+    end
+end</code></pre>
 
 <h2>💡 Örnek: ADC Reading</h2>
-<pre><code>içe_aktar hal::adc, hal::gpio, hal::core
+<pre><code>import hal::adc, hal::gpio, hal::core
 
-fonksiyon sıcaklık_oku() -> kesir yap
+function sıcaklık_oku() -> kesir do
     // ADC setup
     adc.clock_enable()
-    değişken adc1 = adc.init(adc.ADC1, yap
+    variable adc1 = adc.init(adc.ADC1, do
         resolution: adc.RESOLUTION_12BIT,
         align: adc.ALIGN_RIGHT
-    son)
+    end)
     
     // GPIO for analog input
-    değişken pin = gpio.pin_init(gpio.PORT_A, 0, gpio.MODE_ANALOG)
+    variable pin = gpio.pin_init(gpio.PORT_A, 0, gpio.MODE_ANALOG)
     
     // Configure channel
-    adc.channel_config(adc1, adc.CHANNEL_0, yap
+    adc.channel_config(adc1, adc.CHANNEL_0, do
         sampling_time: adc.SAMPLETIME_480CYCLES
-    son)
+    end)
     
     // Read value
     adc.start(adc1)
-    değişken raw = adc.read(adc1)
+    variable raw = adc.read(adc1)
     
     // Convert to temperature (example)
-    değişken voltage = raw.kesir() * 3.3 / 4095.0
-    değişken temp = (voltage - 0.76) / 0.0025 + 25.0
+    variable voltage = raw.kesir() * 3.3 / 4095.0
+    variable temp = (voltage - 0.76) / 0.0025 + 25.0
     
-    dön temp
-son
+    return temp
+end
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
     
-    döngü yap
-        değişken temp = sıcaklık_oku()
+    loop do
+        variable temp = sıcaklık_oku()
         io.println("Sıcaklık: " + temp.yazıya() + "°C")
         core.delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 
 <h2>💡 Örnek: I2C OLED Display</h2>
-<pre><code>içe_aktar hal::i2c, hal::gpio
+<pre><code>import hal::i2c, hal::gpio
 
-sabit OLED_ADDR = 0x3C
+constant OLED_ADDR = 0x3C
 
-fonksiyon oled_init(i2c: I2CHandle) yap
+function oled_init(i2c: I2CHandle) do
     // Initialization sequence
-    değişken init_cmds = [
+    variable init_cmds = [
         0xAE,  // Display off
         0xD5, 0x80,  // Clock divide
         0xA8, 0x3F,  // Multiplex
@@ -431,27 +431,27 @@ fonksiyon oled_init(i2c: I2CHandle) yap
         0xAF   // Display on
     ]
     
-    her cmd içinde init_cmds için yap
+    her cmd içinde init_cmds for do
         i2c.write_byte(i2c, OLED_ADDR, 0x00, cmd)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     // I2C setup
     gpio.pin_init(gpio.PORT_B, 6, gpio.MODE_AF_OD)  // SCL
     gpio.pin_init(gpio.PORT_B, 7, gpio.MODE_AF_OD)  // SDA
     
-    değişken i2c1 = i2c.init(i2c.I2C1, yap
+    variable i2c1 = i2c.init(i2c.I2C1, do
         speed: i2c.SPEED_100KHZ,
         mode: i2c.MODE_I2C
-    son)
+    end)
     
     oled_init(i2c1)
     
     // Display text
     oled_print(i2c1, "BERK v1.0.0")
     oled_print(i2c1, "Embedded!")
-son</code></pre>
+end</code></pre>
 
 <h2>📚 Platform Desteği</h2>
 <ul>

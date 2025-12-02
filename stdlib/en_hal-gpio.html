@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-gpio - GPIO Control - BERK Programlama Dili</title>
+        <title>hal-gpio - GPIO Control - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>General Purpose Input/Output Control - GPIO Pin Yönetimi</p>
 <div style="margin-top:15px">
 <span class="stat-badge">381 satır</span>
-<span class="stat-badge">~30 fonksiyon</span>
+<span class="stat-badge">~30 function</span>
 <span class="stat-badge">STM32/GD32/ESP32</span>
 </div>
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>GPIO (General Purpose Input/Output) modülü, mikrokontrolcü pinlerinin dijital giriş/çıkış olarak kontrolünü sağlar. LED kontrolü, buton okuma, sensör arayüzleri ve dijital sinyaller için kullanılır.</p>
+<p>GPIO (General Purpose Input/Output) modülü, mikrokontrolcü pinlerinin dijital Introduction/çıkış olarak kontrolünü sağlar. LED kontrolü, buton okuma, sensör arayüzleri and dijital sinyaller for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -213,25 +213,25 @@
 <li>Port locking</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::gpio
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::gpio
 
 // GPIO clock enable
 gpio.clock_enable(gpio.PORT_C)
 
 // LED pin setup (output)
-değişken led = gpio.pin_init(gpio.PORT_C, 13, yap
+variable led = gpio.pin_init(gpio.PORT_C, 13, do
     mode: gpio.MODE_OUTPUT,
     speed: gpio.SPEED_LOW,
     pull: gpio.PULL_NONE
-son)
+end)
 
 // LED control
 gpio.pin_write(led, gpio.HIGH)  // Turn on
 gpio.pin_toggle(led)  // Toggle
 gpio.pin_write(led, gpio.LOW)  // Turn off</code></pre>
 
-<h2>📦 Tipler ve Enum'lar</h2>
+<h2>📦 Tipler and Enum'lar</h2>
 <pre><code>// GPIO Portları
 enum Port {
     A, B, C, D, E, F, G, H, I
@@ -275,138 +275,138 @@ enum Trigger {
     BOTH      // Both edges
 }</code></pre>
 
-<h2>⚙️ Fonksiyonlar</h2>
+<h2>⚙️ Functions</h2>
 
 <h3>Clock Management</h3>
-<pre><code>fonksiyon clock_enable(port: Port) -> Sonuç[Hiçbir, Hata]
+<pre><code>function clock_enable(port: Port) -> Sonuç[Hiçbir, Hata]
 // Enable GPIO port clock
 
-fonksiyon clock_disable(port: Port) -> Sonuç[Hiçbir, Hata]
+function clock_disable(port: Port) -> Sonuç[Hiçbir, Hata]
 // Disable GPIO port clock</code></pre>
 
 <h3>Pin Initialization</h3>
-<pre><code>fonksiyon pin_init(port: Port, pin: sayı, config: PinConfig) -> Pin
+<pre><code>function pin_init(port: Port, pin: sayı, config: PinConfig) -> Pin
 // Initialize GPIO pin with configuration
 
 // PinConfig structure
-yapı PinConfig yap
+struct PinConfig do
     mode: Mode,      // Pin mode
     speed: Speed,    // Output speed
     pull: Pull,      // Pull resistor
     af: İsteğe_Bağlı[sayı]  // Alternate function number
-son</code></pre>
+end</code></pre>
 
 <h3>Digital I/O</h3>
-<pre><code>fonksiyon pin_write(pin: Pin, level: Level)
+<pre><code>function pin_write(pin: Pin, level: Level)
 // Write digital output
 
-fonksiyon pin_read(pin: Pin) -> Level
+function pin_read(pin: Pin) -> Level
 // Read digital input
 
-fonksiyon pin_toggle(pin: Pin)
+function pin_toggle(pin: Pin)
 // Toggle output pin
 
-fonksiyon port_write(port: Port, value: u16)
+function port_write(port: Port, value: u16)
 // Write entire port (16 pins)
 
-fonksiyon port_read(port: Port) -> u16
+function port_read(port: Port) -> u16
 // Read entire port</code></pre>
 
 <h3>Interrupt Management</h3>
-<pre><code>fonksiyon interrupt_enable(pin: Pin, trigger: Trigger, callback: İşlev)
+<pre><code>function interrupt_enable(pin: Pin, trigger: Trigger, callback: İşlev)
 // Enable pin interrupt
 
-fonksiyon interrupt_disable(pin: Pin)
+function interrupt_disable(pin: Pin)
 // Disable pin interrupt</code></pre>
 
 <div class="example-box">
 <h3>💡 Örnek 1: LED Blink</h3>
-<pre><code>içe_aktar hal::gpio, hal::core
+<pre><code>import hal::gpio, hal::core
 
-fonksiyon ana() yap
+function ana() do
     // System init
     core.system_init()
     core.clock_config(72_000_000)  // 72MHz
     
     // LED setup (PC13 on STM32 Blue Pill)
     gpio.clock_enable(gpio.PORT_C)
-    değişken led = gpio.pin_init(gpio.PORT_C, 13, yap
+    variable led = gpio.pin_init(gpio.PORT_C, 13, do
         mode: gpio.MODE_OUTPUT,
         speed: gpio.SPEED_LOW,
         pull: gpio.PULL_NONE
-    son)
+    end)
     
     // Blink loop
-    döngü yap
+    loop do
         gpio.pin_toggle(led)
         core.delay_ms(500)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 2: Button Input with Interrupt</h3>
-<pre><code>içe_aktar hal::gpio, hal::int
+<pre><code>import hal::gpio, hal::int
 
-değişken button_pressed = yanlış
+variable button_pressed = false
 
-fonksiyon button_handler() yap
-    button_pressed = doğru
+function button_handler() do
+    button_pressed = true
     io.println("Button pressed!")
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     // LED setup (output)
     gpio.clock_enable(gpio.PORT_C)
-    değişken led = gpio.pin_init(gpio.PORT_C, 13, yap
+    variable led = gpio.pin_init(gpio.PORT_C, 13, do
         mode: gpio.MODE_OUTPUT,
         speed: gpio.SPEED_LOW,
         pull: gpio.PULL_NONE
-    son)
+    end)
     
     // Button setup (input with pull-up)
     gpio.clock_enable(gpio.PORT_A)
-    değişken button = gpio.pin_init(gpio.PORT_A, 0, yap
+    variable button = gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         pull: gpio.PULL_UP,
         speed: gpio.SPEED_LOW
-    son)
+    end)
     
     // Enable button interrupt
     gpio.interrupt_enable(button, gpio.TRIGGER_FALLING, button_handler)
     
     // Main loop
-    döngü yap
-        eğer button_pressed ise yap
-            button_pressed = yanlış
+    loop do
+        if button_pressed ise do
+            button_pressed = false
             gpio.pin_toggle(led)
-        son
+        end
         core.delay_ms(10)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 3: Multi-LED Control (Port Operations)</h3>
-<pre><code>içe_aktar hal::gpio, hal::core
+<pre><code>import hal::gpio, hal::core
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
     
     // Setup 8 LEDs on Port B (PB0-PB7)
     gpio.clock_enable(gpio.PORT_B)
     
     // Initialize all 8 pins
-    her i içinde 0..8 için yap
-        gpio.pin_init(gpio.PORT_B, i, yap
+    her i içinde 0..8 for do
+        gpio.pin_init(gpio.PORT_B, i, do
             mode: gpio.MODE_OUTPUT,
             speed: gpio.SPEED_MEDIUM,
             pull: gpio.PULL_NONE
-        son)
-    son
+        end)
+    end
     
     // LED patterns
-    değişken patterns = [
+    variable patterns = [
         0b00000001,  // Single LED
         0b00000011,  // 2 LEDs
         0b00000111,  // 3 LEDs
@@ -417,86 +417,86 @@ fonksiyon ana() yap
         0b11111111   // All LEDs
     ]
     
-    döngü yap
-        her pattern içinde patterns için yap
+    loop do
+        her pattern içinde patterns for do
             gpio.port_write(gpio.PORT_B, pattern)
             core.delay_ms(200)
-        son
+        end
         
         // Reverse
-        her pattern içinde patterns.ters() için yap
+        her pattern içinde patterns.ters() for do
             gpio.port_write(gpio.PORT_B, pattern)
             core.delay_ms(200)
-        son
-    son
-son</code></pre>
+        end
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 4: Traffic Light Controller</h3>
-<pre><code>içe_aktar hal::gpio, hal::core
+<pre><code>import hal::gpio, hal::core
 
-yapı TrafficLight yap
+struct TrafficLight do
     red: gpio.Pin,
     yellow: gpio.Pin,
     green: gpio.Pin
-son
+end
 
-fonksiyon traffic_light_init() -> TrafficLight yap
+function traffic_light_init() -> TrafficLight do
     gpio.clock_enable(gpio.PORT_A)
     
-    değişken tl = TrafficLight yap
-        red: gpio.pin_init(gpio.PORT_A, 0, yap
+    variable tl = TrafficLight do
+        red: gpio.pin_init(gpio.PORT_A, 0, do
             mode: gpio.MODE_OUTPUT,
             speed: gpio.SPEED_LOW,
             pull: gpio.PULL_NONE
-        son),
-        yellow: gpio.pin_init(gpio.PORT_A, 1, yap
+        end),
+        yellow: gpio.pin_init(gpio.PORT_A, 1, do
             mode: gpio.MODE_OUTPUT,
             speed: gpio.SPEED_LOW,
             pull: gpio.PULL_NONE
-        son),
-        green: gpio.pin_init(gpio.PORT_A, 2, yap
+        end),
+        green: gpio.pin_init(gpio.PORT_A, 2, do
             mode: gpio.MODE_OUTPUT,
             speed: gpio.SPEED_LOW,
             pull: gpio.PULL_NONE
-        son)
-    son
+        end)
+    end
     
-    dön tl
-son
+    return tl
+end
 
-fonksiyon set_state(tl: TrafficLight, red: mantıksal, yellow: mantıksal, green: mantıksal) yap
-    gpio.pin_write(tl.red, eğer red ise gpio.HIGH yoksa gpio.LOW)
-    gpio.pin_write(tl.yellow, eğer yellow ise gpio.HIGH yoksa gpio.LOW)
-    gpio.pin_write(tl.green, eğer green ise gpio.HIGH yoksa gpio.LOW)
-son
+function set_state(tl: TrafficLight, red: boolean, yellow: boolean, green: boolean) do
+    gpio.pin_write(tl.red, if red ise gpio.HIGH elseif gpio.LOW)
+    gpio.pin_write(tl.yellow, if yellow ise gpio.HIGH elseif gpio.LOW)
+    gpio.pin_write(tl.green, if green ise gpio.HIGH elseif gpio.LOW)
+end
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
-    değişken tl = traffic_light_init()
+    variable tl = traffic_light_init()
     
-    döngü yap
+    loop do
         // Green light
-        set_state(tl, yanlış, yanlış, doğru)
+        set_state(tl, false, false, true)
         core.delay_ms(5000)
         
         // Yellow light
-        set_state(tl, yanlış, doğru, yanlış)
+        set_state(tl, false, true, false)
         core.delay_ms(2000)
         
         // Red light
-        set_state(tl, doğru, yanlış, yanlış)
+        set_state(tl, true, false, false)
         core.delay_ms(5000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <h2>⚠️ Önemli Notlar</h2>
 <ul>
 <li>Pin kullanmadan önce port clock'unu enable etmelisiniz</li>
 <li>Open-drain çıkışlar external pull-up gerektirir</li>
-<li>5V tolerant pinler için datasheet kontrol edin</li>
+<li>5V tolerant pinler for datasheet kontrol edin</li>
 <li>Interrupt kullanırken NVIC konfigürasyonu gerekir</li>
 <li>Maximum pin current sınırlarına dikkat edin (~25mA)</li>
 <li>Analog mode kullanırken dijital bufferleri disable edilir</li>

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>network - Ag Islemleri - BERK Programlama Dili</title>
+        <title>network - Ag Islemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,33 +192,33 @@
             <h1>🌍 network - Ağ İşlemleri</h1>
             <p>TCP, UDP, Socket, DNS</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">87</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">87</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">648</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">18.5 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar network
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import network
 
 // TCP Server
-değişken sunucu = network.TcpListener_bind("127.0.0.1:8080")
-yazdır("TCP sunucu 8080 portunda dinliyor...")
+variable sunucu = network.TcpListener_bind("127.0.0.1:8080")
+print("TCP sunucu 8080 portunda dinliyor...")
 
-döngü yap
-    değişken (soket, adres) = sunucu.kabul_et()
-    yazdır("Bağlantı: " + adres.yazıya())
+loop do
+    variable (soket, adres) = sunucu.kabul_et()
+    print("Bağlantı: " + adres.yazıya())
     
-    değişken veri = soket.oku(1024)
+    variable veri = soket.read(1024)
     soket.yaz("Echo: " + veri)
     soket.kapat()
-son
+end
 
 // TCP Client
-değişken istemci = network.TcpStream_connect("127.0.0.1:8080")
+variable istemci = network.TcpStream_connect("127.0.0.1:8080")
 istemci.yaz("Merhaba sunucu!")
-değişken yanıt = istemci.oku(1024)
-yazdır(yanıt)</code></pre>
+variable yanıt = istemci.read(1024)
+print(yanıt)</code></pre>
 
         <h2>📚 Özellikler</h2>
         <ul>
@@ -228,43 +228,43 @@ yazdır(yanıt)</code></pre>
             <li><strong>Socket:</strong> Low-level networking</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Chat Server</h3>
-            <pre><code>içe_aktar network, thread, collections
+            <pre><code>import network, thread, collections
 
-değişken istemciler = collections.Vec_new()
-değişken mutex = thread.Mutex_new(istemciler)
+variable istemciler = collections.Vec_new()
+variable mutex = thread.Mutex_new(istemciler)
 
-fonksiyon istemci_işle(soket: TcpStream) yap
-    döngü yap
-        değişken mesaj = soket.oku(1024)
-        eğer mesaj == "" ise yap
-            kır
-        son
+function istemci_işle(soket: TcpStream) do
+    loop do
+        variable mesaj = soket.read(1024)
+        if mesaj == "" ise do
+            break
+        end
         
         // Tüm istemcilere yayınla
-        değişken liste = thread.Mutex_lock(mutex)
-        her istemci içinde liste için yap
+        variable liste = thread.Mutex_lock(mutex)
+        her istemci içinde liste for do
             istemci.yaz(mesaj)
-        son
+        end
         thread.Mutex_unlock(mutex)
-    son
+    end
     soket.kapat()
-son
+end
 
-değişken sunucu = network.TcpListener_bind("0.0.0.0:9000")
-yazdır("Chat sunucu çalışıyor: 9000")
+variable sunucu = network.TcpListener_bind("0.0.0.0:9000")
+print("Chat sunucu çalışıyor: 9000")
 
-döngü yap
-    değişken (soket, adres) = sunucu.kabul_et()
-    yazdır("Yeni istemci: " + adres.yazıya())
+loop do
+    variable (soket, adres) = sunucu.kabul_et()
+    print("Yeni istemci: " + adres.yazıya())
     
-    thread.spawn(fonksiyon() yap
+    thread.spawn(function() do
         istemci_işle(soket)
-    son)
-son</code></pre>
+    end)
+end</code></pre>
         </div>
 
         <hr />

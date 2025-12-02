@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-can - CAN Bus - BERK Programlama Dili</title>
+        <title>hal-can - CAN Bus - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>Controller Area Network - Automotive Communication</p>
 <div style="margin-top:15px">
 <span class="stat-badge">383 satır</span>
-<span class="stat-badge">~14 fonksiyon</span>
+<span class="stat-badge">~14 function</span>
 <span class="stat-badge">Automotive</span>
 </div>
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>CAN (Controller Area Network) otomotiv ve endüstriyel uygulamalarda kullanılan güvenilir haberleşme protokolüdür. ECU (Engine Control Unit), sensörler ve aktüatörler arası iletişim sağlar.</p>
+<p>CAN (Controller Area Network) otomotiv and endüstriyel uygulamalarda kullanılan güvenilir haberleşme protokolüdür. ECU (Engine Control Unit), sensörler and aktüatörler arası iletişim sağlar.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -213,123 +213,123 @@
 <li>Automatic retransmission</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::can, hal::gpio
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::can, hal::gpio
 
 // CAN pins: PB8=RX, PB9=TX
 gpio.clock_enable(gpio.PORT_B)
-gpio.pin_init(gpio.PORT_B, 8, yap mode: gpio.MODE_AF, af: 9 son)
-gpio.pin_init(gpio.PORT_B, 9, yap mode: gpio.MODE_AF, af: 9 son)
+gpio.pin_init(gpio.PORT_B, 8, do mode: gpio.MODE_AF, af: 9 end)
+gpio.pin_init(gpio.PORT_B, 9, do mode: gpio.MODE_AF, af: 9 end)
 
 // Initialize CAN (500 kbps)
-değişken can1 = can.init(can.CAN1, yap
+variable can1 = can.init(can.CAN1, do
     bitrate: 500_000,
     mode: can.MODE_NORMAL
-son)
+end)
 
 // Send message
-can.send(can1, yap
+can.send(can1, do
     id: 0x123,
     data: [0x01, 0x02, 0x03],
-    extended_id: yanlış
-son)
+    extended_id: false
+end)
 
 // Receive message
-eğer msg = can.receive(can1, 100) ise yap
+if msg = can.receive(can1, 100) ise do
     io.println("Received ID: 0x{:X}".formatla(msg.id))
-son</code></pre>
+end</code></pre>
 
 <div class="example-box">
 <h3>💡 Örnek: ECU Simulator</h3>
-<pre><code>içe_aktar hal::can, hal::core
+<pre><code>import hal::can, hal::core
 
-sabit ENGINE_RPM = 0x100
-sabit VEHICLE_SPEED = 0x101
-sabit COOLANT_TEMP = 0x102
-sabit THROTTLE_POS = 0x103
+constant ENGINE_RPM = 0x100
+constant VEHICLE_SPEED = 0x101
+constant COOLANT_TEMP = 0x102
+constant THROTTLE_POS = 0x103
 
-fonksiyon send_rpm(can1: can.Handle, rpm: sayı) yap
-    değişken data = [
+function send_rpm(can1: can.Handle, rpm: sayı) do
+    variable data = [
         (rpm >> 8) & 0xFF,
         rpm & 0xFF
     ]
     
-    can.send(can1, yap
+    can.send(can1, do
         id: ENGINE_RPM,
         data: data,
-        extended_id: yanlış
-    son)
-son
+        extended_id: false
+    end)
+end
 
-fonksiyon send_speed(can1: can.Handle, speed: sayı) yap
-    can.send(can1, yap
+function send_speed(can1: can.Handle, speed: sayı) do
+    can.send(can1, do
         id: VEHICLE_SPEED,
         data: [speed & 0xFF],
-        extended_id: yanlış
-    son)
-son
+        extended_id: false
+    end)
+end
 
-fonksiyon send_temp(can1: can.Handle, temp: sayı) yap
+function send_temp(can1: can.Handle, temp: sayı) do
     // Temperature in Celsius + 40
-    değişken temp_byte = (temp + 40) & 0xFF
+    variable temp_byte = (temp + 40) & 0xFF
     
-    can.send(can1, yap
+    can.send(can1, do
         id: COOLANT_TEMP,
         data: [temp_byte],
-        extended_id: yanlış
-    son)
-son
+        extended_id: false
+    end)
+end
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
     
     // Setup CAN
-    değişken can1 = can.init(can.CAN1, yap
+    variable can1 = can.init(can.CAN1, do
         bitrate: 500_000,
         mode: can.MODE_NORMAL
-    son)
+    end)
     
     // Configure filter (accept all)
-    can.filter_config(can1, yap
+    can.filter_config(can1, do
         filter_id: 0,
         id: 0x000,
         mask: 0x000,  // Accept all IDs
         fifo: can.FIFO0
-    son)
+    end)
     
     // Simulate ECU data
-    değişken rpm = 800  // Idle RPM
-    değişken speed = 0
-    değişken temp = 20
+    variable rpm = 800  // Idle RPM
+    variable speed = 0
+    variable temp = 20
     
-    döngü yap
+    loop do
         // Send telemetry at 10Hz
         send_rpm(can1, rpm)
         send_speed(can1, speed)
         send_temp(can1, temp)
         
         // Simulate acceleration
-        eğer rpm < 6000 ise yap
+        if rpm < 6000 ise do
             rpm += 100
             speed = (rpm / 100)  // Simplified
             temp += 1  // Engine heats up
-        değilse yap
+        else do
             rpm = 800  // Back to idle
             speed = 0
             temp = 20
-        son
+        end
         
         core.delay_ms(100)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: CAN Bus Monitor</h3>
-<pre><code>içe_aktar hal::can
+<pre><code>import hal::can
 
-fonksiyon message_name(id: u32) -> yazı yap
-    dön eşle id yap
+function message_name(id: u32) -> string do
+    return eşle id do
         0x100 => "Engine RPM",
         0x101 => "Vehicle Speed",
         0x102 => "Coolant Temp",
@@ -337,124 +337,124 @@ fonksiyon message_name(id: u32) -> yazı yap
         0x200 => "Brake Status",
         0x300 => "Door Status",
         _ => "Unknown"
-    son
-son
+    end
+end
 
-fonksiyon parse_data(msg: can.Message) yap
+function parse_data(msg: can.Message) do
     io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
     
     // Print data bytes
-    her byte içinde msg.data[0..msg.dlc] için yap
+    her byte içinde msg.data[0..msg.dlc] for do
         io.print("{:02X} ".formatla(byte))
-    son
+    end
     
     // Interpret known messages
-    değişken name = message_name(msg.id)
+    variable name = message_name(msg.id)
     io.print(" // {}", name)
     
-    eşle msg.id yap
-        0x100 => yap  // RPM
-            değişken rpm = (msg.data[0] << 8) | msg.data[1]
+    eşle msg.id do
+        0x100 => do  // RPM
+            variable rpm = (msg.data[0] << 8) | msg.data[1]
             io.print(" = {} RPM", rpm)
-        son,
-        0x101 => yap  // Speed
+        end,
+        0x101 => do  // Speed
             io.print(" = {} km/h", msg.data[0])
-        son,
-        0x102 => yap  // Temp
-            değişken temp = msg.data[0].sayı() - 40
+        end,
+        0x102 => do  // Temp
+            variable temp = msg.data[0].sayı() - 40
             io.print(" = {}°C", temp)
-        son,
-        _ => yap son
-    son
+        end,
+        _ => do end
+    end
     
     io.println()
-son
+end
 
-fonksiyon ana() yap
-    değişken can1 = can.init(can.CAN1, yap
+function ana() do
+    variable can1 = can.init(can.CAN1, do
         bitrate: 500_000,
         mode: can.MODE_NORMAL
-    son)
+    end)
     
     // Accept all messages
-    can.filter_config(can1, yap
+    can.filter_config(can1, do
         filter_id: 0,
         id: 0x000,
         mask: 0x000,
         fifo: can.FIFO0
-    son)
+    end)
     
     io.println("CAN Bus Monitor Started (500 kbps)")
     io.println("Press Ctrl+C to exit\n")
     
-    döngü yap
+    loop do
         // Check for messages (non-blocking)
-        eğer msg = can.receive(can1, 10) ise yap
+        if msg = can.receive(can1, 10) ise do
             parse_data(msg)
-        son
-    son
-son</code></pre>
+        end
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 3: OBD-II Diagnostics</h3>
-<pre><code>içe_aktar hal::can
+<pre><code>import hal::can
 
-sabit OBD_REQUEST = 0x7DF
-sabit OBD_RESPONSE = 0x7E8
-sabit PID_ENGINE_RPM = 0x0C
-sabit PID_VEHICLE_SPEED = 0x0D
+constant OBD_REQUEST = 0x7DF
+constant OBD_RESPONSE = 0x7E8
+constant PID_ENGINE_RPM = 0x0C
+constant PID_VEHICLE_SPEED = 0x0D
 
-fonksiyon obd_request(can1: can.Handle, pid: u8) -> Sonuç[sayı, Hata] yap
-    can.send(can1, yap
+function obd_request(can1: can.Handle, pid: u8) -> Sonuç[sayı, Hata] do
+    can.send(can1, do
         id: OBD_REQUEST,
         data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
         dlc: 8
-    son)?
+    end)?
     
-    eğer response = can.receive(can1, 100) ise yap
-        eğer response.id == OBD_RESPONSE ise yap
-            dön Tamam(eşle pid yap
+    if response = can.receive(can1, 100) ise do
+        if response.id == OBD_RESPONSE ise do
+            return Tamam(eşle pid do
                 PID_ENGINE_RPM => ((response.data[3] << 8) | response.data[4]) / 4,
                 PID_VEHICLE_SPEED => response.data[3].sayı(),
                 _ => 0
-            son)
-        son
-    son
+            end)
+        end
+    end
     
-    dön Hata("Timeout")
-son
+    return Hata("Timeout")
+end
 
-fonksiyon ana() yap
-    değişken can1 = can.init(can.CAN1, yap bitrate: 500_000 son)
+function ana() do
+    variable can1 = can.init(can.CAN1, do bitrate: 500_000 end)
     
-    döngü yap
-        eğer rpm = obd_request(can1, PID_ENGINE_RPM)? ise yap
+    loop do
+        if rpm = obd_request(can1, PID_ENGINE_RPM)? ise do
             io.println("RPM: {}", rpm)
-        son
+        end
         core.delay_ms(500)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <h2>📦 Tipler</h2>
-<pre><code>yapı Message yap
+<pre><code>struct Message do
     id: u32,
     data: [u8; 8],
     dlc: u8,
-    extended_id: mantıksal
-son
+    extended_id: boolean
+end
 
-yapı Config yap
+struct Config do
     bitrate: sayı,
     mode: Mode
-son</code></pre>
+end</code></pre>
 
-<h2>⚙️ Fonksiyonlar</h2>
-<pre><code>fonksiyon init(instance: Instance, config: Config) -> Handle
-fonksiyon send(handle: Handle, msg: Message) -> Sonuç[Hiçbir, Hata]
-fonksiyon receive(handle: Handle, timeout_ms: sayı) -> İsteğe_Bağlı[Message]
-fonksiyon filter_config(handle: Handle, config: FilterConfig)</code></pre>
+<h2>⚙️ Functions</h2>
+<pre><code>function init(instance: Instance, config: Config) -> Handle
+function send(handle: Handle, msg: Message) -> Sonuç[Hiçbir, Hata]
+function receive(handle: Handle, timeout_ms: sayı) -> İsteğe_Bağlı[Message]
+function filter_config(handle: Handle, config: FilterConfig)</code></pre>
 
 <h2>⚠️ Önemli Notlar</h2>
 <ul>

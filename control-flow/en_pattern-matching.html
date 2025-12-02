@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -182,15 +182,15 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h1>
-<p>Gelişmiş eşleştirme ve değer yıkımlandırma.</p>
+<p>Gelişmiş eşleştirme and değer yıkımlandırma.</p>
 <h2 id="temel-match"><a class="header" href="#temel-match">Temel Match</a></h2>
-<pre><code class="language-berk">değişken sayı = 2
+<pre><code class="language-berk">variable sayı = 2
 
 eş sayı {
-    1 =&gt; yazdır("bir"),
-    2 =&gt; yazdır("iki"),
-    3 =&gt; yazdır("üç"),
-    _ =&gt; yazdır("diğer")
+    1 =&gt; print("bir"),
+    2 =&gt; print("iki"),
+    3 =&gt; print("üç"),
+    _ =&gt; print("diğer")
 }
 </code></pre>
 <p>İngilizce:</p>
@@ -202,7 +202,7 @@ eş sayı {
 </code></pre>
 <h2 id="match-expression"><a class="header" href="#match-expression">Match Expression</a></h2>
 <p>Bir değer döndürebilir:</p>
-<pre><code class="language-berk">değişken mesaj = eş sayı {
+<pre><code class="language-berk">variable mesaj = eş sayı {
     1 =&gt; "bir",
     2 =&gt; "iki",
     3 =&gt; "üç",
@@ -210,126 +210,126 @@ eş sayı {
 }
 </code></pre>
 <h2 id="result-matching"><a class="header" href="#result-matching">Result Matching</a></h2>
-<pre><code class="language-berk">işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
-    eğer b == 0 {
-        hata dön "Sıfıra bölme"
+<pre><code class="language-berk">işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, string&gt; {
+    if b == 0 {
+        hata return "Sıfıra bölme"
     }
-    tamam dön a / b
+    tamam return a / b
 }
 
-değişken sonuç = böl(10, 2)
+variable sonuç = böl(10, 2)
 
 eş sonuç {
-    Tamam(değer) =&gt; yazdır("Sonuç: ", değer),
-    Hata(mesaj) =&gt; yazdır("HATA: ", mesaj)
+    Tamam(değer) =&gt; print("Sonuç: ", değer),
+    Hata(mesaj) =&gt; print("HATA: ", mesaj)
 }
 </code></pre>
 <h2 id="option-matching"><a class="header" href="#option-matching">Option Matching</a></h2>
-<pre><code class="language-berk">değişken değer: Seçenek&lt;Sayı&gt; = Bazı(42)
+<pre><code class="language-berk">variable değer: Seçenek&lt;Sayı&gt; = Bazı(42)
 
 eş değer {
-    Bazı(x) =&gt; yazdır("Değer: ", x),
-    Hiç =&gt; yazdır("Değer yok")
+    Bazı(x) =&gt; print("Değer: ", x),
+    Hiç =&gt; print("Değer yok")
 }
 </code></pre>
 <h2 id="tuple-destructuring"><a class="header" href="#tuple-destructuring">Tuple Destructuring</a></h2>
-<pre><code class="language-berk">değişken nokta = (3, 4)
+<pre><code class="language-berk">variable nokta = (3, 4)
 
 eş nokta {
-    (0, 0) =&gt; yazdır("Orijin"),
-    (x, 0) =&gt; yazdır("X ekseni: ", x),
-    (0, y) =&gt; yazdır("Y ekseni: ", y),
-    (x, y) =&gt; yazdır("Nokta: (", x, ", ", y, ")")
+    (0, 0) =&gt; print("Orijin"),
+    (x, 0) =&gt; print("X ekseni: ", x),
+    (0, y) =&gt; print("Y ekseni: ", y),
+    (x, y) =&gt; print("Nokta: (", x, ", ", y, ")")
 }
 </code></pre>
 <h2 id="list-patterns"><a class="header" href="#list-patterns">List Patterns</a></h2>
-<pre><code class="language-berk">değişken liste = [1, 2, 3]
+<pre><code class="language-berk">variable liste = [1, 2, 3]
 
 eş liste {
-    [] =&gt; yazdır("Boş liste"),
-    [x] =&gt; yazdır("Tek eleman: ", x),
-    [x, y] =&gt; yazdır("İki eleman: ", x, ", ", y),
+    [] =&gt; print("null liste"),
+    [x] =&gt; print("Tek eleman: ", x),
+    [x, y] =&gt; print("İki eleman: ", x, ", ", y),
     [ilk, ...geri_kalan] =&gt; {
-        yazdır("İlk: ", ilk)
-        yazdır("Geri kalan: ", geri_kalan)
+        print("İlk: ", ilk)
+        print("Geri kalan: ", geri_kalan)
     }
 }
 </code></pre>
 <h2 id="struct-patterns"><a class="header" href="#struct-patterns">Struct Patterns</a></h2>
 <pre><code class="language-berk">tür Kişi = struct {
-    ad: Yazı,
+    ad: string,
     yaş: Sayı
 }
 
-değişken kişi = Kişi { ad: "Ahmet", yaş: 30 }
+variable kişi = Kişi { ad: "Ahmet", yaş: 30 }
 
 eş kişi {
     Kişi { ad: "Ahmet", yaş } =&gt; {
-        yazdır("Ahmet, ", yaş, " yaşında")
+        print("Ahmet, ", yaş, " yaşında")
     },
     Kişi { ad, yaş: 18..25 } =&gt; {
-        yazdır(ad, " genç")
+        print(ad, " genç")
     },
-    _ =&gt; yazdır("Diğer")
+    _ =&gt; print("Diğer")
 }
 </code></pre>
 <h2 id="range-patterns"><a class="header" href="#range-patterns">Range Patterns</a></h2>
-<pre><code class="language-berk">değişken yaş = 25
+<pre><code class="language-berk">variable yaş = 25
 
 eş yaş {
-    0..12 =&gt; yazdır("Çocuk"),
-    13..17 =&gt; yazdır("Genç"),
-    18..64 =&gt; yazdır("Yetişkin"),
-    65.. =&gt; yazdır("Yaşlı")
+    0..12 =&gt; print("Çocuk"),
+    13..17 =&gt; print("Genç"),
+    18..64 =&gt; print("Yetişkin"),
+    65.. =&gt; print("Yaşlı")
 }
 </code></pre>
 <h2 id="guards-koşullar"><a class="header" href="#guards-koşullar">Guards (Koşullar)</a></h2>
-<pre><code class="language-berk">değişken sayı = 15
+<pre><code class="language-berk">variable sayı = 15
 
 eş sayı {
-    x if x &lt; 0 =&gt; yazdır("Negatif"),
-    x if x % 2 == 0 =&gt; yazdır("Çift"),
-    x if x % 2 == 1 =&gt; yazdır("Tek"),
-    _ =&gt; yazdır("Bilinmeyen")
+    x if x &lt; 0 =&gt; print("Negatif"),
+    x if x % 2 == 0 =&gt; print("Çift"),
+    x if x % 2 == 1 =&gt; print("Tek"),
+    _ =&gt; print("Bilinmeyen")
 }
 </code></pre>
 <h2 id="multiple-patterns"><a class="header" href="#multiple-patterns">Multiple Patterns</a></h2>
 <pre><code class="language-berk">eş karakter {
     'a' | 'e' | 'ı' | 'i' | 'o' | 'ö' | 'u' | 'ü' =&gt; {
-        yazdır("Sesli harf")
+        print("Sesli harf")
     },
-    _ =&gt; yazdır("Ünssüz harf")
+    _ =&gt; print("Ünssüz harf")
 }
 </code></pre>
 <h2 id="nested-patterns"><a class="header" href="#nested-patterns">Nested Patterns</a></h2>
 <pre><code class="language-berk">tür Mesaj = enum {
-    Metin(Yazı),
+    Metin(string),
     Sayı(Sayı),
     Çoklu(Liste&lt;Mesaj&gt;)
 }
 
-değişken mesaj = Çoklu([Metin("hello"), Sayı(42)])
+variable mesaj = Çoklu([Metin("hello"), Sayı(42)])
 
 eş mesaj {
-    Metin(s) =&gt; yazdır("Metin: ", s),
-    Sayı(n) =&gt; yazdır("Sayı: ", n),
+    Metin(s) =&gt; print("Metin: ", s),
+    Sayı(n) =&gt; print("Sayı: ", n),
     Çoklu([Metin(s), Sayı(n)]) =&gt; {
-        yazdır("Metin ve sayı: ", s, ", ", n)
+        print("Metin and sayı: ", s, ", ", n)
     },
-    _ =&gt; yazdır("Diğer")
+    _ =&gt; print("Diğer")
 }
 </code></pre>
 <h2 id="wildcard-patterns"><a class="header" href="#wildcard-patterns">Wildcard Patterns</a></h2>
 <pre><code class="language-berk">// Tam wildcard
 eş değer {
-    _ =&gt; yazdır("Herhangi bir şey")
+    _ =&gt; print("Herhangi bir şey")
 }
 
 // Kısmi wildcard
 eş tuple {
-    (_, 0) =&gt; yazdır("Y sıfır"),
-    (0, _) =&gt; yazdır("X sıfır"),
-    (_, _) =&gt; yazdır("Diğer")
+    (_, 0) =&gt; print("Y sıfır"),
+    (0, _) =&gt; print("X sıfır"),
+    (_, _) =&gt; print("Diğer")
 }
 </code></pre>
 <h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
@@ -338,10 +338,10 @@ eş tuple {
 eş sonuç {
     Tamam(x) =&gt; işle(x),
     Hata(e) =&gt; hata_işle(e)
-    // _ gerekli değil, tüm durumlar kapsıyor
+    // _ gerekli not, tüm durumlar kapsıyor
 }
 
-// Anlamlı değişken isimleri
+// Anlamlı variable isimleri
 eş kullanıcı {
     Kişi { ad: kullanıcı_adı, yaş: kullanıcı_yaşı } =&gt; {
         // ...
@@ -351,7 +351,7 @@ eş kullanıcı {
 <h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Kaçınılması Gerekenler</a></h3>
 <pre><code class="language-berk">// Çok karmaşık iç içe pattern
 eş değer {
-    A(B(C(D(x)))) =&gt; ...  // Okunabilir değil
+    A(B(C(D(x)))) =&gt; ...  // Okunabilir not
 }
 
 // Gereksiz wildcard
@@ -359,18 +359,18 @@ eş x {
     _ =&gt; ...  // Tüm durumları yok sayıyor
 }
 </code></pre>
-<h2 id="Örnekler"><a class="header" href="#Örnekler">Örnekler</a></h2>
+<h2 id="Examples"><a class="header" href="#Examples">Examples</a></h2>
 <h3 id="json-parser"><a class="header" href="#json-parser">JSON Parser</a></h3>
 <pre><code class="language-berk">tür Json = enum {
     Null,
     Bool(Boolean),
     Number(Sayı),
-    String(Yazı),
+    String(string),
     Array(Liste&lt;Json&gt;),
-    Object(Harita&lt;Yazı, Json&gt;)
+    Object(Harita&lt;string, Json&gt;)
 }
 
-işlev stringify(json: Json) -&gt; Yazı {
+işlev stringify(json: Json) -&gt; string {
     eş json {
         Null =&gt; "null",
         Bool(b) =&gt; b ? "true" : "false",

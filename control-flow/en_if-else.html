@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -184,8 +184,8 @@
                         <h1 id="if-else-koşulları"><a class="header" href="#if-else-koşulları">If-Else Koşulları</a></h1>
 <p>Koşullu ifadeler program akışını kontrol eder.</p>
 <h2 id="temel-if"><a class="header" href="#temel-if">Temel If</a></h2>
-<pre><code class="language-berk">eğer x &gt; 0 {
-    yazdır("Pozitif sayı")
+<pre><code class="language-berk">if x &gt; 0 {
+    print("Pozitif sayı")
 }
 </code></pre>
 <p>İngilizce syntax:</p>
@@ -194,108 +194,108 @@
 }
 </code></pre>
 <h2 id="if-else"><a class="header" href="#if-else">If-Else</a></h2>
-<pre><code class="language-berk">eğer yaş &gt;= 18 {
-    yazdır("Yetişkin")
-} değilse {
-    yazdır("Çocuk")
+<pre><code class="language-berk">if yaş &gt;= 18 {
+    print("Yetişkin")
+} else {
+    print("Çocuk")
 }
 </code></pre>
 <h2 id="else-if"><a class="header" href="#else-if">Else If</a></h2>
-<pre><code class="language-berk">eğer not &gt;= 90 {
-    yazdır("Pekiyi")
-} değilse eğer not &gt;= 80 {
-    yazdır("İyi")
-} değilse eğer not &gt;= 70 {
-    yazdır("Orta")
-} değilse {
-    yazdır("Zayıf")
+<pre><code class="language-berk">if not &gt;= 90 {
+    print("Pekiyi")
+} else if not &gt;= 80 {
+    print("İyi")
+} else if not &gt;= 70 {
+    print("Orta")
+} else {
+    print("Zayıf")
 }
 </code></pre>
 <h2 id="İç-İçe-if"><a class="header" href="#İç-İçe-if">İç İçe If</a></h2>
-<pre><code class="language-berk">eğer kullanıcı != null {
-    eğer kullanıcı.aktif {
-        eğer kullanıcı.doğrulanmış {
-            yazdır("Giriş başarılı")
+<pre><code class="language-berk">if kullanıcı != null {
+    if kullanıcı.aktif {
+        if kullanıcı.doğrulanmış {
+            print("Introduction başarılı")
         }
     }
 }
 </code></pre>
 <h2 id="ternary-operatörü"><a class="header" href="#ternary-operatörü">Ternary Operatörü</a></h2>
-<pre><code class="language-berk">değişken durum = yaş &gt;= 18 ? "Yetişkin" : "Çocuk"
+<pre><code class="language-berk">variable durum = yaş &gt;= 18 ? "Yetişkin" : "Çocuk"
 </code></pre>
 <h2 id="if-expression"><a class="header" href="#if-expression">If Expression</a></h2>
 <p>BERK'te if bir ifade olarak kullanılabilir:</p>
-<pre><code class="language-berk">değişken maksimum = eğer a &gt; b { a } değilse { b }
+<pre><code class="language-berk">variable maksimum = if a &gt; b { a } else { b }
 
-değişken mesaj = eğer hata {
+variable mesaj = if hata {
     "Hata oluştu"
-} değilse {
+} else {
     "Başarılı"
 }
 </code></pre>
 <h2 id="guard-clauses"><a class="header" href="#guard-clauses">Guard Clauses</a></h2>
 <p>Erken dönüş deseni:</p>
-<pre><code class="language-berk">işlev işle(değer: Sayı?) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
-    eğer değer == null {
-        hata dön "Değer null olamaz"
+<pre><code class="language-berk">işlev işle(değer: Sayı?) -&gt; Sonuç&lt;Sayı, string&gt; {
+    if değer == null {
+        hata return "Değer null olamaz"
     }
     
-    eğer değer &lt; 0 {
-        hata dön "Değer negatif olamaz"
+    if değer &lt; 0 {
+        hata return "Değer negatif olamaz"
     }
     
-    tamam dön değer * 2
+    tamam return değer * 2
 }
 </code></pre>
-<h2 id="mantıksal-operatörlerle"><a class="header" href="#mantıksal-operatörlerle">Mantıksal Operatörlerle</a></h2>
-<pre><code class="language-berk">eğer yaş &gt;= 18 &amp;&amp; ehliyet_var {
-    yazdır("Araç kullanabilir")
+<h2 id="boolean-operatörlerle"><a class="header" href="#boolean-operatörlerle">boolean Operatörlerle</a></h2>
+<pre><code class="language-berk">if yaş &gt;= 18 &amp;&amp; ehliyet_var {
+    print("Araç kullanabilir")
 }
 
-eğer admin || moderator {
-    yazdır("Yetki var")
+if admin || moderator {
+    print("Yetki var")
 }
 
-eğer !boş_mu {
-    yazdır("Veri var")
+if !boş_mu {
+    print("Veri var")
 }
 </code></pre>
 <h2 id="short-circuit-evaluation"><a class="header" href="#short-circuit-evaluation">Short-Circuit Evaluation</a></h2>
 <pre><code class="language-berk">// İkinci ifade değerlendirilmez
-eğer kullanıcı == null || kullanıcı.sil() {
+if kullanıcı == null || kullanıcı.sil() {
     // kullanıcı null ise sil() çağrılmaz
 }
 </code></pre>
 <h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
 <h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Yapılması Gerekenler</a></h3>
 <pre><code class="language-berk">// Anlamlı değişkenler
-eğer kullanıcı_doğrulandı &amp;&amp; oturum_geçerli {
+if kullanıcı_doğrulandı &amp;&amp; oturum_geçerli {
     izin_ver()
 }
 
 // Guard clauses kullanın
-eğer !geçerli_mi {
-    geri dön
+if !geçerli_mi {
+    geri return
 }
 
 // Pozitif koşullar tercih edin
-eğer aktif {
+if aktif {
     işle()
 }
 </code></pre>
 <h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Kaçınılması Gerekenler</a></h3>
 <pre><code class="language-berk">// Çok uzun if-else zincirleri
-eğer x == 1 {
+if x == 1 {
     ...
-} değilse eğer x == 2 {
+} else if x == 2 {
     ...
 } // 20 tane else if
 // Bunun yerine match kullanın!
 
 // Gereksiz iç içe if
-eğer a {
-    eğer b {
-        eğer c {
+if a {
+    if b {
+        if c {
             // 5 seviye
         }
     }

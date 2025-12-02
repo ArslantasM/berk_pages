@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>mesh - 3D Mesh Islemleri - BERK Programlama Dili</title>
+        <title>mesh - 3D Mesh Islemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,19 +192,19 @@
 
                                                 <div class="module-header">
             <h1>🕸️ mesh - 3D Mesh İşlemleri</h1>
-            <p>3D mesh yükleme, düzenleme, analiz ve optimizasyon</p>
+            <p>3D mesh yükleme, düzenleme, analiz and optimizasyon</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 22 Fonksiyon</span>
+                <span class="stat-badge">📦 22 function</span>
                 <span class="stat-badge">📝 614 Satır</span>
                 <span class="stat-badge">💾 20.5 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>mesh</code> modülü, 3D mesh (ağ) yapılarını yükleme, düzenleme, analiz ve optimizasyon için araçlar sağlar. STL, OBJ, PLY formatlarını destekler.</p>
+        <p><code>mesh</code> modülü, 3D mesh (ağ) yapılarını yükleme, düzenleme, analiz and optimizasyon for araçlar sağlar. STL, OBJ, PLY formatlarını destekler.</p>
 
         <div class="function-group">
-            <h3>📂 Yükleme ve Kaydetme</h3>
+            <h3>📂 Yükleme and Kaydetme</h3>
             <ul>
                 <li><strong>mesh.yükle()</strong> - Mesh dosyası yükleme</li>
                 <li><strong>mesh.stl_kaydet()</strong> - STL formatında kaydetme</li>
@@ -230,19 +230,19 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>Mesh Yükleme ve Analiz</h3>
+            <h3>Mesh Yükleme and Analiz</h3>
             <pre><code class="language-berk">kullan mesh
 
 // STL dosyası yükle
 değer model = mesh.yükle("model.stl")
 
-yazdır(f"Köşe sayısı: {model.köşe_sayısı()}")
-yazdır(f"Yüz sayısı: {model.yüz_sayısı()}")
-yazdır(f"Yüzey alanı: {model.alan():.2f} mm²")
-yazdır(f"Hacim: {model.hacim():.2f} mm³")
+print(f"Köşe sayısı: {model.köşe_sayısı()}")
+print(f"Yüz sayısı: {model.yüz_sayısı()}")
+print(f"Yüzey alanı: {model.alan():.2f} mm²")
+print(f"Hacim: {model.hacim():.2f} mm³")
 
 // Mesh'i optimize et
 model.gereksiz_köşeler_temizle()
@@ -250,13 +250,13 @@ model.yumuşat(iterasyon: 3)
 
 // Yeni dosya olarak kaydet
 mesh.stl_kaydet(model, "model_optimized.stl")
-yazdır("✓ Optimize edilmiş model kaydedildi")</code></pre>
+print("✓ Optimize edilmiş model kaydedildi")</code></pre>
         </div>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
             <li><a href="cad3d.html">cad3d</a> - 3D CAD modelleme</li>
-            <li><a href="math_3d.html">math_3d</a> - 3D matematik</li>
+            <li><a href="math_3d.html">math_3d</a> - 3D Mathematics</li>
         </ul>
     </div>
 </main>

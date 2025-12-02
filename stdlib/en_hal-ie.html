@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-ie - HAL Module - BERK Programlama Dili</title>
+        <title>hal-ie - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -198,10 +198,10 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Interrupt event handlers ve callback management.</p>
+<p>Interrupt event handlers and callback management.</p>
 
-<h2>🚀 Kullanım</h2>
-<pre><code>içe_aktar hal::ie
+<h2>🚀 Usage</h2>
+<pre><code>import hal::ie
 
 // Register event handler
 ie.register(ie.EVENT_GPIO_EXTI0, my_handler)
@@ -213,9 +213,9 @@ ie.unregister(ie.EVENT_GPIO_EXTI0)
 ie.trigger(ie.EVENT_TIM2_UPDATE)
 
 // Check pending events
-eğer ie.is_pending(ie.EVENT_USART1_RX) ise yap
+if ie.is_pending(ie.EVENT_USART1_RX) ise do
     ie.clear_pending(ie.EVENT_USART1_RX)
-son</code></pre>
+end</code></pre>
 
 <p style="text-align:center;margin-top:40px">
 <a href="hal-index-tr.html">← HAL Modülleri</a>

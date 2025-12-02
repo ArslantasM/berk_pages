@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -183,12 +183,12 @@
                     <main>
                         <h1 id="try-catch-blokları"><a class="header" href="#try-catch-blokları">Try-Catch Blokları</a></h1>
 <p>Hata yakalama mekanizması.</p>
-<h2 id="temel-kullanım"><a class="header" href="#temel-kullanım">Temel Kullanım</a></h2>
+<h2 id="temel-Usage"><a class="header" href="#temel-Usage">Temel Usage</a></h2>
 <pre><code class="language-berk">deneme {
-    değişken dosya = dosya_aç("veri.txt")
-    yazdır(dosya.oku())
+    variable dosya = dosya_aç("veri.txt")
+    print(dosya.read())
 } yakala e {
-    yazdır("Hata oluştu: ", e)
+    print("Hata oluştu: ", e)
 }
 </code></pre>
 <p>İngilizce:</p>
@@ -203,11 +203,11 @@
 <pre><code class="language-berk">deneme {
     riskli_işlem()
 } yakala DosyaBulunamadıHatası e {
-    yazdır("Dosya bulunamadı")
+    print("Dosya bulunamadı")
 } yakala İzinHatası e {
-    yazdır("İzin reddedildi")
+    print("İzin reddedildi")
 } yakala e {
-    yazdır("Bilinmeyen hata: ", e)
+    print("Bilinmeyen hata: ", e)
 }
 </code></pre>
 <h2 id="finally-bloğu"><a class="header" href="#finally-bloğu">Finally Bloğu</a></h2>
@@ -215,17 +215,17 @@
     dosya = dosya_aç("veri.txt")
     işle(dosya)
 } yakala e {
-    yazdır("Hata: ", e)
+    print("Hata: ", e)
 } sonunda {
     dosya.kapat()  // Her zaman çalışır
 }
 </code></pre>
 <h2 id="hata-fırlatma"><a class="header" href="#hata-fırlatma">Hata Fırlatma</a></h2>
 <pre><code class="language-berk">işlev kontrol_et(yaş: Sayı) {
-    eğer yaş &lt; 0 {
+    if yaş &lt; 0 {
         fırlat "Yaş negatif olamaz"
     }
-    eğer yaş &gt; 150 {
+    if yaş &gt; 150 {
         fırlat GeçersizDeğerHatası("Yaş çok büyük")
     }
 }

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>sqlite - SQLite Veritabani - BERK Programlama Dili</title>
+        <title>sqlite - SQLite Veritabani - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,14 +192,14 @@
             <h1>💾 sqlite - SQLite Veritabanı</h1>
             <p>Hafif, dosya tabanlı SQL veritabanı yönetimi</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 62 Fonksiyon</span>
+                <span class="stat-badge">📦 62 function</span>
                 <span class="stat-badge">📝 1296 Satır</span>
                 <span class="stat-badge">💾 40.3 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>sqlite</code> modülü, SQLite veritabanı motorunu kullanarak hafif, sunucusuz SQL veritabanı yönetimi sağlar. Dosya tabanlı veritabanları oluşturma, sorgulama ve yönetme işlemleri için kapsamlı araçlar sunar.</p>
+        <p><code>sqlite</code> modülü, SQLite veritabanı motorunu kullanarak hafif, sunucusuz SQL veritabanı yönetimi sağlar. Dosya tabanlı veritabanları oluşturma, sorgulama and yönetme işlemleri for kapsamlı araçlar sunar.</p>
 
         <div class="function-group">
             <h3>🔌 Bağlantı Yönetimi</h3>
@@ -252,13 +252,13 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>Temel Veritabanı İşlemleri</h3>
             <pre><code class="language-berk">kullan sqlite
 
-// Veritabanına bağlan (dosya yoksa oluşturulur)
+// Veritabanına bağlan (dosya elseif oluşturulur)
 değer vt = sqlite.bağlan("kullanıcılar.db")
 
 // Tablo oluştur
@@ -272,7 +272,7 @@ vt.çalıştır("""
     )
 """)
 
-yazdır("✓ Tablo oluşturuldu")
+print("✓ Tablo oluşturuldu")
 
 // Veri ekleme
 vt.çalıştır(
@@ -290,14 +290,14 @@ vt.çalıştır(
     ["Mehmet Kaya", "mehmet@example.com", 25]
 )
 
-yazdır("✓ Kullanıcılar eklendi")
+print("✓ Kullanıcılar eklendi")
 
 // Tüm kullanıcıları sorgula
 değer kullanıcılar = vt.sorgu("SELECT * FROM kullanıcılar")
 
-yazdır("\n--- Tüm Kullanıcılar ---")
-için kullanıcı içinde kullanıcılar {
-    yazdır(f"ID: {kullanıcı['id']}, Ad: {kullanıcı['ad']}, " +
+print("\n--- Tüm Kullanıcılar ---")
+for kullanıcı içinde kullanıcılar {
+    print(f"ID: {kullanıcı['id']}, Ad: {kullanıcı['ad']}, " +
            f"Email: {kullanıcı['email']}, Yaş: {kullanıcı['yaş']}")
 }
 
@@ -307,11 +307,11 @@ değer genç_kullanıcılar = vt.sorgu(
     [30]
 )
 
-yazdır(f"\n30 yaşından küçük {genç_kullanıcılar.uzunluk} kullanıcı bulundu")
+print(f"\n30 yaşından küçük {genç_kullanıcılar.uzunluk} kullanıcı bulundu")
 
 // Bağlantıyı kapat
 vt.kapat()
-yazdır("\n✓ Veritabanı bağlantısı kapatıldı")</code></pre>
+print("\n✓ Veritabanı bağlantısı kapatıldı")</code></pre>
         </div>
 
         <div class="example-box">
@@ -339,13 +339,13 @@ vt.çalıştır(
     ["TR002", "Ayşe", 500.0]
 )
 
-yazdır("İlk bakiyeler:")
-için hesap içinde vt.sorgu("SELECT * FROM hesaplar") {
-    yazdır(f"  {hesap['hesap_no']}: {hesap['bakiye']} TL")
+print("İlk bakiyeler:")
+for hesap içinde vt.sorgu("SELECT * FROM hesaplar") {
+    print(f"  {hesap['hesap_no']}: {hesap['bakiye']} TL")
 }
 
 // Para transferi (transaction ile güvenli)
-fonksiyon para_transfer(vt: sqlite.Bağlantı, kaynak: Dize, hedef: Dize, miktar: Gerçek) -> Sonuç&lt;Boş, Hata&gt; {
+function para_transfer(vt: sqlite.Bağlantı, kaynak: Dize, hedef: Dize, miktar: Gerçek) -> Sonuç&lt;null, Hata&gt; {
     dene {
         // Transaction başlat
         vt.işlem_başlat()
@@ -356,9 +356,9 @@ fonksiyon para_transfer(vt: sqlite.Bağlantı, kaynak: Dize, hedef: Dize, miktar
             [kaynak]
         )[0]["bakiye"]
         
-        eğer kaynak_bakiye < miktar {
+        if kaynak_bakiye < miktar {
             vt.geri_al()
-            dön Hata("Yetersiz bakiye!")
+            return Hata("Yetersiz bakiye!")
         }
         
         // Kaynaktan çek
@@ -375,21 +375,21 @@ fonksiyon para_transfer(vt: sqlite.Bağlantı, kaynak: Dize, hedef: Dize, miktar
         
         // Transaction'ı kaydet
         vt.kaydet()
-        yazdır(f"✓ Transfer başarılı: {miktar} TL ({kaynak} -> {hedef})")
-        dön Tamam(boş)
+        print(f"✓ Transfer başarılı: {miktar} TL ({kaynak} -> {hedef})")
+        return Tamam(null)
         
     } yakala hata {
         vt.geri_al()
-        dön Hata(f"Transfer başarısız: {hata}")
+        return Hata(f"Transfer başarısız: {hata}")
     }
 }
 
-// Transfer yap
+// Transfer do
 para_transfer(vt, "TR001", "TR002", 300.0).aç()
 
-yazdır("\nSon bakiyeler:")
-için hesap içinde vt.sorgu("SELECT * FROM hesaplar") {
-    yazdır(f"  {hesap['hesap_no']}: {hesap['bakiye']} TL")
+print("\nSon bakiyeler:")
+for hesap içinde vt.sorgu("SELECT * FROM hesaplar") {
+    print(f"  {hesap['hesap_no']}: {hesap['bakiye']} TL")
 }
 
 vt.kapat()</code></pre>
@@ -400,10 +400,10 @@ vt.kapat()</code></pre>
             <pre><code class="language-berk">kullan sqlite
 kullan time
 
-sınıf ÜrünYöneticisi {
+class ÜrünYöneticisi {
     değer vt: sqlite.Bağlantı
     
-    fonksiyon yeni(vt_dosyası: Dize) -> ÜrünYöneticisi {
+    function yeni(vt_dosyası: Dize) -> ÜrünYöneticisi {
         değer vt = sqlite.bağlan(vt_dosyası)
         
         // Tabloları oluştur
@@ -418,7 +418,7 @@ sınıf ÜrünYöneticisi {
             CREATE TABLE IF NOT EXISTS ürünler (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 ad TEXT NOT NULL,
-                açıklama TEXT,
+                Description TEXT,
                 fiyat REAL NOT NULL,
                 stok INTEGER NOT NULL DEFAULT 0,
                 kategori_id INTEGER,
@@ -431,10 +431,10 @@ sınıf ÜrünYöneticisi {
         vt.çalıştır("CREATE INDEX IF NOT EXISTS idx_fiyat ON ürünler(fiyat)")
         vt.çalıştır("CREATE INDEX IF NOT EXISTS idx_kategori ON ürünler(kategori_id)")
         
-        dön ÜrünYöneticisi { vt: vt }
+        return ÜrünYöneticisi { vt: vt }
     }
     
-    fonksiyon kategori_ekle(ad: Dize) -> Tam {
+    function kategori_ekle(ad: Dize) -> Tam {
         bu.vt.çalıştır(
             "INSERT OR IGNORE INTO kategoriler (ad) VALUES (?)",
             [ad]
@@ -443,56 +443,56 @@ sınıf ÜrünYöneticisi {
             "SELECT id FROM kategoriler WHERE ad = ?",
             [ad]
         )
-        dön sonuç[0]["id"]
+        return sonuç[0]["id"]
     }
     
-    fonksiyon ürün_ekle(ad: Dize, açıklama: Dize, fiyat: Gerçek, stok: Tam, kategori_ad: Dize) {
+    function ürün_ekle(ad: Dize, Description: Dize, fiyat: Gerçek, stok: Tam, kategori_ad: Dize) {
         değer kategori_id = bu.kategori_ekle(kategori_ad)
         
         bu.vt.çalıştır(
-            "INSERT INTO ürünler (ad, açıklama, fiyat, stok, kategori_id) VALUES (?, ?, ?, ?, ?)",
-            [ad, açıklama, fiyat, stok, kategori_id]
+            "INSERT INTO ürünler (ad, Description, fiyat, stok, kategori_id) VALUES (?, ?, ?, ?, ?)",
+            [ad, Description, fiyat, stok, kategori_id]
         )
         
-        yazdır(f"✓ Ürün eklendi: {ad}")
+        print(f"✓ Ürün eklendi: {ad}")
     }
     
-    fonksiyon ürün_ara(arama_terimi: Dize) -> Liste {
-        dön bu.vt.sorgu(
+    function ürün_ara(arama_terimi: Dize) -> Liste {
+        return bu.vt.sorgu(
             "SELECT ü.*, k.ad as kategori FROM ürünler ü " +
             "JOIN kategoriler k ON ü.kategori_id = k.id " +
-            "WHERE ü.ad LIKE ? OR ü.açıklama LIKE ?",
+            "WHERE ü.ad LIKE ? OR ü.Description LIKE ?",
             [f"%{arama_terimi}%", f"%{arama_terimi}%"]
         )
     }
     
-    fonksiyon fiyat_aralığında_ürünler(min_fiyat: Gerçek, max_fiyat: Gerçek) -> Liste {
-        dön bu.vt.sorgu(
+    function fiyat_aralığında_ürünler(min_fiyat: Gerçek, max_fiyat: Gerçek) -> Liste {
+        return bu.vt.sorgu(
             "SELECT * FROM ürünler WHERE fiyat BETWEEN ? AND ? ORDER BY fiyat",
             [min_fiyat, max_fiyat]
         )
     }
     
-    fonksiyon stok_güncelle(ürün_id: Tam, yeni_stok: Tam) {
+    function stok_güncelle(ürün_id: Tam, yeni_stok: Tam) {
         bu.vt.çalıştır(
             "UPDATE ürünler SET stok = ? WHERE id = ?",
             [yeni_stok, ürün_id]
         )
     }
     
-    fonksiyon düşük_stok_raporu(eşik: Tam = 10) -> Liste {
-        dön bu.vt.sorgu(
+    function düşük_stok_raporu(eşik: Tam = 10) -> Liste {
+        return bu.vt.sorgu(
             "SELECT * FROM ürünler WHERE stok < ? ORDER BY stok",
             [eşik]
         )
     }
     
-    fonksiyon kapat() {
+    function kapat() {
         bu.vt.kapat()
     }
 }
 
-// Kullanım
+// Usage
 değer yönetici = ÜrünYöneticisi.yeni("eticaret.db")
 
 // Ürünler ekle
@@ -503,21 +503,21 @@ yönetici.ürün_ekle("Kitap", "Python Programlama", 75.0, 5, "Kitap")
 yönetici.ürün_ekle("Kulaklık", "Bluetooth Kulaklık", 350.0, 8, "Elektronik")
 
 // Arama
-yazdır("\n--- 'Klavye' Araması ---")
-için ürün içinde yönetici.ürün_ara("Klavye") {
-    yazdır(f"{ürün['ad']}: {ürün['fiyat']} TL (Stok: {ürün['stok']})")
+print("\n--- 'Klavye' Araması ---")
+for ürün içinde yönetici.ürün_ara("Klavye") {
+    print(f"{ürün['ad']}: {ürün['fiyat']} TL (Stok: {ürün['stok']})")
 }
 
 // Fiyat aralığı
-yazdır("\n--- 100-500 TL Arası Ürünler ---")
-için ürün içinde yönetici.fiyat_aralığında_ürünler(100.0, 500.0) {
-    yazdır(f"{ürün['ad']}: {ürün['fiyat']} TL")
+print("\n--- 100-500 TL Arası Ürünler ---")
+for ürün içinde yönetici.fiyat_aralığında_ürünler(100.0, 500.0) {
+    print(f"{ürün['ad']}: {ürün['fiyat']} TL")
 }
 
 // Düşük stok uyarısı
-yazdır("\n--- Düşük Stok Uyarısı (< 10) ---")
-için ürün içinde yönetici.düşük_stok_raporu(10) {
-    yazdır(f"⚠️  {ürün['ad']}: {ürün['stok']} adet kaldı!")
+print("\n--- Düşük Stok Uyarısı (< 10) ---")
+for ürün içinde yönetici.düşük_stok_raporu(10) {
+    print(f"⚠️  {ürün['ad']}: {ürün['stok']} adet kaldı!")
 }
 
 yönetici.kapat()</code></pre>
@@ -527,9 +527,9 @@ yönetici.kapat()</code></pre>
         <ul>
             <li>Prepared statements kullanarak SQL injection'ı önleyin</li>
             <li>Transaction'larla veri tutarlılığını sağlayın</li>
-            <li>Sık kullanılan sorgular için indeks oluşturun</li>
-            <li>Bağlantıları her zaman kapatın (veya <code>with</code> bloğu kullanın)</li>
-            <li>Büyük veri setleri için sayfalama (pagination) kullanın</li>
+            <li>Sık kullanılan sorgular for indeks oluşturun</li>
+            <li>Bağlantıları her zaman kapatın (or <code>with</code> bloğu kullanın)</li>
+            <li>Büyük veri setleri for sayfalama (pagination) kullanın</li>
             <li>Düzenli olarak <code>VACUUM</code> komutuyla veritabanını optimize edin</li>
             <li>Kritik işlemlerde transaction kullanın</li>
         </ul>

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-power - Power Management - BERK Programlama Dili</title>
+        <title>hal-power - Power Management - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>Power Management - Ultra Low Power Modes</p>
 <div style="margin-top:15px">
 <span class="stat-badge">~420 satır</span>
-<span class="stat-badge">~20 fonksiyon</span>
+<span class="stat-badge">~20 function</span>
 <span class="stat-badge">STM32/GD32</span>
 </div>
 </div>
 
 <h2> Genel Bakış</h2>
-<p>Power modülü, embedded sistemlerde enerji verimliliği için kritik önem taşır. Sleep, Stop ve Standby modları ile güç tüketimini mikroamperlere düşürür. Bataryalı IoT cihazları, wearable'lar ve uzun ömürlü sensör ağları için vazgeçilmezdir.</p>
+<p>Power modülü, embedded sistemlerde enerji verimliliği for kritik önem taşır. Sleep, Stop and Standby modları ile güç tüketimini mikroamperlere düşürür. Bataryalı IoT cihazları, wearable'lar and uzun ömürlü sensör ağları for vazgeçilmezdir.</p>
 
 <h2> Temel Özellikler</h2>
 <ul>
@@ -213,30 +213,30 @@
 <li><strong>Regulator Modes:</strong> Main/Low-power regulator seçimi</li>
 </ul>
 
-<h2> Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::power, hal::rcc
+<h2> Hızlı Getting Started</h2>
+<pre><code>import hal::power, hal::rcc
 
 // Sleep Mode (WFI - Wait For Interrupt)
-power.enter_sleep_mode(yap
+power.enter_sleep_mode(do
     mode: power.SLEEP_ON_EXIT
-son)
+end)
 
 // Stop Mode (ultra low power)
-power.enter_stop_mode(yap
+power.enter_stop_mode(do
     regulator: power.REGULATOR_LOW_POWER,
     wakeup_source: power.WAKEUP_RTC
-son)
+end)
 
 // Restore clocks after wakeup from Stop
 rcc.sysclk_restore()
 
 // Standby Mode (lowest power)
-power.enter_standby_mode(yap
+power.enter_standby_mode(do
     wakeup_pin: power.WAKEUP_PIN1,
-    rtc_alarm: doğru
-son)</code></pre>
+    rtc_alarm: true
+end)</code></pre>
 
-<h2> Tipler ve Enum'lar</h2>
+<h2> Tipler and Enum'lar</h2>
 <pre><code>// Power Modes
 enum PowerMode {
     RUN,       // Normal operation
@@ -267,100 +267,100 @@ enum VoltageScale {
     SCALE_3   // 1.2V (low power, 120 MHz)
 }
 
-yapı PowerConfig yap
+struct PowerConfig do
     mode: PowerMode,
     regulator: Regulator,
     wakeup_source: WakeupSource,
-    flash_power_down: mantık = doğru,
-    low_power_deepsleep: mantık = doğru
-son</code></pre>
+    flash_power_down: mantık = true,
+    low_power_deepsleep: mantık = true
+end</code></pre>
 
 <h2> Örnek 1: Sleep Mode - Periodic Sensor Reading</h2>
 <div class="example-box">
 <h3>Problem: 1 saniyede bir sensör okuyup enerji tasarrufu yapmak</h3>
-<pre><code>içe_aktar hal::power, hal::rtc, hal::adc, hal::gpio
+<pre><code>import hal::power, hal::rtc, hal::adc, hal::gpio
 
-fonksiyon sensor_sistemi_init() yap
+function sensor_sistemi_init() do
     // RTC wakeup timer (1 Hz)
-    rtc.init(yap
+    rtc.init(do
         clock_source: rtc.LSI,
         async_prescaler: 127,
         sync_prescaler: 249  // 32 kHz / 128 / 250 = 1 Hz
-    son)
+    end)
     
-    rtc.set_wakeup_timer(yap
+    rtc.set_wakeup_timer(do
         period: 1,  // 1 second
         callback: sensor_oku_handler
-    son)
+    end)
     
     // ADC for temperature sensor
-    adc.init(adc.ADC1, yap
+    adc.init(adc.ADC1, do
         resolution: adc.RES_12BIT,
         channel: adc.CH_TEMP
-    son)
-son
+    end)
+end
 
-değişken sensor_veri: Dizi<kesir> = []
+variable sensor_veri: Dizi<kesir> = []
 
-fonksiyon sensor_oku_handler() yap
+function sensor_oku_handler() do
     // Woke up from sleep!
     
     // Read temperature
-    değişken temp = adc.read_single(adc.ADC1, adc.CH_TEMP)
-    değişken celsius = (temp * 3.3 / 4096.0 - 0.76) / 0.0025 + 25.0
+    variable temp = adc.read_single(adc.ADC1, adc.CH_TEMP)
+    variable celsius = (temp * 3.3 / 4096.0 - 0.76) / 0.0025 + 25.0
     
     sensor_veri.ekle(celsius)
     
     // Log every 10 readings
-    eğer (sensor_veri.uzunluk >= 10) yap
-        değişken ortalama = sensor_veri.topla() / sensor_veri.uzunluk kayıt kesir
+    if (sensor_veri.uzunluk >= 10) do
+        variable ortalama = sensor_veri.topla() / sensor_veri.uzunluk kayıt kesir
         io.yazdir_satır("Avg temp: " + ortalama.metne() + " C")
         sensor_veri.temizle()
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     sensor_sistemi_init()
     
     io.yazdir_satır("Entering sleep mode with RTC wakeup...")
     
-    döngü yap
+    loop do
         // Enter sleep mode (CPU stops, RTC continues)
-        power.enter_sleep_mode(yap
+        power.enter_sleep_mode(do
             mode: power.SLEEP_WFI
-        son)
+        end)
         
         // Wakes up here on RTC interrupt
         // sensor_oku_handler() already executed
-    son
-son</code></pre>
+    end
+end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Sleep mode ~1-2 mA (peripherals active), Run mode ~20 mA. Ortalama ~2 mA (90% sleep, 10% active).</p>
 </div>
 
 <h2> Örnek 2: Stop Mode - Button Wakeup (Ultra Low Power)</h2>
 <div class="example-box">
 <h3>Problem: Buton basılana kadar minimum güç tüketimi</h3>
-<pre><code>içe_aktar hal::power, hal::exti, hal::gpio, hal::rcc
+<pre><code>import hal::power, hal::exti, hal::gpio, hal::rcc
 
-fonksiyon dusuk_guc_init() yap
+function dusuk_guc_init() do
     // PA0 -> Wakeup button (external interrupt)
-    gpio.pin_init(gpio.PORT_A, 0, yap
+    gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         pull: gpio.PULL_DOWN
-    son)
+    end)
     
-    exti.init(0, yap
+    exti.init(0, do
         trigger: exti.TRIGGER_RISING,
         mode: exti.MODE_EVENT  // Event mode for wakeup
-    son)
+    end)
     
     // Disable unnecessary peripherals
     rcc.periph_clock_disable(rcc.PERIPH_TIM2)
     rcc.periph_clock_disable(rcc.PERIPH_TIM3)
     rcc.periph_clock_disable(rcc.PERIPH_USART2)
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     dusuk_guc_init()
     
     io.yazdir_satır("System initialized")
@@ -370,10 +370,10 @@ fonksiyon ana() yap
     power.flash_power_down_enable()
     
     // Enter Stop Mode
-    power.enter_stop_mode(yap
+    power.enter_stop_mode(do
         regulator: power.REGULATOR_LOW_POWER,
         entry: power.ENTRY_WFE  // Wait For Event
-    son)
+    end)
     
     // *** WOKE UP HERE ***
     
@@ -391,56 +391,56 @@ fonksiyon ana() yap
     // Go back to sleep
     io.yazdir_satır("Entering Stop Mode again...")
     // (loop or jump to stop entry)
-son</code></pre>
+end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Stop mode <1 μA (STM32L4), ~10 μA (STM32F4). Wakeup time ~5-10 μs.</p>
 </div>
 
 <h2> Örnek 3: Standby Mode - RTC Alarm Wakeup (Deepest Sleep)</h2>
 <div class="example-box">
 <h3>Problem: 1 saat uyuyup uyanma, SRAM kaybedilir ama backup domain korunur</h3>
-<pre><code>içe_aktar hal::power, hal::rtc, hal::backup
+<pre><code>import hal::power, hal::rtc, hal::backup
 
-sabit MAGIC_NUMBER: sayı = 0xDEADBEEF
+constant MAGIC_NUMBER: sayı = 0xDEADBEEF
 
-fonksiyon standby_sistemi_init() yap
+function standby_sistemi_init() do
     // Enable backup domain access
     power.backup_access_enable()
     
     // RTC configuration (LSE for accuracy)
-    rtc.init(yap
+    rtc.init(do
         clock_source: rtc.LSE,  // External 32.768 kHz crystal
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Check if woke up from standby
-    eğer power.get_flag(power.FLAG_STANDBY) yap
+    if power.get_flag(power.FLAG_STANDBY) do
         io.yazdir_satır("Woke up from Standby!")
         power.clear_flag(power.FLAG_STANDBY)
         
         // Check backup register
-        değişken magic = backup.read_register(0)
-        eğer (magic == MAGIC_NUMBER) yap
-            değişken wake_count = backup.read_register(1)
+        variable magic = backup.read_register(0)
+        if (magic == MAGIC_NUMBER) do
+            variable wake_count = backup.read_register(1)
             wake_count = wake_count + 1
             backup.write_register(1, wake_count)
             
             io.yazdir_satır("Wakeup count: " + wake_count.metne())
-        son
-    yoksa yap
+        end
+    elseif do
         io.yazdir_satır("Fresh boot, initializing...")
         backup.write_register(0, MAGIC_NUMBER)
         backup.write_register(1, 0)
-    son
-son
+    end
+end
 
-fonksiyon standby_ile_uyku(saat: sayı) yap
+function standby_ile_uyku(saat: sayı) do
     // Set RTC alarm (wake up after N hours)
-    değişken simdiki_zaman = rtc.get_time()
-    değişken alarm_zaman = rtc.Time yap
+    variable simdiki_zaman = rtc.get_time()
+    variable alarm_zaman = rtc.Time do
         hour: (simdiki_zaman.hour + saat) % 24,
         minute: simdiki_zaman.minute,
         second: simdiki_zaman.second
-    son
+    end
     
     rtc.set_alarm(rtc.ALARM_A, alarm_zaman)
     
@@ -454,9 +454,9 @@ fonksiyon standby_ile_uyku(saat: sayı) yap
     power.enter_standby_mode()
     
     // *** NEVER RETURNS - FULL SYSTEM RESET ON WAKEUP ***
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     standby_sistemi_init()
     
     // Do some work
@@ -465,14 +465,14 @@ fonksiyon ana() yap
     
     // Sleep for 1 hour
     standby_ile_uyku(1)
-son</code></pre>
+end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Standby mode ~0.3-2 μA. 1 saat uyku = 0.0003 mAh. 1000 mAh batarya ile 380+ yıl!</p>
 </div>
 
 <h2> Örnek 4: Voltage Scaling for Dynamic Performance</h2>
 <div class="example-box">
 <h3>Problem: Yüksek performans gerektiğinde Scale 1, düşük güçte Scale 3 kullanmak</h3>
-<pre><code>içe_aktar hal::power, hal::rcc
+<pre><code>import hal::power, hal::rcc
 
 enum PerformanceMode {
     HIGH_PERF,   // 168 MHz
@@ -480,107 +480,107 @@ enum PerformanceMode {
     LOW_POWER    // 80 MHz
 }
 
-fonksiyon set_performance_mode(mode: PerformanceMode) yap
-    eşleştir mode yap
-        PerformanceMode.HIGH_PERF => yap
+function set_performance_mode(mode: PerformanceMode) do
+    eşleştir mode do
+        PerformanceMode.HIGH_PERF => do
             // Voltage Scale 1 (1.8V)
             power.set_voltage_scaling(power.SCALE_1)
             
             // PLL config for 168 MHz (HSE 8 MHz)
-            rcc.pll_config(yap
+            rcc.pll_config(do
                 source: rcc.PLL_HSE,
                 pllm: 8,
                 plln: 336,
                 pllp: 2,
                 pllq: 7
-            son)
+            end)
             
             rcc.sysclk_set(rcc.SYSCLK_PLL, 168_000_000)
             
             io.yazdir_satır("High Performance: 168 MHz, ~100 mA")
-        son,
+        end,
         
-        PerformanceMode.NORMAL => yap
+        PerformanceMode.NORMAL => do
             // Voltage Scale 2 (1.5V)
             power.set_voltage_scaling(power.SCALE_2)
             
-            rcc.pll_config(yap
+            rcc.pll_config(do
                 source: rcc.PLL_HSE,
                 pllm: 8,
                 plln: 240,
                 pllp: 2,
                 pllq: 5
-            son)
+            end)
             
             rcc.sysclk_set(rcc.SYSCLK_PLL, 120_000_000)
             
             io.yazdir_satır("Normal: 120 MHz, ~60 mA")
-        son,
+        end,
         
-        PerformanceMode.LOW_POWER => yap
+        PerformanceMode.LOW_POWER => do
             // Voltage Scale 3 (1.2V)
             power.set_voltage_scaling(power.SCALE_3)
             
             rcc.sysclk_set(rcc.SYSCLK_HSI, 16_000_000)
             
             io.yazdir_satır("Low Power: 16 MHz, ~10 mA")
-        son
-    son
-son
+        end
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     // Start in low power
     set_performance_mode(PerformanceMode.LOW_POWER)
     
-    döngü yap
+    loop do
         // Idle state
-        power.enter_sleep_mode(yap mode: power.SLEEP_WFI son)
+        power.enter_sleep_mode(do mode: power.SLEEP_WFI end)
         
         // Check if high-performance task needed
-        eğer heavy_computation_requested() yap
+        if heavy_computation_requested() do
             set_performance_mode(PerformanceMode.HIGH_PERF)
             perform_fft_analysis()
             set_performance_mode(PerformanceMode.LOW_POWER)
-        son
-    son
-son</code></pre>
+        end
+    end
+end</code></pre>
 <p><strong>Sonuç:</strong> Dynamic scaling ile ortalama güç tüketimi %40-60 azalır.</p>
 </div>
 
 <h2> API Referansı</h2>
 <h3>Power Modes</h3>
 <pre><code>// Sleep mode entry
-fonksiyon enter_sleep_mode(mode: SleepMode)
+function enter_sleep_mode(mode: SleepMode)
 
 // Stop mode entry
-fonksiyon enter_stop_mode(config: StopConfig)
+function enter_stop_mode(config: StopConfig)
 
 // Standby mode entry
-fonksiyon enter_standby_mode()
+function enter_standby_mode()
 
 // Wakeup configuration
-fonksiyon wakeup_pin_enable(pin: WakeupPin)
-fonksiyon wakeup_pin_disable(pin: WakeupPin)
+function wakeup_pin_enable(pin: WakeupPin)
+function wakeup_pin_disable(pin: WakeupPin)
 
 // Voltage scaling
-fonksiyon set_voltage_scaling(scale: VoltageScale)
-fonksiyon get_voltage_scaling() -> VoltageScale
+function set_voltage_scaling(scale: VoltageScale)
+function get_voltage_scaling() -> VoltageScale
 
 // PVD (Programmable Voltage Detector)
-fonksiyon pvd_enable(level: PVDLevel)
-fonksiyon pvd_disable()
+function pvd_enable(level: PVDLevel)
+function pvd_disable()
 
 // Backup domain
-fonksiyon backup_access_enable()
-fonksiyon backup_access_disable()
+function backup_access_enable()
+function backup_access_disable()
 
 // Flags
-fonksiyon get_flag(flag: PowerFlag) -> mantık
-fonksiyon clear_flag(flag: PowerFlag)
+function get_flag(flag: PowerFlag) -> mantık
+function clear_flag(flag: PowerFlag)
 
 // Flash power control
-fonksiyon flash_power_down_enable()
-fonksiyon flash_power_down_disable()</code></pre>
+function flash_power_down_enable()
+function flash_power_down_disable()</code></pre>
 
 <div class="warning">
 <strong> Önemli Notlar:</strong>
@@ -630,7 +630,7 @@ fonksiyon flash_power_down_disable()</code></pre>
 <ul>
 <li> <strong>Peripheral kapatma:</strong> Stop öncesi kullanılmayan peripheral'ları disable et</li>
 <li> <strong>GPIO low power:</strong> Floating pinleri input+pull yapılandır</li>
-<li> <strong>Backup domain kullan:</strong> Standby'de kalıcı veri için backup register</li>
+<li> <strong>Backup domain kullan:</strong> Standby'de kalıcı veri for backup register</li>
 <li> <strong>RTC calibration:</strong> LSI toleransı 5%, LSE kullan (accurate timing)</li>
 <li> <strong>Debug etme:</strong> Stop/Standby modunda debugger çalışmaz</li>
 <li> <strong>SRAM güvenme:</strong> Standby'de SRAM kaybolur, kritik veriyi backup domain'e yaz</li>

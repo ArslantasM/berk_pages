@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>collections - Koleksiyonlar - BERK Programlama Dili</title>
+        <title>collections - Koleksiyonlar - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,42 +192,42 @@
 <h1>📦 collections - Veri Yapıları</h1>
 <p>Vec, HashMap, HashSet, LinkedList, BTreeMap, BinaryHeap</p>
 <div class="module-stats">
-<div class="stat-badge"><div style="font-size:2em;font-weight:bold">89</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">89</div><div>function</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,126</div><div>Satır</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">34 KB</div><div>Boyut</div></div>
 </div>
 </div>
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar collections
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import collections
 
 // Vec (dinamik dizi)
-değişken v = collections.vec_new()
+variable v = collections.vec_new()
 collections.vec_push(v, 10)
 collections.vec_push(v, 20)
-değişken eleman = collections.vec_get(v, 0)
+variable eleman = collections.vec_get(v, 0)
 
 // HashMap
-değişken map = collections.hashmap_new()
+variable map = collections.hashmap_new()
 collections.hashmap_insert(map, "name", "BERK")
 collections.hashmap_insert(map, "version", "1.0")
-değişken isim = collections.hashmap_get(map, "name")
+variable isim = collections.hashmap_get(map, "name")
 
 // HashSet
-değişken set = collections.hashset_new()
+variable set = collections.hashset_new()
 collections.hashset_insert(set, "apple")
 collections.hashset_insert(set, "banana")
-değişken var_mı = collections.hashset_contains(set, "apple")
+variable var_mı = collections.hashset_contains(set, "apple")
 
 // LinkedList
-değişken list = collections.linkedlist_new()
+variable list = collections.linkedlist_new()
 collections.linkedlist_push_back(list, 1)
 collections.linkedlist_push_front(list, 0)
 
 // BinaryHeap (öncelik kuyruğu)
-değişken heap = collections.heap_new()
+variable heap = collections.heap_new()
 collections.heap_push(heap, 5)
 collections.heap_push(heap, 3)
-değişken en_büyük = collections.heap_pop(heap)  // 5</code></pre>
+variable en_büyük = collections.heap_pop(heap)  // 5</code></pre>
 <h2>📚 Veri Yapıları</h2>
 <ul>
 <li><strong>Vec:</strong> Dinamik dizi, O(1) erişim, O(1) amortized push</li>
@@ -237,93 +237,93 @@ değişken en_büyük = collections.heap_pop(heap)  // 5</code></pre>
 <li><strong>BTreeMap:</strong> Sıralı map, O(log n) operations</li>
 <li><strong>BinaryHeap:</strong> Max-heap, O(log n) push/pop, O(1) peek</li>
 </ul>
-<h2>💡 Örnekler</h2>
+<h2>💡 Examples</h2>
 <div class="example-box">
 <h3>Word Frequency Counter</h3>
-<pre><code>içe_aktar collections, string, io
+<pre><code>import collections, string, io
 
-fonksiyon word_frequency(text: yazı) -> HashMap yap
-    değişken freq = collections.hashmap_new()
-    değişken kelimeler = string.böl(text, " ")
+function word_frequency(text: string) -> HashMap do
+    variable freq = collections.hashmap_new()
+    variable kelimeler = string.böl(text, " ")
     
-    her kelime içinde kelimeler için yap
-        değişken küçük = string.küçük_harf(kelime)
+    her kelime içinde kelimeler for do
+        variable küçük = string.küçük_harf(kelime)
         
-        eğer collections.hashmap_contains(freq, küçük) ise yap
-            değişken count = collections.hashmap_get(freq, küçük)
+        if collections.hashmap_contains(freq, küçük) ise do
+            variable count = collections.hashmap_get(freq, küçük)
             collections.hashmap_insert(freq, küçük, count + 1)
-        son değilse yap
+        end else do
             collections.hashmap_insert(freq, küçük, 1)
-        son
-    son
+        end
+    end
     
-    dön freq
-son
+    return freq
+end
 
-değişken metin = io.dosya_oku("document.txt")
-değişken frekans = word_frequency(metin)
+variable metin = io.dosya_oku("document.txt")
+variable frekans = word_frequency(metin)
 
 // En çok geçen 10 kelimeyi göster
-değişken kelimeler = collections.hashmap_keys(frekans)
-collections.vec_sort_by(kelimeler, fonksiyon(a, b) yap
-    dön collections.hashmap_get(frekans, b) - collections.hashmap_get(frekans, a)
-son)
+variable kelimeler = collections.hashmap_keys(frekans)
+collections.vec_sort_by(kelimeler, function(a, b) do
+    return collections.hashmap_get(frekans, b) - collections.hashmap_get(frekans, a)
+end)
 
-her i içinde aralık(0, 10) için yap
-    değişken k = collections.vec_get(kelimeler, i)
-    yazdır(k + ": " + collections.hashmap_get(frekans, k).yazıya())
-son</code></pre>
+her i içinde aralık(0, 10) for do
+    variable k = collections.vec_get(kelimeler, i)
+    print(k + ": " + collections.hashmap_get(frekans, k).yazıya())
+end</code></pre>
 </div>
 <div class="example-box">
 <h3>LRU Cache Implementation</h3>
-<pre><code>içe_aktar collections
+<pre><code>import collections
 
-sınıf LRUCache yap
-    değişken kapasite: tamsayı
-    değişken cache: HashMap
-    değişken sıra: LinkedList
+class LRUCache do
+    variable kapasite: integer
+    variable cache: HashMap
+    variable sıra: LinkedList
     
-    fonksiyon yeni(kap: tamsayı) yap
+    function yeni(kap: integer) do
         self.kapasite = kap
         self.cache = collections.hashmap_new()
         self.sıra = collections.linkedlist_new()
-    son
+    end
     
-    fonksiyon get(anahtar: yazı) -> herhangi yap
-        eğer collections.hashmap_contains(self.cache, anahtar) değilse yap
-            dön yok
-        son
+    function get(anahtar: string) -> herhangi do
+        if collections.hashmap_contains(self.cache, anahtar) else do
+            return yok
+        end
         
         // Sıraya taşı (LRU güncelle)
         collections.linkedlist_remove(self.sıra, anahtar)
         collections.linkedlist_push_back(self.sıra, anahtar)
         
-        dön collections.hashmap_get(self.cache, anahtar)
-    son
+        return collections.hashmap_get(self.cache, anahtar)
+    end
     
-    fonksiyon put(anahtar: yazı, değer: herhangi) yap
-        eğer collections.hashmap_contains(self.cache, anahtar) ise yap
+    function put(anahtar: string, değer: herhangi) do
+        if collections.hashmap_contains(self.cache, anahtar) ise do
             collections.linkedlist_remove(self.sıra, anahtar)
-        son
+        end
         
         collections.hashmap_insert(self.cache, anahtar, değer)
         collections.linkedlist_push_back(self.sıra, anahtar)
         
-        eğer collections.hashmap_size(self.cache) > self.kapasite ise yap
+        if collections.hashmap_size(self.cache) > self.kapasite ise do
             // En eski elemanı çıkar
-            değişken eski = collections.linkedlist_pop_front(self.sıra)
+            variable eski = collections.linkedlist_pop_front(self.sıra)
             collections.hashmap_remove(self.cache, eski)
-        son
-    son
-son
+        end
+    end
+end
 
-değişken cache = LRUCache.yeni(3)
+variable cache = LRUCache.yeni(3)
 cache.put("a", 1)
 cache.put("b", 2)
 cache.put("c", 3)
-yazdır(cache.get("a"))  // 1
+print(cache.get("a"))  // 1
 cache.put("d", 4)  // "b" çıkarılır
-yazdır(cache.get("b"))  // yok</code></pre>
+print(cache.get("b"))  // yok</code></pre>
 </div>
 <p style="text-align:center;margin-top:40px">
 <a href="index-tr.html">← Tüm Modüller</a>

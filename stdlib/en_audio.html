@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>audio - Ses Isleme - BERK Programlama Dili</title>
+        <title>audio - Ses Isleme - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -189,17 +189,17 @@
                 <div id="content" class="content">
                                             <main>
                                                 <div class="module-header">
-            <h1>🔊 audio - Ses İşleme ve Oynatma</h1>
-            <p>Ses dosyaları oynatma, kaydetme, işleme ve sentezleme</p>
+            <h1>🔊 audio - Ses İşleme and Oynatma</h1>
+            <p>Ses dosyaları oynatma, kaydetme, işleme and sentezleme</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 163 Fonksiyon</span>
+                <span class="stat-badge">📦 163 function</span>
                 <span class="stat-badge">📝 1669 Satır</span>
                 <span class="stat-badge">💾 55.6 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>audio</code> modülü, ses dosyalarını yükleme, oynatma, kaydetme ve işleme için kapsamlı araçlar sağlar. MP3, WAV, FLAC gibi formatları destekler, ses efektleri ve sentezleyici özellikleri sunar.</p>
+        <p><code>audio</code> modülü, ses dosyalarını yükleme, oynatma, kaydetme and işleme for kapsamlı araçlar sağlar. MP3, WAV, FLAC gibi formatları destekler, ses efektleri and sentezleyici özellikleri sunar.</p>
 
         <div class="function-group">
             <h3>🎵 Ses Oynatma</h3>
@@ -223,7 +223,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🎚️ Ses İşleme ve Efektler</h3>
+            <h3>🎚️ Ses İşleme and Efektler</h3>
             <ul>
                 <li><strong>audio.ses_seviyesi_ayarla()</strong> - Volume değiştirme</li>
                 <li><strong>audio.hız_değiştir()</strong> - Oynatma hızı</li>
@@ -256,77 +256,77 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>Basit Müzik Çalar</h3>
             <pre><code class="language-berk">kullan audio
 kullan fs
 
-sınıf MüzikÇalar {
-    değer ses: Opsiyonel&lt;audio.Ses&gt; = boş
-    değer oynatılıyor: Mantıksal = yanlış
+class MüzikÇalar {
+    değer ses: Opsiyonel&lt;audio.Ses&gt; = null
+    değer oynatılıyor: boolean = false
     
-    fonksiyon yükle(dosya_yolu: Dize) -> Sonuç&lt;Boş, Hata&gt; {
+    function yükle(dosya_yolu: Dize) -> Sonuç&lt;null, Hata&gt; {
         bu.ses = audio.yükle(dosya_yolu)?
-        yazdır(f"✓ Yüklendi: {dosya_yolu}")
+        print(f"✓ Yüklendi: {dosya_yolu}")
         
         // Ses bilgilerini göster
         değer süre = bu.ses.aç().süre()
         değer örnek_hızı = bu.ses.aç().örnek_hızı()
         değer kanal = bu.ses.aç().kanal_sayısı()
         
-        yazdır(f"  Süre: {süre:.2f} saniye")
-        yazdır(f"  Örnek hızı: {örnek_hızı} Hz")
-        yazdır(f"  Kanallar: {kanal}")
+        print(f"  Süre: {süre:.2f} saniye")
+        print(f"  Örnek hızı: {örnek_hızı} Hz")
+        print(f"  Kanallar: {kanal}")
         
-        dön Tamam(boş)
+        return Tamam(null)
     }
     
-    fonksiyon oynat() {
-        eğer bu.ses.var_mı() {
+    function oynat() {
+        if bu.ses.var_mı() {
             audio.oynat(bu.ses.aç())
-            bu.oynatılıyor = doğru
-            yazdır("▶️  Oynatılıyor...")
-        } yoksa {
-            yazdır("❌ Önce bir ses dosyası yükleyin!")
+            bu.oynatılıyor = true
+            print("▶️  Oynatılıyor...")
+        } elseif {
+            print("❌ Önce bir ses dosyası yükleyin!")
         }
     }
     
-    fonksiyon duraklat() {
-        eğer bu.ses.var_mı() ve bu.oynatılıyor {
+    function duraklat() {
+        if bu.ses.var_mı() and bu.oynatılıyor {
             audio.duraklat(bu.ses.aç())
-            bu.oynatılıyor = yanlış
-            yazdır("⏸️  Duraklatıldı")
+            bu.oynatılıyor = false
+            print("⏸️  Duraklatıldı")
         }
     }
     
-    fonksiyon devam_et() {
-        eğer bu.ses.var_mı() ve !bu.oynatılıyor {
+    function devam_et() {
+        if bu.ses.var_mı() and !bu.oynatılıyor {
             audio.devam_et(bu.ses.aç())
-            bu.oynatılıyor = doğru
-            yazdır("▶️  Devam ediyor...")
+            bu.oynatılıyor = true
+            print("▶️  continue ediyor...")
         }
     }
     
-    fonksiyon durdur() {
-        eğer bu.ses.var_mı() {
+    function durdur() {
+        if bu.ses.var_mı() {
             audio.durdur(bu.ses.aç())
-            bu.oynatılıyor = yanlış
-            yazdır("⏹️  Durduruldu")
+            bu.oynatılıyor = false
+            print("⏹️  Durduruldu")
         }
     }
     
-    fonksiyon ses_seviyesi_ayarla(seviye: Gerçek) {
-        eğer bu.ses.var_mı() {
+    function ses_seviyesi_ayarla(seviye: Gerçek) {
+        if bu.ses.var_mı() {
             değer kısıtlı = seviye.kısıtla(0.0, 1.0)
             audio.ses_seviyesi(bu.ses.aç(), kısıtlı)
-            yazdır(f"🔊 Ses seviyesi: {(kısıtlı * 100):.0f}%")
+            print(f"🔊 Ses seviyesi: {(kısıtlı * 100):.0f}%")
         }
     }
 }
 
-// Kullanım
+// Usage
 değer çalar = MüzikÇalar {}
 
 çalar.yükle("müzik.mp3").aç()
@@ -344,7 +344,7 @@ audio.bekle(2.0)
 
 // Şarkı bitene kadar bekle
 çalar.ses.aç().tamamlanana_kadar_bekle()
-yazdır("✓ Oynatma tamamlandı")</code></pre>
+print("✓ Oynatma tamamlandı")</code></pre>
         </div>
 
         <div class="example-box">
@@ -352,85 +352,85 @@ yazdır("✓ Oynatma tamamlandı")</code></pre>
             <pre><code class="language-berk">kullan audio
 kullan time
 
-sınıf SesKaydedici {
+class SesKaydedici {
     değer mikrofon: audio.Mikrofon
-    değer kayıt: Opsiyonel&lt;audio.KayıtArabelleği&gt; = boş
-    değer kayıt_aktif: Mantıksal = yanlış
+    değer kayıt: Opsiyonel&lt;audio.KayıtArabelleği&gt; = null
+    değer kayıt_aktif: boolean = false
     
-    fonksiyon yeni() -> Sonuç&lt;SesKaydedici, Hata&gt; {
+    function yeni() -> Sonuç&lt;SesKaydedici, Hata&gt; {
         değer mikrofon = audio.mikrofon_aç(
             örnek_hızı: 44100,
             kanallar: 2,
             tampon_boyutu: 4096
         )?
         
-        yazdır("🎙️  Mikrofon hazır")
-        yazdır(f"  Örnek hızı: {mikrofon.örnek_hızı()} Hz")
-        yazdır(f"  Kanallar: {mikrofon.kanal_sayısı()}")
+        print("🎙️  Mikrofon hazır")
+        print(f"  Örnek hızı: {mikrofon.örnek_hızı()} Hz")
+        print(f"  Kanallar: {mikrofon.kanal_sayısı()}")
         
-        dön Tamam(SesKaydedici {
+        return Tamam(SesKaydedici {
             mikrofon: mikrofon,
-            kayıt: boş,
-            kayıt_aktif: yanlış
+            kayıt: null,
+            kayıt_aktif: false
         })
     }
     
-    fonksiyon kayıt_başlat() {
+    function kayıt_başlat() {
         bu.kayıt = audio.KayıtArabelleği.yeni()
-        bu.kayıt_aktif = doğru
+        bu.kayıt_aktif = true
         
         audio.kayıt_başlat(bu.mikrofon, bu.kayıt.aç())
-        yazdır("🔴 Kayıt başladı...")
+        print("🔴 Kayıt başladı...")
     }
     
-    fonksiyon kayıt_durdur() -> audio.KayıtArabelleği {
+    function kayıt_durdur() -> audio.KayıtArabelleği {
         audio.kayıt_durdur(bu.mikrofon)
-        bu.kayıt_aktif = yanlış
-        yazdır("⏹️  Kayıt durduruldu")
+        bu.kayıt_aktif = false
+        print("⏹️  Kayıt durduruldu")
         
-        dön bu.kayıt.al()
+        return bu.kayıt.al()
     }
     
-    fonksiyon dosyaya_kaydet(dosya_adı: Dize) -> Sonuç&lt;Boş, Hata&gt; {
-        eğer bu.kayıt.var_mı() {
+    function dosyaya_kaydet(dosya_adı: Dize) -> Sonuç&lt;null, Hata&gt; {
+        if bu.kayıt.var_mı() {
             audio.wav_olarak_kaydet(bu.kayıt.aç(), dosya_adı)?
-            yazdır(f"💾 Kaydedildi: {dosya_adı}")
-            dön Tamam(boş)
+            print(f"💾 Kaydedildi: {dosya_adı}")
+            return Tamam(null)
         }
-        dön Hata("Kayıt bulunamadı!")
+        return Hata("Kayıt bulunamadı!")
     }
     
-    fonksiyon seviye_göster() {
-        döngü {
-            eğer !bu.kayıt_aktif {
-                kır
+    function seviye_göster() {
+        loop {
+            if !bu.kayıt_aktif {
+                break
             }
             
-            değer seviye = audio.giriş_seviyesi(bu.mikrofon)
+            değer seviye = audio.Introduction_seviyesi(bu.mikrofon)
             değer çubuk_sayısı = (seviye * 50).tam()
             değer çubuk = "█" * çubuk_sayısı + "░" * (50 - çubuk_sayısı)
             
-            yazdır(f"\r🎤 {çubuk} {(seviye * 100):.0f}%", yeni_satır: yanlış)
+            print(f"\r🎤 {çubuk} {(seviye * 100):.0f}%", yeni_satır: false)
             time.uyu(0.05)
         }
-        yazdır()  // Yeni satır
+        print()  // Yeni satır
     }
 }
 
-// Kullanım
+// Usage
 değer kaydedici = SesKaydedici.yeni().aç()
 
-yazdır("\n3 saniye içinde kayıt başlayacak...")
+print("\n3 saniye içinde kayıt başlayacak...")
 time.uyu(3.0)
 
 kaydedici.kayıt_başlat()
 
 // 10 saniye kaydet
-değer başlangıç = time.şimdi()
-döngü {
-    değer geçen = (time.şimdi() - başlangıç).saniye()
-    eğer geçen >= 10.0 {
-        kır
+değer Getting Started = time.şimdi()
+loop {
+    değer geçen = (time.şimdi() - Getting Started).saniye()
+    if geçen >= 10.0 {
+        break
     }
     time.uyu(0.1)
 }
@@ -438,7 +438,7 @@ döngü {
 değer kayıt = kaydedici.kayıt_durdur()
 kaydedici.dosyaya_kaydet("kayıt.wav").aç()
 
-yazdır("\n✓ Ses başarıyla kaydedildi!")</code></pre>
+print("\n✓ Ses başarıyla kaydedildi!")</code></pre>
         </div>
 
         <div class="example-box">
@@ -446,67 +446,67 @@ yazdır("\n✓ Ses başarıyla kaydedildi!")</code></pre>
             <pre><code class="language-berk">kullan audio
 kullan math
 
-sınıf Sentezleyici {
+class Sentezleyici {
     değer örnek_hızı: Tam = 44100
     
-    fonksiyon nota_çal(nota: Dize, süre: Gerçek, dalga_tipi: Dize = "sinüs") -> audio.Ses {
+    function nota_çal(nota: Dize, süre: Gerçek, dalga_tipi: Dize = "sinüs") -> audio.Ses {
         değer frekans = audio.nota_frekansı(nota)
         değer örnek_sayısı = (bu.örnek_hızı * süre).tam()
-        değer örnekler = Liste.yeni&lt;Gerçek&gt;(örnek_sayısı)
+        değer Examples = Liste.yeni&lt;Gerçek&gt;(örnek_sayısı)
         
-        için i içinde 0..örnek_sayısı {
+        for i içinde 0..örnek_sayısı {
             değer t = i.gerçek() / bu.örnek_hızı.gerçek()
             değer faz = 2.0 * math.PI * frekans * t
             
             değer örnek = eşleştir dalga_tipi {
                 "sinüs" => math.sin(faz),
-                "kare" => eğer math.sin(faz) >= 0.0 { 1.0 } yoksa { -1.0 },
+                "kare" => if math.sin(faz) >= 0.0 { 1.0 } elseif { -1.0 },
                 "testere" => 2.0 * (faz / (2.0 * math.PI) - (faz / (2.0 * math.PI)).taban()),
                 _ => math.sin(faz)
             }
             
-            // ADSR zarfı uygula (basit)
+            // ADSR zarfı implement (basit)
             değer zarf = bu.adsr_zarfı(t, süre)
-            örnekler.ekle(örnek * zarf)
+            Examples.ekle(örnek * zarf)
         }
         
-        dön audio.örneklerden_oluştur(örnekler, bu.örnek_hızı)
+        return audio.Examplesden_oluştur(Examples, bu.örnek_hızı)
     }
     
-    fonksiyon adsr_zarfı(t: Gerçek, toplam_süre: Gerçek) -> Gerçek {
+    function adsr_zarfı(t: Gerçek, toplam_süre: Gerçek) -> Gerçek {
         // Attack, Decay, Sustain, Release
         değer attack = 0.05
         değer decay = 0.1
         değer sustain = 0.7
         değer release = 0.2
         
-        eğer t < attack {
-            dön t / attack
-        } yoksa eğer t < attack + decay {
+        if t < attack {
+            return t / attack
+        } elseif if t < attack + decay {
             değer decay_t = (t - attack) / decay
-            dön 1.0 - (1.0 - sustain) * decay_t
-        } yoksa eğer t < toplam_süre - release {
-            dön sustain
-        } yoksa {
+            return 1.0 - (1.0 - sustain) * decay_t
+        } elseif if t < toplam_süre - release {
+            return sustain
+        } elseif {
             değer release_t = (t - (toplam_süre - release)) / release
-            dön sustain * (1.0 - release_t)
+            return sustain * (1.0 - release_t)
         }
-        dön 0.0
+        return 0.0
     }
     
-    fonksiyon melodi_çal(notalar: Liste&lt;(Dize, Gerçek)&gt;) {
-        yazdır("🎹 Melodi çalınıyor...")
+    function melodi_çal(notalar: Liste&lt;(Dize, Gerçek)&gt;) {
+        print("🎹 Melodi çalınıyor...")
         
-        için (nota, süre) içinde notalar {
+        for (nota, süre) içinde notalar {
             değer ses = bu.nota_çal(nota, süre)
             audio.oynat(ses)
             audio.bekle(süre)
         }
         
-        yazdır("✓ Melodi tamamlandı")
+        print("✓ Melodi tamamlandı")
     }
     
-    fonksiyon akor_çal(notalar: Liste&lt;Dize&gt;, süre: Gerçek) {
+    function akor_çal(notalar: Liste&lt;Dize&gt;, süre: Gerçek) {
         // Birden fazla notayı aynı anda çal
         değer sesler = notalar.eşle(|nota| bu.nota_çal(nota, süre))
         değer karışık = audio.sesleri_karıştır(sesler)
@@ -516,7 +516,7 @@ sınıf Sentezleyici {
     }
 }
 
-// Kullanım
+// Usage
 değer synth = Sentezleyici {}
 
 // Basit melodi (Twinkle Twinkle Little Star)
@@ -530,27 +530,27 @@ değer melodi = [
 synth.melodi_çal(melodi)
 
 // C majör akoru
-yazdır("\n🎸 C majör akoru...")
+print("\n🎸 C majör akoru...")
 synth.akor_çal(["C4", "E4", "G4"], 2.0)
 
-yazdır("✓ Bitti!")</code></pre>
+print("✓ Bitti!")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
             <li>Ses dosyalarını asenkron yükleyin</li>
-            <li>Büyük ses dosyaları için streaming kullanın</li>
+            <li>Büyük ses dosyaları for streaming kullanın</li>
             <li>Ses efektlerini önceden işleyin (pre-process)</li>
-            <li>Mikrofon erişimi için kullanıcı izni alın</li>
+            <li>Mikrofon erişimi for kullanıcı izni alın</li>
             <li>Oynatma bitişlerini callback ile yakalayın</li>
-            <li>Ses işleme için yeterli tampon boyutu kullanın</li>
+            <li>Ses işleme for yeterli tampon boyutu kullanın</li>
             <li>Normalize ederek ses seviyesi tutarlılığı sağlayın</li>
         </ul>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
             <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>
-            <li><a href="math.html">math</a> - Matematiksel fonksiyonlar</li>
+            <li><a href="math.html">math</a> - Mathematicssel Functions</li>
             <li><a href="thread.html">thread</a> - Asenkron işlemler</li>
             <li><a href="time.html">time</a> - Zamanlama işlemleri</li>
         </ul>

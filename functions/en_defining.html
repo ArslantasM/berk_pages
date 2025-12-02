@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Fonksiyon Tanımlama - BERK Programlama Dili</title>
+        <title>function Tanımlama - BERK Programlama Dili</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -181,38 +181,38 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="fonksiyon-tanımlama"><a class="header" href="#fonksiyon-tanımlama">Fonksiyon Tanımlama</a></h1>
-<h2 id="basit-fonksiyon"><a class="header" href="#basit-fonksiyon">Basit Fonksiyon</a></h2>
+                        <h1 id="function-tanımlama"><a class="header" href="#function-tanımlama">function Tanımlama</a></h1>
+<h2 id="basit-function"><a class="header" href="#basit-function">Basit function</a></h2>
 <pre><code class="language-berk">işlev selamla() {
-    yazdır("Merhaba!")
+    print("Merhaba!")
 }
 
 selamla()  // Çağırma
 </code></pre>
-<h2 id="parametreli-fonksiyon"><a class="header" href="#parametreli-fonksiyon">Parametreli Fonksiyon</a></h2>
-<pre><code class="language-berk">işlev selamla(isim: Yazı) {
-    yazdır("Merhaba, ", isim)
+<h2 id="parametreli-function"><a class="header" href="#parametreli-function">Parametreli function</a></h2>
+<pre><code class="language-berk">işlev selamla(isim: string) {
+    print("Merhaba, ", isim)
 }
 
 selamla("Ahmet")
 </code></pre>
 <h2 id="dönüş-değerli"><a class="header" href="#dönüş-değerli">Dönüş Değerli</a></h2>
 <pre><code class="language-berk">işlev topla(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri dön a + b
+    geri return a + b
 }
 
-değişken sonuç = topla(5, 3)
+variable sonuç = topla(5, 3)
 </code></pre>
-<h2 id="lambda-fonksiyonlar"><a class="header" href="#lambda-fonksiyonlar">Lambda Fonksiyonlar</a></h2>
-<pre><code class="language-berk">değişken çarp = (x, y) =&gt; x * y
-yazdır(çarp(3, 4))  // 12
+<h2 id="lambda-Functions"><a class="header" href="#lambda-Functions">Lambda Functions</a></h2>
+<pre><code class="language-berk">variable çarp = (x, y) =&gt; x * y
+print(çarp(3, 4))  // 12
 </code></pre>
 <h2 id="recursive"><a class="header" href="#recursive">Recursive</a></h2>
 <pre><code class="language-berk">işlev faktoriyel(n: Sayı) -&gt; Sayı {
-    eğer n &lt;= 1 {
-        geri dön 1
+    if n &lt;= 1 {
+        geri return 1
     }
-    geri dön n * faktoriyel(n - 1)
+    geri return n * faktoriyel(n - 1)
 }
 </code></pre>
 

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>image - Goruntu Isleme - BERK Programlama Dili</title>
+        <title>image - Goruntu Isleme - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,25 +190,25 @@
                                             <main>
                                                 <div class="module-header">
             <h1>🖼️ image - Görüntü İşleme</h1>
-            <p>Görüntü yükleme, kaydetme, dönüştürme ve filtreleme işlemleri</p>
+            <p>Görüntü yükleme, kaydetme, dönüştürme and filtreleme işlemleri</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 77 Fonksiyon</span>
+                <span class="stat-badge">📦 77 function</span>
                 <span class="stat-badge">📝 1770 Satır</span>
                 <span class="stat-badge">💾 61.7 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>image</code> modülü, görüntü dosyalarını yükleme, kaydetme, boyutlandırma, filtreleme ve dönüştürme için kapsamlı araçlar sağlar. PNG, JPEG, GIF, BMP ve WebP formatlarını destekler.</p>
+        <p><code>image</code> modülü, görüntü dosyalarını yükleme, kaydetme, boyutlandırma, filtreleme and dönüştürme for kapsamlı araçlar sağlar. PNG, JPEG, GIF, BMP and WebP formatlarını destekler.</p>
 
         <div class="function-group">
-            <h3>📂 Görüntü Yükleme ve Kaydetme</h3>
+            <h3>📂 Görüntü Yükleme and Kaydetme</h3>
             <ul>
                 <li><strong>image.yükle()</strong> - Görüntü dosyası yükleme</li>
                 <li><strong>image.png_kaydet()</strong> - PNG olarak kaydetme</li>
                 <li><strong>image.jpeg_kaydet()</strong> - JPEG olarak kaydetme</li>
                 <li><strong>image.webp_kaydet()</strong> - WebP olarak kaydetme</li>
-                <li><strong>image.yeni()</strong> - Boş görüntü oluşturma</li>
+                <li><strong>image.yeni()</strong> - null görüntü oluşturma</li>
             </ul>
         </div>
 
@@ -236,7 +236,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🔍 Filtreler ve Efektler</h3>
+            <h3>🔍 Filtreler and Efektler</h3>
             <ul>
                 <li><strong>image.bulanıklaştır()</strong> - Blur efekti</li>
                 <li><strong>image.keskinleştir()</strong> - Sharpen filtresi</li>
@@ -248,7 +248,7 @@
         </div>
 
         <div class="function-group">
-            <h3>🖌️ Çizim ve Metin</h3>
+            <h3>🖌️ Çizim and Metin</h3>
             <ul>
                 <li><strong>image.piksel_ayarla()</strong> - Piksel rengi ayarlama</li>
                 <li><strong>image.piksel_al()</strong> - Piksel rengi okuma</li>
@@ -267,17 +267,17 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>Görüntü Boyutlandırma ve Thumbnail</h3>
+            <h3>Görüntü Boyutlandırma and Thumbnail</h3>
             <pre><code class="language-berk">kullan image
 kullan fs
 
 // Görüntü yükleme
 değer resim = image.yükle("fotoğraf.jpg")
 
-yazdır(f"Orijinal boyut: {resim.genişlik()}x{resim.yükseklik()}")
+print(f"Orijinal boyut: {resim.genişlik()}x{resim.yükseklik()}")
 
 // Yüksek kaliteli yeniden boyutlandırma
 değer orta_boy = resim.yeniden_boyutlandır(
@@ -287,14 +287,14 @@ değer orta_boy = resim.yeniden_boyutlandır(
 )
 
 orta_boy.jpeg_kaydet("fotoğraf_orta.jpg", kalite: 90)
-yazdır("✓ Orta boy kaydedildi")
+print("✓ Orta boy kaydedildi")
 
 // Thumbnail oluştur (oran korunur)
 değer thumbnail = resim.küçük_resim(200, 200)
 thumbnail.png_kaydet("fotoğraf_thumb.png")
-yazdır("✓ Thumbnail oluşturuldu")
+print("✓ Thumbnail oluşturuldu")
 
-// Kare kırpma (profil fotoğrafı için)
+// Kare kırpma (profil fotoğrafı for)
 değer merkez_x = resim.genişlik() / 2
 değer merkez_y = resim.yükseklik() / 2
 değer kare_boyut = 500
@@ -307,11 +307,11 @@ değer profil = resim.kırp(
 )
 
 profil.png_kaydet("profil.png")
-yazdır("✓ Profil fotoğrafı oluşturuldu")</code></pre>
+print("✓ Profil fotoğrafı oluşturuldu")</code></pre>
         </div>
 
         <div class="example-box">
-            <h3>Görüntü Filtreleme ve Efektler</h3>
+            <h3>Görüntü Filtreleme and Efektler</h3>
             <pre><code class="language-berk">kullan image
 
 değer resim = image.yükle("manzara.jpg")
@@ -319,41 +319,41 @@ değer resim = image.yükle("manzara.jpg")
 // Gri tonlama
 değer gri = resim.gri_tonlama()
 gri.jpeg_kaydet("manzara_gri.jpg")
-yazdır("✓ Gri tonlama uygulandı")
+print("✓ Gri tonlama uygulandı")
 
 // Sepia efekti (nostaljik görünüm)
 değer sepia = resim.sepia()
 sepia.jpeg_kaydet("manzara_sepia.jpg")
-yazdır("✓ Sepia efekti uygulandı")
+print("✓ Sepia efekti uygulandı")
 
-// Parlaklık ve kontrast ayarlama
+// Parlaklık and kontrast ayarlama
 değer parlak = resim
     .parlaklık(1.2)      // %20 daha parlak
     .kontrast(1.3)       // %30 daha fazla kontrast
     .doygunluk(1.1)      // %10 daha doygun renkler
 
 parlak.jpeg_kaydet("manzara_parlak.jpg")
-yazdır("✓ Renk ayarlaması yapıldı")
+print("✓ Renk ayarlaması yapıldı")
 
 // Bulanıklaştırma
 değer bulanık = resim.bulanıklaştır(yarıçap: 5.0)
 bulanık.jpeg_kaydet("manzara_bulanık.jpg")
-yazdır("✓ Blur efekti uygulandı")
+print("✓ Blur efekti uygulandı")
 
 // Keskinleştirme
 değer keskin = resim.keskinleştir(miktar: 1.5)
 keskin.jpeg_kaydet("manzara_keskin.jpg")
-yazdır("✓ Keskinleştirme uygulandı")
+print("✓ Keskinleştirme uygulandı")
 
 // Kenar algılama (edge detection)
 değer kenarlar = resim.kenar_algıla(eşik: 100)
 kenarlar.png_kaydet("manzara_kenarlar.png")
-yazdır("✓ Kenar algılama yapıldı")
+print("✓ Kenar algılama yapıldı")
 
 // Mozaik efekti
 değer mozaik = resim.mozaik(piksel_boyutu: 10)
 mozaik.jpeg_kaydet("manzara_mozaik.jpg")
-yazdır("✓ Mozaik efekti uygulandı")</code></pre>
+print("✓ Mozaik efekti uygulandı")</code></pre>
         </div>
 
         <div class="example-box">
@@ -361,8 +361,8 @@ yazdır("✓ Mozaik efekti uygulandı")</code></pre>
             <pre><code class="language-berk">kullan image
 kullan fs
 
-sınıf Görüntüİşlemci {
-    fonksiyon toplu_yeniden_boyutlandır(
+class Görüntüİşlemci {
+    function toplu_yeniden_boyutlandır(
         kaynak_klasör: Dize,
         hedef_klasör: Dize,
         max_genişlik: Tam,
@@ -377,10 +377,10 @@ sınıf Görüntüİşlemci {
         
         değer işlenen = 0
         
-        için dosya içinde dosyalar {
+        for dosya içinde dosyalar {
             değer uzantı = fs.uzantı(dosya).küçük_harfe()
             
-            eğer uzantı içinde görüntü_uzantıları {
+            if uzantı içinde görüntü_uzantıları {
                 değer kaynak_yol = fs.birleştir(kaynak_klasör, dosya)
                 değer hedef_yol = fs.birleştir(hedef_klasör, dosya)
                 
@@ -388,7 +388,7 @@ sınıf Görüntüİşlemci {
                     değer resim = image.yükle(kaynak_yol)
                     
                     // Boyutu kontrol et
-                    eğer resim.genişlik() > max_genişlik veya resim.yükseklik() > max_yükseklik {
+                    if resim.genişlik() > max_genişlik or resim.yükseklik() > max_yükseklik {
                         // Orantılı boyutlandırma
                         değer oran = (max_genişlik.gerçek() / resim.genişlik().gerçek())
                             .min(max_yükseklik.gerçek() / resim.yükseklik().gerçek())
@@ -403,29 +403,29 @@ sınıf Görüntüİşlemci {
                         )
                         
                         yeni_resim.jpeg_kaydet(hedef_yol, kalite: 85)
-                        yazdır(f"✓ İşlendi: {dosya} ({resim.genişlik()}x{resim.yükseklik()} -> {yeni_genişlik}x{yeni_yükseklik})")
+                        print(f"✓ İşlendi: {dosya} ({resim.genişlik()}x{resim.yükseklik()} -> {yeni_genişlik}x{yeni_yükseklik})")
                         işlenen += 1
-                    } yoksa {
+                    } elseif {
                         // Boyut zaten uygun, sadece kopyala
                         fs.dosya_kopyala(kaynak_yol, hedef_yol)?
-                        yazdır(f"→ Kopyalandı: {dosya}")
+                        print(f"→ Kopyalandı: {dosya}")
                         işlenen += 1
                     }
                 } yakala hata {
-                    yazdır(f"❌ Hata ({dosya}): {hata}")
+                    print(f"❌ Hata ({dosya}): {hata}")
                 }
             }
         }
         
-        dön Tamam(işlenen)
+        return Tamam(işlenen)
     }
     
-    fonksiyon watermark_ekle(
+    function watermark_ekle(
         kaynak: Dize,
         hedef: Dize,
         watermark_metin: Dize,
         konum: Dize = "sağ_alt"
-    ) -> Sonuç&lt;Boş, Hata&gt; {
+    ) -> Sonuç&lt;null, Hata&gt; {
         değer resim = image.yükle(kaynak)?
         
         // Watermark konumunu hesapla
@@ -445,19 +445,19 @@ sınıf Görüntüİşlemci {
             font: "Arial",
             boyut: 24,
             renk: image.rgba(255, 255, 255, 180),  // Beyaz, %70 opaklık
-            gölge: doğru
+            gölge: true
         )
         
         resim.jpeg_kaydet(hedef, kalite: 90)?
-        dön Tamam(boş)
+        return Tamam(null)
     }
 }
 
-// Kullanım
+// Usage
 değer işlemci = Görüntüİşlemci {}
 
 // Toplu yeniden boyutlandırma
-yazdır("Görüntüler yeniden boyutlandırılıyor...")
+print("Görüntüler yeniden boyutlandırılıyor...")
 değer sonuç = işlemci.toplu_yeniden_boyutlandır(
     "orijinal_resimler",
     "küçük_resimler",
@@ -465,7 +465,7 @@ değer sonuç = işlemci.toplu_yeniden_boyutlandır(
     1080
 ).aç()
 
-yazdır(f"\n✓ Toplam {sonuç} görüntü işlendi")
+print(f"\n✓ Toplam {sonuç} görüntü işlendi")
 
 // Watermark ekle
 işlemci.watermark_ekle(
@@ -475,23 +475,23 @@ işlemci.watermark_ekle(
     konum: "sağ_alt"
 ).aç()
 
-yazdır("✓ Watermark eklendi")</code></pre>
+print("✓ Watermark eklendi")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
             <li>Yeniden boyutlandırmada yüksek kalite filtreleri kullanın</li>
-            <li>JPEG kayıt için 85-95 arası kalite değeri optimal</li>
-            <li>Dosya boyutunu küçültmek için WebP formatını düşünün</li>
+            <li>JPEG kayıt for 85-95 arası kalite değeri optimal</li>
+            <li>Dosya boyutunu küçültmek for WebP formatını düşünün</li>
             <li>Büyük görüntülerde streaming işleme kullanın</li>
-            <li>Thumbnail'ler için aspect ratio'yu koruyun</li>
-            <li>Watermark için şeffaf PNG kullanın</li>
+            <li>Thumbnail'ler for aspect ratio'yu koruyun</li>
+            <li>Watermark for şeffaf PNG kullanın</li>
             <li>Filtreleri art arda uygulamak yerine kombine edin</li>
         </ul>
 
         <h2>🔗 İlgili Modüller</h2>
         <ul>
-            <li><a href="graphics.html">graphics</a> - 2D çizim ve grafik</li>
+            <li><a href="graphics.html">graphics</a> - 2D çizim and grafik</li>
             <li><a href="color.html">color</a> - Renk işlemleri</li>
             <li><a href="fs.html">fs</a> - Dosya sistemi</li>
             <li><a href="encoding.html">encoding</a> - Base64 kodlama</li>

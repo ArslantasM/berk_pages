@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-transc - HAL Module - BERK Programlama Dili</title>
+        <title>hal-transc - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -200,32 +200,32 @@
 <h2>📖 Genel Bakış</h2>
 <p>RF transceiver drivers: nRF24L01, LoRa, Bluetooth.</p>
 
-<h2>🚀 Kullanım</h2>
-<pre><code>içe_aktar hal::transc
+<h2>🚀 Usage</h2>
+<pre><code>import hal::transc
 
 // Initialize nRF24L01
-değişken nrf = transc.nrf24_init(yap
+variable nrf = transc.nrf24_init(do
     ce_pin: gpio.PA0,
     csn_pin: gpio.PA1,
     spi: spi1,
     channel: 76,
     data_rate: transc.DR_2MBPS
-son)
+end)
 
 // Send packet
 transc.nrf24_send(nrf, [0x01, 0x02, 0x03])
 
 // Receive packet
-eğer data = transc.nrf24_receive(nrf, 100) ise yap
+if data = transc.nrf24_receive(nrf, 100) ise do
     io.println("Received: {:?}", data)
-son
+end
 
 // LoRa module
-değişken lora = transc.lora_init(yap
+variable lora = transc.lora_init(do
     frequency: 915_000_000,  // 915 MHz
     bandwidth: transc.BW_125KHZ,
     spreading_factor: 7
-son)
+end)
 
 transc.lora_send(lora, "Hello LoRa!")</code></pre>
 

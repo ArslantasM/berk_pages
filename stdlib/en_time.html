@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>time - Zaman İşlemleri - BERK Programlama Dili</title>
+        <title>time - Zaman İşlemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -189,38 +189,38 @@
                 <div id="content" class="content">
                     <main>
                         <div class="module-header">
-<h1>⏰ time - Zaman ve Tarih</h1>
+<h1>⏰ time - Zaman and Tarih</h1>
 <p>DateTime, Duration, Formatting, Timezone</p>
 <div class="module-stats">
-<div class="stat-badge"><div style="font-size:2em;font-weight:bold">58</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">58</div><div>function</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">731</div><div>Satır</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">23 KB</div><div>Boyut</div></div>
 </div>
 </div>
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar time
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import time
 
 // Şu an
-değişken şimdi = time.şimdi()
-yazdır(şimdi.yazıya())  // "2025-01-15 14:30:45"
+variable şimdi = time.şimdi()
+print(şimdi.yazıya())  // "2025-01-15 14:30:45"
 
 // Unix timestamp
-değişken timestamp = time.unix()
-yazdır(timestamp.yazıya())  // 1705328445
+variable timestamp = time.unix()
+print(timestamp.yazıya())  // 1705328445
 
 // Formatting
-değişken formatted = time.format(şimdi, "%Y-%m-%d %H:%M:%S")
-yazdır(formatted)  // "2025-01-15 14:30:45"
+variable formatted = time.format(şimdi, "%Y-%m-%d %H:%M:%S")
+print(formatted)  // "2025-01-15 14:30:45"
 
 // Parsing
-değişken tarih = time.parse("2025-01-15", "%Y-%m-%d")
+variable tarih = time.parse("2025-01-15", "%Y-%m-%d")
 
 // Duration
-değişken başlangıç = time.şimdi()
+variable Getting Started = time.şimdi()
 // ... işlemler ...
-değişken bitiş = time.şimdi()
-değişken süre = time.duration(başlangıç, bitiş)
-yazdır("Geçen süre: " + süre.saniye().yazıya() + "s")
+variable bitiş = time.şimdi()
+variable süre = time.duration(Getting Started, bitiş)
+print("Geçen süre: " + süre.saniye().yazıya() + "s")
 
 // Sleep
 time.sleep(1000)  // 1000ms = 1 saniye</code></pre>
@@ -232,117 +232,117 @@ time.sleep(1000)  // 1000ms = 1 saniye</code></pre>
 <li>ISO 8601 support</li>
 <li>Timer, stopwatch</li>
 </ul>
-<h2>💡 Örnekler</h2>
+<h2>💡 Examples</h2>
 <div class="example-box">
 <h3>Benchmark Timer</h3>
-<pre><code>içe_aktar time
+<pre><code>import time
 
-sınıf Stopwatch yap
-    değişken başlangıç: DateTime
-    değişken tur_zamanları: Dizi
+class Stopwatch do
+    variable Getting Started: DateTime
+    variable tur_zamanları: Dizi
     
-    fonksiyon başlat() yap
-        self.başlangıç = time.şimdi()
+    function başlat() do
+        self.Getting Started = time.şimdi()
         self.tur_zamanları = []
-    son
+    end
     
-    fonksiyon tur() yap
+    function tur() do
         self.tur_zamanları.ekle(time.şimdi())
-    son
+    end
     
-    fonksiyon durdur() -> Duration yap
-        dön time.duration(self.başlangıç, time.şimdi())
-    son
+    function durdur() -> Duration do
+        return time.duration(self.Getting Started, time.şimdi())
+    end
     
-    fonksiyon tur_süresi(index: tamsayı) -> Duration yap
-        eğer index == 0 ise yap
-            dön time.duration(self.başlangıç, self.tur_zamanları[0])
-        son değilse yap
-            dön time.duration(self.tur_zamanları[index-1], self.tur_zamanları[index])
-        son
-    son
-son
+    function tur_süresi(index: integer) -> Duration do
+        if index == 0 ise do
+            return time.duration(self.Getting Started, self.tur_zamanları[0])
+        end else do
+            return time.duration(self.tur_zamanları[index-1], self.tur_zamanları[index])
+        end
+    end
+end
 
-değişken sw = Stopwatch.yeni()
+variable sw = Stopwatch.yeni()
 sw.başlat()
 
 // Test 1
-her i içinde aralık(0, 1000000) için yap
-    değişken x = i * i
-son
+her i içinde aralık(0, 1000000) for do
+    variable x = i * i
+end
 sw.tur()
 
 // Test 2
-her i içinde aralık(0, 500000) için yap
-    değişken x = math.sqrt(i.kesir())
-son
+her i içinde aralık(0, 500000) for do
+    variable x = math.sqrt(i.kesir())
+end
 sw.tur()
 
-yazdır("Tur 1: " + sw.tur_süresi(0).milisaniye().yazıya() + "ms")
-yazdır("Tur 2: " + sw.tur_süresi(1).milisaniye().yazıya() + "ms")
-yazdır("Toplam: " + sw.durdur().milisaniye().yazıya() + "ms")</code></pre>
+print("Tur 1: " + sw.tur_süresi(0).milisaniye().yazıya() + "ms")
+print("Tur 2: " + sw.tur_süresi(1).milisaniye().yazıya() + "ms")
+print("Toplam: " + sw.durdur().milisaniye().yazıya() + "ms")</code></pre>
 </div>
 <div class="example-box">
 <h3>Task Scheduler</h3>
-<pre><code>içe_aktar time, thread
+<pre><code>import time, thread
 
-sınıf ScheduledTask yap
-    değişken fonksiyon: Fonksiyon
-    değişken çalışma_zamanı: DateTime
+class ScheduledTask do
+    variable function: function
+    variable çalışma_zamanı: DateTime
     
-    fonksiyon yeni(f: Fonksiyon, çalışma_zamanı: DateTime) yap
-        self.fonksiyon = f
+    function yeni(f: function, çalışma_zamanı: DateTime) do
+        self.function = f
         self.çalışma_zamanı = çalışma_zamanı
-    son
-son
+    end
+end
 
-sınıf Scheduler yap
-    değişken görevler: Dizi
+class Scheduler do
+    variable görevler: Dizi
     
-    fonksiyon yeni() yap
+    function yeni() do
         self.görevler = []
-    son
+    end
     
-    fonksiyon zamanla(f: Fonksiyon, gecikme_ms: tamsayı) yap
-        değişken çalışma_zamanı = time.add_ms(time.şimdi(), gecikme_ms)
+    function zamanla(f: function, gecikme_ms: integer) do
+        variable çalışma_zamanı = time.add_ms(time.şimdi(), gecikme_ms)
         self.görevler.ekle(ScheduledTask.yeni(f, çalışma_zamanı))
-    son
+    end
     
-    fonksiyon çalıştır() yap
-        döngü yap
-            değişken şimdi = time.şimdi()
-            değişken çalıştırılan = 0
+    function çalıştır() do
+        loop do
+            variable şimdi = time.şimdi()
+            variable çalıştırılan = 0
             
-            her görev içinde self.görevler için yap
-                eğer time.before(görev.çalışma_zamanı, şimdi) ise yap
-                    görev.fonksiyon()
+            her görev içinde self.görevler for do
+                if time.before(görev.çalışma_zamanı, şimdi) ise do
+                    görev.function()
                     çalıştırılan = çalıştırılan + 1
-                son
-            son
+                end
+            end
             
             // Çalıştırılan görevleri kaldır
-            self.görevler = self.görevler.filtrele(fonksiyon(g) yap
-                dön time.after(g.çalışma_zamanı, şimdi)
-            son)
+            self.görevler = self.görevler.filtrele(function(g) do
+                return time.after(g.çalışma_zamanı, şimdi)
+            end)
             
-            eğer self.görevler.uzunluk() == 0 ise yap
-                kır
-            son
+            if self.görevler.uzunluk() == 0 ise do
+                break
+            end
             
             time.sleep(100)  // 100ms check interval
-        son
-    son
-son
+        end
+    end
+end
 
-değişken scheduler = Scheduler.yeni()
+variable scheduler = Scheduler.yeni()
 
-scheduler.zamanla(fonksiyon() yap
-    yazdır("Görev 1 çalıştı: " + time.şimdi().yazıya())
-son, 1000)
+scheduler.zamanla(function() do
+    print("Görev 1 çalıştı: " + time.şimdi().yazıya())
+end, 1000)
 
-scheduler.zamanla(fonksiyon() yap
-    yazdır("Görev 2 çalıştı: " + time.şimdi().yazıya())
-son, 2000)
+scheduler.zamanla(function() do
+    print("Görev 2 çalıştı: " + time.şimdi().yazıya())
+end, 2000)
 
 scheduler.çalıştır()</code></pre>
 </div>

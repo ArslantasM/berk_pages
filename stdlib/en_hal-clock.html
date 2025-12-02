@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-clock - Clock Configuration - BERK Programlama Dili</title>
+        <title>hal-clock - Clock Configuration - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>Clock Configuration - PLL & System Clock Setup</p>
 <div style="margin-top:15px">
 <span class="stat-badge">~410 satır</span>
-<span class="stat-badge">~22 fonksiyon</span>
+<span class="stat-badge">~22 function</span>
 <span class="stat-badge">STM32/GD32</span>
 </div>
 </div>
 
 <h2> Genel Bakış</h2>
-<p>Clock modülü, mikrodenetleyicinin kalp atışıdır. HSI/HSE/PLL kaynaklarını yapılandırır, sistem clockunu ayarlar ve peripheral clocklarını dağıtır. Doğru clock yapılandırması sistemin performansını, güç tüketimini ve timing accuracy'sini doğrudan etkiler.</p>
+<p>Clock modülü, mikrodenetleyicinin kalp atışıdır. HSI/HSE/PLL kaynaklarını yapılandırır, sistem clockunu ayarlar and peripheral clocklarını dağıtır. true clock yapılandırması sistemin performansını, güç tüketimini and timing accuracy'sini doğrudan etkiler.</p>
 
 <h2> Temel Özellikler</h2>
 <ul>
@@ -213,24 +213,24 @@
 <li><strong>USB Clock:</strong> 48 MHz requirement for USB peripheral</li>
 </ul>
 
-<h2> Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::clock
+<h2> Hızlı Getting Started</h2>
+<pre><code>import hal::clock
 
 // HSE + PLL -> 72 MHz (STM32F1)
-clock.init(yap
+clock.init(do
     source: clock.SOURCE_PLL,
     hse_freq: 8_000_000,  // 8 MHz crystal
     pll_mul: 9,           // 8 * 9 = 72 MHz
     ahb_div: 1,           // HCLK = 72 MHz
     apb1_div: 2,          // PCLK1 = 36 MHz (max 36 MHz)
     apb2_div: 1           // PCLK2 = 72 MHz
-son)
+end)
 
 // Verify clock
-değişken sysclk = clock.get_sysclk_freq()
+variable sysclk = clock.get_sysclk_freq()
 io.yazdir_satır("SYSCLK: " + sysclk.metne() + " Hz")</code></pre>
 
-<h2> Tipler ve Enum'lar</h2>
+<h2> Tipler and Enum'lar</h2>
 <pre><code>// Clock Sources
 enum ClockSource {
     HSI,        // High-Speed Internal (16 MHz)
@@ -257,7 +257,7 @@ enum APBPrescaler {
     DIV_1, DIV_2, DIV_4, DIV_8, DIV_16
 }
 
-yapı ClockConfig yap
+struct ClockConfig do
     source: ClockSource,
     hse_freq: sayı = 8_000_000,
     pll_source: PLLSource = PLL_HSE,
@@ -269,33 +269,33 @@ yapı ClockConfig yap
     ahb_prescaler: AHBPrescaler = DIV_1,
     apb1_prescaler: APBPrescaler = DIV_2,
     apb2_prescaler: APBPrescaler = DIV_1,
-    css_enable: mantık = doğru,  // Clock Security System
+    css_enable: mantık = true,  // Clock Security System
     flash_latency: sayı = 2      // Wait states
-son</code></pre>
+end</code></pre>
 
 <h2> Örnek 1: STM32F1 - 72 MHz Maximum Speed</h2>
 <div class="example-box">
-<h3>Problem: STM32F103 için maksimum performans (72 MHz)</h3>
-<pre><code>içe_aktar hal::clock, hal::flash
+<h3>Problem: STM32F103 for maksimum performans (72 MHz)</h3>
+<pre><code>import hal::clock, hal::flash
 
-fonksiyon clock_72mhz_init() yap
+function clock_72mhz_init() do
     // Enable HSE (8 MHz external crystal)
     clock.hse_enable()
     
     // Wait for HSE ready
-    eğer değil clock.hse_wait_ready(1000) yap
+    if not clock.hse_wait_ready(1000) do
         io.yazdir_satır("HSE failed to start!")
-        dön
-    son
+        return
+    end
     
     // Configure Flash latency (2 wait states for 72 MHz)
     flash.set_latency(flash.LATENCY_2)
     
     // Configure PLL: HSE * 9 = 8 MHz * 9 = 72 MHz
-    clock.pll_config(yap
+    clock.pll_config(do
         source: clock.PLL_HSE,
         mul: 9
-    son)
+    end)
     
     // Enable PLL
     clock.pll_enable()
@@ -310,11 +310,11 @@ fonksiyon clock_72mhz_init() yap
     clock.set_sysclk_source(clock.SOURCE_PLL)
     
     // Wait for switch
-    döngü yap
-        eğer clock.get_sysclk_source() == clock.SOURCE_PLL yap
-            kır
-        son
-    son
+    loop do
+        if clock.get_sysclk_source() == clock.SOURCE_PLL do
+            break
+        end
+    end
     
     // Update SystemCoreClock variable
     clock.system_core_clock_update()
@@ -324,16 +324,16 @@ fonksiyon clock_72mhz_init() yap
     io.yazdir_satır("HCLK: " + clock.get_hclk_freq().metne() + " Hz")
     io.yazdir_satır("PCLK1: " + clock.get_pclk1_freq().metne() + " Hz")
     io.yazdir_satır("PCLK2: " + clock.get_pclk2_freq().metne() + " Hz")
-son</code></pre>
+end</code></pre>
 <p><strong>Çıktı:</strong> SYSCLK: 72000000 Hz, HCLK: 72000000 Hz, PCLK1: 36000000 Hz, PCLK2: 72000000 Hz</p>
 </div>
 
 <h2> Örnek 2: STM32F4 - 168 MHz with USB Support</h2>
 <div class="example-box">
-<h3>Problem: STM32F407 için 168 MHz + 48 MHz USB clock</h3>
-<pre><code>içe_aktar hal::clock, hal::flash, hal::power
+<h3>Problem: STM32F407 for 168 MHz + 48 MHz USB clock</h3>
+<pre><code>import hal::clock, hal::flash, hal::power
 
-fonksiyon clock_168mhz_usb_init() yap
+function clock_168mhz_usb_init() do
     // Enable power interface clock
     clock.periph_clock_enable(clock.PERIPH_PWR)
     
@@ -355,13 +355,13 @@ fonksiyon clock_168mhz_usb_init() yap
     // VCO_OUT = VCO_IN * PLLN = 1 MHz * 336 = 336 MHz
     // SYSCLK = VCO_OUT / PLLP = 336 MHz / 2 = 168 MHz
     // USB_CLK = VCO_OUT / PLLQ = 336 MHz / 7 = 48 MHz
-    clock.pll_config(yap
+    clock.pll_config(do
         source: clock.PLL_HSE,
         pllm: 8,   // Input divider
         plln: 336, // Multiplier
         pllp: 2,   // System clock divider
         pllq: 7    // USB clock divider
-    son)
+    end)
     
     clock.pll_enable()
     clock.pll_wait_ready(1000)
@@ -373,41 +373,41 @@ fonksiyon clock_168mhz_usb_init() yap
     
     // Switch to PLL
     clock.set_sysclk_source(clock.SOURCE_PLL)
-    döngü yap
-        eğer clock.get_sysclk_source() == clock.SOURCE_PLL yap
-            kır
-        son
-    son
+    loop do
+        if clock.get_sysclk_source() == clock.SOURCE_PLL do
+            break
+        end
+    end
     
     clock.system_core_clock_update()
     
     // Verify USB clock
-    değişken usb_clk = clock.get_usb_freq()
+    variable usb_clk = clock.get_usb_freq()
     io.yazdir_satır("USB Clock: " + usb_clk.metne() + " Hz")
     
-    eğer usb_clk != 48_000_000 yap
+    if usb_clk != 48_000_000 do
         io.yazdir_satır("WARNING: USB clock is not 48 MHz!")
-    son
-son</code></pre>
+    end
+end</code></pre>
 <p><strong>Sonuç:</strong> 168 MHz sistem clocku + 48 MHz USB clock. Maksimum performans.</p>
 </div>
 
 <h2> Örnek 3: Clock Security System (CSS)</h2>
 <div class="example-box">
 <h3>Problem: HSE crystal failure durumunda otomatik HSI'ye geçiş</h3>
-<pre><code>içe_aktar hal::clock, hal::nvic
+<pre><code>import hal::clock, hal::nvic
 
-değişken hse_failed: mantık = yanlış
+variable hse_failed: mantık = false
 
-fonksiyon clock_css_init() yap
+function clock_css_init() do
     // Normal clock setup with HSE
     clock.hse_enable()
     clock.hse_wait_ready(1000)
     
-    clock.pll_config(yap
+    clock.pll_config(do
         source: clock.PLL_HSE,
         mul: 9
-    son)
+    end)
     clock.pll_enable()
     clock.pll_wait_ready(1000)
     
@@ -415,28 +415,28 @@ fonksiyon clock_css_init() yap
     clock.css_enable()
     
     // Enable NMI interrupt for CSS
-    nvic.enable_irq(nvic.RCC_IRQn, yap priority: 0 son)
+    nvic.enable_irq(nvic.RCC_IRQn, do priority: 0 end)
     
     clock.set_sysclk_source(clock.SOURCE_PLL)
     
     io.yazdir_satır("CSS enabled, monitoring HSE...")
-son
+end
 
 // CSS failure interrupt handler
-fonksiyon RCC_IRQHandler() yap
-    eğer clock.get_flag(clock.FLAG_CSS) yap
+function RCC_IRQHandler() do
+    if clock.get_flag(clock.FLAG_CSS) do
         io.yazdir_satır("CSS INTERRUPT: HSE FAILURE DETECTED!")
         
-        hse_failed = doğru
+        hse_failed = true
         
         // System automatically switched to HSI
         // Reconfigure PLL with HSI
         clock.pll_disable()
         
-        clock.pll_config(yap
+        clock.pll_config(do
             source: clock.PLL_HSI,
             mul: 16  // HSI/2 * 16 = 8 MHz * 8 = 64 MHz
-        son)
+        end)
         
         clock.pll_enable()
         clock.pll_wait_ready(1000)
@@ -445,116 +445,116 @@ fonksiyon RCC_IRQHandler() yap
         clock.clear_flag(clock.FLAG_CSS)
         
         io.yazdir_satır("Switched to HSI-based PLL (64 MHz)")
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     clock_css_init()
     
-    döngü yap
-        eğer hse_failed yap
+    loop do
+        if hse_failed do
             io.yazdir_satır("Running on backup HSI clock")
             // Reduce performance or enter safe mode
-        son
+        end
         
         // Normal operation
         delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 <p><strong>Güvenlik:</strong> HSE arızasında sistem donmaz, otomatik HSI'ye geçer.</p>
 </div>
 
 <h2> Örnek 4: MCO (Master Clock Output) for Debugging</h2>
 <div class="example-box">
 <h3>Problem: Oscilloscope ile clock sinyalini gözlemlemek</h3>
-<pre><code>içe_aktar hal::clock, hal::gpio
+<pre><code>import hal::clock, hal::gpio
 
-fonksiyon mco_debug_init() yap
+function mco_debug_init() do
     // MCO pin: PA8 (STM32F4)
-    gpio.pin_init(gpio.PORT_A, 8, yap
+    gpio.pin_init(gpio.PORT_A, 8, do
         mode: gpio.MODE_AF,
         af: gpio.AF0_MCO,
         speed: gpio.SPEED_VERY_HIGH
-    son)
+    end)
     
     // Output SYSCLK / 4 to MCO
     // (168 MHz / 4 = 42 MHz on PA8)
-    clock.mco1_config(yap
+    clock.mco1_config(do
         source: clock.MCO_SYSCLK,
         prescaler: clock.MCO_DIV_4
-    son)
+    end)
     
     io.yazdir_satır("MCO output enabled on PA8")
     io.yazdir_satır("Expected frequency: " + 
                     (clock.get_sysclk_freq() / 4).metne() + " Hz")
-son
+end
 
 // Alternative: Output PLL clock for verification
-fonksiyon mco_pll_check() yap
-    gpio.pin_init(gpio.PORT_A, 8, yap
+function mco_pll_check() do
+    gpio.pin_init(gpio.PORT_A, 8, do
         mode: gpio.MODE_AF, af: gpio.AF0_MCO
-    son)
+    end)
     
     // Output PLL / 2
-    clock.mco1_config(yap
+    clock.mco1_config(do
         source: clock.MCO_PLL,
         prescaler: clock.MCO_DIV_2
-    son)
+    end)
     
     io.yazdir_satır("PLL clock on PA8 (use oscilloscope)")
-son</code></pre>
+end</code></pre>
 <p><strong>Debug:</strong> Oscilloscope ile gerçek clock frekansını doğrulayın. PLL lock problemlerini tespit edin.</p>
 </div>
 
 <h2> API Referansı</h2>
 <h3>Clock Source Control</h3>
 <pre><code>// HSE control
-fonksiyon hse_enable()
-fonksiyon hse_disable()
-fonksiyon hse_wait_ready(timeout_ms: sayı) -> mantık
+function hse_enable()
+function hse_disable()
+function hse_wait_ready(timeout_ms: sayı) -> mantık
 
 // HSI control
-fonksiyon hsi_enable()
-fonksiyon hsi_disable()
-fonksiyon hsi_calibration_set(value: sayı)
+function hsi_enable()
+function hsi_disable()
+function hsi_calibration_set(value: sayı)
 
 // PLL control
-fonksiyon pll_config(config: PLLConfig)
-fonksiyon pll_enable()
-fonksiyon pll_disable()
-fonksiyon pll_wait_ready(timeout_ms: sayı) -> mantık
+function pll_config(config: PLLConfig)
+function pll_enable()
+function pll_disable()
+function pll_wait_ready(timeout_ms: sayı) -> mantık
 
 // System clock
-fonksiyon set_sysclk_source(source: ClockSource)
-fonksiyon get_sysclk_source() -> ClockSource
-fonksiyon get_sysclk_freq() -> sayı
+function set_sysclk_source(source: ClockSource)
+function get_sysclk_source() -> ClockSource
+function get_sysclk_freq() -> sayı
 
 // Bus clocks
-fonksiyon set_ahb_prescaler(div: AHBPrescaler)
-fonksiyon set_apb1_prescaler(div: APBPrescaler)
-fonksiyon set_apb2_prescaler(div: APBPrescaler)
-fonksiyon get_hclk_freq() -> sayı
-fonksiyon get_pclk1_freq() -> sayı
-fonksiyon get_pclk2_freq() -> sayı
+function set_ahb_prescaler(div: AHBPrescaler)
+function set_apb1_prescaler(div: APBPrescaler)
+function set_apb2_prescaler(div: APBPrescaler)
+function get_hclk_freq() -> sayı
+function get_pclk1_freq() -> sayı
+function get_pclk2_freq() -> sayı
 
 // Peripheral clocks
-fonksiyon periph_clock_enable(periph: Peripheral)
-fonksiyon periph_clock_disable(periph: Peripheral)
+function periph_clock_enable(periph: Peripheral)
+function periph_clock_disable(periph: Peripheral)
 
 // CSS and MCO
-fonksiyon css_enable()
-fonksiyon css_disable()
-fonksiyon mco1_config(source: MCOSource, div: MCODiv)
+function css_enable()
+function css_disable()
+function mco1_config(source: MCOSource, div: MCODiv)
 
 // Utilities
-fonksiyon system_core_clock_update()
-fonksiyon get_flag(flag: ClockFlag) -> mantık
-fonksiyon clear_flag(flag: ClockFlag)</code></pre>
+function system_core_clock_update()
+function get_flag(flag: ClockFlag) -> mantık
+function clear_flag(flag: ClockFlag)</code></pre>
 
 <div class="warning">
 <strong> Önemli Notlar:</strong>
 <ul>
-<li><strong>Flash Latency:</strong> High frequency için wait state gerekli (168 MHz -> 5 WS)</li>
+<li><strong>Flash Latency:</strong> High frequency for wait state gerekli (168 MHz -> 5 WS)</li>
 <li><strong>APB1 Max:</strong> STM32F1 36 MHz, F4 42 MHz, F7 54 MHz</li>
 <li><strong>USB Clock:</strong> Tam 48 MHz olmalı (tolerance 0.25%)</li>
 <li><strong>PLL Lock Time:</strong> ~200 μs, timeout kullanın</li>
@@ -603,7 +603,7 @@ fonksiyon clear_flag(flag: ClockFlag)</code></pre>
 
 <h2> Best Practices</h2>
 <ul>
-<li> <strong>HSE kullan:</strong> Accuracy için internal HSI yerine external crystal</li>
+<li> <strong>HSE kullan:</strong> Accuracy for internal HSI yerine external crystal</li>
 <li> <strong>CSS enable:</strong> Production sistemlerde Clock Security System aktif</li>
 <li> <strong>Flash latency:</strong> Clock değiştirmeden önce flash wait state ayarla</li>
 <li> <strong>Timeout kullan:</strong> HSE/PLL ready beklerken timeout ekle</li>

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -182,47 +182,47 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="İlk-programınızı-yazmak"><a class="header" href="#İlk-programınızı-yazmak">İlk Programınızı Yazmak</a></h1>
-<p>BERK dilinde basit bir hesaplama programı yazarak başlayalım. Bu örnekte kullanıcıdan iki sayı alıp, çeşitli matematiksel işlemler yapacağız.</p>
+<p>BERK dilinde basit bir hesaplama programı yazarak başlayalım. Bu örnekte kullanıcıdan iki sayı alıp, çeşitli Mathematicssel işlemler yapacağız.</p>
 <h2 id="Örnek-hesap-makinesi"><a class="header" href="#Örnek-hesap-makinesi">Örnek: Hesap Makinesi</a></h2>
 <p><code>hesapla.berk</code> adında yeni bir dosya oluşturun:</p>
 <pre><code class="language-berk">// İki dilli syntax desteği - Türkçe anahtar kelimelerle
 işlev topla(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri dön a + b
+    geri return a + b
 }
 
 işlev çıkar(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri dön a - b
+    geri return a - b
 }
 
 işlev çarp(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri dön a * b
+    geri return a * b
 }
 
-işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, Yazı&gt; {
-    eğer b == 0 {
-        hata dön "Sıfıra bölme hatası!"
+işlev böl(a: Sayı, b: Sayı) -&gt; Sonuç&lt;Sayı, string&gt; {
+    if b == 0 {
+        hata return "Sıfıra bölme hatası!"
     }
-    tamam dön a / b
+    tamam return a / b
 }
 
-// Ana fonksiyon
+// Ana function
 işlev ana() {
-    değişken x = 10.0
-    değişken y = 3.0
+    variable x = 10.0
+    variable y = 3.0
     
-    yazdır("x = ", x)
-    yazdır("y = ", y)
-    yazdır("")
+    print("x = ", x)
+    print("y = ", y)
+    print("")
     
-    yazdır("Toplam: ", topla(x, y))
-    yazdır("Fark: ", çıkar(x, y))
-    yazdır("Çarpım: ", çarp(x, y))
+    print("Toplam: ", topla(x, y))
+    print("Fark: ", çıkar(x, y))
+    print("Çarpım: ", çarp(x, y))
     
     // Hata yönetimi ile bölme
-    değişken sonuç = böl(x, y)
+    variable sonuç = böl(x, y)
     eş sonuç {
-        Tamam(değer) =&gt; yazdır("Bölüm: ", değer),
-        Hata(mesaj) =&gt; yazdır("HATA: ", mesaj)
+        Tamam(değer) =&gt; print("Bölüm: ", değer),
+        Hata(mesaj) =&gt; print("HATA: ", mesaj)
     }
 }
 </code></pre>
@@ -270,7 +270,7 @@ Fark: 7
 Bölüm: 3.333333
 </code></pre>
 <h2 id="bir-sonraki-adım"><a class="header" href="#bir-sonraki-adım">Bir Sonraki Adım</a></h2>
-<p>Artık temel syntax'a aşina olduğunuza göre, <a href="./basics/syntax.html">Temel Kavramlar</a> bölümüyle devam edebilirsiniz. Burada değişkenler, veri tipleri ve operatörler hakkında detaylı bilgi bulacaksınız.</p>
+<p>Artık temel syntax'a aşina olduğunuza göre, <a href="./basics/syntax.html">Temel Kavramlar</a> bölümüyle continue edebilirsiniz. Burada değişkenler, veri tipleri and operatörler hakkında detaylı bilgi bulacaksınız.</p>
 
                     </main>
 

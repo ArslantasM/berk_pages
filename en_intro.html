@@ -332,10 +332,10 @@ cargo build --release --features llvm
 </ul>
 <h3 id="1-world-first-true-bilingual-syntax"><a class="header" href="#1-world-first-true-bilingual-syntax">1. <strong>World First: True Bilingual Syntax</strong></a></h3>
 <pre><code class="language-berk">// Turkish
-fonksiyon selamla(isim: yazı) -&gt; yazı
-yap
-    dön "Merhaba, " + isim + "!"
-son
+function selamla(isim: string) -&gt; string
+do
+    return "Merhaba, " + isim + "!"
+end
 
 // English (same compiler!)
 function greet(name: string) -&gt; string
@@ -353,7 +353,7 @@ do
     end
 end
 </code></pre>
-<h3 id="2-modern-ve-güvenli"><a class="header" href="#2-modern-ve-güvenli">2. <strong>Modern ve Güvenli</strong></a></h3>
+<h3 id="2-modern-and-güvenli"><a class="header" href="#2-modern-and-güvenli">2. <strong>Modern and Güvenli</strong></a></h3>
 <ul>
 <li>✅ Güçlü tip sistemi</li>
 <li>✅ Bellek güvenliği</li>
@@ -374,19 +374,19 @@ end
 <pre><code class="language-berk">import linalg, stats, optim
 
 // Linear Algebra
-değişken A = linalg.matris_oluştur([[1, 2], [3, 4]])
-değişken B = linalg.matris_çarp(A, linalg.transpose(A))
-değişken (L, U) = linalg.lu_ayrıştır(A)
+variable A = linalg.matris_oluştur([[1, 2], [3, 4]])
+variable B = linalg.matris_çarp(A, linalg.transpose(A))
+variable (L, U) = linalg.lu_ayrıştır(A)
 
 // İstatistik
-değişken veri = [1.2, 2.3, 3.4, 4.5, 5.6]
-değişken ort = stats.ortalama(veri)
-değişken std = stats.standart_sapma(veri)
-değişken (r, p) = stats.korelasyon(x, y)
+variable veri = [1.2, 2.3, 3.4, 4.5, 5.6]
+variable ort = stats.ortalama(veri)
+variable std = stats.standart_sapma(veri)
+variable (r, p) = stats.korelasyon(x, y)
 
 // Optimizasyon
-değişken minimum = optim.gradient_descent(fonksiyon, x0, öğrenme=0.01)
-değişken sonuç = optim.bfgs(maliyet, başlangıç)
+variable minimum = optim.gradient_descent(function, x0, öğrenme=0.01)
+variable sonuç = optim.bfgs(maliyet, Getting Started)
 </code></pre>
 <h3 id="4-geliştirici-dostu"><a class="header" href="#4-geliştirici-dostu">4. <strong>Geliştirici Dostu</strong></a></h3>
 <ul>
@@ -397,8 +397,8 @@ değişken sonuç = optim.bfgs(maliyet, başlangıç)
 <li>Zengin test altyapısı</li>
 <li><strong>Kolay öğrenme</strong>: 1-2 hafta ile productive</li>
 </ul>
-<h2 id="hızlı-başlangıç-1"><a class="header" href="#hızlı-başlangıç-1">Hızlı Başlangıç</a></h2>
-<h3 id="kurulum-1"><a class="header" href="#kurulum-1">Kurulum</a></h3>
+<h2 id="hızlı-Getting Started-1"><a class="header" href="#hızlı-Getting Started-1">Hızlı Getting Started</a></h2>
+<h3 id="Installation-1"><a class="header" href="#Installation-1">Installation</a></h3>
 <pre><code class="language-bash"># Rust toolchain gerekli
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
@@ -412,19 +412,19 @@ export PATH="$PWD/target/release:$PATH"
 </code></pre>
 <h3 id="İlk-programınız"><a class="header" href="#İlk-programınız">İlk Programınız</a></h3>
 <pre><code class="language-berk">// merhaba.berk
-fonksiyon ana() -&gt; tamsayı
-yap
-    yazdır("Merhaba, BERK!")
-    dön 0
-son
+function ana() -&gt; integer
+do
+    print("Merhaba, BERK!")
+    return 0
+end
 </code></pre>
-<pre><code class="language-bash"># Derle ve çalıştır
+<pre><code class="language-bash"># Derle and çalıştır
 BERK-lang merhaba.berk -o merhaba.exe
 ./merhaba.exe
 # Çıktı: Merhaba, BERK!
 </code></pre>
 <h2 id="bu-kitap-hakkında"><a class="header" href="#bu-kitap-hakkında">Bu Kitap Hakkında</a></h2>
-<p>Bu kitap, BERK programlama dilini öğrenmek için kapsamlı bir kaynaktır. <a href="https://doc.rust-lang.org/book/">Rust Book</a> ve <a href="https://docs.python.org/">Python Documentation</a> gibi kaynakların en iyi yanlarını bir araya getirerek hazırlanmıştır.</p>
+<p>Bu kitap, BERK programlama dilini öğrenmek for kapsamlı bir kaynaktır. <a href="https://doc.rust-lang.org/book/">Rust Book</a> and <a href="https://docs.python.org/">Python Documentation</a> gibi kaynakların en iyi yanlarını bir araya getirerek hazırlanmıştır.</p>
 <h3 id="hedef-kitle"><a class="header" href="#hedef-kitle">Hedef Kitle</a></h3>
 <ul>
 <li>Programlamaya yeni başlayanlar</li>
@@ -435,52 +435,52 @@ BERK-lang merhaba.berk -o merhaba.exe
 <h3 id="kitabı-nasıl-kullanmalısınız"><a class="header" href="#kitabı-nasıl-kullanmalısınız">Kitabı Nasıl Kullanmalısınız?</a></h3>
 <ol>
 <li><strong>Sıralı Okuma</strong>: Baştan sona sırayla okumanızı öneririz</li>
-<li><strong>Örnekleri Deneyin</strong>: Her örneği kendi bilgisayarınızda çalıştırın</li>
+<li><strong>Examplesi Deneyin</strong>: Her örneği kendi bilgisayarınızda çalıştırın</li>
 <li><strong>Alıştırmalar</strong>: Her bölümün sonundaki alıştırmaları yapın</li>
 <li><strong>Referans</strong>: İhtiyaç duyduğunuzda referans bölümlerine dönün</li>
 </ol>
 <h2 id="dil-felsefesi"><a class="header" href="#dil-felsefesi">Dil Felsefesi</a></h2>
 <p>BERK'un temel tasarım ilkeleri:</p>
 <h3 id="1-erişilebilirlik"><a class="header" href="#1-erişilebilirlik">1. <strong>Erişilebilirlik</strong></a></h3>
-<p>Türkçe anahtar kelimeler sayesinde, İngilizce bilmeyenler için programlamaya giriş kolaylaştırılmıştır.</p>
+<p>Türkçe anahtar kelimeler sayesinde, İngilizce bilmeyenler for programlamaya Introduction kolaylaştırılmıştır.</p>
 <h3 id="2-güvenlik"><a class="header" href="#2-güvenlik">2. <strong>Güvenlik</strong></a></h3>
 <p>Bellek hatalarını derleme zamanında yakalar. Runtime hatalarını minimize eder.</p>
 <h3 id="3-performans"><a class="header" href="#3-performans">3. <strong>Performans</strong></a></h3>
 <p>LLVM backend sayesinde C/C++ seviyesinde performans sunar.</p>
 <h3 id="4-okunabilirlik"><a class="header" href="#4-okunabilirlik">4. <strong>Okunabilirlik</strong></a></h3>
-<p>Açık ve anlaşılır syntax. Kod yazmaktan çok kod okumaya optimize edilmiştir.</p>
+<p>Açık and anlaşılır syntax. Kod yazmaktan çok kod okumaya optimize edilmiştir.</p>
 <h3 id="5-İnterop"><a class="header" href="#5-İnterop">5. <strong>İnterop</strong></a></h3>
 <p>C/C++ kütüphaneleriyle uyumlu. Mevcut ekosistemlere entegre olabilir.</p>
 <h2 id="Öne-Çıkan-Özellikler"><a class="header" href="#Öne-Çıkan-Özellikler">Öne Çıkan Özellikler</a></h2>
 <h3 id="modern-type-system"><a class="header" href="#modern-type-system">Modern Type System</a></h3>
-<pre><code class="language-berk">değişken x: tamsayı = 42
-değişken isim: yazı = "Ahmet"
-değişken aktif: mantıksal = doğru
-değişken sayılar: liste&lt;tamsayı&gt; = [1, 2, 3]
-değişken nokta: demet&lt;tamsayı, tamsayı&gt; = (10, 20)
+<pre><code class="language-berk">variable x: integer = 42
+variable isim: string = "Ahmet"
+variable aktif: boolean = true
+variable sayılar: liste&lt;integer&gt; = [1, 2, 3]
+variable nokta: demet&lt;integer, integer&gt; = (10, 20)
 </code></pre>
 <h3 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h3>
 <pre><code class="language-berk">seç durum mesaj
     durum "başarılı":
-        yazdır("İşlem tamamlandı!")
+        print("İşlem tamamlandı!")
     durum "hata":
-        yazdır("Bir hata oluştu!")
+        print("Bir hata oluştu!")
     durum _:
-        yazdır("Bilinmeyen durum")
-son
+        print("Bilinmeyen durum")
+end
 </code></pre>
 <h3 id="string-İşlemleri-utf-8"><a class="header" href="#string-İşlemleri-utf-8">String İşlemleri (UTF-8)</a></h3>
-<pre><code class="language-berk">değişken mesaj = "Merhaba Dünya! 🌍"
-değişken uzunluk = uzunluk(mesaj)
-değişken birleşik = "Hello " + "World"
+<pre><code class="language-berk">variable mesaj = "Merhaba Dünya! 🌍"
+variable uzunluk = uzunluk(mesaj)
+variable birleşik = "Hello " + "World"
 </code></pre>
 <h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">Hata Yönetimi</a></h3>
 <pre><code class="language-berk">dene
-    değişken dosya = aç("data.txt")
-    yazdır(oku(dosya))
+    variable dosya = aç("data.txt")
+    print(read(dosya))
 yakala hata
-    yazdır("Dosya açılamadı: " + hata)
-son
+    print("Dosya açılamadı: " + hata)
+end
 </code></pre>
 <h2 id="derleyici-mimarisi"><a class="header" href="#derleyici-mimarisi">Derleyici Mimarisi</a></h2>
 <p>BERK derleyicisi modern bir yapıya sahiptir:</p>
@@ -504,7 +504,7 @@ Machine Code (.exe/.o)
 </code></pre>
 <h3 id="proje-durumu"><a class="header" href="#proje-durumu">Proje Durumu</a></h3>
 <p><strong>Mevcut Sürüm:</strong> v1.0.0<br />
-<strong>Son Güncelleme:</strong> 18 Kasım 2025<br />
+<strong>end Güncelleme:</strong> 18 Kasım 2025<br />
 <strong>Durum:</strong> Active Development</p>
 <h3 id="tamamlanan-Özellikler-"><a class="header" href="#tamamlanan-Özellikler-">Tamamlanan Özellikler ✅</a></h3>
 <ul>
@@ -516,19 +516,19 @@ Machine Code (.exe/.o)
 <li>REPL (100%)</li>
 <li>VS Code Extension (100%)</li>
 </ul>
-<h3 id="devam-eden-Çalışmalar"><a class="header" href="#devam-eden-Çalışmalar">Devam Eden Çalışmalar</a></h3>
+<h3 id="continue-eden-Çalışmalar"><a class="header" href="#continue-eden-Çalışmalar">continue Eden Çalışmalar</a></h3>
 <ul>
 <li>Runtime Library</li>
 <li>Standard Library</li>
 <li>Package Manager</li>
 <li>Debugger Integration</li>
 </ul>
-<p>Detaylı yol haritası için <a href="./roadmap.html">Roadmap</a> sayfasına bakın.</p>
-<h2 id="topluluk-ve-katkı"><a class="header" href="#topluluk-ve-katkı">Topluluk ve Katkı</a></h2>
-<p>BERK açık kaynak bir projedir ve katkılara açıktır!</p>
+<p>Detaylı yol haritası for <a href="./roadmap.html">Roadmap</a> sayfasına bakın.</p>
+<h2 id="topluluk-and-katkı"><a class="header" href="#topluluk-and-katkı">Topluluk and Katkı</a></h2>
+<p>BERK açık kaynak bir projedir and katkılara açıktır!</p>
 <ul>
 <li><strong>GitHub:</strong> <a href="https://github.com/ArslantasM/berk">ArslantasM/berk</a></li>
-<li><strong>Issues:</strong> Bug raporları ve özellik istekleri</li>
+<li><strong>Issues:</strong> Bug raporları and trait istekleri</li>
 <li><strong>Discussions:</strong> Topluluk tartışmaları</li>
 <li><strong>Contributing:</strong> <a href="./contributing/code.html">Katkıda bulunma rehberi</a></li>
 </ul>
@@ -540,7 +540,7 @@ Machine Code (.exe/.o)
 <li><a href="./faq.html">FAQ</a></li>
 </ul>
 <hr />
-<p><strong>Hazır mısınız?</strong> <a href="./installation.html">Kurulum</a> bölümünden başlayalım!</p>
+<p><strong>Hazır mısınız?</strong> <a href="./installation.html">Installation</a> bölümünden başlayalım!</p>
 
                     </main>
 

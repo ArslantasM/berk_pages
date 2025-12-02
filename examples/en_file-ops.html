@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -187,10 +187,10 @@
 
 işlev ana() {
     deneme {
-        değişken içerik = fs.oku("veri.txt")
-        yazdır(içerik)
+        variable içerik = fs.read("veri.txt")
+        print(içerik)
     } yakala e {
-        yazdır("Dosya okuma hatası: ", e)
+        print("Dosya okuma hatası: ", e)
     }
 }
 </code></pre>
@@ -198,13 +198,13 @@ işlev ana() {
 <pre><code class="language-berk">import fs
 
 işlev ana() {
-    değişken içerik = "Merhaba Dünya!"
+    variable içerik = "Merhaba Dünya!"
     
     deneme {
         fs.yaz("çıktı.txt", içerik)
-        yazdır("Dosya başarıyla yazıldı")
+        print("Dosya başarıyla yazıldı")
     } yakala e {
-        yazdır("Yazma hatası: ", e)
+        print("Yazma hatası: ", e)
     }
 }
 </code></pre>
@@ -212,10 +212,10 @@ işlev ana() {
 <pre><code class="language-berk">import fs
 
 işlev ana() {
-    değişken satırlar = fs.satırlar_oku("log.txt")
+    variable satırlar = fs.satırlar_oku("log.txt")
     
-    döngü (numara, satır) satırlarda {
-        yazdır("Satır ", numara, ": ", satır)
+    loop (numara, satır) satırlarda {
+        print("Satır ", numara, ": ", satır)
     }
 }
 </code></pre>
@@ -227,14 +227,14 @@ işlev ana() {
     fs.dizin_oluştur("yeni_klasör")
     
     // Dosyaları listele
-    değişken dosyalar = fs.listele(".")
-    döngü dosya dosyalarda {
-        yazdır(dosya)
+    variable dosyalar = fs.listele(".")
+    loop dosya dosyalarda {
+        print(dosya)
     }
     
     // Dosya var mı?
-    eğer fs.var("config.json") {
-        yazdır("Config bulundu")
+    if fs.var("config.json") {
+        print("Config bulundu")
     }
 }
 </code></pre>

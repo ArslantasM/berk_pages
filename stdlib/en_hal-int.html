@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-int - Interrupt Management - BERK Programlama Dili</title>
+        <title>hal-int - Interrupt Management - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,7 +193,7 @@
 <p>Nested Vectored Interrupt Controller (NVIC)</p>
 <div style="margin-top:15px">
 <span class="stat-badge">366 satır</span>
-<span class="stat-badge">~8 fonksiyon</span>
+<span class="stat-badge">~8 function</span>
 <span class="stat-badge">NVIC</span>
 </div>
 </div>
@@ -210,17 +210,17 @@
 <li>Nested interrupt support</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::int
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::int
 
 // Enable interrupt
 int.enable(int.IRQ_TIM2)
 
 // Set priority
-int.set_priority(int.IRQ_TIM2, yap
+int.set_priority(int.IRQ_TIM2, do
     preempt: 2,  // Preemption priority
     sub: 0       // Sub priority
-son)
+end)
 
 // Disable interrupt
 int.disable(int.IRQ_TIM2)
@@ -239,56 +239,56 @@ int.set_priority_grouping(int.PRIORITY_GROUP_4)
 
 <div class="example-box">
 <h3>💡 Örnek: Nested Interrupts (Priority Preemption)</h3>
-<pre><code>içe_aktar hal::int, hal::timer, hal::gpio
+<pre><code>import hal::int, hal::timer, hal::gpio
 
-değişken high_priority_count = 0
-değişken low_priority_count = 0
+variable high_priority_count = 0
+variable low_priority_count = 0
 
-fonksiyon high_priority_isr() yap
+function high_priority_isr() do
     // High priority interrupt (timer)
     high_priority_count += 1
     io.println("HIGH priority ISR (count: {})", high_priority_count)
     
     // Simulate work
     core.delay_ms(50)
-son
+end
 
-fonksiyon low_priority_isr() yap
+function low_priority_isr() do
     // Low priority interrupt (button)
     low_priority_count += 1
     io.println("  LOW priority ISR (count: {})", low_priority_count)
     
     // Simulate work
     core.delay_ms(100)
-son
+end
 
-fonksiyon nested_interrupt_demo() yap
+function nested_interrupt_demo() do
     // Set priority grouping (4 bits preemption, 0 bits sub)
     int.set_priority_grouping(int.PRIORITY_GROUP_4)
     
     // Configure Timer2 interrupt (high priority)
-    timer.init(timer.TIM2, yap
+    timer.init(timer.TIM2, do
         frequency: 10,  // 10Hz
         callback: high_priority_isr
-    son)
+    end)
     
-    int.set_priority(int.IRQ_TIM2, yap
+    int.set_priority(int.IRQ_TIM2, do
         preempt: 0,  // Highest priority
         sub: 0
-    son)
+    end)
     int.enable(int.IRQ_TIM2)
     
     // Configure GPIO interrupt (low priority)
-    gpio.pin_init(gpio.PORT_A, 0, yap
+    gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         interrupt: gpio.INT_RISING,
         callback: low_priority_isr
-    son)
+    end)
     
-    int.set_priority(int.IRQ_EXTI0, yap
+    int.set_priority(int.IRQ_EXTI0, do
         preempt: 5,  // Lower priority
         sub: 0
-    son)
+    end)
     int.enable(int.IRQ_EXTI0)
     
     io.println("Nested interrupt demo")
@@ -296,214 +296,214 @@ fonksiyon nested_interrupt_demo() yap
     
     timer.start(timer.TIM2)
     
-    döngü yap
+    loop do
         core.delay_ms(1000)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     nested_interrupt_demo()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: External Interrupts (EXTI)</h3>
-<pre><code>içe_aktar hal::int, hal::gpio
+<pre><code>import hal::int, hal::gpio
 
-değişken button1_pressed = 0
-değişken button2_pressed = 0
+variable button1_pressed = 0
+variable button2_pressed = 0
 
-fonksiyon button1_callback() yap
+function button1_callback() do
     button1_pressed += 1
     io.println("Button 1 pressed (total: {})", button1_pressed)
-son
+end
 
-fonksiyon button2_callback() yap
+function button2_callback() do
     button2_pressed += 1
     io.println("Button 2 pressed (total: {})", button2_pressed)
-son
+end
 
-fonksiyon multi_button_exti() yap
+function multi_button_exti() do
     // Button 1 on PA0 (EXTI0)
     gpio.clock_enable(gpio.PORT_A)
-    gpio.pin_init(gpio.PORT_A, 0, yap
+    gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         pull: gpio.PULL_DOWN,
         interrupt: gpio.INT_RISING
-    son)
+    end)
     
     gpio.set_callback(gpio.PORT_A, 0, button1_callback)
     
-    int.set_priority(int.IRQ_EXTI0, yap preempt: 5, sub: 0 son)
+    int.set_priority(int.IRQ_EXTI0, do preempt: 5, sub: 0 end)
     int.enable(int.IRQ_EXTI0)
     
     // Button 2 on PB1 (EXTI1)
     gpio.clock_enable(gpio.PORT_B)
-    gpio.pin_init(gpio.PORT_B, 1, yap
+    gpio.pin_init(gpio.PORT_B, 1, do
         mode: gpio.MODE_INPUT,
         pull: gpio.PULL_DOWN,
         interrupt: gpio.INT_RISING
-    son)
+    end)
     
     gpio.set_callback(gpio.PORT_B, 1, button2_callback)
     
-    int.set_priority(int.IRQ_EXTI1, yap preempt: 5, sub: 0 son)
+    int.set_priority(int.IRQ_EXTI1, do preempt: 5, sub: 0 end)
     int.enable(int.IRQ_EXTI1)
     
     io.println("EXTI demo: Press buttons")
     
-    döngü yap
+    loop do
         core.delay_ms(100)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     multi_button_exti()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Interrupt Latency Measurement</h3>
-<pre><code>içe_aktar hal::int, hal::timer, hal::gpio
+<pre><code>import hal::int, hal::timer, hal::gpio
 
-değişken interrupt_timestamp = 0
-değişken latency_us = 0
+variable interrupt_timestamp = 0
+variable latency_us = 0
 
-fonksiyon fast_isr() yap
+function fast_isr() do
     // Measure interrupt latency
-    değişken now = core.uptime_us()
+    variable now = core.uptime_us()
     latency_us = now - interrupt_timestamp
     
     // Toggle LED as visual indicator
     gpio.pin_toggle(gpio.PORT_C, 13)
-son
+end
 
-fonksiyon latency_test() yap
+function latency_test() do
     // Configure GPIO interrupt on PA0
-    gpio.pin_init(gpio.PORT_A, 0, yap
+    gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         interrupt: gpio.INT_RISING,
         callback: fast_isr
-    son)
+    end)
     
     // Set highest priority
     int.set_priority_grouping(int.PRIORITY_GROUP_4)
-    int.set_priority(int.IRQ_EXTI0, yap preempt: 0, sub: 0 son)
+    int.set_priority(int.IRQ_EXTI0, do preempt: 0, sub: 0 end)
     int.enable(int.IRQ_EXTI0)
     
     // LED output
-    gpio.pin_init(gpio.PORT_C, 13, yap mode: gpio.MODE_OUTPUT son)
+    gpio.pin_init(gpio.PORT_C, 13, do mode: gpio.MODE_OUTPUT end)
     
     io.println("Interrupt latency test")
     io.println("Trigger PA0 rising edge")
     
-    döngü yap
+    loop do
         // Wait for interrupt
-        eğer latency_us > 0 ise yap
+        if latency_us > 0 ise do
             io.println("Interrupt latency: {}μs", latency_us)
             latency_us = 0
-        son
+        end
         
         core.delay_ms(100)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     latency_test()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Software Interrupt Trigger</h3>
-<pre><code>içe_aktar hal::int
+<pre><code>import hal::int
 
-değişken software_int_count = 0
+variable software_int_count = 0
 
-fonksiyon software_isr() yap
+function software_isr() do
     software_int_count += 1
     io.println("Software interrupt triggered! ({})", software_int_count)
-son
+end
 
-fonksiyon software_interrupt_demo() yap
+function software_interrupt_demo() do
     // Configure software interrupt
     int.set_callback(int.IRQ_PendSV, software_isr)
-    int.set_priority(int.IRQ_PendSV, yap preempt: 15, sub: 0 son)
+    int.set_priority(int.IRQ_PendSV, do preempt: 15, sub: 0 end)
     int.enable(int.IRQ_PendSV)
     
     io.println("Software interrupt demo")
     
-    döngü yap
+    loop do
         io.println("Triggering software interrupt...")
         
         // Trigger PendSV interrupt manually
         int.set_pending(int.IRQ_PendSV)
         
         core.delay_ms(2000)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     software_interrupt_demo()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Critical Section (Interrupt Disable)</h3>
-<pre><code>içe_aktar hal::int
+<pre><code>import hal::int
 
-değişken shared_counter = 0
+variable shared_counter = 0
 
-fonksiyon critical_section_demo() yap
+function critical_section_demo() do
     // Unsafe increment (race condition possible)
-    fonksiyon unsafe_increment() yap
-        değişken temp = shared_counter
+    function unsafe_increment() do
+        variable temp = shared_counter
         core.delay_us(10)  // Simulate work
         shared_counter = temp + 1
-    son
+    end
     
     // Safe increment (atomic with interrupts disabled)
-    fonksiyon safe_increment() yap
+    function safe_increment() do
         // Enter critical section
         int.global_disable()
         
-        değişken temp = shared_counter
+        variable temp = shared_counter
         core.delay_us(10)
         shared_counter = temp + 1
         
         // Exit critical section
         int.global_enable()
-    son
+    end
     
     // Better: use RAII-style guard
-    fonksiyon best_increment() yap
-        değişken guard = int.critical_section()  // Auto disable
+    function best_increment() do
+        variable guard = int.critical_section()  // Auto disable
         
-        değişken temp = shared_counter
+        variable temp = shared_counter
         core.delay_us(10)
         shared_counter = temp + 1
         
         // Auto enable on scope exit
-    son
+    end
     
     // Test
-    her i içinde 0..1000 için yap
+    her i içinde 0..1000 for do
         safe_increment()
-    son
+    end
     
     io.println("Counter: {}", shared_counter)  // Should be 1000
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     critical_section_demo()
-son</code></pre>
+end</code></pre>
 </div>
 
 <h2>⚙️ NVIC Yapılandırma</h2>
 <pre><code>// Priority Configuration
-yapı PriorityConfig yap
+struct PriorityConfig do
     preempt: sayı,  // Preemption priority (0-15)
     sub: sayı       // Sub-priority (0-15)
-son
+end
 
 // Priority Grouping
 enum PriorityGroup {
@@ -528,29 +528,29 @@ enum IRQ {
     IRQ_SysTick       = -1   // System tick
 }</code></pre>
 
-<h2>📚 NVIC Fonksiyonları</h2>
+<h2>📚 NVIC Functionsı</h2>
 <pre><code>// Interrupt control
-fonksiyon enable(irq: IRQ)
-fonksiyon disable(irq: IRQ)
-fonksiyon is_enabled(irq: IRQ) -> bool
+function enable(irq: IRQ)
+function disable(irq: IRQ)
+function is_enabled(irq: IRQ) -> bool
 
 // Priority management
-fonksiyon set_priority(irq: IRQ, config: PriorityConfig)
-fonksiyon get_priority(irq: IRQ) -> PriorityConfig
-fonksiyon set_priority_grouping(group: PriorityGroup)
+function set_priority(irq: IRQ, config: PriorityConfig)
+function get_priority(irq: IRQ) -> PriorityConfig
+function set_priority_grouping(group: PriorityGroup)
 
 // Pending flags
-fonksiyon set_pending(irq: IRQ)  // Software trigger
-fonksiyon clear_pending(irq: IRQ)
-fonksiyon is_pending(irq: IRQ) -> bool
+function set_pending(irq: IRQ)  // Software trigger
+function clear_pending(irq: IRQ)
+function is_pending(irq: IRQ) -> bool
 
 // Global control
-fonksiyon global_enable()  // Enable all interrupts
-fonksiyon global_disable()  // Disable all interrupts
-fonksiyon critical_section() -> Guard  // RAII-style
+function global_enable()  // Enable all interrupts
+function global_disable()  // Disable all interrupts
+function critical_section() -> Guard  // RAII-style
 
 // Callback registration
-fonksiyon set_callback(irq: IRQ, callback: fn())</code></pre>
+function set_callback(irq: IRQ, callback: fn())</code></pre>
 
 <h2>📊 Priority Level Önerileri</h2>
 <table style="width:100%;border-collapse:collapse">
@@ -600,7 +600,7 @@ fonksiyon set_callback(irq: IRQ, callback: fn())</code></pre>
 <li><strong>Tail-Chaining</strong>: Back-to-back interrupt'larda push/pop skip (6 cycle saved)</li>
 <li><strong>BASEPRI</strong>: Belirli priority altındaki interrupt'ları maske etme</li>
 <li><strong>Fault Handlers</strong>: HardFault, MemManage, BusFault (priority -1, -2, -3)</li>
-<li><strong>Systick</strong>: Tipik priority 15 (en düşük, timing-critical değil)</li>
+<li><strong>Systick</strong>: Tipik priority 15 (en düşük, timing-critical not)</li>
 </ul>
 
 <h2>🔗 İlgili Modüller</h2>

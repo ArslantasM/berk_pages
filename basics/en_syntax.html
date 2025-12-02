@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Sözdizimi ve Yapı - BERK Programlama Dili</title>
+        <title>Sözdizimi and struct - BERK Programlama Dili</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -181,12 +181,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="sözdizimi-ve-yapı"><a class="header" href="#sözdizimi-ve-yapı">Sözdizimi ve Yapı</a></h1>
-<p>BERK programlama dilinin temel syntax kuralları ve kod yapısı.</p>
-<h2 id="temel-yapı"><a class="header" href="#temel-yapı">Temel Yapı</a></h2>
-<p>Her BERK programı bir <code>ana()</code> (veya <code>main()</code>) fonksiyonundan başlar:</p>
+                        <h1 id="sözdizimi-and-struct"><a class="header" href="#sözdizimi-and-struct">Sözdizimi and struct</a></h1>
+<p>BERK programlama dilinin temel syntax kuralları and kod yapısı.</p>
+<h2 id="temel-struct"><a class="header" href="#temel-struct">Temel struct</a></h2>
+<p>Her BERK programı bir <code>ana()</code> (or <code>main()</code>) fonksiyonundan başlar:</p>
 <pre><code class="language-berk">işlev ana() {
-    yazdır("Merhaba Dünya!")
+    print("Merhaba Dünya!")
 }
 </code></pre>
 <p>İngilizce syntax:</p>
@@ -196,92 +196,92 @@
 </code></pre>
 <h2 id="İfade-sonlandırıcılar"><a class="header" href="#İfade-sonlandırıcılar">İfade Sonlandırıcılar</a></h2>
 <p>BERK'te ifadeler <strong>noktalı virgül gerektirmez</strong>. Her satır bir ifade olarak değerlendirilir:</p>
-<pre><code class="language-berk">değişken x = 10
-değişken y = 20
-değişken toplam = x + y
-yazdır(toplam)
+<pre><code class="language-berk">variable x = 10
+variable y = 20
+variable toplam = x + y
+print(toplam)
 </code></pre>
 <p>Çok satırlı ifadelerde <strong>backslash</strong> kullanabilirsiniz:</p>
-<pre><code class="language-berk">değişken uzunMetin = "Bu çok uzun bir yazı \
+<pre><code class="language-berk">variable uzunMetin = "Bu çok uzun bir string \
                       birden fazla satıra yayılıyor"
 </code></pre>
 <h2 id="blok-yapıları"><a class="header" href="#blok-yapıları">Blok Yapıları</a></h2>
 <p>Bloklar <strong>süslü parantez</strong> ile tanımlanır:</p>
 <pre><code class="language-berk">işlev hesapla() {
-    değişken a = 5
-    değişken b = 3
+    variable a = 5
+    variable b = 3
     
-    eğer a &gt; b {
-        yazdır("a büyük")
-    } değilse {
-        yazdır("b büyük veya eşit")
+    if a &gt; b {
+        print("a büyük")
+    } else {
+        print("b büyük or eşit")
     }
 }
 </code></pre>
 <h2 id="İsimlendirme-kuralları"><a class="header" href="#İsimlendirme-kuralları">İsimlendirme Kuralları</a></h2>
-<h3 id="değişkenler-ve-fonksiyonlar"><a class="header" href="#değişkenler-ve-fonksiyonlar">Değişkenler ve Fonksiyonlar</a></h3>
+<h3 id="değişkenler-and-Functions"><a class="header" href="#değişkenler-and-Functions">Değişkenler and Functions</a></h3>
 <ul>
-<li><strong>snake_case</strong> (önerilen): <code>değişken kullanıcı_adı = "Ahmet"</code></li>
-<li><strong>camelCase</strong> (alternatif): <code>değişken kullanıcıAdı = "Ahmet"</code></li>
+<li><strong>snake_case</strong> (önerilen): <code>variable kullanıcı_adı = "Ahmet"</code></li>
+<li><strong>camelCase</strong> (alternatif): <code>variable kullanıcıAdı = "Ahmet"</code></li>
 </ul>
 <h3 id="sabitler"><a class="header" href="#sabitler">Sabitler</a></h3>
 <ul>
-<li><strong>SCREAMING_SNAKE_CASE</strong>: <code>sabit MAX_DEĞER = 100</code></li>
+<li><strong>SCREAMING_SNAKE_CASE</strong>: <code>constant MAX_DEĞER = 100</code></li>
 </ul>
 <h3 id="türler"><a class="header" href="#türler">Türler</a></h3>
 <ul>
 <li><strong>PascalCase</strong>: <code>tür KullanıcıBilgisi = struct { ... }</code></li>
 </ul>
-<pre><code class="language-berk">// İyi örnekler
-değişken sayaç = 0
-değişken toplam_fiyat = 99.99
-sabit PI_DEĞERI = 3.14159
+<pre><code class="language-berk">// İyi Examples
+variable sayaç = 0
+variable toplam_fiyat = 99.99
+constant PI_DEĞERI = 3.14159
 
 işlev hesapla_alan(yarıçap: Sayı) -&gt; Sayı {
-    geri dön PI_DEĞERI * yarıçap * yarıçap
+    geri return PI_DEĞERI * yarıçap * yarıçap
 }
 
 // Kaçınılması gerekenler
-değişken s = 0              // Çok kısa, anlaşılmaz
-değişken ÖzelSayı123 = 5    // Karışık format
+variable s = 0              // Çok kısa, anlaşılmaz
+variable ÖzelSayı123 = 5    // Karışık format
 </code></pre>
 <h2 id="girinti-indentation"><a class="header" href="#girinti-indentation">Girinti (Indentation)</a></h2>
-<p>BERK girinti konusunda esnek olmakla birlikte, <strong>4 boşluk</strong> kullanımı önerilir:</p>
+<p>BERK girinti konusunda esnek olmakla birlikte, <strong>4 boşluk</strong> Usageı önerilir:</p>
 <pre><code class="language-berk">işlev kontrol_et(x: Sayı) {
-    eğer x &gt; 0 {
-        yazdır("Pozitif")
-        eğer x &gt; 100 {
-            yazdır("Çok büyük!")
+    if x &gt; 0 {
+        print("Pozitif")
+        if x &gt; 100 {
+            print("Çok büyük!")
         }
-    } değilse eğer x &lt; 0 {
-        yazdır("Negatif")
-    } değilse {
-        yazdır("Sıfır")
+    } else if x &lt; 0 {
+        print("Negatif")
+    } else {
+        print("Sıfır")
     }
 }
 </code></pre>
 <h2 id="boşluklar-whitespace"><a class="header" href="#boşluklar-whitespace">Boşluklar (Whitespace)</a></h2>
-<p>Operatörler etrafında boşluk kullanımı okunabilirliği artırır:</p>
+<p>Operatörler etrafında boşluk Usageı okunabilirliği artırır:</p>
 <pre><code class="language-berk">// Tercih edilen
-değişken sonuç = a + b * c
+variable sonuç = a + b * c
 
-// Geçerli ama okunabilir değil
-değişken sonuç=a+b*c
+// Geçerli ama okunabilir not
+variable sonuç=a+b*c
 </code></pre>
 <h2 id="satır-uzunluğu"><a class="header" href="#satır-uzunluğu">Satır Uzunluğu</a></h2>
 <p><strong>80-100 karakter</strong> sınırı önerilir. Uzun satırları şöyle bölebilirsiniz:</p>
-<pre><code class="language-berk">değişken çokUzunDeğişken = birinciFonksiyon(parametere1, parametre2)
+<pre><code class="language-berk">variable çokUzunDeğişken = birinciFonksiyon(parametere1, parametre2)
                             + ikinciFonksiyon(parametre3)
                             + üçüncüFonksiyon(parametre4)
 </code></pre>
 <h2 id="İki-dilli-syntax"><a class="header" href="#İki-dilli-syntax">İki Dilli Syntax</a></h2>
-<p>BERK'in en önemli özelliği <strong>iki dilli syntax</strong> desteğidir. Türkçe ve İngilizce anahtar kelimeleri karıştırabilirsiniz:</p>
+<p>BERK'in en önemli özelliği <strong>iki dilli syntax</strong> desteğidir. Türkçe and İngilizce anahtar kelimeleri karıştırabilirsiniz:</p>
 <pre><code class="language-berk">// Tamamen Türkçe
 işlev hesapla(x: Sayı) -&gt; Sayı {
-    eğer x &lt; 0 {
-        hata dön "Negatif sayı!"
+    if x &lt; 0 {
+        hata return "Negatif sayı!"
     }
-    geri dön x * x
+    geri return x * x
 }
 
 // Tamamen İngilizce
@@ -295,27 +295,27 @@ function calculate(x: Number) -&gt; Number {
 // Karışık (geçerli ama önerilmez)
 function hesapla(x: Sayı) -&gt; Number {
     if x &lt; 0 {
-        hata dön "Negative!"
+        hata return "Negative!"
     }
     return x * x
 }
 </code></pre>
-<p><strong>Best Practice</strong>: Projenizde tek bir dil tercih edin (Türkçe VEYA İngilizce).</p>
+<p><strong>Best Practice</strong>: Projenizde tek bir dil tercih edin (Türkçe or İngilizce).</p>
 <h2 id="modüller"><a class="header" href="#modüller">Modüller</a></h2>
-<p>Her dosya bir modül olarak değerlendirilir:</p>
-<pre><code class="language-berk">// matematik.berk
+<p>Her dosya bir module olarak değerlendirilir:</p>
+<pre><code class="language-berk">// Mathematics.berk
 export işlev topla(a: Sayı, b: Sayı) -&gt; Sayı {
-    geri dön a + b
+    geri return a + b
 }
 
-export sabit PI = 3.14159
+export constant PI = 3.14159
 </code></pre>
 <pre><code class="language-berk">// ana.berk
-import matematik
+import Mathematics
 
 işlev ana() {
-    yazdır(matematik.topla(5, 3))
-    yazdır(matematik.PI)
+    print(Mathematics.topla(5, 3))
+    print(Mathematics.PI)
 }
 </code></pre>
 <h2 id="Örnek-tam-program"><a class="header" href="#Örnek-tam-program">Örnek: Tam Program</a></h2>
@@ -325,45 +325,45 @@ import math
 
 // Recursive versiyonu
 işlev fib_recursive(n: Sayı) -&gt; Sayı {
-    eğer n &lt;= 1 {
-        geri dön n
+    if n &lt;= 1 {
+        geri return n
     }
-    geri dön fib_recursive(n - 1) + fib_recursive(n - 2)
+    geri return fib_recursive(n - 1) + fib_recursive(n - 2)
 }
 
 // Iterative versiyonu (daha verimli)
 işlev fib_iterative(n: Sayı) -&gt; Sayı {
-    eğer n &lt;= 1 {
-        geri dön n
+    if n &lt;= 1 {
+        geri return n
     }
     
-    değişken a = 0
-    değişken b = 1
+    variable a = 0
+    variable b = 1
     
-    döngü i 2'den n+1'e kadar {
-        değişken temp = a + b
+    loop i 2'den n+1'e kadar {
+        variable temp = a + b
         a = b
         b = temp
     }
     
-    geri dön b
+    geri return b
 }
 
 işlev ana() {
-    sabit N = 10
+    constant N = 10
     
-    yazdır("İlk ", N, " Fibonacci sayısı:")
+    print("İlk ", N, " Fibonacci sayısı:")
     
-    döngü i 0'dan N'ye kadar {
-        yazdır("fib(", i, ") = ", fib_iterative(i))
+    loop i 0'dan N'ye kadar {
+        print("fib(", i, ") = ", fib_iterative(i))
     }
 }
 </code></pre>
 <h2 id="stil-rehberi-Özeti"><a class="header" href="#stil-rehberi-Özeti">Stil Rehberi Özeti</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>Öğe</th><th>Stil</th><th>Örnek</th></tr></thead><tbody>
-<tr><td>Değişken</td><td>snake_case</td><td><code>kullanıcı_adı</code></td></tr>
-<tr><td>Fonksiyon</td><td>snake_case</td><td><code>hesapla_toplam()</code></td></tr>
-<tr><td>Sabit</td><td>SCREAMING_SNAKE_CASE</td><td><code>MAX_DEĞER</code></td></tr>
+<tr><td>variable</td><td>snake_case</td><td><code>kullanıcı_adı</code></td></tr>
+<tr><td>function</td><td>snake_case</td><td><code>hesapla_toplam()</code></td></tr>
+<tr><td>constant</td><td>SCREAMING_SNAKE_CASE</td><td><code>MAX_DEĞER</code></td></tr>
 <tr><td>Tür</td><td>PascalCase</td><td><code>KullanıcıTipi</code></td></tr>
 <tr><td>Girinti</td><td>4 boşluk</td><td><code>    kod</code></td></tr>
 <tr><td>Satır uzunluğu</td><td>80-100 karakter</td><td>-</td></tr>
@@ -372,7 +372,7 @@ işlev ana() {
 </div>
 <h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Bir Sonraki</a></h2>
 <ul>
-<li><a href="./variables.html">Değişkenler ve Sabitler</a></li>
+<li><a href="./variables.html">Değişkenler and Sabitler</a></li>
 <li><a href="./data-types.html">Veri Tipleri</a></li>
 <li><a href="./operators.html">Operatörler</a></li>
 </ul>

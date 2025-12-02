@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-regs - HAL Module - BERK Programlama Dili</title>
+        <title>hal-regs - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -198,13 +198,13 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Register modülü, donanım registerlerine doğrudan erişim ve bit manipulation fonksiyonları sağlar.</p>
+<p>Register modülü, donanım registerlerine doğrudan erişim and bit manipulation Functionsı sağlar.</p>
 
-<h2>🚀 Kullanım</h2>
-<pre><code>içe_aktar hal::regs
+<h2>🚀 Usage</h2>
+<pre><code>import hal::regs
 
 // Read/Write registers
-değişken value = regs.read(0x40020000)  // Read GPIOA base
+variable value = regs.read(0x40020000)  // Read GPIOA base
 regs.write(0x40020014, 0x2000)  // Write to GPIOA_ODR
 
 // Bit operations
@@ -218,8 +218,8 @@ regs.modify(0x40020000, 0x0F, 0x05, 4)  // Modify bits [7:4]</code></pre>
 <h2>⚠️ Önemli Notlar</h2>
 <ul>
 <li>Doğrudan register erişimi tehlikeli olabilir</li>
-<li>HAL fonksiyonlarını tercih edin</li>
-<li>Atomic operations için critical section kullanın</li>
+<li>HAL Functionsını tercih edin</li>
+<li>Atomic operations for critical section kullanın</li>
 </ul>
 
 <p style="text-align:center;margin-top:40px">

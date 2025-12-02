@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>optim - Optimizasyon - BERK Programlama Dili</title>
+        <title>optim - Optimizasyon - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,53 +192,53 @@
             <h1>🎯 optim - Optimizasyon Algoritmaları</h1>
             <p>Root Finding, Gradient Descent, BFGS, Nelder-Mead</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">68</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">68</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">897</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26.6 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar optim
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import optim
 
 // f(x) = x² - 4 = 0 denkleminin kökünü bul
-fonksiyon f(x: ondalık): ondalık yap
-    dön x * x - 4.0
-son
+function f(x: float): float do
+    return x * x - 4.0
+end
 
 // Bisection metodu
-değişken kök = optim_bisection(f, 0.0, 3.0, 0.001, 100)
-yazdır("Kök: " + kök)  // ≈ 2.0
+variable kök = optim_bisection(f, 0.0, 3.0, 0.001, 100)
+print("Kök: " + kök)  // ≈ 2.0
 
 // Newton-Raphson (türev gerekli)
-fonksiyon df(x: ondalık): ondalık yap
-    dön 2.0 * x
-son
+function df(x: float): float do
+    return 2.0 * x
+end
 
-değişken kök2 = optim_newton_raphson(f, df, 1.0, 0.001, 100)
+variable kök2 = optim_newton_raphson(f, df, 1.0, 0.001, 100)
 </code></pre>
 <h3 id="tek-değişkenli-minimum"><a class="header" href="#tek-değişkenli-minimum">Tek Değişkenli Minimum</a></h3>
 <pre><code class="language-berk">// f(x) = x² - 4x + 4 fonksiyonunun minimumunu bul
-fonksiyon parabola(x: ondalık): ondalık yap
-    dön x * x - 4.0 * x + 4.0
-son
+function parabola(x: float): float do
+    return x * x - 4.0 * x + 4.0
+end
 
 // Golden section search
-değişken min = optim_golden_section(parabola, 0.0, 5.0, 0.001)
-yazdır("Minimum: x = " + min)  // ≈ 2.0
+variable min = optim_golden_section(parabola, 0.0, 5.0, 0.001)
+print("Minimum: x = " + min)  // ≈ 2.0
 </code></pre>
 <h3 id="gradient-descent"><a class="header" href="#gradient-descent">Gradient Descent</a></h3>
 <pre><code class="language-berk">kullan optim
 kullan linalg
 
 // f(x,y) = x² + y² fonksiyonunun minimumunu bul
-fonksiyon gradyan(pos: [ondalık], n: tam_sayı): [ondalık] yap
-    dön [2.0 * pos[0], 2.0 * pos[1]]
-son
+function gradyan(pos: [float], n: tam_sayı): [float] do
+    return [2.0 * pos[0], 2.0 * pos[1]]
+end
 
-değişken başlangıç = [5.0, 3.0]
-değişken minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 0.001)
-yazdır("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
+variable Getting Started = [5.0, 3.0]
+variable minimum = optim_gradient_descent(gradyan, Getting Started, 2, 0.1, 100, 0.001)
+print("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
 </code></pre>
 <h2 id="-api-kategorileri"><a class="header" href="#-api-kategorileri">📚 API Kategorileri</a></h2>
 <h3 id="1-kök-bulma-root-finding"><a class="header" href="#1-kök-bulma-root-finding">1. Kök Bulma (Root Finding)</a></h3>
@@ -246,7 +246,7 @@ yazdır("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
 <li><code>optim_bisection</code> - İkiye bölme metodu</li>
 <li><code>optim_newton_raphson</code> - Newton-Raphson metodu</li>
 <li><code>optim_secant</code> - Secant metodu</li>
-<li><code>optim_fixed_point</code> - Sabit nokta iterasyonu</li>
+<li><code>optim_fixed_point</code> - constant nokta iterasyonu</li>
 </ul>
 <h3 id="2-line-search-tek-değişkenli"><a class="header" href="#2-line-search-tek-değişkenli">2. Line Search (Tek Değişkenli)</a></h3>
 <ul>
@@ -288,71 +288,71 @@ yazdır("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
 <li><code>optim_numerical_gradient</code> - Sayısal gradyan</li>
 <li><code>optim_numerical_hessian</code> - Sayısal Hessian</li>
 </ul>
-<h2 id="-detaylı-Örnekler"><a class="header" href="#-detaylı-Örnekler">🔬 Detaylı Örnekler</a></h2>
+<h2 id="-detaylı-Examples"><a class="header" href="#-detaylı-Examples">🔬 Detaylı Examples</a></h2>
 <h3 id="Örnek-1-makine-Öğrenmesi---logistic-regression"><a class="header" href="#Örnek-1-makine-Öğrenmesi---logistic-regression">Örnek 1: Makine Öğrenmesi - Logistic Regression</a></h3>
 <pre><code class="language-berk">kullan optim
 
-// Logistic loss için gradient
-fonksiyon logistic_gradient(w: [ondalık], X: [ondalık], y: [ondalık], n: tam_sayı): [ondalık] yap
+// Logistic loss for gradient
+function logistic_gradient(w: [float], X: [float], y: [float], n: tam_sayı): [float] do
     // Gradient hesaplama
     // ∇L = X^T (σ(Xw) - y)
     // Basitleştirilmiş implementasyon
-    dön grad
-son
+    return grad
+end
 
 // Adam optimizer ile optimize et
-değişken w_init = [0.0, 0.0]
-değişken w_opt = optim_adam(logistic_gradient, w_init, 2, 0.01, 0.9, 0.999, 1e-8, 1000)
+variable w_init = [0.0, 0.0]
+variable w_opt = optim_adam(logistic_gradient, w_init, 2, 0.01, 0.9, 0.999, 1e-8, 1000)
 </code></pre>
 <h3 id="Örnek-2-mühendislik---yapısal-optimizasyon"><a class="header" href="#Örnek-2-mühendislik---yapısal-optimizasyon">Örnek 2: Mühendislik - Yapısal Optimizasyon</a></h3>
 <pre><code class="language-berk">// Kiriş optimizasyonu: minimum ağırlık, maksimum dayanım
-fonksiyon beam_cost(dimensions: [ondalık], n: tam_sayı): ondalık yap
-    değişken width = dimensions[0]
-    değişken height = dimensions[1]
+function beam_cost(dimensions: [float], n: tam_sayı): float do
+    variable width = dimensions[0]
+    variable height = dimensions[1]
     
     // Maliyet = malzeme × alan
-    değişken cost = width * height
+    variable cost = width * height
     
     // Kısıt: moment of inertia &gt; I_min
-    değişken I = (width * height * height * height) / 12.0
-    değişken penalty = 0.0
-    eğer (I &lt; 1000.0) ise yap
+    variable I = (width * height * height * height) / 12.0
+    variable penalty = 0.0
+    if (I &lt; 1000.0) ise do
         penalty = 1000.0 * (1000.0 - I)
-    son
+    end
     
-    dön cost + penalty
-son
+    return cost + penalty
+end
 
-değişken initial = [10.0, 20.0]
-değişken optimal = optim_simulated_annealing(beam_cost, initial, 2, 100.0, 0.95, 1000, 42)
+variable initial = [10.0, 20.0]
+variable optimal = optim_simulated_annealing(beam_cost, initial, 2, 100.0, 0.95, 1000, 42)
 </code></pre>
 <h3 id="Örnek-3-eğri-uydurma-curve-fitting"><a class="header" href="#Örnek-3-eğri-uydurma-curve-fitting">Örnek 3: Eğri Uydurma (Curve Fitting)</a></h3>
 <pre><code class="language-berk">// y = a*exp(-b*x) + c modeline fit et
-fonksiyon exponential_model(params: [ondalık], x: ondalık): ondalık yap
-    değişken a = params[0]
-    değişken b = params[1]
-    değişken c = params[2]
-    dön a * math_exp(-b * x) + c
-son
+function exponential_model(params: [float], x: float): float do
+    variable a = params[0]
+    variable b = params[1]
+    variable c = params[2]
+    return a * math_exp(-b * x) + c
+end
 
-fonksiyon residual(params: [ondalık], X: [ondalık], y: [ondalık], n: tam_sayı): [ondalık] yap
-    değişken r = yeni_dizi(n)
-    değişken i = 0
-    iken (i &lt; n) yap
+function residual(params: [float], X: [float], y: [float], n: tam_sayı): [float] do
+    variable r = yeni_dizi(n)
+    variable i = 0
+    while (i &lt; n) do
         r[i] = y[i] - exponential_model(params, X[i])
         i = i + 1
-    son
-    dön r
-son
+    end
+    return r
+end
 
 // Levenberg-Marquardt ile optimize et
-değişken initial_guess = [1.0, 0.1, 0.0]
-değişken fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess, 3, n_data, 0.01, 100)
+variable initial_guess = [1.0, 0.1, 0.0]
+variable fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess, 3, n_data, 0.01, 100)
 </code></pre>
-<h2 id="-algoritmalar-ve-kompleksiteler"><a class="header" href="#-algoritmalar-ve-kompleksiteler">⚡ Algoritmalar ve Kompleksiteler</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Algoritma</th><th>Kompleksite</th><th>Gradyan Gerekli</th><th>Kullanım</th></tr></thead><tbody>
+<h2 id="-algoritmalar-and-kompleksiteler"><a class="header" href="#-algoritmalar-and-kompleksiteler">⚡ Algoritmalar and Kompleksiteler</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Algoritma</th><th>Kompleksite</th><th>Gradyan Gerekli</th><th>Usage</th></tr></thead><tbody>
 <tr><td>Bisection</td><td>O(log(1/ε))</td><td>Hayır</td><td>Kök bulma</td></tr>
-<tr><td>Newton-Raphson</td><td>O(n)</td><td>Evet (1. ve 2. türev)</td><td>Hızlı yakınsama</td></tr>
+<tr><td>Newton-Raphson</td><td>O(n)</td><td>Evet (1. and 2. türev)</td><td>Hızlı yakınsama</td></tr>
 <tr><td>Golden Section</td><td>O(log(1/ε))</td><td>Hayır</td><td>1D minimum</td></tr>
 <tr><td>Gradient Descent</td><td>O(nk)</td><td>Evet</td><td>Genel optimizasyon</td></tr>
 <tr><td>BFGS</td><td>O(n²k)</td><td>Evet</td><td>Quasi-Newton</td></tr>
@@ -373,7 +373,7 @@ değişken fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess,
 <li>
 <p><strong>Smooth, Convex Problem:</strong></p>
 <ul>
-<li>Gradyan var mı? → BFGS veya Gradient Descent</li>
+<li>Gradyan var mı? → BFGS or Gradient Descent</li>
 <li>Hessian var mı? → Newton metodu</li>
 </ul>
 </li>
@@ -410,7 +410,7 @@ değişken fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess,
 <ul>
 <li><a href="./linalg.html">linalg</a> - Matris işlemleri</li>
 <li><a href="./stats.html">stats</a> - İstatistiksel optimizasyon</li>
-<li><a href="./math.html">math</a> - Matematik fonksiyonları</li>
+<li><a href="./math.html">math</a> - Mathematics Functionsı</li>
 </ul>
 <h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 Daha Fazla Bilgi</a></h2>
 <ul>
@@ -420,7 +420,7 @@ değişken fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess,
 <li><a href="https://web.stanford.edu/~boyd/cvxbook/">Convex Optimization - Boyd &amp; Vandenberghe</a></li>
 </ul>
 <hr />
-<p><strong>İleri okuma:</strong> <a href="../examples/machine-learning.html">Makine Öğrenmesi örnekleri</a></p>
+<p><strong>İleri okuma:</strong> <a href="../examples/machine-learning.html">Makine Öğrenmesi Examplesi</a></p>
 
                     </main>
 

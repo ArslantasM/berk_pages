@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>csv - CSV Dosya Islemleri - BERK Programlama Dili</title>
+        <title>csv - CSV Dosya Islemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,21 +190,21 @@
                                             <main>
                                                 <div class="module-header">
             <h1>📊 csv - CSV Dosya İşlemleri</h1>
-            <p>CSV (Comma-Separated Values) dosyalarını okuma, yazma ve işleme</p>
+            <p>CSV (Comma-Separated Values) dosyalarını okuma, yazma and işleme</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 53 Fonksiyon</span>
+                <span class="stat-badge">📦 53 function</span>
                 <span class="stat-badge">📝 809 Satır</span>
                 <span class="stat-badge">💾 24 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>csv</code> modülü, CSV formatındaki veri dosyalarını okuma, yazma ve işleme için araçlar sağlar. Excel ile uyumlu, özelleştirilebilir ayırıcılar ve otomatik tip dönüşümlerini destekler.</p>
+        <p><code>csv</code> modülü, CSV formatındaki veri dosyalarını okuma, yazma and işleme for araçlar sağlar. Excel ile uyumlu, özelleştirilebilir ayırıcılar and otomatik tip dönüşümlerini destekler.</p>
 
         <div class="function-group">
             <h3>📖 CSV Okuma</h3>
             <ul>
-                <li><strong>csv.oku()</strong> - CSV dosyasını okuma</li>
+                <li><strong>csv.read()</strong> - CSV dosyasını okuma</li>
                 <li><strong>csv.okuyucu()</strong> - Satır satır okuyucu</li>
                 <li><strong>csv.sözlük_oku()</strong> - Başlıklarla sözlük olarak okuma</li>
             </ul>
@@ -228,18 +228,18 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>CSV Okuma ve Yazma</h3>
+            <h3>CSV Okuma and Yazma</h3>
             <pre><code class="language-berk">kullan csv
 
-// CSV dosyasını oku
-değer veriler = csv.oku("çalışanlar.csv", başlık: doğru)
+// CSV dosyasını read
+değer veriler = csv.read("çalışanlar.csv", başlık: true)
 
-yazdır("--- Çalışan Listesi ---")
-için satır içinde veriler {
-    yazdır(f"Ad: {satır['ad']}, Departman: {satır['departman']}, Maaş: {satır['maaş']}")
+print("--- Çalışan Listesi ---")
+for satır içinde veriler {
+    print(f"Ad: {satır['ad']}, Departman: {satır['departman']}, Maaş: {satır['maaş']}")
 }
 
 // Yeni veri ekle
@@ -250,7 +250,7 @@ değer yeni_çalışanlar = [
 ]
 
 csv.sözlük_yaz("yeni_çalışanlar.csv", yeni_çalışanlar)
-yazdır("\n✓ Yeni CSV dosyası oluşturuldu")</code></pre>
+print("\n✓ Yeni CSV dosyası oluşturuldu")</code></pre>
         </div>
 
         <h2>🔗 İlgili Modüller</h2>

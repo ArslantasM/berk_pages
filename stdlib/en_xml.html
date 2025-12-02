@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>xml - XML Islemleri - BERK Programlama Dili</title>
+        <title>xml - XML Islemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,16 +190,16 @@
                                             <main>
                                                 <div class="module-header">
             <h1>📄 xml - XML İşlemleri</h1>
-            <p>XML dosyalarını ayrıştırma, oluşturma ve düzenleme işlemleri</p>
+            <p>XML dosyalarını ayrıştırma, oluşturma and düzenleme işlemleri</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 55 Fonksiyon</span>
+                <span class="stat-badge">📦 55 function</span>
                 <span class="stat-badge">📝 510 Satır</span>
                 <span class="stat-badge">💾 14.5 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>xml</code> modülü, XML (Extensible Markup Language) dosyalarını okuma, yazma, ayrıştırma ve düzenleme için kapsamlı araçlar sağlar. DOM ve SAX ayrıştırıcıları, XPath sorguları ve XML şema doğrulaması destekler.</p>
+        <p><code>xml</code> modülü, XML (Extensible Markup Language) dosyalarını okuma, yazma, ayrıştırma and düzenleme for kapsamlı araçlar sağlar. DOM and SAX ayrıştırıcıları, XPath sorguları and XML şema doğrulaması destekler.</p>
 
         <div class="function-group">
             <h3>🔍 XML Ayrıştırma</h3>
@@ -251,10 +251,10 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>XML Ayrıştırma ve Okuma</h3>
+            <h3>XML Ayrıştırma and Okuma</h3>
             <pre><code class="language-berk">kullan xml
 
 // XML metnini ayrıştırma
@@ -277,13 +277,13 @@ değer belge = xml.ayrıştır(xml_metin)
 
 // XPath ile sorgulama
 değer kitaplar = belge.xpath("//kitap")
-için kitap içinde kitaplar {
+for kitap içinde kitaplar {
     değer başlık = kitap.bul("başlık").metin
     değer yazar = kitap.bul("yazar").metin
     değer fiyat = kitap.bul("fiyat").metin
     değer id = kitap.öznitelik_al("id")
     
-    yazdır(f"Kitap #{id}: {başlık} - {yazar} ({fiyat} TL)")
+    print(f"Kitap #{id}: {başlık} - {yazar} ({fiyat} TL)")
 }
 
 // Çıktı:
@@ -306,7 +306,7 @@ değer ürünler = [
     {"id": "P003", "ad": "Klavye", "fiyat": 250, "stok": 45}
 ]
 
-için ürün içinde ürünler {
+for ürün içinde ürünler {
     değer elem = xml.Element("ürün")
     elem.öznitelik_ayarla("id", ürün["id"])
     elem.öznitelik_ayarla("stok", ürün["stok"].dizgeye())
@@ -324,8 +324,8 @@ için ürün içinde ürünler {
 }
 
 // XML'i dosyaya kaydetme
-xml.dosyaya_yaz(belge, "katalog.xml", girintili: doğru)
-yazdır("XML belgesi oluşturuldu!")</code></pre>
+xml.dosyaya_yaz(belge, "katalog.xml", girintili: true)
+print("XML belgesi oluşturuldu!")</code></pre>
         </div>
 
         <div class="example-box">
@@ -333,46 +333,46 @@ yazdır("XML belgesi oluşturuldu!")</code></pre>
             <pre><code class="language-berk">kullan xml
 kullan fs
 
-sınıf YapılandırmaYöneticisi {
+class YapılandırmaYöneticisi {
     değer dosya_yolu: Dize
     değer belge: xml.Belge
     
-    fonksiyon yeni(dosya_yolu: Dize) -> YapılandırmaYöneticisi {
+    function yeni(dosya_yolu: Dize) -> YapılandırmaYöneticisi {
         değer örnek = YapılandırmaYöneticisi {
             dosya_yolu: dosya_yolu,
-            belge: boş
+            belge: null
         }
         
-        eğer fs.dosya_var_mı(dosya_yolu) {
+        if fs.dosya_var_mı(dosya_yolu) {
             örnek.belge = xml.dosyadan_ayrıştır(dosya_yolu)
-        } yoksa {
+        } elseif {
             örnek.belge = xml.Belge("1.0", "UTF-8")
             örnek.belge.kök_element_oluştur("yapılandırma")
         }
         
-        dön örnek
+        return örnek
     }
     
-    fonksiyon ayar_al(bölüm: Dize, anahtar: Dize) -> Sonuç&lt;Dize, Hata&gt; {
+    function ayar_al(bölüm: Dize, anahtar: Dize) -> Sonuç&lt;Dize, Hata&gt; {
         değer xpath = f"//bölüm[@ad='{bölüm}']/{anahtar}"
         değer bulunan = bu.belge.xpath(xpath)
         
-        eğer bulunan.uzunluk > 0 {
-            dön Tamam(bulunan[0].metin)
+        if bulunan.uzunluk > 0 {
+            return Tamam(bulunan[0].metin)
         }
-        dön Hata(f"Ayar bulunamadı: {bölüm}.{anahtar}")
+        return Hata(f"Ayar bulunamadı: {bölüm}.{anahtar}")
     }
     
-    fonksiyon ayar_ata(bölüm: Dize, anahtar: Dize, değer: Dize) {
+    function ayar_ata(bölüm: Dize, anahtar: Dize, değer: Dize) {
         değer kök = bu.belge.kök()
         değer bölüm_xpath = f"//bölüm[@ad='{bölüm}']"
         değer bölüm_elem = kök.xpath(bölüm_xpath)
         
-        eğer bölüm_elem.uzunluk == 0 {
+        if bölüm_elem.uzunluk == 0 {
             bölüm_elem = xml.Element("bölüm")
             bölüm_elem.öznitelik_ayarla("ad", bölüm)
             kök.alt_ekle(bölüm_elem)
-        } yoksa {
+        } elseif {
             bölüm_elem = bölüm_elem[0]
         }
         
@@ -381,12 +381,12 @@ sınıf YapılandırmaYöneticisi {
         bölüm_elem.alt_ekle(ayar_elem)
     }
     
-    fonksiyon kaydet() {
-        xml.dosyaya_yaz(bu.belge, bu.dosya_yolu, girintili: doğru)
+    function kaydet() {
+        xml.dosyaya_yaz(bu.belge, bu.dosya_yolu, girintili: true)
     }
 }
 
-// Kullanım
+// Usage
 değer yapılandırma = YapılandırmaYöneticisi.yeni("uygulama.xml")
 
 yapılandırma.ayar_ata("veritabanı", "sunucu", "localhost")
@@ -399,15 +399,15 @@ yapılandırma.kaydet()
 // Ayarları okuma
 değer sunucu = yapılandırma.ayar_al("veritabanı", "sunucu").aç()
 değer dil = yapılandırma.ayar_al("uygulama", "dil").aç()
-yazdır(f"Sunucu: {sunucu}, Dil: {dil}")</code></pre>
+print(f"Sunucu: {sunucu}, Dil: {dil}")</code></pre>
         </div>
 
         <h2>🎯 İyi Uygulamalar</h2>
         <ul>
-            <li>Büyük XML dosyaları için SAX ayrıştırıcısını kullanın</li>
+            <li>Büyük XML dosyaları for SAX ayrıştırıcısını kullanın</li>
             <li>XML şemaları ile doğrulama yapın</li>
             <li>XPath sorgularını önbellekte tutun</li>
-            <li>Namespace'leri doğru yönetin</li>
+            <li>Namespace'leri true yönetin</li>
             <li>XML injection saldırılarına karşı girdi doğrulama yapın</li>
             <li>Güzel yazdırma (pretty print) ile okunabilirliği artırın</li>
         </ul>

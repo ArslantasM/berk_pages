@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -182,13 +182,13 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="changelog"><a class="header" href="#changelog">Changelog</a></h1>
-<p>BERK sürüm geçmişi. Her sürüm, performans, güvenlik ve capability odaklı iyileştirmeler içerir.</p>
+<p>BERK sürüm geçmişi. Her sürüm, performans, güvenlik and capability odaklı iyileştirmeler içerir.</p>
 
 <h2 id="v100---production-release"><a class="header" href="#v100---production-release">v1.0.0 - Production Release (2 Aralık 2025)</a></h2>
 
 <h3 id="temel-değişiklikler"><a class="header" href="#temel-değişiklikler">🎯 Temel Değişiklikler</a></h3>
 <ul>
-<li><strong>LLVM Dynamic Linking</strong>: Statik LLVM yerine dynamic linking kullanımı</li>
+<li><strong>LLVM Dynamic Linking</strong>: Statik LLVM yerine dynamic linking Usageı</li>
 <li><strong>Dosya Boyutu</strong>: 83 MB → 3.8 MB (22x küçültme)
 <ul>
 <li>BERK-lang.exe: 2.2 MB</li>
@@ -196,7 +196,7 @@
 <li>berk-repl.exe: 464 KB</li>
 </ul>
 </li>
-<li><strong>Üç Ayrı Binary</strong>: Derleyici, LSP, ve REPL ayrı çalıştırılabilir dosyalar</li>
+<li><strong>Üç Ayrı Binary</strong>: Derleyici, LSP, and REPL ayrı çalıştırılabilir dosyalar</li>
 <li><strong>Production Ready</strong>: %99 tamamlanma, tüm major özellikler stable</li>
 </ul>
 
@@ -207,13 +207,13 @@
 <li>BPM (Package Manager, 29/30 tests)</li>
 <li>LSP v0.9.4 (9/9 features)</li>
 <li>HAL (33 modules, 7 platforms)</li>
-<li>75 toplam modül (42 stdlib + 33 HAL)</li>
-<li>4100+ fonksiyon</li>
+<li>75 toplam module (42 stdlib + 33 HAL)</li>
+<li>4100+ function</li>
 </ul>
 
 <h3 id="kaldırılan-bağımlılıklar"><a class="header" href="#kaldırılan-bağımlılıklar">🗑️ Kaldırılan Bağımlılıklar</a></h3>
 <ul>
-<li>LLVM statik kütüphaneleri artık binary içinde gömülü değil</li>
+<li>LLVM statik kütüphaneleri artık binary içinde gömülü not</li>
 <li>Kullanıcı sisteminde LLVM 17 kurulu olmalı (daha önce de gerekiyordu)</li>
 </ul>
 
@@ -224,7 +224,7 @@
 <h3 id="major-updates"><a class="header" href="#major-updates">Major Updates</a></h3>
 
 <h4 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standart Kütüphane v1.4 - Bilimsel Hesaplama</a></h4>
-<p>Üniversite ve araştırma seviyesinde matematik kütüphaneleri. NumPy/SciPy seviyesinde capability, native performans.</p>
+<p>Üniversite and araştırma seviyesinde Mathematics kütüphaneleri. NumPy/SciPy seviyesinde capability, native performans.</p>
 
 <p><strong>Yeni Modüller (3 adet, 76.5 KB):</strong></p>
 <ol>
@@ -236,7 +236,7 @@
 <li>Linear system solvers</li>
 </ul>
 </li>
-<li><strong>stats</strong> (24.5 KB) - İstatistik ve Olasılık
+<li><strong>stats</strong> (24.5 KB) - İstatistik and Olasılık
 <ul>
 <li>Descriptive statistics (mean, median, variance, std)</li>
 <li>Probability distributions (normal, chi-square, t-test)</li>
@@ -295,14 +295,14 @@
 
 <h3 id="stdlib-statistics"><a class="header" href="#stdlib-statistics">Stdlib Statistics</a></h3>
 <ul>
-<li><strong>75 modül total</strong>:
+<li><strong>75 module total</strong>:
 <ul>
 <li>42 core/stdlib modülleri (Core, Math/Science, Web/Data, Graphics/Game, Advanced)</li>
 <li>33 HAL modülleri (Embedded systems hardware abstraction)</li>
 </ul>
 </li>
 <li><strong>1140 KB</strong> total stdlib code (HAL hariç)</li>
-<li><strong>4100+ fonksiyon</strong>: Comprehensive API coverage across all domains</li>
+<li><strong>4100+ function</strong>: Comprehensive API coverage across all domains</li>
 <li><strong>Performance</strong>: Native implementation, LLVM optimized, zero external runtime dependencies</li>
 </ul>
 

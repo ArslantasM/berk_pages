@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>math - Matematik - BERK Programlama Dili</title>
+        <title>math - Mathematics - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -189,42 +189,42 @@
                 <div id="content" class="content">
                     <main>
                         <div class="module-header">
-            <h1>📐 math - Bilimsel Matematik</h1>
-            <p>Trigonometri, Logaritma, Özel Fonksiyonlar, Entegrasyon</p>
+            <h1>📐 math - Bilimsel Mathematics</h1>
+            <p>Trigonometri, Logaritma, Özel Functions, Entegrasyon</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">111</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">111</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">882</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">27.5 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar math
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import math
 
 // Temel işlemler
-değişken x = math.sqrt(16.0)        // Karekök
-değişken y = math.pow(2.0, 8.0)     // Üs alma
-değişken z = math.abs(-42.0)        // Mutlak değer
+variable x = math.sqrt(16.0)        // Karekök
+variable y = math.pow(2.0, 8.0)     // Üs alma
+variable z = math.abs(-42.0)        // Mutlak değer
 
 // Trigonometri (radyan)
-değişken sin_val = math.sin(math.PI / 2.0)
+variable sin_val = math.sin(math.PI / 2.0)
 
 // Logaritma
-değişken ln_e = math.log(math.E)</code></pre>
+variable ln_e = math.log(math.E)</code></pre>
 
         <h2>📚 Özellikler</h2>
         <ul>
-            <li>✓ Trigonometrik fonksiyonlar (radyan + derece)</li>
-            <li>✓ Hiperbolik fonksiyonlar</li>
-            <li>✓ Üstel ve logaritmik fonksiyonlar</li>
-            <li>✓ Özel fonksiyonlar (Gamma, Beta, Bessel)</li>
+            <li>✓ Trigonometrik Functions (radyan + derece)</li>
+            <li>✓ Hiperbolik Functions</li>
+            <li>✓ Üstel and logaritmik Functions</li>
+            <li>✓ Özel Functions (Gamma, Beta, Bessel)</li>
             <li>✓ Polinom değerlendirme (Horner yöntemi)</li>
             <li>✓ Kök bulma (Newton-Raphson, Bisection)</li>
             <li>✓ Sayısal entegrasyon (Simpson, Gauss)</li>
             <li>✓ Karmaşık sayı desteği</li>
         </ul>
 
-        <h2>🔢 Matematiksel Sabitler</h2>
+        <h2>🔢 Mathematicssel Sabitler</h2>
         <ul>
             <li><code>math.PI</code> - π (3.14159...)</li>
             <li><code>math.E</code> - Euler sayısı (2.71828...)</li>
@@ -233,72 +233,72 @@ değişken ln_e = math.log(math.E)</code></pre>
             <li><code>math.SQRT2</code> - √2 (1.41421...)</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Scientific Computing</h3>
-            <pre><code>içe_aktar math
+            <pre><code>import math
 
-fonksiyon fourier_series(x: ondalık, n: tamsayı) -> ondalık yap
+function fourier_series(x: float, n: integer) -> float do
     // Fourier serisi ile kare dalga yaklaşımı
-    değişken sonuç = 0.0
+    variable sonuç = 0.0
     
-    her k içinde aralık(1, n + 1) için yap
-        değişken terim = math.sin((2.0 * k - 1.0) * x) / (2.0 * k - 1.0)
+    her k içinde aralık(1, n + 1) for do
+        variable terim = math.sin((2.0 * k - 1.0) * x) / (2.0 * k - 1.0)
         sonuç = sonuç + terim
-    son
+    end
     
-    dön (4.0 / math.PI) * sonuç
-son
+    return (4.0 / math.PI) * sonuç
+end
 
 // Test
-her x içinde aralık(0, 100) için yap
-    değişken rad = (x * math.PI) / 50.0
-    değişken değer = fourier_series(rad, 10)
-    yazdır(değer.yazıya())
-son</code></pre>
+her x içinde aralık(0, 100) for do
+    variable rad = (x * math.PI) / 50.0
+    variable değer = fourier_series(rad, 10)
+    print(değer.yazıya())
+end</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Numerical Integration</h3>
-            <pre><code>içe_aktar math
+            <pre><code>import math
 
-fonksiyon simpson_integration(
-    f: Fonksiyon,
-    a: ondalık, 
-    b: ondalık, 
-    n: tamsayı
-) -> ondalık yap
+function simpson_integration(
+    f: function,
+    a: float, 
+    b: float, 
+    n: integer
+) -> float do
     // Simpson's rule ile sayısal integrasyon
-    değişken h = (b - a) / n
-    değişken toplam = f(a) + f(b)
+    variable h = (b - a) / n
+    variable toplam = f(a) + f(b)
     
-    her i içinde aralık(1, n) için yap
-        değişken x = a + i * h
-        eğer i % 2 == 0 ise yap
+    her i içinde aralık(1, n) for do
+        variable x = a + i * h
+        if i % 2 == 0 ise do
             toplam = toplam + 2.0 * f(x)
-        yoksa yap
+        elseif do
             toplam = toplam + 4.0 * f(x)
-        son
-    son
+        end
+    end
     
-    dön (h / 3.0) * toplam
-son
+    return (h / 3.0) * toplam
+end
 
 // π hesaplama: ∫₀¹ 4/(1+x²) dx = π
-değişken pi_approx = simpson_integration(
-    fonksiyon(x) yap dön 4.0 / (1.0 + x * x) son,
+variable pi_approx = simpson_integration(
+    function(x) do return 4.0 / (1.0 + x * x) end,
     0.0,
     1.0,
     1000
 )
-yazdır("π ≈ " + pi_approx.yazıya())</code></pre>
+print("π ≈ " + pi_approx.yazıya())</code></pre>
         </div>
 
         <hr />
         <p style="text-align: center; margin-top: 40px;">
             <a href="fmt.html">← fmt</a> | 
-            <a href="../reference/std-library.html">Standart Kütüphane →</a>
+            <a href="../reference/std-library.html">Standard Library →</a>
         </p>
 
                     </main>

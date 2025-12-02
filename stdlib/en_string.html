@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>string - String İşlemleri - BERK Programlama Dili</title>
+        <title>string - String İşlemleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,32 +192,32 @@
             <h1>📝 string - String İşleme Modülü</h1>
             <p>UTF-8, Pattern Matching, Formatting</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">127</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">127</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">953</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar string
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import string
 
 // Temel işlemler
-değişken uzunluk = string.uzunluk("Merhaba")  // 7
-değişken büyük = string.büyük_harf("merhaba") // "MERHABA"
-değişken küçük = string.küçük_harf("MERHABA") // "merhaba"
+variable uzunluk = string.uzunluk("Merhaba")  // 7
+variable büyük = string.büyük_harf("merhaba") // "MERHABA"
+variable küçük = string.küçük_harf("MERHABA") // "merhaba"
 
-// Arama ve değiştirme
-değişken içerir = string.içerir_mi("Hello World", "World") // true
-değişken değişti = string.değiştir("foo bar", "foo", "baz") // "baz bar"
+// Arama and değiştirme
+variable içerir = string.içerir_mi("Hello World", "World") // true
+variable değişti = string.değiştir("foo bar", "foo", "baz") // "baz bar"
 
-// Bölme ve birleştirme
-değişken parçalar = string.böl("a,b,c", ",")  // ["a", "b", "c"]
-değişken birleşik = string.birleştir(["a","b"], "-") // "a-b"
+// Bölme and birleştirme
+variable parçalar = string.böl("a,b,c", ",")  // ["a", "b", "c"]
+variable birleşik = string.birleştir(["a","b"], "-") // "a-b"
 
 // Whitespace temizleme
-değişken temiz = string.temizle("  hello  ") // "hello"</code></pre>
+variable temiz = string.temizle("  hello  ") // "hello"</code></pre>
 
-        <h2>📚 Fonksiyon Kategorileri</h2>
+        <h2>📚 function Kategorileri</h2>
 
         <div class="function-group">
             <h3>Temel İşlemler</h3>
@@ -230,7 +230,7 @@ değişken temiz = string.temizle("  hello  ") // "hello"</code></pre>
         </div>
 
         <div class="function-group">
-            <h3>Arama ve Karşılaştırma</h3>
+            <h3>Arama and Karşılaştırma</h3>
             <p><code>eşit_mi()</code>, <code>içerir_mi()</code>, <code>başlar_mı()</code>, <code>biter_mi()</code>, <code>bul()</code>, <code>bul_hepsi()</code></p>
         </div>
 
@@ -240,62 +240,62 @@ değişken temiz = string.temizle("  hello  ") // "hello"</code></pre>
         </div>
 
         <div class="function-group">
-            <h3>UTF-8 ve Unicode</h3>
+            <h3>UTF-8 and Unicode</h3>
             <p><code>karakter_sayısı()</code>, <code>bayt_sayısı()</code>, <code>utf8_geçerli_mi()</code>, <code>unicode_normalize()</code></p>
         </div>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Örnek 1: Email Validasyonu</h3>
-            <pre><code>içe_aktar string
+            <pre><code>import string
 
-fonksiyon email_geçerli_mi(email: yazı) -> mantıksal yap
-    eğer string.içerir_mi(email, "@") değilse dön yanlış son
+function email_geçerli_mi(email: string) -> boolean do
+    if string.içerir_mi(email, "@") else return false end
     
-    değişken parçalar = string.böl(email, "@")
-    eğer string.uzunluk(parçalar) != 2 ise dön yanlış son
+    variable parçalar = string.böl(email, "@")
+    if string.uzunluk(parçalar) != 2 ise return false end
     
-    değişken local = parçalar[0]
-    değişken domain = parçalar[1]
+    variable local = parçalar[0]
+    variable domain = parçalar[1]
     
-    eğer string.uzunluk(local) == 0 ise dön yanlış son
-    eğer string.uzunluk(domain) == 0 ise dön yanlış son
-    eğer string.içerir_mi(domain, ".") değilse dön yanlış son
+    if string.uzunluk(local) == 0 ise return false end
+    if string.uzunluk(domain) == 0 ise return false end
+    if string.içerir_mi(domain, ".") else return false end
     
-    dön doğru
-son
+    return true
+end
 
-yazdır(email_geçerli_mi("user@example.com"))  // true
-yazdır(email_geçerli_mi("invalid"))           // false</code></pre>
+print(email_geçerli_mi("user@example.com"))  // true
+print(email_geçerli_mi("invalid"))           // false</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Örnek 2: CSV Parser</h3>
-            <pre><code>içe_aktar string
+            <pre><code>import string
 
-fonksiyon csv_parse(satır: yazı) -> liste[yazı] yap
-    değişken sonuç = []
-    değişken geçici = ""
-    değişken tırnak_içinde = yanlış
+function csv_parse(satır: string) -> liste[string] do
+    variable sonuç = []
+    variable geçici = ""
+    variable tırnak_içinde = false
     
-    için karakter içinde string.karakterler(satır) yap
-        eğer karakter == '"' ise yap
+    for karakter içinde string.karakterler(satır) do
+        if karakter == '"' ise do
             tırnak_içinde = !tırnak_içinde
-        son değilse eğer karakter == ',' ve !tırnak_içinde ise yap
+        end else if karakter == ',' and !tırnak_içinde ise do
             liste_ekle(sonuç, string.temizle(geçici))
             geçici = ""
-        son değilse yap
+        end else do
             geçici += karakter
-        son
-    son
+        end
+    end
     
     liste_ekle(sonuç, string.temizle(geçici))
-    dön sonuç
-son
+    return sonuç
+end
 
-değişken veri = 'John,Doe,"123 Main St",30'
-yazdır(csv_parse(veri))  // ["John", "Doe", "123 Main St", "30"]</code></pre>
+variable veri = 'John,Doe,"123 Main St",30'
+print(csv_parse(veri))  // ["John", "Doe", "123 Main St", "30"]</code></pre>
         </div>
 
         <p style="text-align:center;margin-top:40px;">

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -183,51 +183,51 @@
                     <main>
                         <h1 id="basit-hesaplamalar"><a class="header" href="#basit-hesaplamalar">Basit Hesaplamalar</a></h1>
 <h2 id="hesap-makinesi"><a class="header" href="#hesap-makinesi">Hesap Makinesi</a></h2>
-<pre><code class="language-berk">işlev topla(a: Sayı, b: Sayı) -&gt; Sayı { geri dön a + b }
-işlev çıkar(a: Sayı, b: Sayı) -&gt; Sayı { geri dön a - b }
-işlev çarp(a: Sayı, b: Sayı) -&gt; Sayı { geri dön a * b }
-işlev böl(a: Sayı, b: Sayı) -&gt; Sayı { geri dön a / b }
+<pre><code class="language-berk">işlev topla(a: Sayı, b: Sayı) -&gt; Sayı { geri return a + b }
+işlev çıkar(a: Sayı, b: Sayı) -&gt; Sayı { geri return a - b }
+işlev çarp(a: Sayı, b: Sayı) -&gt; Sayı { geri return a * b }
+işlev böl(a: Sayı, b: Sayı) -&gt; Sayı { geri return a / b }
 
 işlev ana() {
-    değişken x = 10.0
-    değişken y = 3.0
+    variable x = 10.0
+    variable y = 3.0
     
-    yazdır("Toplam: ", topla(x, y))
-    yazdır("Çarpım: ", çarp(x, y))
-    yazdır("Bölüm: ", böl(x, y))
+    print("Toplam: ", topla(x, y))
+    print("Çarpım: ", çarp(x, y))
+    print("Bölüm: ", böl(x, y))
 }
 </code></pre>
 <h2 id="faktoriyel"><a class="header" href="#faktoriyel">Faktoriyel</a></h2>
 <pre><code class="language-berk">işlev faktoriyel(n: Sayı) -&gt; Sayı {
-    eğer n &lt;= 1 {
-        geri dön 1
+    if n &lt;= 1 {
+        geri return 1
     }
-    geri dön n * faktoriyel(n - 1)
+    geri return n * faktoriyel(n - 1)
 }
 
 işlev ana() {
-    döngü i 1'den 11'e {
-        yazdır(i, "! = ", faktoriyel(i))
+    loop i 1'den 11'e {
+        print(i, "! = ", faktoriyel(i))
     }
 }
 </code></pre>
 <h2 id="asal-sayı-kontrolü"><a class="header" href="#asal-sayı-kontrolü">Asal Sayı Kontrolü</a></h2>
 <pre><code class="language-berk">işlev asal_mi(n: Sayı) -&gt; Boolean {
-    eğer n &lt; 2 { geri dön yanlış }
+    if n &lt; 2 { geri return false }
     
-    döngü i 2'den n'ye {
-        eğer i * i &gt; n { kır }
-        eğer n % i == 0 { geri dön yanlış }
+    loop i 2'den n'ye {
+        if i * i &gt; n { break }
+        if n % i == 0 { geri return false }
     }
     
-    geri dön doğru
+    geri return true
 }
 
 işlev ana() {
-    yazdır("1-100 arası asal sayılar:")
-    döngü n 1'den 101'e {
-        eğer asal_mi(n) {
-            yazdır(n, " ")
+    print("1-100 arası asal sayılar:")
+    loop n 1'den 101'e {
+        if asal_mi(n) {
+            print(n, " ")
         }
     }
 }

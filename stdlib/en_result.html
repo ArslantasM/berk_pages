@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>result - Hata Yönetimi - BERK Programlama Dili</title>
+        <title>result - Hata Yönetimi - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,70 +192,70 @@
 <h1>✓ result - Result Type</h1>
 <p>Ok, Err, map, and_then, or_else</p>
 <div class="module-stats">
-<div class="stat-badge"><div style="font-size:2em;font-weight:bold">24</div><div>Fonksiyon</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">24</div><div>function</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">389</div><div>Satır</div></div>
 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12 KB</div><div>Boyut</div></div>
 </div>
 </div>
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar result
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import result
 
-fonksiyon böl(a: kesir, b: kesir) -> Result yap
-    eğer b == 0.0 ise yap
-        dön Hata("Sıfıra bölme hatası")
-    son değilse yap
-        dön Tamam(a / b)
-    son
-son
+function böl(a: kesir, b: kesir) -> Result do
+    if b == 0.0 ise do
+        return Hata("Sıfıra bölme hatası")
+    end else do
+        return Tamam(a / b)
+    end
+end
 
-değişken sonuç = böl(10.0, 2.0)
+variable sonuç = böl(10.0, 2.0)
 
-eğer sonuç.tamam_mı() ise yap
-    yazdır("Sonuç: " + sonuç.çıkar().yazıya())
-son değilse yap
-    yazdır("Hata: " + sonuç.hata().mesaj())
-son
+if sonuç.tamam_mı() ise do
+    print("Sonuç: " + sonuç.çıkar().yazıya())
+end else do
+    print("Hata: " + sonuç.hata().mesaj())
+end
 
 // Pattern matching
-eşleşme sonuç yap
-    Tamam(değer) => yazdır(değer),
-    Hata(hata) => yazdır(hata)
-son</code></pre>
-<h2>💡 Örnekler</h2>
+eşleşme sonuç do
+    Tamam(değer) => print(değer),
+    Hata(hata) => print(hata)
+end</code></pre>
+<h2>💡 Examples</h2>
 <div class="example-box">
 <h3>Railway Oriented Programming</h3>
-<pre><code>içe_aktar result
+<pre><code>import result
 
-fonksiyon kullanıcı_oku(id: tamsayı) -> Result yap
-    // DB'den kullanıcı oku
-    eğer id < 0 ise yap
-        dön Hata("Geçersiz ID")
-    son
-    dön Tamam(yap "id": id, "name": "User " + id.yazıya() son)
-son
+function kullanıcı_oku(id: integer) -> Result do
+    // DB'den kullanıcı read
+    if id < 0 ise do
+        return Hata("Geçersiz ID")
+    end
+    return Tamam(do "id": id, "name": "User " + id.yazıya() end)
+end
 
-fonksiyon kullanıcı_validate(user: herhangi) -> Result yap
-    eğer user["name"].uzunluk() < 3 ise yap
-        dön Hata("İsim çok kısa")
-    son
-    dön Tamam(user)
-son
+function kullanıcı_validate(user: herhangi) -> Result do
+    if user["name"].uzunluk() < 3 ise do
+        return Hata("İsim çok kısa")
+    end
+    return Tamam(user)
+end
 
-fonksiyon kullanıcı_kaydet(user: herhangi) -> Result yap
+function kullanıcı_kaydet(user: herhangi) -> Result do
     // DB'ye kaydet
-    yazdır("Kullanıcı kaydedildi: " + user["name"])
-    dön Tamam(user)
-son
+    print("Kullanıcı kaydedildi: " + user["name"])
+    return Tamam(user)
+end
 
 // Pipeline
-değişken sonuç = kullanıcı_oku(1)
+variable sonuç = kullanıcı_oku(1)
     .and_then(kullanıcı_validate)
     .and_then(kullanıcı_kaydet)
 
-eşleşme sonuç yap
-    Tamam(_) => yazdır("Başarılı!"),
-    Hata(e) => yazdır("Hata: " + e)
-son</code></pre>
+eşleşme sonuç do
+    Tamam(_) => print("Başarılı!"),
+    Hata(e) => print("Hata: " + e)
+end</code></pre>
 </div>
 <p style="text-align:center;margin-top:40px">
 <a href="index-tr.html">← Tüm Modüller</a>

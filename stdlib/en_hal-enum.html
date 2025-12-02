@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-enum - HAL Module - BERK Programlama Dili</title>
+        <title>hal-enum - HAL Module - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -201,23 +201,23 @@
 <p>Hardware enumeration definitions: register addresses, bit masks, constants.</p>
 
 <h2>📦 İçerik</h2>
-<pre><code>içe_aktar hal::enum
+<pre><code>import hal::enum
 
 // GPIO Definitions
-sabit GPIOA_BASE = 0x40020000
-sabit GPIOB_BASE = 0x40020400
+constant GPIOA_BASE = 0x40020000
+constant GPIOB_BASE = 0x40020400
 
 // RCC Definitions
-sabit RCC_BASE = 0x40023800
-sabit RCC_AHB1ENR = 0x40023830
+constant RCC_BASE = 0x40023800
+constant RCC_AHB1ENR = 0x40023830
 
 // IRQ Numbers
-sabit IRQ_TIM2 = 28
-sabit IRQ_USART1 = 37
+constant IRQ_TIM2 = 28
+constant IRQ_USART1 = 37
 
 // Bit masks
-sabit GPIO_MODER_MASK = 0x03
-sabit GPIO_PUPDR_MASK = 0x03</code></pre>
+constant GPIO_MODER_MASK = 0x03
+constant GPIO_PUPDR_MASK = 0x03</code></pre>
 
 <p style="text-align:center;margin-top:40px">
 <a href="hal-index-tr.html">← HAL Modülleri</a>

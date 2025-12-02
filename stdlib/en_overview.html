@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Kütüphane Genel Bakış - BERK Programlama Dili</title>
+        <title>Kütüphane Genel Bakış - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -138,7 +138,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -181,30 +181,30 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standart Kütüphane v0.9.4</a></h1>
-<p>BERK Standart Kütüphanesi, modern yazılım geliştirme için gerekli tüm temel fonksiyonları sağlar. <strong>v0.9.4</strong> sürümü ile <strong>75 modül</strong> (42 stdlib + 33 HAL) ve <strong>4100+ fonksiyon</strong> sunarak kapsamlı bir ekosistem sağlar.</p>
+                        <h1 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standard Library v0.9.4</a></h1>
+<p>BERK Standard Librarysi, modern yazılım geliştirme for gerekli tüm temel Functionsı sağlar. <strong>v0.9.4</strong> sürümü ile <strong>75 module</strong> (42 stdlib + 33 HAL) and <strong>4100+ function</strong> sunarak kapsamlı bir ekosistem sağlar.</p>
 <h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊 İstatistikler</a></h2>
 <ul>
-<li><strong>75 modül</strong> - 42 stdlib + 33 HAL (gömülü sistemler)</li>
+<li><strong>75 module</strong> - 42 stdlib + 33 HAL (gömülü sistemler)</li>
 <li><strong>1140 KB</strong> - Stdlib kod boyutu</li>
-<li><strong>4100+ fonksiyon</strong> - Kapsamlı API</li>
+<li><strong>4100+ function</strong> - Kapsamlı API</li>
 <li><strong>7 embedded platform</strong> - ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
 <li><strong>Sıfır bağımlılık</strong> - Sadece BERK ile yazılmış</li>
 </ul>
-<h2 id="-modül-kategorileri"><a class="header" href="#-modül-kategorileri">🎯 Modül Kategorileri</a></h2>
+<h2 id="-module-kategorileri"><a class="header" href="#-module-kategorileri">🎯 module Kategorileri</a></h2>
 <h3 id="1-temel-modüller-core"><a class="header" href="#1-temel-modüller-core">1. Temel Modüller (Core)</a></h3>
 <p>Tüm BERK programlarının temel ihtiyaçlarını karşılar:</p>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Boyut</th><th>Açıklama</th></tr></thead><tbody>
-<tr><td><strong>io</strong></td><td>3.9 KB</td><td>Giriş/çıkış işlemleri</td></tr>
+<div class="table-wrapper"><table><thead><tr><th>module</th><th>Boyut</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>io</strong></td><td>3.9 KB</td><td>Introduction/çıkış işlemleri</td></tr>
 <tr><td><strong>string</strong></td><td>7.5 KB</td><td>String manipülasyonu</td></tr>
 <tr><td><strong>collections</strong></td><td>7.5 KB</td><td>Veri yapıları (list, map, set)</td></tr>
 <tr><td><strong>result</strong></td><td>7.4 KB</td><td>Hata yönetimi (Option, Result)</td></tr>
-<tr><td><strong>time</strong></td><td>6.6 KB</td><td>Tarih ve zaman</td></tr>
+<tr><td><strong>time</strong></td><td>6.6 KB</td><td>Tarih and zaman</td></tr>
 </tbody></table>
 </div>
 <h3 id="2-sistem-programlama-system"><a class="header" href="#2-sistem-programlama-system">2. Sistem Programlama (System)</a></h3>
 <p>Düşük seviye sistem etkileşimi:</p>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Boyut</th><th>Açıklama</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>module</th><th>Boyut</th><th>Description</th></tr></thead><tbody>
 <tr><td><strong>fs</strong></td><td>7.8 KB</td><td>Dosya sistemi işlemleri</td></tr>
 <tr><td><strong>thread</strong></td><td>13.8 KB</td><td>Çoklu iş parçacığı, mutex, atomics</td></tr>
 <tr><td><strong>sys</strong></td><td>17.5 KB</td><td>Sistem bilgisi (CPU, RAM, OS)</td></tr>
@@ -212,21 +212,21 @@
 </tbody></table>
 </div>
 <h3 id="3-fonksiyonel-programlama-functional"><a class="header" href="#3-fonksiyonel-programlama-functional">3. Fonksiyonel Programlama (Functional)</a></h3>
-<p>Julia ve Rust tarzı fonksiyonel programlama:</p>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Boyut</th><th>Açıklama</th></tr></thead><tbody>
+<p>Julia and Rust tarzı fonksiyonel programlama:</p>
+<div class="table-wrapper"><table><thead><tr><th>module</th><th>Boyut</th><th>Description</th></tr></thead><tbody>
 <tr><td><strong>iter</strong></td><td>19.7 KB</td><td>İteratörler, map, filter, reduce, accumulate</td></tr>
 <tr><td><strong>fmt</strong></td><td>17.9 KB</td><td>Printf-style formatlama, progress bars</td></tr>
 </tbody></table>
 </div>
 <h3 id="4-bilimsel-hesaplama-scientific-computing-"><a class="header" href="#4-bilimsel-hesaplama-scientific-computing-">4. Bilimsel Hesaplama (Scientific Computing) 🔬</a></h3>
-<p><strong>v1.4'ün yıldızı!</strong> Üniversite ve araştırma seviyesinde matematik:</p>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Boyut</th><th>Açıklama</th><th>Inspiration</th></tr></thead><tbody>
-<tr><td><strong>math</strong></td><td>27.5 KB</td><td>150+ matematik fonksiyonu</td><td>Julia Math, NumPy, GSL</td></tr>
+<p><strong>v1.4'ün yıldızı!</strong> Üniversite and araştırma seviyesinde Mathematics:</p>
+<div class="table-wrapper"><table><thead><tr><th>module</th><th>Boyut</th><th>Description</th><th>Inspiration</th></tr></thead><tbody>
+<tr><td><strong>math</strong></td><td>27.5 KB</td><td>150+ Mathematics fonksiyonu</td><td>Julia Math, NumPy, GSL</td></tr>
 <tr><td><strong>physics</strong></td><td>25.5 KB</td><td>Klasik fizik simülasyonu</td><td>MATLAB, SciPy</td></tr>
 <tr><td><strong>complex</strong></td><td>15.9 KB</td><td>Kompleks sayı aritmetiği</td><td>Julia complex.jl</td></tr>
 <tr><td><strong>random</strong></td><td>15.1 KB</td><td>Xoshiro256++, 20+ dağılım</td><td>Julia Random</td></tr>
 <tr><td><strong>linalg</strong></td><td>25.4 KB</td><td>Matris işlemleri, decompositions</td><td>Julia LinearAlgebra, nalgebra</td></tr>
-<tr><td><strong>stats</strong></td><td>29.8 KB</td><td>İstatistik ve makine öğrenme</td><td>Julia Statistics, SciPy.stats</td></tr>
+<tr><td><strong>stats</strong></td><td>29.8 KB</td><td>İstatistik and makine öğrenme</td><td>Julia Statistics, SciPy.stats</td></tr>
 <tr><td><strong>plot</strong></td><td>56.3 KB</td><td>Veri görselleştirme</td><td>matplotlib, plotly</td></tr>
 <tr><td><strong>optim</strong></td><td>26.6 KB</td><td>Optimizasyon algoritmaları</td><td>SciPy.optimize, Optim.jl</td></tr>
 </tbody></table>
@@ -252,56 +252,56 @@
 <li>✅ <strong>Nuvoton</strong> - Industrial MCUs</li>
 <li>✅ <strong>Arduino</strong> - AVR/ARM compatible</li>
 </ul>
-<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🚀 Hızlı Başlangıç</a></h2>
-<h3 id="basit-kullanım"><a class="header" href="#basit-kullanım">Basit Kullanım</a></h3>
-<pre><code class="language-berk">// Matematik
+<h2 id="-hızlı-Getting Started"><a class="header" href="#-hızlı-Getting Started">🚀 Hızlı Getting Started</a></h2>
+<h3 id="basit-Usage"><a class="header" href="#basit-Usage">Basit Usage</a></h3>
+<pre><code class="language-berk">// Mathematics
 kullan math
 
-değişken sonuç = math_sin(math_PI / 2.0)  // 1.0
-değişken faktöriyel = math_factorial(5)     // 120
+variable sonuç = math_sin(math_PI / 2.0)  // 1.0
+variable faktöriyel = math_factorial(5)     // 120
 </code></pre>
 <h3 id="İteratörler"><a class="header" href="#İteratörler">İteratörler</a></h3>
 <pre><code class="language-berk">kullan iter
 
-değişken sayılar = [1, 2, 3, 4, 5]
-değişken kareler = iter_map(sayılar, fonksiyon(x) yap dön x * x son)
-değişken toplam = iter_sum(kareler)  // 55
+variable sayılar = [1, 2, 3, 4, 5]
+variable kareler = iter_map(sayılar, function(x) do return x * x end)
+variable toplam = iter_sum(kareler)  // 55
 </code></pre>
 <h3 id="doğrusal-cebir"><a class="header" href="#doğrusal-cebir">Doğrusal Cebir</a></h3>
 <pre><code class="language-berk">kullan linalg
 
 // 3×3 birim matris
-değişken I = linalg_birim_mat(3)
+variable I = linalg_birim_mat(3)
 
 // Matris çarpımı
-değişken A = [1.0, 2.0, 3.0, 4.0]  // 2×2
-değişken B = [5.0, 6.0, 7.0, 8.0]
-değişken C = linalg_mat_çarp(A, B, 2, 2, 2)
+variable A = [1.0, 2.0, 3.0, 4.0]  // 2×2
+variable B = [5.0, 6.0, 7.0, 8.0]
+variable C = linalg_mat_çarp(A, B, 2, 2, 2)
 </code></pre>
 <h3 id="İstatistik"><a class="header" href="#İstatistik">İstatistik</a></h3>
 <pre><code class="language-berk">kullan stats
 
-değişken data = [1.5, 2.3, 3.1, 4.8, 5.2]
-değişken ortalama = stats_ortalama(data, 5)       // 3.38
-değişken std_dev = stats_standart_sapma(data, 5)  // 1.52
-değişken medyan = stats_medyan(data, 5)           // 3.1
+variable data = [1.5, 2.3, 3.1, 4.8, 5.2]
+variable ortalama = stats_ortalama(data, 5)       // 3.38
+variable std_dev = stats_standart_sapma(data, 5)  // 1.52
+variable medyan = stats_medyan(data, 5)           // 3.1
 </code></pre>
 <h3 id="optimizasyon"><a class="header" href="#optimizasyon">Optimizasyon</a></h3>
 <pre><code class="language-berk">kullan optim
 
 // f(x) = x² - 4x + 4 fonksiyonunun minimumunu bul
-fonksiyon f(x: ondalık): ondalık yap
-    dön x * x - 4.0 * x + 4.0
-son
+function f(x: float): float do
+    return x * x - 4.0 * x + 4.0
+end
 
-değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
+variable minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 // minimum ≈ 2.0
 </code></pre>
 <h2 id="-detaylı-dokümantasyon"><a class="header" href="#-detaylı-dokümantasyon">📚 Detaylı Dokümantasyon</a></h2>
-<p>Her modül için detaylı dokümantasyon ayrı sayfalarda bulunmaktadır:</p>
+<p>Her module for detaylı dokümantasyon ayrı sayfalarda bulunmaktadır:</p>
 <h3 id="temel-modüller"><a class="header" href="#temel-modüller">Temel Modüller</a></h3>
 <ul>
-<li><a href="./io.html">io - Giriş/Çıkış</a></li>
+<li><a href="./io.html">io - Introduction/Çıkış</a></li>
 <li><a href="./string.html">string - String İşlemleri</a></li>
 <li><a href="./collections.html">collections - Koleksiyonlar</a></li>
 <li><a href="./result.html">result - Hata Yönetimi</a></li>
@@ -321,7 +321,7 @@ değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 </ul>
 <h3 id="bilimsel-hesaplama"><a class="header" href="#bilimsel-hesaplama">Bilimsel Hesaplama</a></h3>
 <ul>
-<li><a href="./math.html">math - Matematik</a></li>
+<li><a href="./math.html">math - Mathematics</a></li>
 <li><a href="./physics.html">physics - Fizik</a></li>
 <li><a href="./complex.html">complex - Kompleks Sayılar</a></li>
 <li><a href="./random.html">random - Rastgele Sayılar</a></li>
@@ -329,7 +329,7 @@ değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 <li><a href="./stats.html">stats - İstatistik</a></li>
 <li><a href="./optim.html">optim - Optimizasyon</a></li>
 </ul>
-<h3 id="web-ve-veri"><a class="header" href="#web-ve-veri">Web ve Veri</a></h3>
+<h3 id="web-and-veri"><a class="header" href="#web-and-veri">Web and Veri</a></h3>
 <ul>
 <li><a href="./http.html">http - HTTP İstemci/Sunucu</a></li>
 <li><a href="./json.html">json - JSON İşleme</a></li>
@@ -346,7 +346,7 @@ değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 <li><a href="./crypto.html">crypto - Kriptografi</a></li>
 <li><a href="./sqlite.html">sqlite - SQLite Veritabanı</a></li>
 </ul>
-<h3 id="grafik-ve-oyun"><a class="header" href="#grafik-ve-oyun">Grafik ve Oyun</a></h3>
+<h3 id="grafik-and-oyun"><a class="header" href="#grafik-and-oyun">Grafik and Oyun</a></h3>
 <ul>
 <li><a href="./gui.html">gui - Grafik Kullanıcı Arayüzü</a></li>
 <li><a href="./graphics.html">graphics - 2D Grafik</a></li>
@@ -355,77 +355,77 @@ değişken minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
 <li><a href="./physics2d.html">physics2d - 2D Fizik Motoru</a></li>
 <li><a href="./cad3d.html">cad3d - 3D CAD Modelleme</a></li>
 <li><a href="./mesh.html">mesh - 3D Mesh İşlemleri</a></li>
-<li><a href="./math_3d.html">math_3d - 3D Matematik</a></li>
+<li><a href="./math_3d.html">math_3d - 3D Mathematics</a></li>
 <li><a href="./color.html">color - Renk İşlemleri</a></li>
 </ul>
 <h3 id="ileri-seviye"><a class="header" href="#ileri-seviye">İleri Seviye</a></h3>
 <ul>
 <li><a href="./rules.html">rules - Kural Tabanlı Sistemler</a></li>
 </ul>
-<h2 id="-kullanım-senaryoları"><a class="header" href="#-kullanım-senaryoları">🎓 Kullanım Senaryoları</a></h2>
+<h2 id="-Usage-senaryoları"><a class="header" href="#-Usage-senaryoları">🎓 Usage Senaryoları</a></h2>
 <h3 id="bilimsel-araştırma"><a class="header" href="#bilimsel-araştırma">Bilimsel Araştırma</a></h3>
 <pre><code class="language-berk">// İstatistiksel analiz
-değişken veriler = veri_oku("deney.csv")
-değişken ortalama = stats_ortalama(veriler)
-değişken t_skoru = stats_t_score(veriler, 0.0)
+variable veriler = veri_oku("deney.csv")
+variable ortalama = stats_ortalama(veriler)
+variable t_skoru = stats_t_score(veriler, 0.0)
 
 // Hipotez testi
-eğer math_mutlak(t_skoru) &gt; 2.0 ise yap
-    yazdır("İstatistiksel olarak anlamlı!")
-son
+if math_mutlak(t_skoru) &gt; 2.0 ise do
+    print("İstatistiksel olarak anlamlı!")
+end
 </code></pre>
 <h3 id="makine-Öğrenmesi-temelleri"><a class="header" href="#makine-Öğrenmesi-temelleri">Makine Öğrenmesi Temelleri</a></h3>
 <pre><code class="language-berk">// Doğrusal regresyon
-değişken X = [1.0, 2.0, 3.0, 4.0, 5.0]
-değişken y = [2.1, 3.9, 6.2, 8.1, 9.8]
+variable X = [1.0, 2.0, 3.0, 4.0, 5.0]
+variable y = [2.1, 3.9, 6.2, 8.1, 9.8]
 
-değişken (a, b, r2) = stats_linear_regression(X, y, 5)
-yazdır("y = " + a + " + " + b + "x")
-yazdır("R² = " + r2)
+variable (a, b, r2) = stats_linear_regression(X, y, 5)
+print("y = " + a + " + " + b + "x")
+print("R² = " + r2)
 </code></pre>
 <h3 id="nümerik-simülasyon"><a class="header" href="#nümerik-simülasyon">Nümerik Simülasyon</a></h3>
 <pre><code class="language-berk">// Monte Carlo π tahmini
 kullan random
 
-değişken içerde = 0
-değişken toplam = 1000000
+variable içerde = 0
+variable toplam = 1000000
 
-değişken rng = random_xoshiro_seed(12345)
+variable rng = random_xoshiro_seed(12345)
 
-değişken i = 0
-iken (i &lt; toplam) yap
-    değişken x = random_xoshiro_next_float(rng)
-    değişken y = random_xoshiro_next_float(rng)
+variable i = 0
+while (i &lt; toplam) do
+    variable x = random_xoshiro_next_float(rng)
+    variable y = random_xoshiro_next_float(rng)
     
-    eğer (x*x + y*y &lt; 1.0) ise yap
+    if (x*x + y*y &lt; 1.0) ise do
         içerde = içerde + 1
-    son
+    end
     
     i = i + 1
-son
+end
 
-değişken pi_tahmini = 4.0 * içerde / toplam
-yazdır("π ≈ " + pi_tahmini)  // ~3.14159
+variable pi_tahmini = 4.0 * içerde / toplam
+print("π ≈ " + pi_tahmini)  // ~3.14159
 </code></pre>
 <h3 id="optimizasyon-problemleri"><a class="header" href="#optimizasyon-problemleri">Optimizasyon Problemleri</a></h3>
-<pre><code class="language-berk">// Gradyan inişi ile fonksiyon minimizasyonu
+<pre><code class="language-berk">// Gradyan inişi ile function minimizasyonu
 kullan optim
 kullan linalg
 
 // f(x, y) = x² + y² - 2x - 4y + 5
-fonksiyon gradyan(pos: [ondalık], n: tam_sayı): [ondalık] yap
-    değişken grad = [2.0 * pos[0] - 2.0, 2.0 * pos[1] - 4.0]
-    dön grad
-son
+function gradyan(pos: [float], n: tam_sayı): [float] do
+    variable grad = [2.0 * pos[0] - 2.0, 2.0 * pos[1] - 4.0]
+    return grad
+end
 
-değişken başlangıç = [0.0, 0.0]
-değişken minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 0.001)
+variable Getting Started = [0.0, 0.0]
+variable minimum = optim_gradient_descent(gradyan, Getting Started, 2, 0.1, 100, 0.001)
 
-yazdır("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
+print("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
 // Beklenen: (1.0, 2.0)
 </code></pre>
 <h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 Implementation Status</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Durum</th><th>Backend Gereksinimi</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>module</th><th>Durum</th><th>Backend Gereksinimi</th></tr></thead><tbody>
 <tr><td>io</td><td>✅</td><td>LLVM intrinsics</td></tr>
 <tr><td>string</td><td>✅</td><td>UTF-8 support</td></tr>
 <tr><td>collections</td><td>✅</td><td>Heap allocation</td></tr>
@@ -446,14 +446,14 @@ yazdır("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
 <tr><td>optim</td><td>⏳</td><td>linalg + numerical</td></tr>
 </tbody></table>
 </div>
-<p><strong>Durum Açıklaması:</strong></p>
+<p><strong>Durum Descriptionsı:</strong></p>
 <ul>
-<li>✅ Tamamen tasarlandı ve API hazır</li>
-<li>⏳ Backend implementasyonu devam ediyor</li>
+<li>✅ Tamamen tasarlandı and API hazır</li>
+<li>⏳ Backend implementasyonu continue ediyor</li>
 <li>🔄 Aktif geliştirme</li>
 </ul>
 <h2 id="-v10-roadmap"><a class="header" href="#-v10-roadmap">🎯 v1.0 Roadmap (Ocak 2026)</a></h2>
-<p>v1.0 için kalan geliştirmeler:</p>
+<p>v1.0 for kalan geliştirmeler:</p>
 <ol>
 <li><strong>Macro System</strong> - Compile-time code generation</li>
 <li><strong>dataframe</strong> - Pandas-like columnar data structures</li>

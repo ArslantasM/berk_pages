@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-i2c - I2C Bus - BERK Programlama Dili</title>
+        <title>hal-i2c - I2C Bus - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>Inter-Integrated Circuit Bus - I²C Protocol</p>
 <div style="margin-top:15px">
 <span class="stat-badge">396 satır</span>
-<span class="stat-badge">~18 fonksiyon</span>
+<span class="stat-badge">~18 function</span>
 <span class="stat-badge">Multi-Master</span>
 </div>
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>I2C (I²C, IIC), iki telli senkron haberleşme protokolüdür. Sensörler, EEPROM, RTC, OLED display gibi çevre birimlerine bağlantı için kullanılır.</p>
+<p>I2C (I²C, IIC), iki telli senkron haberleşme protokolüdür. Sensörler, EEPROM, RTC, OLED display gibi çevre birimlerine bağlantı for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -213,103 +213,103 @@
 <li>DMA support</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::i2c, hal::gpio
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::i2c, hal::gpio
 
 // Setup I2C pins (PB6=SCL, PB7=SDA)
 gpio.clock_enable(gpio.PORT_B)
-gpio.pin_init(gpio.PORT_B, 6, yap  // SCL
+gpio.pin_init(gpio.PORT_B, 6, do  // SCL
     mode: gpio.MODE_AF_OD,
     speed: gpio.SPEED_HIGH,
     pull: gpio.PULL_UP,
     af: 4
-son)
-gpio.pin_init(gpio.PORT_B, 7, yap  // SDA
+end)
+gpio.pin_init(gpio.PORT_B, 7, do  // SDA
     mode: gpio.MODE_AF_OD,
     speed: gpio.SPEED_HIGH,
     pull: gpio.PULL_UP,
     af: 4
-son)
+end)
 
 // Initialize I2C
-değişken i2c1 = i2c.init(i2c.I2C1, yap
+variable i2c1 = i2c.init(i2c.I2C1, do
     speed: i2c.SPEED_100KHZ,
     mode: i2c.MODE_I2C
-son)
+end)
 
 // Write to device
 i2c.write(i2c1, 0x3C, [0x00, 0xAE])  // Address 0x3C
 
 // Read from device
-değişken data = i2c.read(i2c1, 0x50, 16)  // Read 16 bytes</code></pre>
+variable data = i2c.read(i2c1, 0x50, 16)  // Read 16 bytes</code></pre>
 
 <div class="example-box">
 <h3>💡 Örnek: BMP280 Temperature/Pressure Sensor</h3>
-<pre><code>içe_aktar hal::i2c
+<pre><code>import hal::i2c
 
-sabit BMP280_ADDR = 0x76
+constant BMP280_ADDR = 0x76
 
-yapı BMP280Data yap
+struct BMP280Data do
     temperature: kesir,
     pressure: kesir
-son
+end
 
-fonksiyon bmp280_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
+function bmp280_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] do
     // Read chip ID (should be 0x58)
-    değişken id = i2c.read_register(i2c1, BMP280_ADDR, 0xD0)?
-    eğer id != 0x58 ise yap
-        dön Hata("Invalid BMP280 chip ID")
-    son
+    variable id = i2c.read_register(i2c1, BMP280_ADDR, 0xD0)?
+    if id != 0x58 ise do
+        return Hata("Invalid BMP280 chip ID")
+    end
     
     // Configure sensor (normal mode, oversampling x16)
     i2c.write_register(i2c1, BMP280_ADDR, 0xF4, 0xB7)?  // ctrl_meas
     i2c.write_register(i2c1, BMP280_ADDR, 0xF5, 0xA0)?  // config
     
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon bmp280_read(i2c1: i2c.Handle) -> Sonuç[BMP280Data, Hata] yap
+function bmp280_read(i2c1: i2c.Handle) -> Sonuç[BMP280Data, Hata] do
     // Read raw data (6 bytes: press_msb, press_lsb, press_xlsb, temp_msb, temp_lsb, temp_xlsb)
-    değişken data = i2c.read_bytes(i2c1, BMP280_ADDR, 0xF7, 6)?
+    variable data = i2c.read_bytes(i2c1, BMP280_ADDR, 0xF7, 6)?
     
     // Parse raw values
-    değişken press_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
-    değişken temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
+    variable press_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
+    variable temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
     
     // Apply calibration (simplified)
-    değişken temperature = temp_raw.kesir() / 100.0
-    değişken pressure = press_raw.kesir() / 256.0
+    variable temperature = temp_raw.kesir() / 100.0
+    variable pressure = press_raw.kesir() / 256.0
     
-    dön Tamam(BMP280Data yap
+    return Tamam(BMP280Data do
         temperature: temperature,
         pressure: pressure
-    son)
-son
+    end)
+end
 
-fonksiyon ana() yap
-    değişken i2c1 = i2c.init(i2c.I2C1, yap
+function ana() do
+    variable i2c1 = i2c.init(i2c.I2C1, do
         speed: i2c.SPEED_400KHZ
-    son)
+    end)
     
     bmp280_init(i2c1)?
     
-    döngü yap
-        değişken data = bmp280_read(i2c1)?
+    loop do
+        variable data = bmp280_read(i2c1)?
         io.println("Temp: {:.1f}°C  Pressure: {:.0f} Pa".formatla(
             data.temperature, data.pressure
         ))
         core.delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 2: MPU6050 6-Axis IMU (Accelerometer + Gyroscope)</h3>
-<pre><code>içe_aktar hal::i2c
+<pre><code>import hal::i2c
 
-sabit MPU6050_ADDR = 0x68
+constant MPU6050_ADDR = 0x68
 
-yapı MPU6050Data yap
+struct MPU6050Data do
     accel_x: kesir,
     accel_y: kesir,
     accel_z: kesir,
@@ -317,9 +317,9 @@ yapı MPU6050Data yap
     gyro_y: kesir,
     gyro_z: kesir,
     temperature: kesir
-son
+end
 
-fonksiyon mpu6050_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
+function mpu6050_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] do
     // Wake up MPU6050 (PWR_MGMT_1 register = 0)
     i2c.write_register(i2c1, MPU6050_ADDR, 0x6B, 0x00)?
     core.delay_ms(100)
@@ -330,28 +330,28 @@ fonksiyon mpu6050_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
     // Configure gyroscope (±250°/s)
     i2c.write_register(i2c1, MPU6050_ADDR, 0x1B, 0x00)?
     
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon mpu6050_read(i2c1: i2c.Handle) -> Sonuç[MPU6050Data, Hata] yap
+function mpu6050_read(i2c1: i2c.Handle) -> Sonuç[MPU6050Data, Hata] do
     // Read 14 bytes starting from ACCEL_XOUT_H (0x3B)
-    değişken data = i2c.read_bytes(i2c1, MPU6050_ADDR, 0x3B, 14)?
+    variable data = i2c.read_bytes(i2c1, MPU6050_ADDR, 0x3B, 14)?
     
     // Parse accelerometer data (raw values are signed 16-bit)
-    değişken accel_x = ((data[0] olarak i16) << 8 | data[1] olarak i16).kesir() / 16384.0
-    değişken accel_y = ((data[2] olarak i16) << 8 | data[3] olarak i16).kesir() / 16384.0
-    değişken accel_z = ((data[4] olarak i16) << 8 | data[5] olarak i16).kesir() / 16384.0
+    variable accel_x = ((data[0] olarak i16) << 8 | data[1] olarak i16).kesir() / 16384.0
+    variable accel_y = ((data[2] olarak i16) << 8 | data[3] olarak i16).kesir() / 16384.0
+    variable accel_z = ((data[4] olarak i16) << 8 | data[5] olarak i16).kesir() / 16384.0
     
     // Parse temperature (°C = raw/340 + 36.53)
-    değişken temp_raw = ((data[6] olarak i16) << 8 | data[7] olarak i16)
-    değişken temperature = temp_raw.kesir() / 340.0 + 36.53
+    variable temp_raw = ((data[6] olarak i16) << 8 | data[7] olarak i16)
+    variable temperature = temp_raw.kesir() / 340.0 + 36.53
     
     // Parse gyroscope data (°/s)
-    değişken gyro_x = ((data[8] olarak i16) << 8 | data[9] olarak i16).kesir() / 131.0
-    değişken gyro_y = ((data[10] olarak i16) << 8 | data[11] olarak i16).kesir() / 131.0
-    değişken gyro_z = ((data[12] olarak i16) << 8 | data[13] olarak i16).kesir() / 131.0
+    variable gyro_x = ((data[8] olarak i16) << 8 | data[9] olarak i16).kesir() / 131.0
+    variable gyro_y = ((data[10] olarak i16) << 8 | data[11] olarak i16).kesir() / 131.0
+    variable gyro_z = ((data[12] olarak i16) << 8 | data[13] olarak i16).kesir() / 131.0
     
-    dön Tamam(MPU6050Data yap
+    return Tamam(MPU6050Data do
         accel_x: accel_x,
         accel_y: accel_y,
         accel_z: accel_z,
@@ -359,15 +359,15 @@ fonksiyon mpu6050_read(i2c1: i2c.Handle) -> Sonuç[MPU6050Data, Hata] yap
         gyro_y: gyro_y,
         gyro_z: gyro_z,
         temperature: temperature
-    son)
-son
+    end)
+end
 
-fonksiyon ana() yap
-    değişken i2c1 = i2c.init(i2c.I2C1, yap speed: i2c.SPEED_400KHZ son)
+function ana() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
     mpu6050_init(i2c1)?
     
-    döngü yap
-        değişken data = mpu6050_read(i2c1)?
+    loop do
+        variable data = mpu6050_read(i2c1)?
         io.println("Accel: X={:.2f}g Y={:.2f}g Z={:.2f}g".formatla(
             data.accel_x, data.accel_y, data.accel_z
         ))
@@ -377,27 +377,27 @@ fonksiyon ana() yap
         io.println("Temp: {:.1f}°C".formatla(data.temperature))
         io.println("---")
         core.delay_ms(100)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 3: OLED Display (SSD1306)</h3>
-<pre><code>içe_aktar hal::i2c
+<pre><code>import hal::i2c
 
-sabit SSD1306_ADDR = 0x3C
+constant SSD1306_ADDR = 0x3C
 
-fonksiyon oled_command(i2c1: i2c.Handle, cmd: u8) -> Sonuç[Hiçbir, Hata] yap
+function oled_command(i2c1: i2c.Handle, cmd: u8) -> Sonuç[Hiçbir, Hata] do
     i2c.write(i2c1, SSD1306_ADDR, [0x00, cmd])?  // 0x00 = command mode
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon oled_data(i2c1: i2c.Handle, data: u8) -> Sonuç[Hiçbir, Hata] yap
+function oled_data(i2c1: i2c.Handle, data: u8) -> Sonuç[Hiçbir, Hata] do
     i2c.write(i2c1, SSD1306_ADDR, [0x40, data])?  // 0x40 = data mode
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon oled_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
+function oled_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] do
     // Display off
     oled_command(i2c1, 0xAE)?
     
@@ -451,139 +451,139 @@ fonksiyon oled_init(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
     oled_command(i2c1, 0xA6)?  // Normal display (not inverted)
     oled_command(i2c1, 0xAF)?  // Turn on
     
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon oled_clear(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] yap
-    her page içinde 0..8 için yap
+function oled_clear(i2c1: i2c.Handle) -> Sonuç[Hiçbir, Hata] do
+    her page içinde 0..8 for do
         oled_command(i2c1, 0xB0 + page)?  // Set page
         oled_command(i2c1, 0x00)?          // Low column
         oled_command(i2c1, 0x10)?          // High column
         
-        her i içinde 0..128 için yap
+        her i içinde 0..128 for do
             oled_data(i2c1, 0x00)?
-        son
-    son
-    dön Tamam(Hiçbir)
-son
+        end
+    end
+    return Tamam(Hiçbir)
+end
 
-fonksiyon oled_print(i2c1: i2c.Handle, text: yazı) -> Sonuç[Hiçbir, Hata] yap
+function oled_print(i2c1: i2c.Handle, text: string) -> Sonuç[Hiçbir, Hata] do
     // Simple 5x8 font (implement font data)
     // This is a simplified example
-    her char içinde text.harfler() için yap
+    her char içinde text.harfler() for do
         // Write character bitmap
         oled_data(i2c1, 0xFF)?  // Example pixel data
-    son
-    dön Tamam(Hiçbir)
-son
+    end
+    return Tamam(Hiçbir)
+end
 
-fonksiyon ana() yap
-    değişken i2c1 = i2c.init(i2c.I2C1, yap speed: i2c.SPEED_400KHZ son)
+function ana() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
     
     oled_init(i2c1)?
     oled_clear(i2c1)?
     oled_print(i2c1, "BERK Embedded!")?
     
-    döngü yap
+    loop do
         core.delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 4: I2C Scanner (Device Discovery)</h3>
-<pre><code>içe_aktar hal::i2c
+<pre><code>import hal::i2c
 
-fonksiyon i2c_scan(i2c1: i2c.Handle) yap
+function i2c_scan(i2c1: i2c.Handle) do
     io.println("I2C Bus Taraması başlatılıyor...")
     io.println("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F")
     
-    her row içinde 0..8 için yap
+    her row içinde 0..8 for do
         io.print("{:X}0: ".formatla(row))
         
-        her col içinde 0..16 için yap
-            değişken addr = row * 16 + col
+        her col içinde 0..16 for do
+            variable addr = row * 16 + col
             
-            eğer addr < 0x08 veya addr > 0x77 ise yap
+            if addr < 0x08 or addr > 0x77 ise do
                 io.print("   ")
-                devam
-            son
+                continue
+            end
             
             // Try to write 0 bytes (address ping)
-            eşle i2c.write(i2c1, addr olarak u8, []) yap
+            eşle i2c.write(i2c1, addr olarak u8, []) do
                 Tamam(_) => io.print("{:02X} ".formatla(addr)),
                 Hata(_) => io.print("-- ")
-            son
-        son
+            end
+        end
         io.println("")
-    son
+    end
     
     io.println("Tarama tamamlandı!")
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
     
-    değişken i2c1 = i2c.init(i2c.I2C1, yap
+    variable i2c1 = i2c.init(i2c.I2C1, do
         speed: i2c.SPEED_100KHZ
-    son)
+    end)
     
     i2c_scan(i2c1)
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek 5: Multi-Device Communication</h3>
-<pre><code>içe_aktar hal::i2c
+<pre><code>import hal::i2c
 
-sabit EEPROM_ADDR = 0x50
-sabit RTC_ADDR = 0x68
-sabit TEMP_SENSOR_ADDR = 0x48
+constant EEPROM_ADDR = 0x50
+constant RTC_ADDR = 0x68
+constant TEMP_SENSOR_ADDR = 0x48
 
-fonksiyon eeprom_write(i2c1: i2c.Handle, addr: u16, data: u8) -> Sonuç[Hiçbir, Hata] yap
-    değişken addr_high = (addr >> 8) olarak u8
-    değişken addr_low = (addr & 0xFF) olarak u8
+function eeprom_write(i2c1: i2c.Handle, addr: u16, data: u8) -> Sonuç[Hiçbir, Hata] do
+    variable addr_high = (addr >> 8) olarak u8
+    variable addr_low = (addr & 0xFF) olarak u8
     i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low, data])?
     core.delay_ms(5)  // EEPROM write cycle time
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon eeprom_read(i2c1: i2c.Handle, addr: u16) -> Sonuç[u8, Hata] yap
-    değişken addr_high = (addr >> 8) olarak u8
-    değişken addr_low = (addr & 0xFF) olarak u8
+function eeprom_read(i2c1: i2c.Handle, addr: u16) -> Sonuç[u8, Hata] do
+    variable addr_high = (addr >> 8) olarak u8
+    variable addr_low = (addr & 0xFF) olarak u8
     
     // Write address
     i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low])?
     
     // Read data
-    değişken data = i2c.read(i2c1, EEPROM_ADDR, 1)?
-    dön Tamam(data[0])
-son
+    variable data = i2c.read(i2c1, EEPROM_ADDR, 1)?
+    return Tamam(data[0])
+end
 
-fonksiyon rtc_set_time(i2c1: i2c.Handle, hour: u8, minute: u8, second: u8) -> Sonuç[Hiçbir, Hata] yap
+function rtc_set_time(i2c1: i2c.Handle, hour: u8, minute: u8, second: u8) -> Sonuç[Hiçbir, Hata] do
     // DS1307 RTC format (BCD encoding)
-    değişken hour_bcd = ((hour / 10) << 4) | (hour % 10)
-    değişken min_bcd = ((minute / 10) << 4) | (minute % 10)
-    değişken sec_bcd = ((second / 10) << 4) | (second % 10)
+    variable hour_bcd = ((hour / 10) << 4) | (hour % 10)
+    variable min_bcd = ((minute / 10) << 4) | (minute % 10)
+    variable sec_bcd = ((second / 10) << 4) | (second % 10)
     
     i2c.write(i2c1, RTC_ADDR, [0x00, sec_bcd, min_bcd, hour_bcd])?
-    dön Tamam(Hiçbir)
-son
+    return Tamam(Hiçbir)
+end
 
-fonksiyon temp_read(i2c1: i2c.Handle) -> Sonuç[kesir, Hata] yap
+function temp_read(i2c1: i2c.Handle) -> Sonuç[kesir, Hata] do
     // LM75 temperature sensor
-    değişken data = i2c.read_bytes(i2c1, TEMP_SENSOR_ADDR, 0x00, 2)?
-    değişken temp_raw = ((data[0] olarak i16) << 8 | data[1] olarak i16) >> 5
-    değişken temp = temp_raw.kesir() * 0.125
-    dön Tamam(temp)
-son
+    variable data = i2c.read_bytes(i2c1, TEMP_SENSOR_ADDR, 0x00, 2)?
+    variable temp_raw = ((data[0] olarak i16) << 8 | data[1] olarak i16) >> 5
+    variable temp = temp_raw.kesir() * 0.125
+    return Tamam(temp)
+end
 
-fonksiyon ana() yap
-    değişken i2c1 = i2c.init(i2c.I2C1, yap speed: i2c.SPEED_100KHZ son)
+function ana() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_100KHZ end)
     
     // EEPROM test
     eeprom_write(i2c1, 0x0000, 0xAB)?
-    değişken value = eeprom_read(i2c1, 0x0000)?
+    variable value = eeprom_read(i2c1, 0x0000)?
     io.println("EEPROM[0]: 0x{:02X}".formatla(value))
     
     // RTC set
@@ -591,15 +591,15 @@ fonksiyon ana() yap
     io.println("RTC ayarlandı")
     
     // Temperature reading
-    döngü yap
-        değişken temp = temp_read(i2c1)?
+    loop do
+        variable temp = temp_read(i2c1)?
         io.println("Sıcaklık: {:.2f}°C".formatla(temp))
         core.delay_ms(2000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
-<h2>📦 Tipler ve Enum'lar</h2>
+<h2>📦 Tipler and Enum'lar</h2>
 <pre><code>// I2C Instance
 enum Instance {
     I2C1, I2C2, I2C3
@@ -624,54 +624,54 @@ enum DutyCycle {
     DUTY_16_9    // Tlow/Thigh = 16/9
 }
 
-yapı Config yap
+struct Config do
     speed: Speed,
     mode: AddressMode,
     duty_cycle: İsteğe_Bağlı[DutyCycle],
     own_address: İsteğe_Bağlı[u8],  // For slave mode
-    ack_enable: mantıksal,
-    dma_enable: mantıksal
-son</code></pre>
+    ack_enable: boolean,
+    dma_enable: boolean
+end</code></pre>
 
-<h2>⚙️ Fonksiyonlar</h2>
+<h2>⚙️ Functions</h2>
 
 <h3>Initialization</h3>
-<pre><code>fonksiyon init(instance: Instance, config: Config) -> Handle
+<pre><code>function init(instance: Instance, config: Config) -> Handle
 // Initialize I2C with configuration
 
-fonksiyon deinit(handle: Handle)
+function deinit(handle: Handle)
 // Deinitialize I2C
 
-fonksiyon enable(handle: Handle)
+function enable(handle: Handle)
 // Enable I2C peripheral
 
-fonksiyon disable(handle: Handle)
+function disable(handle: Handle)
 // Disable I2C peripheral</code></pre>
 
 <h3>Master Mode Operations</h3>
-<pre><code>fonksiyon write(handle: Handle, addr: u8, data: [u8]) -> Sonuç[Hiçbir, Hata]
+<pre><code>function write(handle: Handle, addr: u8, data: [u8]) -> Sonuç[Hiçbir, Hata]
 // Write data to slave device
 
-fonksiyon read(handle: Handle, addr: u8, len: sayı) -> Sonuç[[u8], Hata]
+function read(handle: Handle, addr: u8, len: sayı) -> Sonuç[[u8], Hata]
 // Read data from slave device
 
-fonksiyon write_read(handle: Handle, addr: u8, write_data: [u8], read_len: sayı) -> Sonuç[[u8], Hata]
+function write_read(handle: Handle, addr: u8, write_data: [u8], read_len: sayı) -> Sonuç[[u8], Hata]
 // Combined write then read (repeated start)
 
-fonksiyon write_register(handle: Handle, addr: u8, reg: u8, value: u8) -> Sonuç[Hiçbir, Hata]
+function write_register(handle: Handle, addr: u8, reg: u8, value: u8) -> Sonuç[Hiçbir, Hata]
 // Write single byte to register
 
-fonksiyon read_register(handle: Handle, addr: u8, reg: u8) -> Sonuç[u8, Hata]
+function read_register(handle: Handle, addr: u8, reg: u8) -> Sonuç[u8, Hata]
 // Read single byte from register
 
-fonksiyon read_bytes(handle: Handle, addr: u8, reg: u8, len: sayı) -> Sonuç[[u8], Hata]
+function read_bytes(handle: Handle, addr: u8, reg: u8, len: sayı) -> Sonuç[[u8], Hata]
 // Read multiple bytes from register</code></pre>
 
 <h3>Status and Control</h3>
-<pre><code>fonksiyon is_device_ready(handle: Handle, addr: u8, trials: sayı) -> mantıksal
+<pre><code>function is_device_ready(handle: Handle, addr: u8, trials: sayı) -> boolean
 // Check if device is ready (ACK polling)
 
-fonksiyon get_bus_state(handle: Handle) -> BusState
+function get_bus_state(handle: Handle) -> BusState
 // Get current bus state
 
 enum BusState {
@@ -685,7 +685,7 @@ enum BusState {
 }</code></pre>
 
 <h3>Error Handling</h3>
-<pre><code>fonksiyon get_error(handle: Handle) -> İsteğe_Bağlı[I2CError]
+<pre><code>function get_error(handle: Handle) -> İsteğe_Bağlı[I2CError]
 // Get last error
 
 enum I2CError {
@@ -696,41 +696,41 @@ enum I2CError {
     TIMEOUT         // Timeout occurred
 }
 
-fonksiyon clear_error(handle: Handle)
+function clear_error(handle: Handle)
 // Clear error flags</code></pre>
 
 <h3>DMA Support</h3>
-<pre><code>fonksiyon write_dma(handle: Handle, addr: u8, data: &[u8]) -> Sonuç[Hiçbir, Hata]
+<pre><code>function write_dma(handle: Handle, addr: u8, data: &[u8]) -> Sonuç[Hiçbir, Hata]
 // Write data using DMA
 
-fonksiyon read_dma(handle: Handle, addr: u8, buffer: &mut [u8]) -> Sonuç[Hiçbir, Hata]
+function read_dma(handle: Handle, addr: u8, buffer: &mut [u8]) -> Sonuç[Hiçbir, Hata]
 // Read data using DMA</code></pre>
 
 <h2>⚡ Performans İpuçları</h2>
 <ul>
-<li><strong>Pull-up Rezistans:</strong> 4.7kΩ genel kullanım için ideal (100 kHz için 10kΩ, 400 kHz için 2.2kΩ)</li>
+<li><strong>Pull-up Rezistans:</strong> 4.7kΩ genel Usage for ideal (100 kHz for 10kΩ, 400 kHz for 2.2kΩ)</li>
 <li><strong>Kablo Uzunluğu:</strong> Kısa kablolar kullanın (<1m), uzun kablolarda capacitance artar</li>
 <li><strong>Bus Hızı:</strong> Sensör datasheet'ine göre seçin (çoğu 100-400 kHz destekler)</li>
-<li><strong>DMA Kullanımı:</strong> Büyük veri transferlerinde (>10 byte) CPU yükünü azaltır</li>
+<li><strong>DMA Usageı:</strong> Büyük veri transferlerinde (>10 byte) CPU yükünü azaltır</li>
 <li><strong>Error Handling:</strong> Her I2C işlemi sonrası error check yapın</li>
-<li><strong>Clock Stretching:</strong> Yavaş slave'ler için enable edin</li>
+<li><strong>Clock Stretching:</strong> Yavaş slave'ler for enable edin</li>
 </ul>
 
 <h2>⚠️ Önemli Notlar</h2>
 <ul>
-<li>SCL ve SDA pinlerinde <strong>external pull-up</strong> gerekir (4.7kΩ)</li>
+<li>SCL and SDA pinlerinde <strong>external pull-up</strong> gerekir (4.7kΩ)</li>
 <li>GPIO pinlerini <strong>MODE_AF_OD</strong> (open-drain) olarak yapılandırın</li>
-<li>Bus üzerinde maksimum 112 device (7-bit) veya 1024 device (10-bit)</li>
+<li>Bus üzerinde maksimum 112 device (7-bit) or 1024 device (10-bit)</li>
 <li>Start/stop condition timing hassasiyeti önemli</li>
 <li>Multi-master mode'da arbitration kaybı oluşabilir</li>
-<li>5V tolerant pinler yoksa level shifter kullanın</li>
-<li>EMI/noise için twisted-pair kablo veya shielding kullanın</li>
+<li>5V tolerant pinler elseif level shifter kullanın</li>
+<li>EMI/noise for twisted-pair kablo or shielding kullanın</li>
 </ul>
 
 <h2>🎯 Yaygın I2C Cihazları</h2>
 <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
 <tr style="background:#16a085;color:white">
-<th>Cihaz</th><th>Address</th><th>Açıklama</th>
+<th>Cihaz</th><th>Address</th><th>Description</th>
 </tr>
 <tr><td>PCF8574</td><td>0x20-0x27</td><td>8-bit I/O expander</td></tr>
 <tr><td>AT24C256</td><td>0x50-0x57</td><td>256K EEPROM</td></tr>

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>logging - Loglama - BERK Programlama Dili</title>
+        <title>logging - Loglama - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,16 +192,16 @@
             <h1>📝 logging - Loglama</h1>
             <p>Levels, Formatters, Handlers, Rotation</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">63</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">63</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">514</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">14 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar logging
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import logging
 
-// Basit kullanım
+// Basit Usage
 logging.debug("Debug mesajı")
 logging.info("Bilgi mesajı")
 logging.warning("Uyarı!")
@@ -209,11 +209,11 @@ logging.error("Hata oluştu")
 logging.critical("Kritik hata!")
 
 // Logger oluşturma
-değişken logger = logging.Logger_new("MyApp")
+variable logger = logging.Logger_new("MyApp")
 logger.set_level(logging.Level_INFO)
 
 // File handler
-değişken file_handler = logging.FileHandler_new("app.log")
+variable file_handler = logging.FileHandler_new("app.log")
 file_handler.set_formatter("[{level}] {time} - {message}")
 logger.add_handler(file_handler)
 
@@ -228,29 +228,29 @@ logger.info("Uygulama başlatıldı")</code></pre>
             <li><strong>CRITICAL:</strong> Kritik hatalar</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Application Logger</h3>
-            <pre><code>içe_aktar logging
+            <pre><code>import logging
 
-değişken logger = logging.Logger_new("WebAPI")
+variable logger = logging.Logger_new("WebAPI")
 logger.set_level(logging.Level_DEBUG)
 
 // Console handler (renkli)
-değişken console = logging.ConsoleHandler_new()
-console.set_colored(doğru)
+variable console = logging.ConsoleHandler_new()
+console.set_colored(true)
 logger.add_handler(console)
 
 // File handler (rotate)
-değişken file = logging.RotatingFileHandler_new(
+variable file = logging.RotatingFileHandler_new(
     "api.log",
     max_bytes: 10_000_000,  // 10 MB
     backup_count: 5
 )
 logger.add_handler(file)
 
-// Kullanım
+// Usage
 logger.info("API başlatıldı")
 logger.debug("Veritabanı bağlantısı: OK")
 logger.error("Kullanıcı bulunamadı: " + user_id.yazıya())</code></pre>
@@ -259,7 +259,7 @@ logger.error("Kullanıcı bulunamadı: " + user_id.yazıya())</code></pre>
         <hr />
         <p style="text-align: center; margin-top: 40px;">
             <a href="testing.html">← testing</a> | 
-            <a href="../reference/std-library.html">Standart Kütüphane →</a>
+            <a href="../reference/std-library.html">Standard Library →</a>
         </p>
                 </div>
             </div>

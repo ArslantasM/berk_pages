@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>async - Asenkron Programlama - BERK Programlama Dili</title>
+        <title>async - Asenkron Programlama - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,40 +192,40 @@
             <h1>⚡ async - Asenkron Programlama</h1>
             <p>async/await, Futures, Tasks, Runtime</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">71</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">71</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">480</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">13 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar async, http
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import async, http
 
 // Async function
-async fonksiyon veri_getir(url: yazı) -> Sonuç yap
-    değişken yanıt = await http.get(url)
+async function veri_getir(url: string) -> Sonuç do
+    variable yanıt = await http.get(url)
     
-    eğer yanıt.durum != 200 ise yap
-        dön Hata("HTTP " + yanıt.durum.yazıya())
-    son
+    if yanıt.durum != 200 ise do
+        return Hata("HTTP " + yanıt.durum.yazıya())
+    end
     
-    dön Tamam(yanıt.gövde)
-son
+    return Tamam(yanıt.gövde)
+end
 
 // Parallel execution
-async fonksiyon ana() yap
-    değişken görevler = [
+async function ana() do
+    variable görevler = [
         veri_getir("https://api.example.com/users"),
         veri_getir("https://api.example.com/posts"),
         veri_getir("https://api.example.com/comments")
     ]
     
-    değişken sonuçlar = await async.all(görevler)
+    variable sonuçlar = await async.all(görevler)
     
-    her sonuç içinde sonuçlar için yap
-        yazdır(sonuç)
-    son
-son
+    her sonuç içinde sonuçlar for do
+        print(sonuç)
+    end
+end
 
 async.run(ana())</code></pre>
 
@@ -237,33 +237,33 @@ async.run(ana())</code></pre>
             <li><strong>Runtime:</strong> Task scheduler</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Async HTTP Server</h3>
-            <pre><code>içe_aktar async, http
+            <pre><code>import async, http
 
-async fonksiyon kullanıcı_getir(id: tamsayı) -> Sonuç yap
+async function kullanıcı_getir(id: integer) -> Sonuç do
     await async.sleep(100)  // Simulate DB query
-    dön Tamam({"id": id, "name": "User " + id.yazıya()})
-son
+    return Tamam({"id": id, "name": "User " + id.yazıya()})
+end
 
-async fonksiyon ana() yap
-    değişken sunucu = http.AsyncServer_new(3000)
+async function ana() do
+    variable sunucu = http.AsyncServer_new(3000)
     
-    sunucu.rotala("GET", "/api/user/:id", async fonksiyon(istek, yanıt) yap
-        değişken id = istek.params["id"].parse_int()
-        değişken user = await kullanıcı_getir(id)
+    sunucu.rotala("GET", "/api/user/:id", async function(istek, yanıt) do
+        variable id = istek.params["id"].parse_int()
+        variable user = await kullanıcı_getir(id)
         
-        eşleştir user yap
+        eşleştir user do
             Tamam(data) => yanıt.json(data),
             Hata(e) => yanıt.durum(500).json({"error": e})
-        son
-    son)
+        end
+    end)
     
-    yazdır("Async sunucu http://localhost:3000")
+    print("Async sunucu http://localhost:3000")
     await sunucu.başlat()
-son
+end
 
 async.run(ana())</code></pre>
         </div>
@@ -271,7 +271,7 @@ async.run(ana())</code></pre>
         <hr />
         <p style="text-align: center; margin-top: 40px;">
             <a href="network.html">← network</a> | 
-            <a href="../reference/std-library.html">Standart Kütüphane →</a>
+            <a href="../reference/std-library.html">Standard Library →</a>
         </p>
                 </div>
             </div>

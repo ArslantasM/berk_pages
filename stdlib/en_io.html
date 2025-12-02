@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>io - Giriş/Çıkış - BERK Programlama Dili</title>
+        <title>io - Introduction/Çıkış - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,39 +192,39 @@
             <h1>📂 io - Girdi/Çıktı Modülü</h1>
             <p>Dosya I/O, Console, Buffered Okuma/Yazma</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">64</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">64</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">449</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar io
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import io
 
 // Dosya okuma
-değişken içerik = io.dosya_oku("data.txt")
-yazdır(içerik)
+variable içerik = io.dosya_oku("data.txt")
+print(içerik)
 
 // Dosya yazma
 io.dosya_yaz("output.txt", "Merhaba BERK!")
 
 // Satır satır okuma
-değişken satırlar = io.satırları_oku("data.txt")
-için satır içinde satırlar yap
-    yazdır(satır)
-son
+variable satırlar = io.satırları_oku("data.txt")
+for satır içinde satırlar do
+    print(satır)
+end
 
-// Buffered okuma (büyük dosyalar için)
-değişken dosya = io.aç("büyük_dosya.txt", "r")
-değişken okuyucu = io.buffered_reader(dosya)
-iken doğru yap
-    değişken satır = io.satır_oku(okuyucu)
-    eğer satır.yok_mu() ise kır son
-    yazdır(satır)
-son
+// Buffered okuma (büyük dosyalar for)
+variable dosya = io.aç("büyük_dosya.txt", "r")
+variable okuyucu = io.buffered_reader(dosya)
+while true do
+    variable satır = io.satır_oku(okuyucu)
+    if satır.yok_mu() ise break end
+    print(satır)
+end
 io.kapat(dosya)</code></pre>
 
-        <h2>📚 Fonksiyon Kategorileri</h2>
+        <h2>📚 function Kategorileri</h2>
 
         <div class="function-group">
             <h3>Basit Dosya İşlemleri</h3>
@@ -233,7 +233,7 @@ io.kapat(dosya)</code></pre>
 
         <div class="function-group">
             <h3>Dosya Handle İşlemleri</h3>
-            <p><code>aç()</code>, <code>kapat()</code>, <code>oku()</code>, <code>yaz()</code>, <code>flush()</code></p>
+            <p><code>aç()</code>, <code>kapat()</code>, <code>read()</code>, <code>yaz()</code>, <code>flush()</code></p>
         </div>
 
         <div class="function-group">
@@ -243,7 +243,7 @@ io.kapat(dosya)</code></pre>
 
         <div class="function-group">
             <h3>Console I/O</h3>
-            <p><code>yazdır()</code>, <code>yazdır_satır()</code>, <code>hata_yazdır()</code>, <code>girdi_al()</code></p>
+            <p><code>print()</code>, <code>yazdır_satır()</code>, <code>hata_yazdır()</code>, <code>girdi_al()</code></p>
         </div>
 
         <div class="function-group">
@@ -251,47 +251,47 @@ io.kapat(dosya)</code></pre>
             <p><code>bayt_oku()</code>, <code>bayt_yaz()</code>, <code>seek()</code>, <code>tell()</code></p>
         </div>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Örnek 1: Log Dosyası Yazma</h3>
-            <pre><code>içe_aktar io, time
+            <pre><code>import io, time
 
-fonksiyon log_yaz(mesaj: yazı) yap
-    değişken zaman = time.şimdi_str()
-    değişken log_satır = "[" + zaman + "] " + mesaj + "\n"
+function log_yaz(mesaj: string) do
+    variable zaman = time.şimdi_str()
+    variable log_satır = "[" + zaman + "] " + mesaj + "\n"
     io.dosya_ekle("app.log", log_satır)
-son
+end
 
 log_yaz("Uygulama başlatıldı")
-log_yaz("Kullanıcı giriş yaptı")
+log_yaz("Kullanıcı Introduction yaptı")
 log_yaz("İşlem tamamlandı")</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Örnek 2: Büyük Dosya İşleme</h3>
-            <pre><code>içe_aktar io, string
+            <pre><code>import io, string
 
-fonksiyon büyük_dosya_işle(girdi: yazı, çıktı: yazı) yap
-    değişken girdi_dosya = io.aç(girdi, "r")
-    değişken çıktı_dosya = io.aç(çıktı, "w")
+function büyük_dosya_işle(girdi: string, çıktı: string) do
+    variable girdi_dosya = io.aç(girdi, "r")
+    variable çıktı_dosya = io.aç(çıktı, "w")
     
-    değişken okuyucu = io.buffered_reader(girdi_dosya, 8192)
-    değişken yazıcı = io.buffered_writer(çıktı_dosya, 8192)
+    variable okuyucu = io.buffered_reader(girdi_dosya, 8192)
+    variable yazıcı = io.buffered_writer(çıktı_dosya, 8192)
     
-    iken doğru yap
-        değişken satır = io.satır_oku(okuyucu)
-        eğer satır.yok_mu() ise kır son
+    while true do
+        variable satır = io.satır_oku(okuyucu)
+        if satır.yok_mu() ise break end
         
         // İşleme
-        değişken işlenmiş = string.büyük_harf(satır.değer())
+        variable işlenmiş = string.büyük_harf(satır.değer())
         io.buffer_yaz(yazıcı, işlenmiş + "\n")
-    son
+    end
     
     io.buffer_flush(yazıcı)
     io.kapat(çıktı_dosya)
     io.kapat(girdi_dosya)
-son
+end
 
 büyük_dosya_işle("input.txt", "output.txt")</code></pre>
         </div>

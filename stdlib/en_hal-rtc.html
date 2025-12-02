@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-rtc - Real-Time Clock - BERK Programlama Dili</title>
+        <title>hal-rtc - Real-Time Clock - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,13 +193,13 @@
 <p>Real-Time Clock - Tarih/Saat Yönetimi</p>
 <div style="margin-top:15px">
 <span class="stat-badge">379 satır</span>
-<span class="stat-badge">~12 fonksiyon</span>
+<span class="stat-badge">~12 function</span>
 <span class="stat-badge">Low-Power</span>
 </div>
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>RTC (Real-Time Clock) modülü, düşük güç tüketimli tarih ve saat tutma işlevi sağlar. Batarya destekli çalışma, alarm ve takvim özellikleri sunar.</p>
+<p>RTC (Real-Time Clock) modülü, düşük güç tüketimli tarih and saat tutma işlevi sağlar. Batarya destekli çalışma, alarm and takvim özellikleri sunar.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -213,40 +213,40 @@
 <li>Sub-second precision</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::rtc
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::rtc
 
 // Initialize RTC
-değişken rtc_handle = rtc.init(yap
+variable rtc_handle = rtc.init(do
     hour_format: rtc.FORMAT_24H,
     async_prediv: 127,
     sync_prediv: 255
-son)
+end)
 
 // Set time
-rtc.set_time(rtc_handle, yap
+rtc.set_time(rtc_handle, do
     hours: 14,
     minutes: 30,
     seconds: 0
-son)
+end)
 
 // Set date
-rtc.set_date(rtc_handle, yap
+rtc.set_date(rtc_handle, do
     year: 2024,
     month: 12,
     day: 25,
     weekday: rtc.WEDNESDAY
-son)
+end)
 
 // Read time
-değişken time = rtc.get_time(rtc_handle)
+variable time = rtc.get_time(rtc_handle)
 io.println("{:02}:{:02}:{:02}".formatla(time.hours, time.minutes, time.seconds))</code></pre>
 
 <div class="example-box">
 <h3>💡 Örnek: Digital Clock Display</h3>
-<pre><code>içe_aktar hal::rtc, hal::core
+<pre><code>import hal::rtc, hal::core
 
-yapı DateTime yap
+struct DateTime do
     year: sayı,
     month: sayı,
     day: sayı,
@@ -254,10 +254,10 @@ yapı DateTime yap
     minutes: sayı,
     seconds: sayı,
     weekday: sayı
-son
+end
 
-fonksiyon weekday_name(day: sayı) -> yazı yap
-    dön eşle day yap
+function weekday_name(day: sayı) -> string do
+    return eşle day do
         1 => "Pazartesi",
         2 => "Salı",
         3 => "Çarşamba",
@@ -266,35 +266,35 @@ fonksiyon weekday_name(day: sayı) -> yazı yap
         6 => "Cumartesi",
         7 => "Pazar",
         _ => "Bilinmeyen"
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     core.system_init()
     
     // Initialize RTC
-    değişken rtc_handle = rtc.init(yap
+    variable rtc_handle = rtc.init(do
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Set initial time (2024-12-25 14:30:00 Wednesday)
-    rtc.set_date(rtc_handle, yap
+    rtc.set_date(rtc_handle, do
         year: 2024,
         month: 12,
         day: 25,
         weekday: rtc.WEDNESDAY
-    son)
+    end)
     
-    rtc.set_time(rtc_handle, yap
+    rtc.set_time(rtc_handle, do
         hours: 14,
         minutes: 30,
         seconds: 0
-    son)
+    end)
     
-    döngü yap
+    loop do
         // Read current time
-        değişken time = rtc.get_time(rtc_handle)
-        değişken date = rtc.get_date(rtc_handle)
+        variable time = rtc.get_time(rtc_handle)
+        variable date = rtc.get_date(rtc_handle)
         
         // Display
         io.print("\r")  // Carriage return
@@ -309,79 +309,79 @@ fonksiyon ana() yap
         ))
         
         core.delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Alarm Clock</h3>
-<pre><code>içe_aktar hal::rtc
+<pre><code>import hal::rtc
 
-değişken alarm_triggered = yanlış
+variable alarm_triggered = false
 
-fonksiyon alarm_callback() yap
-    alarm_triggered = doğru
+function alarm_callback() do
+    alarm_triggered = true
     io.println("\n🔔 ALARM! Wake up!")
-son
+end
 
-fonksiyon set_alarm(rtc_handle: rtc.Handle, hours: sayı, minutes: sayı) yap
-    rtc.set_alarm(rtc_handle, rtc.ALARM_A, yap
+function set_alarm(rtc_handle: rtc.Handle, hours: sayı, minutes: sayı) do
+    rtc.set_alarm(rtc_handle, rtc.ALARM_A, do
         hours: hours,
         minutes: minutes,
         seconds: 0,
         alarm_mask: rtc.MASK_SECONDS,  // Ignore seconds
         callback: alarm_callback
-    son)
+    end)
     
     io.println("Alarm set for {:02}:{:02}".formatla(hours, minutes))
-son
+end
 
-fonksiyon ana() yap
-    değişken rtc_handle = rtc.init(yap
+function ana() do
+    variable rtc_handle = rtc.init(do
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Set current time: 07:58:00
-    rtc.set_time(rtc_handle, yap
+    rtc.set_time(rtc_handle, do
         hours: 7,
         minutes: 58,
         seconds: 0
-    son)
+    end)
     
     // Set alarm for 08:00
     set_alarm(rtc_handle, 8, 0)
     
-    döngü yap
-        değişken time = rtc.get_time(rtc_handle)
+    loop do
+        variable time = rtc.get_time(rtc_handle)
         io.print("\r{:02}:{:02}:{:02}".formatla(
             time.hours, time.minutes, time.seconds
         ))
         
-        eğer alarm_triggered ise yap
-            alarm_triggered = yanlış
+        if alarm_triggered ise do
+            alarm_triggered = false
             // Snooze for 5 minutes
             set_alarm(rtc_handle, time.hours, time.minutes + 5)
-        son
+        end
         
         core.delay_ms(1000)
-    son
-son</code></pre>
+    end
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Wakeup Timer (Auto-Wakeup from Standby)</h3>
-<pre><code>içe_aktar hal::rtc, hal::core
+<pre><code>import hal::rtc, hal::core
 
-fonksiyon periodic_wakeup() yap
-    değişken rtc_handle = rtc.init(yap
+function periodic_wakeup() do
+    variable rtc_handle = rtc.init(do
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Configure wakeup every 10 seconds
-    rtc.set_wakeup(rtc_handle, yap
+    rtc.set_wakeup(rtc_handle, do
         prescaler: rtc.WAKEUP_DIV_16,  // 16Hz clock
         counter: 160  // 160 / 16Hz = 10 seconds
-    son)
+    end)
     
     io.println("Entering standby, wakeup in 10s...")
     core.delay_ms(100)  // Flush UART
@@ -393,51 +393,51 @@ fonksiyon periodic_wakeup() yap
     io.println("Woke up from standby!")
     
     // Check wakeup flag
-    eğer rtc.was_wakeup_flag_set() ise yap
+    if rtc.was_wakeup_flag_set() ise do
         io.println("Wakeup timer triggered")
         rtc.clear_wakeup_flag()
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     // Count wakeups using backup register
-    değişken wakeup_count = rtc.read_backup(rtc_handle, 0)
+    variable wakeup_count = rtc.read_backup(rtc_handle, 0)
     wakeup_count += 1
     rtc.write_backup(rtc_handle, 0, wakeup_count)
     
     io.println("Wakeup count: {}", wakeup_count)
     
     periodic_wakeup()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Battery-Backed Data Logger</h3>
-<pre><code>içe_aktar hal::rtc
+<pre><code>import hal::rtc
 
 // Store sensor readings in backup registers (survives power loss)
-yapı LogEntry yap
+struct LogEntry do
     timestamp: sayı,  // Unix timestamp
     temp: u16,        // Temperature x100
     humidity: u16     // Humidity x100
-son
+end
 
-sabit MAX_ENTRIES = 20  // 80 bytes / 4 = 20 entries
+constant MAX_ENTRIES = 20  // 80 bytes / 4 = 20 entries
 
-fonksiyon log_data(temp: kesir, humidity: kesir) yap
-    değişken rtc_handle = rtc.init(yap hour_format: rtc.FORMAT_24H son)
+function log_data(temp: kesir, humidity: kesir) do
+    variable rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
     
     // Get current index
-    değişken index = rtc.read_backup(rtc_handle, 0)
-    eğer index >= MAX_ENTRIES ise index = 0
+    variable index = rtc.read_backup(rtc_handle, 0)
+    if index >= MAX_ENTRIES ise index = 0
     
     // Get timestamp
-    değişken time = rtc.get_time(rtc_handle)
-    değişken date = rtc.get_date(rtc_handle)
-    değişken timestamp = date_to_unix(date, time)
+    variable time = rtc.get_time(rtc_handle)
+    variable date = rtc.get_date(rtc_handle)
+    variable timestamp = date_to_unix(date, time)
     
     // Store in backup registers (4 bytes per entry)
-    değişken base = 1 + (index * 2)
+    variable base = 1 + (index * 2)
     rtc.write_backup(rtc_handle, base, timestamp)
     rtc.write_backup(rtc_handle, base + 1, 
         ((temp * 100.0).sayı() << 16) | (humidity * 100.0).sayı()
@@ -447,38 +447,38 @@ fonksiyon log_data(temp: kesir, humidity: kesir) yap
     rtc.write_backup(rtc_handle, 0, index + 1)
     
     io.println("Logged: {}°C, {}%RH", temp, humidity)
-son
+end
 
-fonksiyon print_log() yap
-    değişken rtc_handle = rtc.init(yap hour_format: rtc.FORMAT_24H son)
-    değişken count = rtc.read_backup(rtc_handle, 0).min(MAX_ENTRIES)
+function print_log() do
+    variable rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
+    variable count = rtc.read_backup(rtc_handle, 0).min(MAX_ENTRIES)
     
     io.println("\n=== Data Log ({} entries) ===", count)
     
-    her i içinde 0..count için yap
-        değişken base = 1 + (i * 2)
-        değişken timestamp = rtc.read_backup(rtc_handle, base)
-        değişken data = rtc.read_backup(rtc_handle, base + 1)
+    her i içinde 0..count for do
+        variable base = 1 + (i * 2)
+        variable timestamp = rtc.read_backup(rtc_handle, base)
+        variable data = rtc.read_backup(rtc_handle, base + 1)
         
-        değişken temp = ((data >> 16) & 0xFFFF).kesir() / 100.0
-        değişken hum = (data & 0xFFFF).kesir() / 100.0
+        variable temp = ((data >> 16) & 0xFFFF).kesir() / 100.0
+        variable hum = (data & 0xFFFF).kesir() / 100.0
         
         io.println("{}: {:.1f}°C, {:.1f}%", 
             unix_to_string(timestamp), temp, hum)
-    son
-son
+    end
+end
 
-fonksiyon date_to_unix(date: rtc.Date, time: rtc.Time) -> sayı yap
+function date_to_unix(date: rtc.Date, time: rtc.Time) -> sayı do
     // Simplified unix timestamp calculation
-    dön (date.year - 1970) * 31536000 + 
+    return (date.year - 1970) * 31536000 + 
            date.month * 2592000 + 
            date.day * 86400 + 
            time.hours * 3600 + 
            time.minutes * 60 + 
            time.seconds
-son
+end
 
-fonksiyon ana() yap
+function ana() do
     // Simulate sensor readings
     log_data(23.5, 65.2)
     core.delay_ms(5000)
@@ -488,21 +488,21 @@ fonksiyon ana() yap
     
     // Print all logged data
     print_log()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Timestamp Events (Input Capture)</h3>
-<pre><code>içe_aktar hal::rtc, hal::gpio
+<pre><code>import hal::rtc, hal::gpio
 
-değişken event_count = 0
+variable event_count = 0
 
-fonksiyon timestamp_callback() yap
-    değişken rtc_handle = rtc.init(yap hour_format: rtc.FORMAT_24H son)
+function timestamp_callback() do
+    variable rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
     
     // Get timestamp
-    değişken time = rtc.get_timestamp_time(rtc_handle)
-    değişken date = rtc.get_timestamp_date(rtc_handle)
+    variable time = rtc.get_timestamp_time(rtc_handle)
+    variable date = rtc.get_timestamp_date(rtc_handle)
     
     event_count += 1
     
@@ -513,117 +513,117 @@ fonksiyon timestamp_callback() yap
         time.seconds,
         time.subseconds
     )
-son
+end
 
-fonksiyon timestamp_input_capture() yap
+function timestamp_input_capture() do
     // Configure PA0 (WKUP pin) as timestamp trigger
     gpio.clock_enable(gpio.PORT_A)
-    gpio.pin_init(gpio.PORT_A, 0, yap
+    gpio.pin_init(gpio.PORT_A, 0, do
         mode: gpio.MODE_INPUT,
         pull: gpio.PULL_DOWN
-    son)
+    end)
     
-    değişken rtc_handle = rtc.init(yap
+    variable rtc_handle = rtc.init(do
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Enable timestamp on rising edge
-    rtc.enable_timestamp(rtc_handle, yap
+    rtc.enable_timestamp(rtc_handle, do
         edge: rtc.TIMESTAMP_RISING_EDGE,
         pin: rtc.TIMESTAMP_PIN_0,
         callback: timestamp_callback
-    son)
+    end)
     
     io.println("Press button on PA0 to timestamp events...")
     
-    döngü yap
+    loop do
         core.delay_ms(100)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     timestamp_input_capture()
-son</code></pre>
+end</code></pre>
 </div>
 
 <div class="example-box">
 <h3>💡 Örnek: Multi-Alarm Scheduler</h3>
-<pre><code>içe_aktar hal::rtc
+<pre><code>import hal::rtc
 
-yapı Task yap
-    name: yazı,
+struct Task do
+    name: string,
     alarm: rtc.Alarm,
     callback: fn()
-son
+end
 
-değişken tasks = []
+variable tasks = []
 
-fonksiyon task_morning() yap
+function task_morning() do
     io.println("🌅 Good morning! Time to wake up!")
-son
+end
 
-fonksiyon task_lunch() yap
+function task_lunch() do
     io.println("🍽️ Lunch break!")
-son
+end
 
-fonksiyon task_evening() yap
+function task_evening() do
     io.println("🌙 Evening reminder: Review tasks")
-son
+end
 
-fonksiyon schedule_daily_tasks() yap
-    değişken rtc_handle = rtc.init(yap
+function schedule_daily_tasks() do
+    variable rtc_handle = rtc.init(do
         hour_format: rtc.FORMAT_24H
-    son)
+    end)
     
     // Set current time (for testing: 06:58)
-    rtc.set_time(rtc_handle, yap
+    rtc.set_time(rtc_handle, do
         hours: 6,
         minutes: 58,
         seconds: 0
-    son)
+    end)
     
     // Alarm A: Morning wakeup (07:00)
-    rtc.set_alarm(rtc_handle, rtc.ALARM_A, yap
+    rtc.set_alarm(rtc_handle, rtc.ALARM_A, do
         hours: 7,
         minutes: 0,
         seconds: 0,
         alarm_mask: rtc.MASK_DATEWEEKDAY,  // Daily
         callback: task_morning
-    son)
+    end)
     
     // Alarm B: Lunch (12:00)
-    rtc.set_alarm(rtc_handle, rtc.ALARM_B, yap
+    rtc.set_alarm(rtc_handle, rtc.ALARM_B, do
         hours: 12,
         minutes: 0,
         seconds: 0,
         alarm_mask: rtc.MASK_DATEWEEKDAY,
         callback: task_lunch
-    son)
+    end)
     
     io.println("Scheduler started. Waiting for alarms...")
     
-    döngü yap
-        değişken time = rtc.get_time(rtc_handle)
+    loop do
+        variable time = rtc.get_time(rtc_handle)
         io.print("\r{:02}:{:02}:{:02}", 
             time.hours, time.minutes, time.seconds)
         
         core.delay_ms(1000)
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     schedule_daily_tasks()
-son</code></pre>
+end</code></pre>
 </div>
 
 <h2>⚙️ RTC Yapılandırma</h2>
 <pre><code>// RTC Configuration
-yapı RTCConfig yap
+struct RTCConfig do
     hour_format: HourFormat,    // 12H or 24H
     async_prediv: sayı,         // Asynchronous prescaler (7-bit)
     sync_prediv: sayı,          // Synchronous prescaler (15-bit)
     clock_source: ClockSource   // LSE, LSI, HSE
-son
+end
 
 // Hour Format
 enum HourFormat {
@@ -639,13 +639,13 @@ enum ClockSource {
 }
 
 // Alarm Configuration
-yapı AlarmConfig yap
+struct AlarmConfig do
     hours: sayı,
     minutes: sayı,
     seconds: sayı,
     alarm_mask: AlarmMask,      // What to match
     callback: fn()              // Interrupt callback
-son
+end
 
 // Alarm Mask (what to ignore)
 enum AlarmMask {
@@ -657,10 +657,10 @@ enum AlarmMask {
 }
 
 // Wakeup Configuration
-yapı WakeupConfig yap
+struct WakeupConfig do
     prescaler: WakeupPrescaler,
     counter: u16  // 0-65535
-son
+end
 
 enum WakeupPrescaler {
     WAKEUP_DIV_16,    // RTC/16 (~2048Hz for 32kHz LSE)
@@ -669,45 +669,45 @@ enum WakeupPrescaler {
     WAKEUP_DIV_2      // RTC/2
 }</code></pre>
 
-<h2>📚 RTC Fonksiyonları</h2>
+<h2>📚 RTC Functionsı</h2>
 <pre><code>// Initialization
-fonksiyon init(config: RTCConfig) -> Handle
-fonksiyon deinit(handle: Handle)
+function init(config: RTCConfig) -> Handle
+function deinit(handle: Handle)
 
 // Time/Date
-fonksiyon set_time(handle: Handle, time: Time)
-fonksiyon get_time(handle: Handle) -> Time
-fonksiyon set_date(handle: Handle, date: Date)
-fonksiyon get_date(handle: Handle) -> Date
+function set_time(handle: Handle, time: Time)
+function get_time(handle: Handle) -> Time
+function set_date(handle: Handle, date: Date)
+function get_date(handle: Handle) -> Date
 
 // Alarms
-fonksiyon set_alarm(handle: Handle, alarm: Alarm, config: AlarmConfig)
-fonksiyon disable_alarm(handle: Handle, alarm: Alarm)
-fonksiyon get_alarm_flag(handle: Handle, alarm: Alarm) -> bool
-fonksiyon clear_alarm_flag(handle: Handle, alarm: Alarm)
+function set_alarm(handle: Handle, alarm: Alarm, config: AlarmConfig)
+function disable_alarm(handle: Handle, alarm: Alarm)
+function get_alarm_flag(handle: Handle, alarm: Alarm) -> bool
+function clear_alarm_flag(handle: Handle, alarm: Alarm)
 
 // Wakeup timer
-fonksiyon set_wakeup(handle: Handle, config: WakeupConfig)
-fonksiyon disable_wakeup(handle: Handle)
-fonksiyon was_wakeup_flag_set() -> bool
-fonksiyon clear_wakeup_flag()
+function set_wakeup(handle: Handle, config: WakeupConfig)
+function disable_wakeup(handle: Handle)
+function was_wakeup_flag_set() -> bool
+function clear_wakeup_flag()
 
 // Timestamp
-fonksiyon enable_timestamp(handle: Handle, config: TimestampConfig)
-fonksiyon get_timestamp_time(handle: Handle) -> Time
-fonksiyon get_timestamp_date(handle: Handle) -> Date
+function enable_timestamp(handle: Handle, config: TimestampConfig)
+function get_timestamp_time(handle: Handle) -> Time
+function get_timestamp_date(handle: Handle) -> Date
 
 // Backup registers
-fonksiyon write_backup(handle: Handle, register: sayı, value: u32)
-fonksiyon read_backup(handle: Handle, register: sayı) -> u32
+function write_backup(handle: Handle, register: sayı, value: u32)
+function read_backup(handle: Handle, register: sayı) -> u32
 
 // Calibration
-fonksiyon calibrate(handle: Handle, ppm: kesir)  // Fine-tune frequency</code></pre>
+function calibrate(handle: Handle, ppm: kesir)  // Fine-tune frequency</code></pre>
 
 <h2>⚙️ RTC Backup Registers</h2>
 <pre><code>// Store data that survives reset/power-down
 rtc.write_backup(rtc_handle, 0, 0x12345678)
-değişken value = rtc.read_backup(rtc_handle, 0)
+variable value = rtc.read_backup(rtc_handle, 0)
 
 // Common use cases:
 // - Boot counter
@@ -717,18 +717,18 @@ değişken value = rtc.read_backup(rtc_handle, 0)
 // - Short-term data logging (80 bytes total)
 
 // Example: Boot counter
-değişken boot_count = rtc.read_backup(rtc_handle, 0)
+variable boot_count = rtc.read_backup(rtc_handle, 0)
 boot_count += 1
 rtc.write_backup(rtc_handle, 0, boot_count)
 io.println("Boot count: {}", boot_count)</code></pre>
 
-<h2>📊 RTC Kullanım Senaryoları</h2>
+<h2>📊 RTC Usage Senaryoları</h2>
 <table style="width:100%;border-collapse:collapse">
 <tr style="background:var(--sidebar-bg)">
 <th style="padding:10px;border:1px solid var(--sidebar-fg)">Senaryo</th>
-<th style="padding:10px;border:1px solid var(--sidebar-fg)">Özellik</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">trait</th>
 <th style="padding:10px;border:1px solid var(--sidebar-fg)">Güç Tüketimi</th>
-<th style="padding:10px;border:1px solid var(--sidebar-fg)">Açıklama</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Description</th>
 </tr>
 <tr>
 <td style="padding:8px;border:1px solid var(--sidebar-fg)">Digital Clock</td>
@@ -764,11 +764,11 @@ io.println("Boot count: {}", boot_count)</code></pre>
 
 <h2>⚡ Performans İpuçları</h2>
 <ul>
-<li><strong>LSE Crystal</strong>: Kullanın en yüksek accuracy için (±20ppm)</li>
+<li><strong>LSE Crystal</strong>: Kullanın en yüksek accuracy for (±20ppm)</li>
 <li><strong>VBAT</strong>: CR2032 coin cell ile yıllarca RTC çalıştırabilir (~1μA)</li>
-<li><strong>Wakeup Timer</strong>: Periodic sensor reading için ideal (standby mode)</li>
-<li><strong>Backup Registers</strong>: Configuration data için kullanın (80 bytes)</li>
-<li><strong>Calibration</strong>: Temperature compensation için smooth calibration</li>
+<li><strong>Wakeup Timer</strong>: Periodic sensor reading for ideal (standby mode)</li>
+<li><strong>Backup Registers</strong>: Configuration data for kullanın (80 bytes)</li>
+<li><strong>Calibration</strong>: Temperature compensation for smooth calibration</li>
 </ul>
 
 <h2>🖥️ Platform Desteği</h2>
@@ -782,7 +782,7 @@ io.println("Boot count: {}", boot_count)</code></pre>
 <h2>⚠️ Önemli Notlar</h2>
 <ul>
 <li><strong>Clock Source</strong>: LSE (32.768kHz crystal, ±20ppm) en accurate, LSI (32kHz RC, ±5%) backup</li>
-<li><strong>VBAT Pin</strong>: CR2032 battery (3V) ile power-down'da RTC çalışmaya devam eder</li>
+<li><strong>VBAT Pin</strong>: CR2032 battery (3V) ile power-down'da RTC çalışmaya continue eder</li>
 <li><strong>Write Protection</strong>: RTC register'ları write-protected, unlock gerekir</li>
 <li><strong>Alarm Interrupts</strong>: EXTI line 17 (Alarm A), 18 (Alarm B) kullanır</li>
 <li><strong>Wakeup from Standby</strong>: Wakeup timer ile ultra-low-power periodic operation</li>

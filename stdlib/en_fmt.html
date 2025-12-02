@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>fmt - Gelişmiş Formatlama - BERK Programlama Dili</title>
+        <title>fmt - Gelişmiş Formatlama - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,56 +192,56 @@
             <h1>🎨 fmt - Formatting</h1>
             <p>printf, format!, Display, Debug</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">36</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">36</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">512</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">16 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar fmt
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import fmt
 
 // printf style
 fmt.printf("Merhaba %s, yaşın %d\n", "Ali", 25)
 
 // Rust style (format!)
-değişken msg = fmt.format("Sonuç: {}, Durum: {}", 42, "OK")
+variable msg = fmt.format("Sonuç: {}, Durum: {}", 42, "OK")
 
 // Formatting options
 fmt.printf("Float: %.2f\n", 3.14159)  // 3.14
 fmt.printf("Hex: %#x\n", 255)  // 0xff
 fmt.printf("Binary: %b\n", 42)  // 101010</code></pre>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Table Formatter</h3>
-            <pre><code>içe_aktar fmt
+            <pre><code>import fmt
 
-fonksiyon print_table(headers: Dizi, rows: Dizi) yap
+function print_table(headers: Dizi, rows: Dizi) do
     // Column widths
-    değişken widths = headers.map(fonksiyon(h) yap dön h.uzunluk() son)
+    variable widths = headers.map(function(h) do return h.uzunluk() end)
     
     // Header
-    her (i, h) içinde headers.enumerate() için yap
+    her (i, h) içinde headers.enumerate() for do
         fmt.printf("%-*s ", widths[i], h)
-    son
+    end
     fmt.printf("\n")
     
     // Separator
-    her w içinde widths için yap
+    her w içinde widths for do
         fmt.printf("%s ", "-".repeat(w))
-    son
+    end
     fmt.printf("\n")
     
     // Rows
-    her row içinde rows için yap
-        her (i, cell) içinde row.enumerate() için yap
+    her row içinde rows for do
+        her (i, cell) içinde row.enumerate() for do
             fmt.printf("%-*s ", widths[i], cell)
-        son
+        end
         fmt.printf("\n")
-    son
-son
+    end
+end
 
 print_table(
     ["Name", "Age", "City"],

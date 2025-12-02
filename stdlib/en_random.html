@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>random - Rastgele Sayılar - BERK Programlama Dili</title>
+        <title>random - Rastgele Sayılar - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,32 +192,32 @@
             <h1>🎲 random - Rastgele Sayılar</h1>
             <p>RNG, Distributions, Sampling</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">45</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">45</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">623</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">19 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar random
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import random
 
 // Seed ayarla (reproducible results)
 random.seed(42)
 
 // Temel RNG
-değişken x = random.rand()  // [0, 1) arası
-değişken y = random.randint(1, 100)  // [1, 100] arası tamsayı
-değişken z = random.uniform(10.0, 20.0)  // [10, 20) arası
+variable x = random.rand()  // [0, 1) arası
+variable y = random.randint(1, 100)  // [1, 100] arası integer
+variable z = random.uniform(10.0, 20.0)  // [10, 20) arası
 
 // Dağılımlar
-değişken normal = random.normal(0.0, 1.0)  // μ=0, σ=1
-değişken exp = random.exponential(1.5)  // λ=1.5
-değişken gauss = random.gaussian(100.0, 15.0)  // IQ dağılımı
+variable normal = random.normal(0.0, 1.0)  // μ=0, σ=1
+variable exp = random.exponential(1.5)  // λ=1.5
+variable gauss = random.gaussian(100.0, 15.0)  // IQ dağılımı
 
 // Diziden seçim
-değişken liste = ["elma", "armut", "kiraz", "üzüm"]
-değişken seçim = random.choice(liste)
-değişken örnek = random.sample(liste, 2)  // 2 elemanlı örnek</code></pre>
+variable liste = ["elma", "armut", "kiraz", "üzüm"]
+variable seçim = random.choice(liste)
+variable örnek = random.sample(liste, 2)  // 2 elemanlı örnek</code></pre>
 
         <h2>📚 Kategoriler</h2>
         <ul>
@@ -227,57 +227,57 @@ değişken örnek = random.sample(liste, 2)  // 2 elemanlı örnek</code></pre>
             <li><strong>Seed:</strong> seed, get_state, set_state</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Monte Carlo Pi Estimation</h3>
-            <pre><code>içe_aktar random
+            <pre><code>import random
 
-fonksiyon estimate_pi(n: tamsayı) -> ondalık yap
-    değişken içerde = 0
+function estimate_pi(n: integer) -> float do
+    variable içerde = 0
     
-    her i içinde aralık(0, n) için yap
-        değişken x = random.uniform(-1.0, 1.0)
-        değişken y = random.uniform(-1.0, 1.0)
+    her i içinde aralık(0, n) for do
+        variable x = random.uniform(-1.0, 1.0)
+        variable y = random.uniform(-1.0, 1.0)
         
         // Çemberin içinde mi?
-        eğer (x*x + y*y) <= 1.0 ise yap
+        if (x*x + y*y) <= 1.0 ise do
             içerde = içerde + 1
-        son
-    son
+        end
+    end
     
     // π ≈ 4 * (içerdekiler / toplam)
-    dön 4.0 * içerde.kesir() / n.kesir()
-son
+    return 4.0 * içerde.kesir() / n.kesir()
+end
 
 random.seed(42)
-değişken pi_tahmin = estimate_pi(1000000)
-yazdır("π tahmini: " + pi_tahmin.yazıya())  // ~3.141592</code></pre>
+variable pi_tahmin = estimate_pi(1000000)
+print("π tahmini: " + pi_tahmin.yazıya())  // ~3.141592</code></pre>
         </div>
 
         <div class="example-box">
             <h3>Simulated Die Rolls</h3>
-            <pre><code>içe_aktar random, collections
+            <pre><code>import random, collections
 
-// 10000 kez zar at ve frekansları say
-değişken frekans = collections.HashMap_new()
+// 10000 kez zar at and frekansları say
+variable frekans = collections.HashMap_new()
 
-her i içinde aralık(0, 10000) için yap
-    değişken zar = random.randint(1, 6)
-    değişken mevcut = collections.HashMap_get(frekans, zar.yazıya())
+her i içinde aralık(0, 10000) for do
+    variable zar = random.randint(1, 6)
+    variable mevcut = collections.HashMap_get(frekans, zar.yazıya())
     
-    eğer mevcut == yok ise yap
+    if mevcut == yok ise do
         collections.HashMap_set(frekans, zar.yazıya(), 1)
-    yoksa yap
+    elseif do
         collections.HashMap_set(frekans, zar.yazıya(), mevcut + 1)
-    son
-son
+    end
+end
 
 // Sonuçları göster
-her (yüz, adet) içinde frekans için yap
-    değişken yüzde = (adet.kesir() / 10000.0) * 100.0
-    yazdır(yüz + ": " + adet.yazıya() + " (" + yüzde.yazıya() + "%)")
-son</code></pre>
+her (yüz, adet) içinde frekans for do
+    variable yüzde = (adet.kesir() / 10000.0) * 100.0
+    print(yüz + ": " + adet.yazıya() + " (" + yüzde.yazıya() + "%)")
+end</code></pre>
         </div>
 
         <hr />

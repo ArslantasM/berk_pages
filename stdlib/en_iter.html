@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>iter - İteratörler - BERK Programlama Dili</title>
+        <title>iter - İteratörler - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,36 +192,36 @@
             <h1>🔄 iter - Iterator Trait</h1>
             <p>map, filter, reduce, chain, zip</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">54</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">54</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">689</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">22 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar iter
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import iter
 
 // map
-değişken sayılar = [1, 2, 3, 4, 5]
-değişken kareler = iter.map(sayılar, fonksiyon(x) yap dön x * x son)
+variable sayılar = [1, 2, 3, 4, 5]
+variable kareler = iter.map(sayılar, function(x) do return x * x end)
 // [1, 4, 9, 16, 25]
 
 // filter
-değişken çiftler = iter.filter(sayılar, fonksiyon(x) yap dön x % 2 == 0 son)
+variable çiftler = iter.filter(sayılar, function(x) do return x % 2 == 0 end)
 // [2, 4]
 
 // reduce
-değişken toplam = iter.reduce(sayılar, 0, fonksiyon(acc, x) yap dön acc + x son)
+variable toplam = iter.reduce(sayılar, 0, function(acc, x) do return acc + x end)
 // 15
 
 // chain
-değişken combined = iter.chain([1, 2], [3, 4], [5, 6])
+variable combined = iter.chain([1, 2], [3, 4], [5, 6])
 // [1, 2, 3, 4, 5, 6]
 
 // zip
-değişken isimler = ["Ali", "Ayşe", "Mehmet"]
-değişken yaşlar = [25, 30, 35]
-değişken paired = iter.zip(isimler, yaşlar)
+variable isimler = ["Ali", "Ayşe", "Mehmet"]
+variable yaşlar = [25, 30, 35]
+variable paired = iter.zip(isimler, yaşlar)
 // [("Ali", 25), ("Ayşe", 30), ("Mehmet", 35)]</code></pre>
 
         <h2>📚 Iterator Methods</h2>
@@ -233,26 +233,26 @@ değişken paired = iter.zip(isimler, yaşlar)
             <li><strong>Collect:</strong> collect, to_vec, to_set</li>
         </ul>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Functional Data Pipeline</h3>
-            <pre><code>içe_aktar iter
+            <pre><code>import iter
 
 // Word frequency (functional style)
-değişken metin = "the quick brown fox jumps over the lazy dog"
+variable metin = "the quick brown fox jumps over the lazy dog"
 
-değişken kelime_frekansı = metin
+variable kelime_frekansı = metin
     .böl(" ")
-    |> iter.map(fonksiyon(w) yap dön string.küçük_harf(w) son)
-    |> iter.filter(fonksiyon(w) yap dön w.uzunluk() > 3 son)
-    |> iter.group_by(fonksiyon(w) yap dön w son)
-    |> iter.map(fonksiyon((kelime, grup)) yap
-        dön (kelime, grup.uzunluk())
-    son)
+    |> iter.map(function(w) do return string.küçük_harf(w) end)
+    |> iter.filter(function(w) do return w.uzunluk() > 3 end)
+    |> iter.group_by(function(w) do return w end)
+    |> iter.map(function((kelime, grup)) do
+        return (kelime, grup.uzunluk())
+    end)
     |> iter.collect()
 
-yazdır(kelime_frekansı)</code></pre>
+print(kelime_frekansı)</code></pre>
         </div>
 
         <hr />

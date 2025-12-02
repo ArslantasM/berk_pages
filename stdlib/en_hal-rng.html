@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>hal-rng - Random Number Generator - BERK Programlama Dili</title>
+        <title>hal-rng - Random Number Generator - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -193,17 +193,17 @@
 <p>Hardware True Random Number Generator</p>
 <div style="margin-top:15px">
 <span class="stat-badge">~380 satır</span>
-<span class="stat-badge">~14 fonksiyon</span>
+<span class="stat-badge">~14 function</span>
 <span class="stat-badge">STM32F4/F7/H7</span>
 </div>
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>RNG modülü, hardware tabanlı gerçek rastgele sayı üretir. Analog noise source kullanarak kriptografik kalitede random değerler sağlar. IoT güvenliği, UUID generation, cryptographic key generation ve Monte Carlo simülasyonları için kritiktir.</p>
+<p>RNG modülü, hardware tabanlı gerçek rastgele sayı üretir. Analog noise source kullanarak kriptografik kalitede random değerler sağlar. IoT güvenliği, UUID generation, cryptographic key generation and Monte Carlo simülasyonları for kritiktir.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
-<li><strong>True Random:</strong> Pseudo-random değil, analog gürültü kaynağı</li>
+<li><strong>True Random:</strong> Pseudo-random not, analog gürültü kaynağı</li>
 <li><strong>32-bit Output:</strong> Her okumada tam 32-bit random değer</li>
 <li><strong>FIPS 140-2 Compliant:</strong> Kriptografik standartlara uygun</li>
 <li><strong>Single Cycle:</strong> 40 CPU cycle'da yeni random değer</li>
@@ -213,8 +213,8 @@
 <li><strong>DMA Compatible:</strong> Continuous random stream</li>
 </ul>
 
-<h2>🚀 Hızlı Başlangıç</h2>
-<pre><code>içe_aktar hal::rng, hal::rcc
+<h2>🚀 Hızlı Getting Started</h2>
+<pre><code>import hal::rng, hal::rcc
 
 // Enable RNG clock
 rcc.periph_clock_enable(rcc.PERIPH_RNG)
@@ -223,15 +223,15 @@ rcc.periph_clock_enable(rcc.PERIPH_RNG)
 rng.init()
 
 // Get random 32-bit value
-değişken rastgele = rng.get_random()
+variable rastgele = rng.get_random()
 io.yazdir_satır("Random: 0x" + rastgele.onaltılıya())
 
 // Random range [0, max)
-fonksiyon random_range(max: sayı) -> sayı yap
-    dön (rng.get_random() % max)
-son</code></pre>
+function random_range(max: sayı) -> sayı do
+    return (rng.get_random() % max)
+end</code></pre>
 
-<h2>📦 Tipler ve Enum'lar</h2>
+<h2>📦 Tipler and Enum'lar</h2>
 <pre><code>// RNG Flags
 enum Flag {
     FLAG_DRDY,    // Data ready
@@ -245,201 +245,201 @@ enum Interrupt {
     IT_SEI        // Seed error interrupt
 }
 
-yapı RNGConfig yap
-    clock_enable: mantık = doğru,
-    interrupt_enable: mantık = yanlış,
-    error_callback: fonksiyon(Flag) = boş
-son</code></pre>
+struct RNGConfig do
+    clock_enable: mantık = true,
+    interrupt_enable: mantık = false,
+    error_callback: function(Flag) = null
+end</code></pre>
 
 <h2>💡 Örnek 1: UUID Generation (RFC 4122)</h2>
 <div class="example-box">
 <h3>Problem: Unique identifier oluşturmak (IoT device ID)</h3>
-<pre><code>içe_aktar hal::rng
+<pre><code>import hal::rng
 
-yapı UUID yap
+struct UUID do
     data: Dizi&lt;sayı8&gt; = Dizi.yeni(16)
-son
+end
 
-fonksiyon uuid_v4_generate() -> UUID yap
-    değişken uuid = UUID yap son
+function uuid_v4_generate() -> UUID do
+    variable uuid = UUID do end
     
     // Generate 128 bits (16 bytes) of random data
-    için i içinde 0..4 yap
-        değişken rand32 = rng.get_random()
+    for i içinde 0..4 do
+        variable rand32 = rng.get_random()
         
         // Split into 4 bytes
         uuid.data[i*4 + 0] = (rand32 >> 24) & 0xFF kayıt sayı8
         uuid.data[i*4 + 1] = (rand32 >> 16) & 0xFF kayıt sayı8
         uuid.data[i*4 + 2] = (rand32 >> 8) & 0xFF kayıt sayı8
         uuid.data[i*4 + 3] = rand32 & 0xFF kayıt sayı8
-    son
+    end
     
     // Set version (4) and variant (RFC 4122)
     uuid.data[6] = (uuid.data[6] & 0x0F) | 0x40  // Version 4
     uuid.data[8] = (uuid.data[8] & 0x3F) | 0x80  // Variant RFC4122
     
-    dön uuid
-son
+    return uuid
+end
 
-fonksiyon uuid_to_string(uuid: UUID) -> Metin yap
+function uuid_to_string(uuid: UUID) -> Metin do
     // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
-    değişken hex = ""
-    için i içinde 0..16 yap
+    variable hex = ""
+    for i içinde 0..16 do
         hex = hex + uuid.data[i].onaltılıya(2)
-        eğer (i == 3 veya i == 5 veya i == 7 veya i == 9) yap
+        if (i == 3 or i == 5 or i == 7 or i == 9) do
             hex = hex + "-"
-        son
-    son
-    dön hex
-son
+        end
+    end
+    return hex
+end
 
-fonksiyon ana() yap
+function ana() do
     rng.init()
     
-    için i içinde 0..5 yap
-        değişken uuid = uuid_v4_generate()
+    for i içinde 0..5 do
+        variable uuid = uuid_v4_generate()
         io.yazdir_satır("UUID: " + uuid_to_string(uuid))
-    son
-son</code></pre>
+    end
+end</code></pre>
 <p><strong>Çıktı:</strong> UUID: 550e8400-e29b-41d4-a716-446655440000 (benzersiz her çalıştırmada)</p>
 </div>
 
 <h2>💡 Örnek 2: Cryptographic Key Generation</h2>
 <div class="example-box">
-<h3>Problem: AES-256 için 256-bit random key oluşturmak</h3>
-<pre><code>içe_aktar hal::rng, hal::crypto
+<h3>Problem: AES-256 for 256-bit random key oluşturmak</h3>
+<pre><code>import hal::rng, hal::crypto
 
-sabit AES256_KEY_SIZE: sayı = 32  // 256 bit = 32 bytes
+constant AES256_KEY_SIZE: sayı = 32  // 256 bit = 32 bytes
 
-yapı CryptoKey yap
+struct CryptoKey do
     data: Dizi&lt;sayı8&gt;,
     size: sayı
-son
+end
 
-fonksiyon generate_aes256_key() -> CryptoKey yap
-    değişken key = CryptoKey yap
+function generate_aes256_key() -> CryptoKey do
+    variable key = CryptoKey do
         data: Dizi.yeni(AES256_KEY_SIZE),
         size: AES256_KEY_SIZE
-    son
+    end
     
     // Generate 256 bits of cryptographic random data
-    için i içinde 0..8 yap  // 8 * 32 bits = 256 bits
-        değişken rand = rng.get_random()
+    for i içinde 0..8 do  // 8 * 32 bits = 256 bits
+        variable rand = rng.get_random()
         
-        eğer rng.get_flag(rng.FLAG_CECS) veya rng.get_flag(rng.FLAG_SECS) yap
+        if rng.get_flag(rng.FLAG_CECS) or rng.get_flag(rng.FLAG_SECS) do
             io.yazdir_satır("RNG ERROR: Clock or seed error!")
-            dön key  // Invalid key
-        son
+            return key  // Invalid key
+        end
         
         key.data[i*4 + 0] = (rand >> 24) & 0xFF kayıt sayı8
         key.data[i*4 + 1] = (rand >> 16) & 0xFF kayıt sayı8
         key.data[i*4 + 2] = (rand >> 8) & 0xFF kayıt sayı8
         key.data[i*4 + 3] = rand & 0xFF kayıt sayı8
-    son
+    end
     
-    dön key
-son
+    return key
+end
 
-fonksiyon key_to_hex(key: CryptoKey) -> Metin yap
-    değişken hex = ""
-    için byte içinde key.data yap
+function key_to_hex(key: CryptoKey) -> Metin do
+    variable hex = ""
+    for byte içinde key.data do
         hex = hex + byte.onaltılıya(2)
-    son
-    dön hex
-son
+    end
+    return hex
+end
 
-fonksiyon ana() yap
+function ana() do
     rng.init()
     
     io.yazdir_satır("Generating AES-256 key...")
-    değişken key = generate_aes256_key()
+    variable key = generate_aes256_key()
     io.yazdir_satır("Key: " + key_to_hex(key))
     
     // Use key for AES encryption
     crypto.aes_init(crypto.AES256, key.data)
-son</code></pre>
-<p><strong>Güvenlik:</strong> Hardware RNG kullanımı software PRNG'den çok daha güvenlidir.</p>
+end</code></pre>
+<p><strong>Güvenlik:</strong> Hardware RNG Usageı software PRNG'den çok daha güvenlidir.</p>
 </div>
 
 <h2>💡 Örnek 3: Random Number Distribution (Dice Roll)</h2>
 <div class="example-box">
 <h3>Problem: Uniform distribution ile dice roll simulation</h3>
-<pre><code>içe_aktar hal::rng
+<pre><code>import hal::rng
 
 // Random in range [min, max]
-fonksiyon random_range(min: sayı, max: sayı) -> sayı yap
-    değişken range = max - min + 1
-    değişken rand = rng.get_random()
+function random_range(min: sayı, max: sayı) -> sayı do
+    variable range = max - min + 1
+    variable rand = rng.get_random()
     
     // Avoid modulo bias using rejection sampling
-    değişken limit = 0xFFFF_FFFF - (0xFFFF_FFFF % range)
+    variable limit = 0xFFFF_FFFF - (0xFFFF_FFFF % range)
     
-    döngü yap
-        eğer rand < limit yap
-            dön min + (rand % range)
-        son
+    loop do
+        if rand < limit do
+            return min + (rand % range)
+        end
         rand = rng.get_random()
-    son
-son
+    end
+end
 
-fonksiyon dice_roll() -> sayı yap
-    dön random_range(1, 6)
-son
+function dice_roll() -> sayı do
+    return random_range(1, 6)
+end
 
-fonksiyon test_distribution() yap
-    değişken histogram: Dizi&lt;sayı&gt; = Dizi.yeni(6, 0)
-    sabit ROLLS: sayı = 10000
+function test_distribution() do
+    variable histogram: Dizi&lt;sayı&gt; = Dizi.yeni(6, 0)
+    constant ROLLS: sayı = 10000
     
-    için i içinde 0..ROLLS yap
-        değişken roll = dice_roll()
+    for i içinde 0..ROLLS do
+        variable roll = dice_roll()
         histogram[roll - 1] = histogram[roll - 1] + 1
-    son
+    end
     
     io.yazdir_satır("Dice roll distribution (" + ROLLS.metne() + " rolls):")
-    için i içinde 0..6 yap
-        değişken face = i + 1
-        değişken count = histogram[i]
-        değişken percent = (count kayıt kesir / ROLLS kayıt kesir) * 100.0
+    for i içinde 0..6 do
+        variable face = i + 1
+        variable count = histogram[i]
+        variable percent = (count kayıt kesir / ROLLS kayıt kesir) * 100.0
         
         io.yazdir_satır("  [" + face.metne() + "]: " + count.metne() +
                         " (" + percent.metne() + "%)")
-    son
-son
+    end
+end
 
-fonksiyon ana() yap
+function ana() do
     rng.init()
     test_distribution()
-son</code></pre>
-<p><strong>Sonuç:</strong> Uniform distribution ~16.67% her yüz için (ideal: 16.666...%).</p>
+end</code></pre>
+<p><strong>Sonuç:</strong> Uniform distribution ~16.67% her yüz for (ideal: 16.666...%).</p>
 </div>
 
 <h2>📚 API Referansı</h2>
-<h3>Temel Fonksiyonlar</h3>
+<h3>Temel Functions</h3>
 <pre><code>// RNG initialization and control
-fonksiyon init()
-fonksiyon deinit()
-fonksiyon enable()
-fonksiyon disable()
+function init()
+function deinit()
+function enable()
+function disable()
 
 // Random number generation
-fonksiyon get_random() -> sayı              // Blocking read
-fonksiyon get_random_async() -> Seçenek&lt;sayı&gt;  // Non-blocking
+function get_random() -> sayı              // Blocking read
+function get_random_async() -> Seçenek&lt;sayı&gt;  // Non-blocking
 
 // Status and error checking
-fonksiyon is_ready() -> mantık
-fonksiyon get_flag(flag: Flag) -> mantık
-fonksiyon clear_flag(flag: Flag)
+function is_ready() -> mantık
+function get_flag(flag: Flag) -> mantık
+function clear_flag(flag: Flag)
 
 // Interrupt handling
-fonksiyon interrupt_enable(it: Interrupt)
-fonksiyon interrupt_disable(it: Interrupt)</code></pre>
+function interrupt_enable(it: Interrupt)
+function interrupt_disable(it: Interrupt)</code></pre>
 
 <div class="warning">
 <strong>⚠️ Önemli Notlar:</strong>
 <ul>
-<li><strong>Clock Required:</strong> RNG için 48 MHz clock gerekli (PLL'den)</li>
+<li><strong>Clock Required:</strong> RNG for 48 MHz clock gerekli (PLL'den)</li>
 <li><strong>Error Handling:</strong> CECS/SECS flagleri kontrol edilmeli</li>
-<li><strong>First Read:</strong> İlk random değer için ~40 cycle bekleme</li>
+<li><strong>First Read:</strong> İlk random değer for ~40 cycle bekleme</li>
 <li><strong>Modulo Bias:</strong> Range işlemlerinde rejection sampling kullan</li>
 </ul>
 </div>
@@ -487,10 +487,10 @@ fonksiyon interrupt_disable(it: Interrupt)</code></pre>
 <h2>✅ Best Practices</h2>
 <ul>
 <li>✅ <strong>Error check:</strong> CECS/SECS flaglerini kontrol et</li>
-<li>✅ <strong>Seeding:</strong> PRNG seed için RNG kullan</li>
-<li>✅ <strong>Key generation:</strong> Crypto keyler için RNG şart</li>
+<li>✅ <strong>Seeding:</strong> PRNG seed for RNG kullan</li>
+<li>✅ <strong>Key generation:</strong> Crypto keyler for RNG şart</li>
 <li>✅ <strong>Rejection sampling:</strong> Modulo bias'tan kaçın</li>
-<li>❌ <strong>Predictable değil:</strong> RNG debug'da bile predictable değil</li>
+<li>❌ <strong>Predictable not:</strong> RNG debug'da bile predictable not</li>
 <li>❌ <strong>Clock dependency:</strong> 48 MHz clock olmadan çalışmaz</li>
 </ul>
 

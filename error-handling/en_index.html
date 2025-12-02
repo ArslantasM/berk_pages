@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -188,11 +188,11 @@
 <pre><code class="language-berk">deneme {
     riski_işlem()
 } yakala e {
-    yazdır("Hata: ", e)
+    print("Hata: ", e)
 }
 </code></pre>
 <h2 id="hata-türleri"><a class="header" href="#hata-türleri"><a href="./error-types.html">Hata Türleri</a></a></h2>
-<p>Result ve Option tipleri:</p>
+<p>Result and Option tipleri:</p>
 <pre><code class="language-berk">tür Sonuç&lt;T, E&gt; = enum {
     Tamam(T),
     Hata(E)
@@ -200,7 +200,7 @@
 </code></pre>
 <h2 id="hata-yönetim-stratejileri"><a class="header" href="#hata-yönetim-stratejileri">Hata Yönetim Stratejileri</a></h2>
 <ol>
-<li><strong>Result Tipi</strong>: Fonksiyon dönüşü</li>
+<li><strong>Result Tipi</strong>: function dönüşü</li>
 <li><strong>Try-Catch</strong>: Exception handling</li>
 <li><strong>Option</strong>: Null yerine</li>
 <li><strong>Panic</strong>: Kurtarılamaz hatalar</li>

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>encoding - Kodlama Donusumleri - BERK Programlama Dili</title>
+        <title>encoding - Kodlama Donusumleri - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -190,16 +190,16 @@
                                             <main>
                                                 <div class="module-header">
             <h1>🔤 encoding - Kodlama Dönüşümleri</h1>
-            <p>Base64, Hex, URL ve karakter kodlama dönüşümleri</p>
+            <p>Base64, Hex, URL and karakter kodlama dönüşümleri</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 79 Fonksiyon</span>
+                <span class="stat-badge">📦 79 function</span>
                 <span class="stat-badge">📝 832 Satır</span>
                 <span class="stat-badge">💾 26.5 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>encoding</code> modülü, Base64, hexadecimal, URL encoding ve karakter set dönüşümleri gibi yaygın kodlama/çözme işlemleri için araçlar sağlar.</p>
+        <p><code>encoding</code> modülü, Base64, hexadecimal, URL encoding and karakter set dönüşümleri gibi yaygın kodlama/çözme işlemleri for araçlar sağlar.</p>
 
         <div class="function-group">
             <h3>🔐 Base64 Kodlama</h3>
@@ -226,25 +226,25 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
-            <h3>Base64 ve Hex Dönüşümleri</h3>
+            <h3>Base64 and Hex Dönüşümleri</h3>
             <pre><code class="language-berk">kullan encoding
 
 değer metin = "Merhaba BERK!"
 
 // Base64 kodlama
 değer base64 = encoding.base64_kodla(metin.bayt())
-yazdır(f"Base64: {base64}")
+print(f"Base64: {base64}")
 
 // Base64 çözme
 değer çözülmüş = encoding.base64_çöz(base64).aç()
-yazdır(f"Çözülmüş: {Dize.bayttan(çözülmüş)}")
+print(f"Çözülmüş: {Dize.bayttan(çözülmüş)}")
 
 // Hex kodlama
 değer hex = encoding.hex_kodla(metin.bayt())
-yazdır(f"Hex: {hex}")</code></pre>
+print(f"Hex: {hex}")</code></pre>
         </div>
 
         <h2>🔗 İlgili Modüller</h2>

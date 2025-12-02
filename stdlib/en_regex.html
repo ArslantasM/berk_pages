@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>regex - Duzenli Ifadeler - BERK Programlama Dili</title>
+        <title>regex - Duzenli Ifadeler - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,47 +192,47 @@
             <h1>🔍 regex - Düzenli İfadeler</h1>
             <p>Pattern Matching, Find, Replace, Validate</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">57</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">57</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">472</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12.5 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar regex
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import regex
 
 // Pattern matching
-değişken pattern = regex.compile(r"\d{3}-\d{4}")
-değişken eşleşti = regex.eşleşir(pattern, "555-1234")  // doğru
+variable pattern = regex.compile(r"\d{3}-\d{4}")
+variable eşleşti = regex.eşleşir(pattern, "555-1234")  // true
 
 // Find all matches
-değişken metin = "Email: user@example.com, admin@test.org"
-değişken email_pattern = regex.compile(r"[\w\.-]+@[\w\.-]+\.\w+")
-değişken eşleşmeler = regex.hepsini_bul(email_pattern, metin)
+variable metin = "Email: user@example.com, admin@test.org"
+variable email_pattern = regex.compile(r"[\w\.-]+@[\w\.-]+\.\w+")
+variable eşleşmeler = regex.hepsini_bul(email_pattern, metin)
 // ["user@example.com", "admin@test.org"]
 
 // Replace
-değişken sonuç = regex.değiştir(pattern, metin, "***")
+variable sonuç = regex.değiştir(pattern, metin, "***")
 
 // Groups
-değişken date = regex.compile(r"(\d{2})/(\d{2})/(\d{4})")
-değişken gruplar = regex.gruplar(date, "15/06/2024")
+variable date = regex.compile(r"(\d{2})/(\d{2})/(\d{4})")
+variable gruplar = regex.gruplar(date, "15/06/2024")
 // ["15", "06", "2024"]</code></pre>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Email Validator</h3>
-            <pre><code>içe_aktar regex
+            <pre><code>import regex
 
-fonksiyon email_geçerli_mi(email: yazı) -> mantıksal yap
-    değişken pattern = regex.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
-    dön regex.eşleşir(pattern, email)
-son
+function email_geçerli_mi(email: string) -> boolean do
+    variable pattern = regex.compile(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$")
+    return regex.eşleşir(pattern, email)
+end
 
 // Test
-yazdır(email_geçerli_mi("user@example.com"))  // doğru
-yazdır(email_geçerli_mi("invalid.email"))     // yanlış</code></pre>
+print(email_geçerli_mi("user@example.com"))  // true
+print(email_geçerli_mi("invalid.email"))     // false</code></pre>
         </div>
 
         <hr />

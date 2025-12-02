@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>terminal - Terminal Kontrolü - BERK Programlama Dili</title>
+        <title>terminal - Terminal Kontrolü - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,19 +192,19 @@
             <h1>🖥️ terminal - Terminal UI</h1>
             <p>Colors, Cursor, Input, Progress Bar</p>
             <div class="module-stats">
-                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>Fonksiyon</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>function</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">645</div><div>Satır</div></div>
                 <div class="stat-badge"><div style="font-size:2em;font-weight:bold">20 KB</div><div>Boyut</div></div>
             </div>
         </div>
 
-        <h2>🚀 Hızlı Başlangıç</h2>
-        <pre><code>içe_aktar terminal
+        <h2>🚀 Hızlı Getting Started</h2>
+        <pre><code>import terminal
 
 // Colors
 terminal.println(terminal.red("Hata!"))
 terminal.println(terminal.green("Başarılı!"))
-terminal.println(terminal.bold("Kalın yazı"))
+terminal.println(terminal.bold("Kalın string"))
 
 // Cursor movement
 terminal.clear()
@@ -212,39 +212,39 @@ terminal.cursor_move(10, 5)
 terminal.print("(10, 5) konumunda")
 
 // Progress bar
-değişken progress = terminal.progress_bar_new(100)
-her i içinde aralık(0, 101) için yap
+variable progress = terminal.progress_bar_new(100)
+her i içinde aralık(0, 101) for do
     terminal.progress_bar_set(progress, i)
     time.sleep(50)
-son</code></pre>
+end</code></pre>
 
-        <h2>💡 Örnekler</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-box">
             <h3>Download Progress</h3>
-            <pre><code>içe_aktar terminal, http
+            <pre><code>import terminal, http
 
-fonksiyon dosya_indir(url: yazı, dosya: yazı) yap
-    değişken toplam = 10485760  // 10MB
-    değişken progress = terminal.progress_bar_new(toplam)
+function dosya_indir(url: string, dosya: string) do
+    variable toplam = 10485760  // 10MB
+    variable progress = terminal.progress_bar_new(toplam)
     
-    değişken indirilen = 0
-    döngü yap
+    variable indirilen = 0
+    loop do
         // Simulate download chunk
-        değişken chunk_size = 65536  // 64KB
+        variable chunk_size = 65536  // 64KB
         indirilen = indirilen + chunk_size
         
         terminal.progress_bar_set(progress, indirilen)
         
-        eğer indirilen >= toplam ise yap
-            kır
-        son
+        if indirilen >= toplam ise do
+            break
+        end
         
         time.sleep(10)
-    son
+    end
     
     terminal.println(terminal.green("✓ İndirme tamamlandı!"))
-son
+end
 
 dosya_indir("https://example.com/file.zip", "file.zip")</code></pre>
         </div>

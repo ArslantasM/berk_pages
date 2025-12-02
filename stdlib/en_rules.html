@@ -1,14 +1,14 @@
-﻿<!DOCTYPE HTML>
-<html lang="tr" class="rust sidebar-visible" dir="ltr">
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>rules - Kural Tabanli Sistemler - BERK Programlama Dili</title>
+        <title>rules - Kural Tabanli Sistemler - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -145,7 +145,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -192,16 +192,16 @@
 
                                                 <div class="module-header">
             <h1>⚖️ rules - Kural Tabanlı Sistemler</h1>
-            <p>İş kuralları motoru, karar ağaçları ve kural çıkarımı</p>
+            <p>İş kuralları motoru, karar ağaçları and kural çıkarımı</p>
             <div class="module-stats">
-                <span class="stat-badge">📦 67 Fonksiyon</span>
+                <span class="stat-badge">📦 67 function</span>
                 <span class="stat-badge">📝 657 Satır</span>
                 <span class="stat-badge">💾 18.2 KB</span>
             </div>
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>rules</code> modülü, iş kuralları, karar tabloları ve kural tabanlı çıkarım sistemleri oluşturmak için araçlar sağlar.</p>
+        <p><code>rules</code> modülü, iş kuralları, karar tabloları and kural tabanlı çıkarım sistemleri oluşturmak for araçlar sağlar.</p>
 
         <div class="function-group">
             <h3>📋 Kural Tanımlama</h3>
@@ -230,22 +230,22 @@
             </ul>
         </div>
 
-        <h2>💡 Kullanım Örnekleri</h2>
+        <h2>💡 Usage Examplesi</h2>
 
         <div class="example-box">
             <h3>İndirim Hesaplama Sistemi</h3>
             <pre><code class="language-berk">kullan rules
 
-sınıf İndirimMotoru {
+class İndirimMotoru {
     değer motor: rules.Motor
     
-    fonksiyon yeni() -> İndirimMotoru {
+    function yeni() -> İndirimMotoru {
         değer motor = rules.Motor.yeni()
         
         // VIP müşteri kuralı
         motor.kural_ekle(rules.Kural(
             ad: "VIP İndirimi",
-            koşul: |müşteri| müşteri["vip"] == doğru,
+            koşul: |müşteri| müşteri["vip"] == true,
             eylem: |müşteri| müşteri["indirim"] = 0.20,
             öncelik: 10
         ))
@@ -261,44 +261,44 @@ sınıf İndirimMotoru {
         // İlk alışveriş
         motor.kural_ekle(rules.Kural(
             ad: "İlk Alışveriş",
-            koşul: |müşteri| müşteri["ilk_alışveriş"] == doğru,
+            koşul: |müşteri| müşteri["ilk_alışveriş"] == true,
             eylem: |müşteri| müşteri["indirim"] = 0.10,
             öncelik: 5
         ))
         
-        dön İndirimMotoru { motor: motor }
+        return İndirimMotoru { motor: motor }
     }
     
-    fonksiyon indirim_hesapla(müşteri: Sözlük) -> Gerçek {
+    function indirim_hesapla(müşteri: Sözlük) -> Gerçek {
         müşteri["indirim"] = 0.0
         bu.motor.çalıştır(müşteri)
-        dön müşteri["indirim"]
+        return müşteri["indirim"]
     }
 }
 
-// Kullanım
+// Usage
 değer motor = İndirimMotoru.yeni()
 
 // Senaryolar
 değer müşteri1 = {
     "ad": "Ahmet",
-    "vip": doğru,
+    "vip": true,
     "toplam": 500.0,
-    "ilk_alışveriş": yanlış
+    "ilk_alışveriş": false
 }
 
 değer indirim1 = motor.indirim_hesapla(müşteri1)
-yazdır(f"VIP müşteri indirimi: %{indirim1 * 100}")
+print(f"VIP müşteri indirimi: %{indirim1 * 100}")
 
 değer müşteri2 = {
     "ad": "Ayşe",
-    "vip": yanlış,
+    "vip": false,
     "toplam": 1500.0,
-    "ilk_alışveriş": yanlış
+    "ilk_alışveriş": false
 }
 
 değer indirim2 = motor.indirim_hesapla(müşteri2)
-yazdır(f"Yüksek tutarlı alışveriş indirimi: %{indirim2 * 100}")</code></pre>
+print(f"Yüksek tutarlı alışveriş indirimi: %{indirim2 * 100}")</code></pre>
         </div>
 
         <h2>🔗 İlgili Modüller</h2>
