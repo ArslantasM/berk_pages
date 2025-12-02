@@ -1,14 +1,14 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Değişkenler and Sabitler - BERK Programlama Dili</title>
+        <title>Variables and Constants - BERK Programming Language</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="description" content="Modern, safe, and bilingual (Turkish/English) systems programming language">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -138,7 +138,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <h1 class="menu-title">BERK Programming Language</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -181,88 +181,88 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="değişkenler-and-sabitler"><a class="header" href="#değişkenler-and-sabitler">Değişkenler and Sabitler</a></h1>
-<p>BERK'te değerler saklamak for <strong>değişkenler</strong> (variables) and <strong>sabitler</strong> (constants) kullanılır.</p>
-<h2 id="variable-tanımlama"><a class="header" href="#variable-tanımlama">variable Tanımlama</a></h2>
-<h3 id="türkçe-syntax"><a class="header" href="#türkçe-syntax">Türkçe Syntax</a></h3>
-<pre><code class="language-berk">variable x = 10
-variable isim = "Ahmet"
+                        <h1 id="variables-and-constants"><a class="header" href="#variables-and-constants">Variables and Constants</a></h1>
+<p>In BERK, to store values <strong>variables</strong> (variables) and <strong>constants</strong> (constants) are used.</p>
+<h2 id="variable-Declaration"><a class="header" href="#variable-Declaration">variable Declaration</a></h2>
+<h3 id="turkish-syntax"><a class="header" href="#turkish-syntax">Turkish Syntax</a></h3>
+<pre><code class="language-berk">değişken x = 10
+değişken isim = "Ahmet"
 variable pi = 3.14159
 </code></pre>
-<h3 id="İngilizce-syntax"><a class="header" href="#İngilizce-syntax">İngilizce Syntax</a></h3>
+<h3 id="english-syntax"><a class="header" href="#english-syntax">English Syntax</a></h3>
 <pre><code class="language-berk">var x = 10
 var name = "John"
 var pi = 3.14159
 </code></pre>
-<h2 id="tip-belirtme"><a class="header" href="#tip-belirtme">Tip Belirtme</a></h2>
-<p>BERK statik tipli bir dildir. Tip çıkarımı (type inference) desteklenir:</p>
-<pre><code class="language-berk">// Tip çıkarımı (önerilen)
+<h2 id="tip-belirtme"><a class="header" href="#tip-belirtme">Type Specification</a></h2>
+<p>BERK is a statically typed language. Type inference (type inference) is supported:</p>
+<pre><code class="language-berk">// Type inference (recommended)
 variable sayı = 42          // Sayı tipi
 variable metin = "Hello"    // string tipi
 variable gerçek = 3.14      // Sayı tipi (float)
 
-// Açık tip belirtimi
+// Explicit type specification
 variable sayı: Sayı = 42
 variable metin: string = "Hello"
 variable liste: Liste&lt;Sayı&gt; = [1, 2, 3]
 </code></pre>
-<h2 id="variable-değiştirme"><a class="header" href="#variable-değiştirme">variable Değiştirme</a></h2>
-<p>Değişkenler tanımlandıktan sonra değerleri değiştirilebilir:</p>
-<pre><code class="language-berk">variable sayaç = 0
-print(sayaç)  // 0
+<h2 id="variable-Modification"><a class="header" href="#variable-Modification">variable Modification</a></h2>
+<p>variables values can be changed after declaration:</p>
+<pre><code class="language-berk">variable counter = 0
+print(counter)  // 0
 
-sayaç = sayaç + 1
-print(sayaç)  // 1
+counter = counter + 1
+print(counter)  // 1
 
-sayaç += 5
-print(sayaç)  // 6
+counter += 5
+print(counter)  // 6
 </code></pre>
-<h2 id="sabitler-constants"><a class="header" href="#sabitler-constants">Sabitler (Constants)</a></h2>
-<p>Sabitler bir kez atandıktan sonra değiştirilemez:</p>
+<h2 id="constants-constants"><a class="header" href="#constants-constants">constants (Constants)</a></h2>
+<p>constants cannot be changed after being assigned once:</p>
 <pre><code class="language-berk">constant PI = 3.14159
 constant MAX_KULLANICI = 100
 constant UYGULAMA_ADI = "BERK App"
 
-// Hata! constant değiştirilemez
-// PI = 3.14  // Derleme hatası
+// Error! constant cannot be changed
+// PI = 3.14  // Compilation error
 </code></pre>
-<h3 id="İngilizce-syntax-1"><a class="header" href="#İngilizce-syntax-1">İngilizce Syntax</a></h3>
+<h3 id="İngilizce-syntax-1"><a class="header" href="#İngilizce-syntax-1">English Syntax</a></h3>
 <pre><code class="language-berk">const PI = 3.14159
 const MAX_USERS = 100
 </code></pre>
-<h2 id="İsimlendirme-kuralları"><a class="header" href="#İsimlendirme-kuralları">İsimlendirme Kuralları</a></h2>
-<h3 id="değişkenler"><a class="header" href="#değişkenler">Değişkenler</a></h3>
+<h2 id="naming-rules"><a class="header" href="#naming-rules">Naming Rules</a></h2>
+<h3 id="variables"><a class="header" href="#variables">Variables</a></h3>
 <ul>
-<li><strong>snake_case</strong> kullanın (önerilen)</li>
-<li>Türkçe karakterler desteklenir</li>
-<li>Sayı ile başlayamaz</li>
-<li>Anahtar kelime olamaz</li>
+<li><strong>snake_case</strong> use (recommended)</li>
+<li>Turkish characters are supported</li>
+<li>Cannot start with a number</li>
+<li>Cannot be a keyword</li>
 </ul>
-<pre><code class="language-berk">// Geçerli variable isimleri
-variable kullanıcı_adı = "Ayşe"
-variable toplam_fiyat = 99.99
-variable öğrenci_numarası = 12345
-variable değer1 = 10
+<pre><code class="language-berk">// Valid variable names
+variable user_name = "Alice"
+variable total_price = 99.99
+variable student_number = 12345
+variable value1 = 10
 variable _private = "gizli"
 
-// Geçersiz variable isimleri
+// Invalid variable isimleri
 // variable 1değer = 10      // Sayı ile başlıyor
 // variable işlev = 5        // Anahtar kelime
 // variable user-name = ""   // Tire kullanılamaz
 </code></pre>
-<h3 id="sabitler"><a class="header" href="#sabitler">Sabitler</a></h3>
+<h3 id="constants"><a class="header" href="#constants">Constants</a></h3>
 <ul>
-<li><strong>SCREAMING_SNAKE_CASE</strong> kullanın</li>
-<li>Tümü büyük harf</li>
-<li>Kelimeler alt çizgi ile ayrılır</li>
+<li><strong>SCREAMING_SNAKE_CASE</strong> use</li>
+<li>All uppercase letters</li>
+<li>Words separated by underscores</li>
 </ul>
 <pre><code class="language-berk">constant MAX_DEĞER = 1000
 constant VERSİYON_NUMARASI = "0.8.0"
-constant HATA_MESAJI = "Geçersiz Introduction"
+constant HATA_MESAJI = "Invalid Introduction"
 </code></pre>
-<h2 id="kapsam-scope"><a class="header" href="#kapsam-scope">Kapsam (Scope)</a></h2>
-<h3 id="global-değişkenler"><a class="header" href="#global-değişkenler">Global Değişkenler</a></h3>
-<p>function dışında tanımlanan değişkenler global'dir:</p>
+<h2 id="kapsam-scope"><a class="header" href="#kapsam-scope">Scope</a></h2>
+<h3 id="global-variables"><a class="header" href="#global-variables">Global variables</a></h3>
+<p>function defined outside variables are global:</p>
 <pre><code class="language-berk">variable global_sayaç = 0  // Global
 
 işlev artır() {
@@ -275,48 +275,48 @@ işlev ana() {
     print(global_sayaç)  // 1
 }
 </code></pre>
-<h3 id="yerel-değişkenler"><a class="header" href="#yerel-değişkenler">Yerel Değişkenler</a></h3>
-<p>function içinde tanımlanan değişkenler yerel'dir:</p>
+<h3 id="Local-variables"><a class="header" href="#Local-variables">Local variables</a></h3>
+<p>function defined inside variables are local:</p>
 <pre><code class="language-berk">işlev hesapla() {
-    variable yerel = 10  // Sadece bu fonksiyonda erişilebilir
-    print(yerel)
+    variable Local = 10  // Accessible only in this function
+    print(Local)
 }
 
 işlev ana() {
     hesapla()
-    // print(yerel)  // Hata! yerel burada tanımlı not
+    // print(Local)  // Hata! Local not defined here
 }
 </code></pre>
-<h3 id="blok-kapsamı"><a class="header" href="#blok-kapsamı">Blok Kapsamı</a></h3>
-<p>Her blok kendi kapsamını oluşturur:</p>
+<h3 id="blok-kapsamı"><a class="header" href="#blok-kapsamı">Block Scope</a></h3>
+<p>Each block creates its own scope:</p>
 <pre><code class="language-berk">işlev ana() {
     variable x = 10
     
     if x &gt; 5 {
-        variable y = 20  // Bu blokta geçerli
+        variable y = 20  // Bu blokta Valid
         print(x, y)     // 10, 20
     }
     
     print(x)     // 10
-    // print(y)  // Hata! y bu kapsamda yok
+    // print(y)  // Hata! y not in this scope
 }
 </code></pre>
 <h2 id="shadowing"><a class="header" href="#shadowing">Shadowing</a></h2>
-<p>İç kapsamda aynı isimli variable tanımlanabilir:</p>
+<p>A variable with the same name can be defined in inner scope:</p>
 <pre><code class="language-berk">işlev ana() {
     variable x = 5
     print(x)  // 5
     
     {
-        variable x = 10  // Farklı variable
+        variable x = 10  // Different variable
         print(x)        // 10
     }
     
-    print(x)  // 5 (dış kapsam)
+    print(x)  // 5 (outer scope)
 }
 </code></pre>
 <h2 id="destructuring"><a class="header" href="#destructuring">Destructuring</a></h2>
-<p>Tuple and listelerden değer çıkarma:</p>
+<p>Tuple and extracting values from lists:</p>
 <pre><code class="language-berk">// Tuple destructuring
 variable (x, y) = (10, 20)
 print(x)  // 10
@@ -328,19 +328,19 @@ print(ilk)         // 1
 print(ikinci)      // 2
 print(geri_kalan)  // [3, 4, 5]
 </code></pre>
-<h2 id="Çoklu-atama"><a class="header" href="#Çoklu-atama">Çoklu Atama</a></h2>
-<p>Birden fazla değişkeni aynı anda tanımlama:</p>
+<h2 id="Çoklu-atama"><a class="header" href="#Çoklu-atama">Multiple Assignment</a></h2>
+<p>Declare multiple variables at once:</p>
 <pre><code class="language-berk">variable a, b, c = 1, 2, 3
 print(a, b, c)  // 1 2 3
 
-// Değer takası (swap)
+// Value swap (swap)
 variable x = 10
 variable y = 20
 x, y = y, x
 print(x, y)  // 20 10
 </code></pre>
-<h2 id="nullable-değişkenler"><a class="header" href="#nullable-değişkenler">Nullable Değişkenler</a></h2>
-<p>Değişkenler null olabilir:</p>
+<h2 id="nullable-variables"><a class="header" href="#nullable-variables">Nullable variables</a></h2>
+<p>variables null olabilir:</p>
 <pre><code class="language-berk">variable değer: Sayı? = null  // Nullable tip
 
 if değer != null {
@@ -361,12 +361,12 @@ variable id: KullanıcıID = 12345
 variable email: Eposta = "user@example.com"
 </code></pre>
 <h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
-<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Yapılması Gerekenler</a></h3>
-<pre><code class="language-berk">// Anlamlı isimler kullanın
+<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Things to Do</a></h3>
+<pre><code class="language-berk">// Use meaningful names
 variable öğrenci_sayısı = 30
 variable toplam_fiyat = 199.99
 
-// Sabitler for büyük harf
+// constants for büyük harf
 constant MAX_RETRY = 3
 constant API_URL = "https://api.example.com"
 
@@ -374,7 +374,7 @@ constant API_URL = "https://api.example.com"
 variable liste: Liste&lt;string&gt; = []
 variable harita: Harita&lt;string, Sayı&gt; = {}
 </code></pre>
-<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Kaçınılması Gerekenler</a></h3>
+<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Things to Avoid</a></h3>
 <pre><code class="language-berk">// Çok kısa or anlamsız isimler
 variable x = 30
 variable tmp = 199.99
@@ -384,13 +384,13 @@ variable a1, a2, a3 = 1, 2, 3
 variable UserName = ""    // PascalCase değişkende kullanılmaz
 variable user-name = ""   // Tire kullanılamaz
 
-// Gereksiz tip belirtimi (tip çıkarımı yeterli)
+// Gereksiz tip belirtimi (Type inference yeterli)
 variable sayı: Sayı = 10  // Gereksiz, "variable sayı = 10" yeter
 </code></pre>
 <h2 id="Example-program"><a class="header" href="#Example-program">Example Program</a></h2>
 <pre><code class="language-berk">import math
 
-// Global sabitler
+// Global constants
 constant YERÇEKIMI = 9.81  // m/s²
 constant PI = 3.14159
 
@@ -407,7 +407,7 @@ işlev serbest_düşüş(yükseklik: Sayı) -&gt; Sayı {
 }
 
 işlev ana() {
-    // Değişkenler
+    // variables
     variable yarıçap = 5.0   // metre
     variable hız = 10.0      // m/s
     
@@ -420,7 +420,7 @@ işlev ana() {
     print("Düşüş hızı: ", düşüş_hızı, " m/s")
 }
 </code></pre>
-<h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Bir Sonraki</a></h2>
+<h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Next</a></h2>
 <ul>
 <li><a href="./data-types.html">Veri Tipleri</a></li>
 <li><a href="./operators.html">Operatörler</a></li>
@@ -478,3 +478,12 @@ işlev ana() {
     </div>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
