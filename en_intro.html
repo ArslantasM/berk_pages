@@ -353,111 +353,111 @@ do
     end
 end
 </code></pre>
-<h3 id="2-modern-and-güvenli"><a class="header" href="#2-modern-and-güvenli">2. <strong>Modern and Güvenli</strong></a></h3>
+<h3 id="2-modern-and-safe"><a class="header" href="#2-modern-and-safe">2. <strong>Modern and Safe</strong></a></h3>
 <ul>
-<li>✅ Güçlü tip sistemi</li>
-<li>✅ Bellek güvenliği</li>
+<li>✅ Strong type system</li>
+<li>✅ Memory safety</li>
 <li>✅ Null safety</li>
 <li>✅ Pattern matching</li>
 <li>✅ Error handling</li>
 </ul>
-<h3 id="3-yüksek-performans--llvm-backend"><a class="header" href="#3-yüksek-performans--llvm-backend">3. <strong>Yüksek Performans + LLVM Backend</strong></a></h3>
+<h3 id="3-high-performance--llvm-backend"><a class="header" href="#3-high-performance--llvm-backend">3. <strong>High Performance + LLVM Backend</strong></a></h3>
 <ul>
-<li>Native kod üretimi - <strong>C++ ile %98-100 performans eşitliği</strong></li>
-<li>19 farklı mimari desteği (x64, ARM, RISC-V, WebAssembly, ...)</li>
-<li>Optimizasyon seviyeleri (O0-O3)</li>
-<li>Cross-compilation - <strong>tek kod, 19 platform</strong></li>
+<li>Native code generation - <strong>98-100% performance parity with C++</strong></li>
+<li>19 different architecture support (x64, ARM, RISC-V, WebAssembly, ...)</li>
+<li>Optimization levels (O0-O3)</li>
+<li>Cross-compilation - <strong>single codebase, 19 platforms</strong></li>
 <li>Zero-cost abstractions</li>
-<li>Inline assembly desteği</li>
+<li>Inline assembly support</li>
 </ul>
-<h3 id="4-bilimsel-hesaplama-stdlib-v14"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v14">4. <strong>Bilimsel Hesaplama (stdlib v1.4)</strong></a></h3>
+<h3 id="4-scientific-computing-stdlib-v14"><a class="header" href="#4-scientific-computing-stdlib-v14">4. <strong>Scientific Computing (stdlib v1.4)</strong></a></h3>
 <pre><code class="language-berk">import linalg, stats, optim
 
 // Linear Algebra
-variable A = linalg.matris_oluştur([[1, 2], [3, 4]])
-variable B = linalg.matris_çarp(A, linalg.transpose(A))
-variable (L, U) = linalg.lu_ayrıştır(A)
+variable A = linalg.matrix_create([[1, 2], [3, 4]])
+variable B = linalg.matrix_multiply(A, linalg.transpose(A))
+variable (L, U) = linalg.lu_decompose(A)
 
-// İstatistik
-variable veri = [1.2, 2.3, 3.4, 4.5, 5.6]
-variable ort = stats.ortalama(veri)
-variable std = stats.standart_sapma(veri)
-variable (r, p) = stats.korelasyon(x, y)
+// Statistics
+variable data = [1.2, 2.3, 3.4, 4.5, 5.6]
+variable mean = stats.mean(data)
+variable std = stats.standard_deviation(data)
+variable (r, p) = stats.correlation(x, y)
 
-// Optimizasyon
-variable minimum = optim.gradient_descent(function, x0, öğrenme=0.01)
-variable sonuç = optim.bfgs(maliyet, Getting Started)
+// Optimization
+variable minimum = optim.gradient_descent(function, x0, learning_rate=0.01)
+variable result = optim.bfgs(cost, initial)
 </code></pre>
-<h3 id="4-geliştirici-dostu"><a class="header" href="#4-geliştirici-dostu">4. <strong>Geliştirici Dostu</strong></a></h3>
+<h3 id="4-developer-friendly"><a class="header" href="#4-developer-friendly">4. <strong>Developer Friendly</strong></a></h3>
 <ul>
-<li>Kapsamlı Documentation (<strong>70+ Page, Türkçe</strong>)</li>
-<li>Anlaşılır hata mesajları (çözüm önerileriyle)</li>
-<li>VS Code eklentisi (syntax highlighting, autocomplete, debugging)</li>
-<li>REPL (etkileşimli kabuk) - anında test</li>
-<li>Zengin test altyapısı</li>
-<li><strong>Kolay öğrenme</strong>: 1-2 hafta ile productive</li>
+<li>Comprehensive Documentation (<strong>70+ pages, bilingual</strong>)</li>
+<li>Clear error messages (with solution suggestions)</li>
+<li>VS Code extension (syntax highlighting, autocomplete, debugging)</li>
+<li>REPL (interactive shell) - instant testing</li>
+<li>Rich testing infrastructure</li>
+<li><strong>Easy learning</strong>: Productive in 1-2 weeks</li>
 </ul>
-<h2 id="hızlı-Getting Started-1"><a class="header" href="#hızlı-Getting Started-1">Hızlı Getting Started</a></h2>
-<h3 id="Installation-1"><a class="header" href="#Installation-1">Installation</a></h3>
-<pre><code class="language-bash"># Rust toolchain gerekli
+<h2 id="quick-start-1"><a class="header" href="#quick-start-1">Quick Start</a></h2>
+<h3 id="installation-1"><a class="header" href="#installation-1">Installation</a></h3>
+<pre><code class="language-bash"># Rust toolchain required
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# BERK'u derle
+# Compile BERK
 git clone https://github.com/ArslantasM/berk
 cd berk/berk-lang
 cargo build --release --features llvm
 
-# PATH'e ekle
+# Add to PATH
 export PATH="$PWD/target/release:$PATH"
 </code></pre>
-<h3 id="İlk-programınız"><a class="header" href="#İlk-programınız">İlk Programınız</a></h3>
-<pre><code class="language-berk">// merhaba.berk
-function ana() -&gt; integer
+<h3 id="your-first-program"><a class="header" href="#your-first-program">Your First Program</a></h3>
+<pre><code class="language-berk">// hello.berk
+function main() -&gt; integer
 do
-    print("Merhaba, BERK!")
+    print("Hello, BERK!")
     return 0
 end
 </code></pre>
-<pre><code class="language-bash"># Derle and çalıştır
-BERK-lang merhaba.berk -o merhaba.exe
-./merhaba.exe
-# Çıktı: Merhaba, BERK!
+<pre><code class="language-bash"># Compile and run
+BERK-lang hello.berk -o hello.exe
+./hello.exe
+# Output: Hello, BERK!
 </code></pre>
-<h2 id="bu-kitap-hakkında"><a class="header" href="#bu-kitap-hakkında">Bu Kitap Hakkında</a></h2>
-<p>Bu kitap, BERK programlama dilini öğrenmek for kapsamlı bir kaynaktır. <a href="https://doc.rust-lang.org/book/">Rust Book</a> and <a href="https://docs.python.org/">Python Documentation</a> gibi kaynakların en iyi yanlarını bir araya getirerek hazırlanmıştır.</p>
-<h3 id="hedef-kitle"><a class="header" href="#hedef-kitle">Hedef Kitle</a></h3>
+<h2 id="about-this-book"><a class="header" href="#about-this-book">About This Book</a></h2>
+<p>This book is a comprehensive resource for learning the BERK programming language. It has been prepared by combining the best aspects of resources like <a href="https://doc.rust-lang.org/book/">The Rust Book</a> and <a href="https://docs.python.org/">Python Documentation</a>.</p>
+<h3 id="target-audience"><a class="header" href="#target-audience">Target Audience</a></h3>
 <ul>
-<li>Programlamaya yeni başlayanlar</li>
-<li>Deneyimli geliştiriciler</li>
-<li>Sistem programcıları</li>
-<li>Türkçe Content arayan geliştiriciler</li>
+<li>Programming beginners</li>
+<li>Experienced developers</li>
+<li>Systems programmers</li>
+<li>Developers seeking bilingual content</li>
 </ul>
-<h3 id="kitabı-nasıl-kullanmalısınız"><a class="header" href="#kitabı-nasıl-kullanmalısınız">Kitabı Nasıl Kullanmalısınız?</a></h3>
+<h3 id="how-to-use-this-book"><a class="header" href="#how-to-use-this-book">How to Use This Book?</a></h3>
 <ol>
-<li><strong>Sıralı Okuma</strong>: Baştan sona sırayla okumanızı öneririz</li>
-<li><strong>Examplesi Deneyin</strong>: Her örneği kendi bilgisayarınızda çalıştırın</li>
-<li><strong>Alıştırmalar</strong>: Her Sectionün sonundaki alıştırmaları yapın</li>
-<li><strong>Reference</strong>: İhtiyaç duyduğunuzda Reference Sectionlerine dönün</li>
+<li><strong>Sequential Reading</strong>: We recommend reading from start to finish</li>
+<li><strong>Try the Examples</strong>: Run each example on your own computer</li>
+<li><strong>Exercises</strong>: Complete the exercises at the end of each section</li>
+<li><strong>Reference</strong>: Return to reference sections when needed</li>
 </ol>
-<h2 id="dil-felsefesi"><a class="header" href="#dil-felsefesi">Dil Felsefesi</a></h2>
-<p>BERK'un temel tasarım ilkeleri:</p>
-<h3 id="1-erişilebilirlik"><a class="header" href="#1-erişilebilirlik">1. <strong>Erişilebilirlik</strong></a></h3>
-<p>Türkçe anahtar kelimeler sayesinde, İngilizce bilmeyenler for programlamaya Introduction kolaylaştırılmıştır.</p>
-<h3 id="2-güvenlik"><a class="header" href="#2-güvenlik">2. <strong>Güvenlik</strong></a></h3>
-<p>Bellek hatalarını derleme zamanında yakalar. Runtime hatalarını minimize eder.</p>
-<h3 id="3-performans"><a class="header" href="#3-performans">3. <strong>Performans</strong></a></h3>
-<p>LLVM backend sayesinde C/C++ seviyesinde performans sunar.</p>
-<h3 id="4-okunabilirlik"><a class="header" href="#4-okunabilirlik">4. <strong>Okunabilirlik</strong></a></h3>
-<p>Açık and anlaşılır syntax. Kod yazmaktan çok kod okumaya optimize edilmiştir.</p>
-<h3 id="5-İnterop"><a class="header" href="#5-İnterop">5. <strong>İnterop</strong></a></h3>
-<p>C/C++ Libraryleriyle uyumlu. Mevcut ekosistemlere entegre olabilir.</p>
-<h2 id="Öne-Çıkan-Özellikler"><a class="header" href="#Öne-Çıkan-Özellikler">Öne Çıkan Özellikler</a></h2>
+<h2 id="language-philosophy"><a class="header" href="#language-philosophy">Language Philosophy</a></h2>
+<p>BERK's core design principles:</p>
+<h3 id="1-accessibility"><a class="header" href="#1-accessibility">1. <strong>Accessibility</strong></a></h3>
+<p>Thanks to bilingual keywords, programming entry is made easier for both English and Turkish speakers.</p>
+<h3 id="2-safety"><a class="header" href="#2-safety">2. <strong>Safety</strong></a></h3>
+<p>Catches memory errors at compile time. Minimizes runtime errors.</p>
+<h3 id="3-performance"><a class="header" href="#3-performance">3. <strong>Performance</strong></a></h3>
+<p>Offers C/C++ level performance through LLVM backend.</p>
+<h3 id="4-readability"><a class="header" href="#4-readability">4. <strong>Readability</strong></a></h3>
+<p>Clear and understandable syntax. Optimized for reading code rather than writing it.</p>
+<h3 id="5-interoperability"><a class="header" href="#5-interoperability">5. <strong>Interoperability</strong></a></h3>
+<p>Compatible with C/C++ libraries. Can integrate with existing ecosystems.</p>
+<h2 id="key-features"><a class="header" href="#key-features">Key Features</a></h2>
 <h3 id="modern-type-system"><a class="header" href="#modern-type-system">Modern Type System</a></h3>
 <pre><code class="language-berk">variable x: integer = 42
-variable isim: string = "Ahmet"
-variable aktif: boolean = true
-variable sayılar: liste&lt;integer&gt; = [1, 2, 3]
-variable nokta: demet&lt;integer, integer&gt; = (10, 20)
+variable name: string = "Alice"
+variable active: boolean = true
+variable numbers: list&lt;integer&gt; = [1, 2, 3]
+variable point: tuple&lt;integer, integer&gt; = (10, 20)
 </code></pre>
 <h3 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h3>
 <pre><code class="language-berk">seç durum mesaj
@@ -475,22 +475,22 @@ variable uzunluk = uzunluk(mesaj)
 variable birleşik = "Hello " + "World"
 </code></pre>
 <h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">Hata Yönetimi</a></h3>
-<pre><code class="language-berk">dene
-    variable dosya = aç("data.txt")
-    print(read(dosya))
-yakala hata
-    print("Dosya açılamadı: " + hata)
+<pre><code class="language-berk">try
+    variable file = open("data.txt")
+    print(read(file))
+catch error
+    print("Failed to open file: " + error)
 end
 </code></pre>
-<h2 id="derleyici-mimarisi"><a class="header" href="#derleyici-mimarisi">Derleyici Mimarisi</a></h2>
-<p>BERK derleyicisi modern bir yapıya sahiptir:</p>
-<pre><code>Kaynak Kod (.berk)
+<h2 id="compiler-architecture"><a class="header" href="#compiler-architecture">Compiler Architecture</a></h2>
+<p>The BERK compiler has a modern architecture:</p>
+<pre><code>Source Code (.berk)
     ↓
-Lexer (Token Üretimi)
+Lexer (Token Generation)
     ↓
-Parser (AST Oluşturma)
+Parser (AST Construction)
     ↓
-Semantic Analysis (Tip Kontrolü)
+Semantic Analysis (Type Checking)
     ↓
 CFG Analysis (Dataflow Analysis)
     ↓
@@ -523,16 +523,16 @@ Machine Code (.exe/.o)
 <li>Package Manager</li>
 <li>Debugger Integration</li>
 </ul>
-<p>Detaylı yol haritası for <a href="./roadmap.html">Roadmap</a> Pagesına bakın.</p>
-<h2 id="topluluk-and-katkı"><a class="header" href="#topluluk-and-katkı">Topluluk and Katkı</a></h2>
-<p>BERK açık kaynak bir projedir and katkılara açıktır!</p>
+<p>See the <a href="./roadmap.html">Roadmap</a> page for the detailed roadmap.</p>
+<h2 id="community-and-contribution"><a class="header" href="#community-and-contribution">Community and Contribution</a></h2>
+<p>BERK is an open source project and welcomes contributions!</p>
 <ul>
 <li><strong>GitHub:</strong> <a href="https://github.com/ArslantasM/berk">ArslantasM/berk</a></li>
-<li><strong>Issues:</strong> Bug raporları and trait istekleri</li>
-<li><strong>Discussions:</strong> Topluluk tartışmaları</li>
-<li><strong>Contributing:</strong> <a href="./contributing/code.html">Katkıda bulunma rehberi</a></li>
+<li><strong>Issues:</strong> Bug reports and feature requests</li>
+<li><strong>Discussions:</strong> Community discussions</li>
+<li><strong>Contributing:</strong> <a href="./contributing/code.html">Contributing guide</a></li>
 </ul>
-<h2 id="ek-kaynaklar"><a class="header" href="#ek-kaynaklar">Ek Kaynaklar</a></h2>
+<h2 id="additional-resources"><a class="header" href="#additional-resources">Additional Resources</a></h2>
 <ul>
 <li><a href="https://github.com/ArslantasM/berk">GitHub Repository</a></li>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=BERK.berk-lang">VS Code Extension</a></li>
@@ -540,7 +540,7 @@ Machine Code (.exe/.o)
 <li><a href="./faq.html">FAQ</a></li>
 </ul>
 <hr />
-<p><strong>Hazır mısınız?</strong> <a href="./installation.html">Installation</a> Sectionünden başlayalım!</p>
+<p><strong>Ready?</strong> Let's start with the <a href="./installation.html">Installation</a> section!</p>
 
                     </main>
 
