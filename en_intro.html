@@ -460,21 +460,21 @@ variable numbers: list&lt;integer&gt; = [1, 2, 3]
 variable point: tuple&lt;integer, integer&gt; = (10, 20)
 </code></pre>
 <h3 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h3>
-<pre><code class="language-berk">seç durum mesaj
-    durum "başarılı":
-        print("İşlem tamamlandı!")
-    durum "hata":
-        print("Bir hata oluştu!")
-    durum _:
-        print("Bilinmeyen durum")
+<pre><code class="language-berk">match status message
+    case "success":
+        print("Operation completed!")
+    case "error":
+        print("An error occurred!")
+    case _:
+        print("Unknown status")
 end
 </code></pre>
-<h3 id="string-İşlemleri-utf-8"><a class="header" href="#string-İşlemleri-utf-8">String İşlemleri (UTF-8)</a></h3>
-<pre><code class="language-berk">variable mesaj = "Merhaba Dünya! 🌍"
-variable uzunluk = uzunluk(mesaj)
-variable birleşik = "Hello " + "World"
+<h3 id="string-operations-utf-8"><a class="header" href="#string-operations-utf-8">String Operations (UTF-8)</a></h3>
+<pre><code class="language-berk">variable message = "Hello World! 🌍"
+variable length = length(message)
+variable combined = "Hello " + "World"
 </code></pre>
-<h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">Hata Yönetimi</a></h3>
+<h3 id="error-management"><a class="header" href="#error-management">Error Management</a></h3>
 <pre><code class="language-berk">try
     variable file = open("data.txt")
     print(read(file))
@@ -502,11 +502,11 @@ LLVM IR Generation
     ↓
 Machine Code (.exe/.o)
 </code></pre>
-<h3 id="proje-durumu"><a class="header" href="#proje-durumu">Proje Durumu</a></h3>
-<p><strong>Mevcut Sürüm:</strong> v1.0.0<br />
-<strong>end Güncelleme:</strong> 18 Kasım 2025<br />
-<strong>Durum:</strong> Active Development</p>
-<h3 id="tamamlanan-Özellikler-"><a class="header" href="#tamamlanan-Özellikler-">Tamamlanan Özellikler ✅</a></h3>
+<h3 id="project-status"><a class="header" href="#project-status">Project Status</a></h3>
+<p><strong>Current Version:</strong> v1.0.0<br />
+<strong>Last Update:</strong> November 18, 2025<br />
+<strong>Status:</strong> Production Ready</p>
+<h3 id="completed-features"><a class="header" href="#completed-features">Completed Features ✅</a></h3>
 <ul>
 <li>Lexer &amp; Parser (100%)</li>
 <li>Type System (100%)</li>
@@ -516,7 +516,7 @@ Machine Code (.exe/.o)
 <li>REPL (100%)</li>
 <li>VS Code Extension (100%)</li>
 </ul>
-<h3 id="continue-eden-Çalışmalar"><a class="header" href="#continue-eden-Çalışmalar">continue Eden Çalışmalar</a></h3>
+<h3 id="ongoing-work"><a class="header" href="#ongoing-work">Ongoing Work</a></h3>
 <ul>
 <li>Runtime Library</li>
 <li>Standard Library</li>
