@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>SPI (Serial Peripheral Interface), yüksek hızlı senkron full-duplex haberleşme protokolüdür. SD kart, flash bellek, LCD display and RF modüller for kullanılır.</p>
+<p>SPI (Serial Peripheral Interface), yüksek hızlı senkron full-duplex haberleşme protokolüdür. SD kart, flash bellek, LCD display and RF Moduleler for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -237,7 +237,7 @@ variable response = spi.transfer(spi1, [0x03, 0x00, 0x00])
 gpio.pin_write(cs, gpio.HIGH)  // Deselect</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: SD Card Reader</h3>
+<h3>💡 Example: SD Card Reader</h3>
 <pre><code>import hal::spi, hal::gpio
 
 constant CMD0 = 0    // GO_IDLE_STATE
@@ -339,7 +339,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: NRF24L01+ Wireless Module</h3>
+<h3>💡 Example 2: NRF24L01+ Wireless Module</h3>
 <pre><code>import hal::spi, hal::gpio
 
 constant NRF24_CONFIG = 0x00
@@ -441,7 +441,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: MAX7219 LED Matrix Driver</h3>
+<h3>💡 Example 3: MAX7219 LED Matrix Driver</h3>
 <pre><code>import hal::spi, hal::gpio
 
 constant MAX7219_NOOP = 0x00
@@ -522,7 +522,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 4: W25Q128 Flash Memory</h3>
+<h3>💡 Example 4: W25Q128 Flash Memory</h3>
 <pre><code>import hal::spi, hal::gpio
 
 constant W25Q_WRITE_ENABLE = 0x06
@@ -653,7 +653,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 5: ILI9341 TFT LCD (240x320 Display)</h3>
+<h3>💡 Example 5: ILI9341 TFT LCD (240x320 Display)</h3>
 <pre><code>import hal::spi, hal::gpio
 
 struct ILI9341 do
@@ -903,7 +903,7 @@ function set_clock_mode(handle: Handle, mode: ClockMode)
 <tr><td>3</td><td>1</td><td>1</td><td>High</td><td>Rising</td><td>MAX7219, NRF24L01</td></tr>
 </table>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>CS (Chip Select) pini <strong>manuel kontrol</strong> edilmelidir (NSS_SOFT mode)</li>
 <li>MISO hattı pull-up gerektirebilir (open-collector slave'ler for)</li>
@@ -911,7 +911,7 @@ function set_clock_mode(handle: Handle, mode: ClockMode)
 <li>Multi-slave for her device'ın <strong>ayrı CS pini</strong> olmalı</li>
 <li>SCK, MOSI, MISO pinleri <strong>tüm slave'ler arasında paylaşılır</strong></li>
 <li>Full-duplex modda her gönderilen byte bir byte alır</li>
-<li>DMA kullanırken buffer alignment dikkat edin (4-byte boundary)</li>
+<li>DMA kullanırken buffer alignment Attention edin (4-byte boundary)</li>
 <li>Clock polarity/phase device datasheet'ine göre ayarlayın</li>
 </ul>
 
@@ -935,14 +935,14 @@ function set_clock_mode(handle: Handle, mode: ClockMode)
 <li><strong>GD32VF103:</strong> SPI0/SPI1/SPI2 (RISC-V)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - SCK/MISO/MOSI/CS pin configuration</li>
 <li><code>hal::dma</code> - DMA transfers for high-speed data</li>
 <li><code>hal::int</code> - SPI interrupt handling</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li>Motorola SPI Block Guide (original specification)</li>
 <li>STM32 AN4286 - SPI protocol used in STM32</li>
@@ -950,9 +950,9 @@ function set_clock_mode(handle: Handle, mode: ClockMode)
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

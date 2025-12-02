@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Core modülü, sistem başlatma, clock konfigürasyonu, reset and güç yönetimi Functionsı sağlar.</p>
+<p>Core Moduleü, sistem başlatma, clock konfigürasyonu, reset and güç yönetimi Functionsı sağlar.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -251,7 +251,7 @@ core.stop()
 core.standby()</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: System Clock Configuration (STM32F4 168MHz)</h3>
+<h3>💡 Example: System Clock Configuration (STM32F4 168MHz)</h3>
 <pre><code>import hal::core
 
 function configure_168mhz() do
@@ -297,7 +297,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Low-Power Sleep Mode</h3>
+<h3>💡 Example: Low-Power Sleep Mode</h3>
 <pre><code>import hal::core, hal::int, hal::gpio
 
 variable wakeup_flag = false
@@ -336,7 +336,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Watchdog Timer (IWDG)</h3>
+<h3>💡 Example: Watchdog Timer (IWDG)</h3>
 <pre><code>import hal::core
 
 function watchdog_test() do
@@ -376,7 +376,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Brownout Detection & Reset Handling</h3>
+<h3>💡 Example: Brownout Detection & Reset Handling</h3>
 <pre><code>import hal::core
 
 enum ResetReason {
@@ -450,7 +450,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: CPU Load Monitoring</h3>
+<h3>💡 Example: CPU Load Monitoring</h3>
 <pre><code>import hal::core
 
 variable idle_counter = 0
@@ -592,7 +592,7 @@ function get_ram_size() -> sayı    // KB</code></pre>
 <li><strong>Watchdog</strong>: Kullanın system reliability for (hang recovery)</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li><strong>Flash Latency</strong>: Yüksek frekans for otomatik ayarlanır (168MHz @ 3.3V = 5 WS)</li>
 <li><strong>PLL Lock Time</strong>: PLL stabilization for ~200μs bekleyin</li>
@@ -602,14 +602,14 @@ function get_ram_size() -> sayı    // KB</code></pre>
 <li><strong>HSE Bypass</strong>: External clock source for crystal yerine</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::rtc</code> - RTC clock configuration, wakeup timer</li>
 <li><code>hal::int</code> - Interrupt priorities, sleep mode wakeup</li>
 <li><code>hal::gpio</code> - WKUP pin configuration</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li><a href="https://www.st.com/resource/en/application_note/dm00129215.pdf">AN4621: STM32 Clock Configuration</a></li>
 <li><a href="https://www.st.com/resource/en/application_note/dm00083249.pdf">AN4365: Using STM32 Power Modes</a></li>
@@ -617,7 +617,7 @@ function get_ram_size() -> sayı    // KB</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a>
 </p>
 </main>
 </div>

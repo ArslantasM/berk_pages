@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>GPIO (General Purpose Input/Output) modülü, mikrokontrolcü pinlerinin dijital Introduction/çıkış olarak kontrolünü sağlar. LED kontrolü, buton okuma, sensör arayüzleri and dijital sinyaller for kullanılır.</p>
+<p>GPIO (General Purpose Input/Output) Moduleü, mikrokontrolcü pinlerinin dijital Introduction/çıkış olarak kontrolünü sağlar. LED kontrolü, buton okuma, sensör arayüzleri and dijital sinyaller for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -320,7 +320,7 @@ function interrupt_disable(pin: Pin)
 // Disable pin interrupt</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek 1: LED Blink</h3>
+<h3>💡 Example 1: LED Blink</h3>
 <pre><code>import hal::gpio, hal::core
 
 function ana() do
@@ -345,7 +345,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: Button Input with Interrupt</h3>
+<h3>💡 Example 2: Button Input with Interrupt</h3>
 <pre><code>import hal::gpio, hal::int
 
 variable button_pressed = false
@@ -387,7 +387,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: Multi-LED Control (Port Operations)</h3>
+<h3>💡 Example 3: Multi-LED Control (Port Operations)</h3>
 <pre><code>import hal::gpio, hal::core
 
 function ana() do
@@ -433,7 +433,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 4: Traffic Light Controller</h3>
+<h3>💡 Example 4: Traffic Light Controller</h3>
 <pre><code>import hal::gpio, hal::core
 
 struct TrafficLight do
@@ -492,13 +492,13 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>Pin kullanmadan önce port clock'unu enable etmelisiniz</li>
 <li>Open-drain çıkışlar external pull-up gerektirir</li>
 <li>5V tolerant pinler for datasheet kontrol edin</li>
 <li>Interrupt kullanırken NVIC konfigürasyonu gerekir</li>
-<li>Maximum pin current sınırlarına dikkat edin (~25mA)</li>
+<li>Maximum pin current sınırlarına Attention edin (~25mA)</li>
 <li>Analog mode kullanırken dijital bufferleri disable edilir</li>
 </ul>
 
@@ -510,7 +510,7 @@ end</code></pre>
 <li><strong>Nordic:</strong> nRF52/53 GPIO</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::int</code> - Interrupt controller</li>
 <li><code>hal::core</code> - System initialization</li>
@@ -518,9 +518,9 @@ end</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

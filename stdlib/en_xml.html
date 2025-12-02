@@ -199,7 +199,7 @@
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>xml</code> modülü, XML (Extensible Markup Language) dosyalarını okuma, yazma, ayrıştırma and düzenleme for kapsamlı araçlar sağlar. DOM and SAX ayrıştırıcıları, XPath sorguları and XML şema doğrulaması destekler.</p>
+        <p><code>xml</code> Moduleü, XML (Extensible Markup Language) dosyalarını okuma, yazma, ayrıştırma and düzenleme for kapsamlı araçlar sağlar. DOM and SAX ayrıştırıcıları, XPath sorguları and XML şema doğrulaması destekler.</p>
 
         <div class="function-group">
             <h3>🔍 XML Ayrıştırma</h3>
@@ -218,7 +218,7 @@
                 <li><strong>xml.Element()</strong> - XML elementi oluşturma</li>
                 <li><strong>xml.metin()</strong> - Metin düğümü ekleme</li>
                 <li><strong>xml.yorum()</strong> - Yorum ekleme</li>
-                <li><strong>xml.cdata()</strong> - CDATA bölümü ekleme</li>
+                <li><strong>xml.cdata()</strong> - CDATA Sectionü ekleme</li>
             </ul>
         </div>
 
@@ -338,47 +338,47 @@ class YapılandırmaYöneticisi {
     değer belge: xml.Belge
     
     function yeni(dosya_yolu: Dize) -> YapılandırmaYöneticisi {
-        değer örnek = YapılandırmaYöneticisi {
+        değer Example = YapılandırmaYöneticisi {
             dosya_yolu: dosya_yolu,
             belge: null
         }
         
         if fs.dosya_var_mı(dosya_yolu) {
-            örnek.belge = xml.dosyadan_ayrıştır(dosya_yolu)
+            Example.belge = xml.dosyadan_ayrıştır(dosya_yolu)
         } elseif {
-            örnek.belge = xml.Belge("1.0", "UTF-8")
-            örnek.belge.kök_element_oluştur("yapılandırma")
+            Example.belge = xml.Belge("1.0", "UTF-8")
+            Example.belge.kök_element_oluştur("yapılandırma")
         }
         
-        return örnek
+        return Example
     }
     
-    function ayar_al(bölüm: Dize, anahtar: Dize) -> Sonuç&lt;Dize, Hata&gt; {
-        değer xpath = f"//bölüm[@ad='{bölüm}']/{anahtar}"
+    function ayar_al(Section: Dize, anahtar: Dize) -> Sonuç&lt;Dize, Hata&gt; {
+        değer xpath = f"//Section[@ad='{Section}']/{anahtar}"
         değer bulunan = bu.belge.xpath(xpath)
         
         if bulunan.uzunluk > 0 {
             return Tamam(bulunan[0].metin)
         }
-        return Hata(f"Ayar bulunamadı: {bölüm}.{anahtar}")
+        return Hata(f"Ayar bulunamadı: {Section}.{anahtar}")
     }
     
-    function ayar_ata(bölüm: Dize, anahtar: Dize, değer: Dize) {
+    function ayar_ata(Section: Dize, anahtar: Dize, değer: Dize) {
         değer kök = bu.belge.kök()
-        değer bölüm_xpath = f"//bölüm[@ad='{bölüm}']"
-        değer bölüm_elem = kök.xpath(bölüm_xpath)
+        değer Section_xpath = f"//Section[@ad='{Section}']"
+        değer Section_elem = kök.xpath(Section_xpath)
         
-        if bölüm_elem.uzunluk == 0 {
-            bölüm_elem = xml.Element("bölüm")
-            bölüm_elem.öznitelik_ayarla("ad", bölüm)
-            kök.alt_ekle(bölüm_elem)
+        if Section_elem.uzunluk == 0 {
+            Section_elem = xml.Element("Section")
+            Section_elem.öznitelik_ayarla("ad", Section)
+            kök.alt_ekle(Section_elem)
         } elseif {
-            bölüm_elem = bölüm_elem[0]
+            Section_elem = Section_elem[0]
         }
         
         değer ayar_elem = xml.Element(anahtar)
         ayar_elem.metin_ayarla(değer)
-        bölüm_elem.alt_ekle(ayar_elem)
+        Section_elem.alt_ekle(ayar_elem)
     }
     
     function kaydet() {
@@ -412,7 +412,7 @@ print(f"Sunucu: {sunucu}, Dil: {dil}")</code></pre>
             <li>Güzel yazdırma (pretty print) ile okunabilirliği artırın</li>
         </ul>
 
-        <h2>🔗 İlgili Modüller</h2>
+        <h2>🔗 İlgili Moduleler</h2>
         <ul>
             <li><a href="json.html">json</a> - JSON veri formatı</li>
             <li><a href="yaml.html">yaml</a> - YAML veri formatı</li>

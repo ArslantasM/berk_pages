@@ -199,7 +199,7 @@
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>audio</code> modülü, ses dosyalarını yükleme, oynatma, kaydetme and işleme for kapsamlı araçlar sağlar. MP3, WAV, FLAC gibi formatları destekler, ses efektleri and sentezleyici özellikleri sunar.</p>
+        <p><code>audio</code> Moduleü, ses dosyalarını yükleme, oynatma, kaydetme and işleme for kapsamlı araçlar sağlar. MP3, WAV, FLAC gibi formatları destekler, ses efektleri and sentezleyici özellikleri sunar.</p>
 
         <div class="function-group">
             <h3>🎵 Ses Oynatma</h3>
@@ -273,11 +273,11 @@ class MüzikÇalar {
         
         // Ses bilgilerini göster
         değer süre = bu.ses.aç().süre()
-        değer örnek_hızı = bu.ses.aç().örnek_hızı()
+        değer Example_hızı = bu.ses.aç().Example_hızı()
         değer kanal = bu.ses.aç().kanal_sayısı()
         
         print(f"  Süre: {süre:.2f} saniye")
-        print(f"  Örnek hızı: {örnek_hızı} Hz")
+        print(f"  Example hızı: {Example_hızı} Hz")
         print(f"  Kanallar: {kanal}")
         
         return Tamam(null)
@@ -359,13 +359,13 @@ class SesKaydedici {
     
     function yeni() -> Sonuç&lt;SesKaydedici, Hata&gt; {
         değer mikrofon = audio.mikrofon_aç(
-            örnek_hızı: 44100,
+            Example_hızı: 44100,
             kanallar: 2,
             tampon_boyutu: 4096
         )?
         
         print("🎙️  Mikrofon hazır")
-        print(f"  Örnek hızı: {mikrofon.örnek_hızı()} Hz")
+        print(f"  Example hızı: {mikrofon.Example_hızı()} Hz")
         print(f"  Kanallar: {mikrofon.kanal_sayısı()}")
         
         return Tamam(SesKaydedici {
@@ -447,18 +447,18 @@ print("\n✓ Ses başarıyla kaydedildi!")</code></pre>
 kullan math
 
 class Sentezleyici {
-    değer örnek_hızı: Tam = 44100
+    değer Example_hızı: Tam = 44100
     
     function nota_çal(nota: Dize, süre: Gerçek, dalga_tipi: Dize = "sinüs") -> audio.Ses {
         değer frekans = audio.nota_frekansı(nota)
-        değer örnek_sayısı = (bu.örnek_hızı * süre).tam()
-        değer Examples = Liste.yeni&lt;Gerçek&gt;(örnek_sayısı)
+        değer Example_sayısı = (bu.Example_hızı * süre).tam()
+        değer Examples = Liste.yeni&lt;Gerçek&gt;(Example_sayısı)
         
-        for i içinde 0..örnek_sayısı {
-            değer t = i.gerçek() / bu.örnek_hızı.gerçek()
+        for i içinde 0..Example_sayısı {
+            değer t = i.gerçek() / bu.Example_hızı.gerçek()
             değer faz = 2.0 * math.PI * frekans * t
             
-            değer örnek = eşleştir dalga_tipi {
+            değer Example = eşleştir dalga_tipi {
                 "sinüs" => math.sin(faz),
                 "kare" => if math.sin(faz) >= 0.0 { 1.0 } elseif { -1.0 },
                 "testere" => 2.0 * (faz / (2.0 * math.PI) - (faz / (2.0 * math.PI)).taban()),
@@ -467,10 +467,10 @@ class Sentezleyici {
             
             // ADSR zarfı implement (basit)
             değer zarf = bu.adsr_zarfı(t, süre)
-            Examples.ekle(örnek * zarf)
+            Examples.ekle(Example * zarf)
         }
         
-        return audio.Examplesden_oluştur(Examples, bu.örnek_hızı)
+        return audio.Examplesden_oluştur(Examples, bu.Example_hızı)
     }
     
     function adsr_zarfı(t: Gerçek, toplam_süre: Gerçek) -> Gerçek {
@@ -547,7 +547,7 @@ print("✓ Bitti!")</code></pre>
             <li>Normalize ederek ses seviyesi tutarlılığı sağlayın</li>
         </ul>
 
-        <h2>🔗 İlgili Modüller</h2>
+        <h2>🔗 İlgili Moduleler</h2>
         <ul>
             <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>
             <li><a href="math.html">math</a> - Mathematicssel Functions</li>

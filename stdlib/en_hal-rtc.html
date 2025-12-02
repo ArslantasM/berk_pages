@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>RTC (Real-Time Clock) modülü, düşük güç tüketimli tarih and saat tutma işlevi sağlar. Batarya destekli çalışma, alarm and takvim özellikleri sunar.</p>
+<p>RTC (Real-Time Clock) Moduleü, düşük güç tüketimli tarih and saat tutma işlevi sağlar. Batarya destekli çalışma, alarm and takvim özellikleri sunar.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -243,7 +243,7 @@ variable time = rtc.get_time(rtc_handle)
 io.println("{:02}:{:02}:{:02}".formatla(time.hours, time.minutes, time.seconds))</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: Digital Clock Display</h3>
+<h3>💡 Example: Digital Clock Display</h3>
 <pre><code>import hal::rtc, hal::core
 
 struct DateTime do
@@ -314,7 +314,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Alarm Clock</h3>
+<h3>💡 Example: Alarm Clock</h3>
 <pre><code>import hal::rtc
 
 variable alarm_triggered = false
@@ -369,7 +369,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Wakeup Timer (Auto-Wakeup from Standby)</h3>
+<h3>💡 Example: Wakeup Timer (Auto-Wakeup from Standby)</h3>
 <pre><code>import hal::rtc, hal::core
 
 function periodic_wakeup() do
@@ -412,7 +412,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Battery-Backed Data Logger</h3>
+<h3>💡 Example: Battery-Backed Data Logger</h3>
 <pre><code>import hal::rtc
 
 // Store sensor readings in backup registers (survives power loss)
@@ -492,7 +492,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Timestamp Events (Input Capture)</h3>
+<h3>💡 Example: Timestamp Events (Input Capture)</h3>
 <pre><code>import hal::rtc, hal::gpio
 
 variable event_count = 0
@@ -547,7 +547,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Multi-Alarm Scheduler</h3>
+<h3>💡 Example: Multi-Alarm Scheduler</h3>
 <pre><code>import hal::rtc
 
 struct Task do
@@ -779,7 +779,7 @@ io.println("Boot count: {}", boot_count)</code></pre>
 <li><strong>ESP32</strong>: RTC with ULP coprocessor support</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li><strong>Clock Source</strong>: LSE (32.768kHz crystal, ±20ppm) en accurate, LSI (32kHz RC, ±5%) backup</li>
 <li><strong>VBAT Pin</strong>: CR2032 battery (3V) ile power-down'da RTC çalışmaya continue eder</li>
@@ -791,14 +791,14 @@ io.println("Boot count: {}", boot_count)</code></pre>
 <li><strong>Sub-second</strong>: Synchronous prescaler ile ms resolution mümkün</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::int</code> - RTC alarm interrupts (NVIC)</li>
 <li><code>hal::core</code> - System wakeup from standby</li>
 <li><code>hal::gpio</code> - Timestamp input pin</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li><a href="https://www.st.com/resource/en/application_note/dm00025071.pdf">AN3371: Using STM32 RTC</a></li>
 <li><a href="https://www.st.com/resource/en/application_note/dm00226187.pdf">AN4759: Using STM32 RTC Wakeup Timer</a></li>
@@ -806,7 +806,7 @@ io.println("Boot count: {}", boot_count)</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a>
 </p>
 </main>
 </div>

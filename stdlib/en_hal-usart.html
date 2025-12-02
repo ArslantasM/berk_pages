@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>USART/UART modülü, seri haberleşme protokolüdür. GPS, GSM modüller, sensörler and PC ile haberleşme for kullanılır.</p>
+<p>USART/UART Moduleü, seri haberleşme protokolüdür. GPS, GSM Moduleler, sensörler and PC ile haberleşme for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -244,7 +244,7 @@ usart.write(uart, "Hello World!\n")
 variable data = usart.read(uart, 100)  // Read up to 100 bytes</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek 1: Serial Console</h3>
+<h3>💡 Example 1: Serial Console</h3>
 <pre><code>import hal::usart, hal::gpio, hal::core
 
 function uart_print(uart: usart.Handle, msg: string) do
@@ -340,7 +340,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: GPS Parser (NMEA)</h3>
+<h3>💡 Example 2: GPS Parser (NMEA)</h3>
 <pre><code>import hal::usart, string
 
 struct GPSData do
@@ -432,7 +432,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: AT Command Interface (GSM)</h3>
+<h3>💡 Example 3: AT Command Interface (GSM)</h3>
 <pre><code>import hal::usart, hal::core
 
 struct GSMModem do
@@ -536,7 +536,7 @@ constant BAUD_230400 = 230400
 constant BAUD_460800 = 460800
 constant BAUD_921600 = 921600</code></pre>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>TX/RX pinlerini true alternatif fonksiyona ayarlayın</li>
 <li>Baud rate hesabı clock frequency'ye bağlıdır</li>
@@ -545,7 +545,7 @@ constant BAUD_921600 = 921600</code></pre>
 <li>3.3V-5V level shifting gerekebilir</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - TX/RX pin configuration</li>
 <li><code>hal::dma</code> - DMA transfers</li>
@@ -553,8 +553,8 @@ constant BAUD_921600 = 921600</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a>
 </p>
 </main>
 </div>

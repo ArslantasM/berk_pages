@@ -231,8 +231,8 @@ variable json_güzel = json.stringify(nesne, 2)  // Pretty print</code></pre>
             <pre><code>import json, fs
 
 function config_oku(dosya: string) -> Sonuç do
-    variable içerik = fs.dosya_oku(dosya)?
-    variable config = json.parse(içerik)?
+    variable Content = fs.dosya_oku(dosya)?
+    variable config = json.parse(Content)?
     return Tamam(config)
 end
 

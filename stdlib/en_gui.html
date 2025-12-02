@@ -199,7 +199,7 @@
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>gui</code> modülü, modern grafik kullanıcı arayüzleri oluşturmak for kapsamlı widget and pencere yönetimi araçları sağlar. Native görünümlü, çapraz platform masaüstü uygulamaları geliştirin.</p>
+        <p><code>gui</code> Moduleü, modern grafik kullanıcı arayüzleri oluşturmak for kapsamlı widget and pencere yönetimi araçları sağlar. Native görünümlü, çapraz platform masaüstü uygulamaları geliştirin.</p>
 
         <div class="function-group">
             <h3>🪟 Pencere Yönetimi</h3>
@@ -439,8 +439,8 @@ class MetinEditörü {
         )
         
         if dosya_yolu.var_mı() {
-            değer içerik = fs.dosya_oku_metin(dosya_yolu.aç())
-            bu.metin_alanı.metin_ayarla(içerik)
+            değer Content = fs.dosya_oku_metin(dosya_yolu.aç())
+            bu.metin_alanı.metin_ayarla(Content)
             bu.geçerli_dosya = dosya_yolu
             bu.pencere.başlık_ayarla(f"Metin Editörü - {dosya_yolu.aç()}")
         }
@@ -468,8 +468,8 @@ class MetinEditörü {
     }
     
     function dosyaya_kaydet(dosya_yolu: Dize) {
-        değer içerik = bu.metin_alanı.metin_al()
-        fs.dosya_yaz_metin(dosya_yolu, içerik)
+        değer Content = bu.metin_alanı.metin_al()
+        fs.dosya_yaz_metin(dosya_yolu, Content)
         gui.mesaj_kutusu("Başarılı", "Dosya kaydedildi!", gui.MesajTipi.BİLGİ)
         bu.pencere.başlık_ayarla(f"Metin Editörü - {dosya_yolu}")
     }
@@ -523,7 +523,7 @@ uygulama.çalıştır()</code></pre>
             <li>Native görünüm for platform stillerini kullanın</li>
         </ul>
 
-        <h2>🔗 İlgili Modüller</h2>
+        <h2>🔗 İlgili Moduleler</h2>
         <ul>
             <li><a href="graphics.html">graphics</a> - 2D çizim and grafik</li>
             <li><a href="image.html">image</a> - Görüntü işleme</li>

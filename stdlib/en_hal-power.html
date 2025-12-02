@@ -199,7 +199,7 @@
 </div>
 
 <h2> Genel Bakış</h2>
-<p>Power modülü, embedded sistemlerde enerji verimliliği for kritik önem taşır. Sleep, Stop and Standby modları ile güç tüketimini mikroamperlere düşürür. Bataryalı IoT cihazları, wearable'lar and uzun ömürlü sensör ağları for vazgeçilmezdir.</p>
+<p>Power Moduleü, embedded sistemlerde enerji verimliliği for kritik önem taşır. Sleep, Stop and Standby modları ile güç tüketimini mikroamperlere düşürür. Bataryalı IoT cihazları, wearable'lar and uzun ömürlü sensör ağları for vazgeçilmezdir.</p>
 
 <h2> Temel Özellikler</h2>
 <ul>
@@ -207,7 +207,7 @@
 <li><strong>Stop Mode:</strong> Tüm clocklar durdurulur, SRAM korunur (<1 μA typical)</li>
 <li><strong>Standby Mode:</strong> Backup domain hariç her şey kapalı (~0.3 μA)</li>
 <li><strong>Voltage Scaling:</strong> 1.8V - 3.6V arası dinamik voltaj ayarı</li>
-<li><strong>PVD (Programmable Voltage Detector):</strong> Düşük voltaj uyarısı</li>
+<li><strong>PVD (Programmable Voltage Detector):</strong> Düşük voltaj Warningsı</li>
 <li><strong>Backup Domain:</strong> RTC + 4KB backup SRAM (Standby'de korunur)</li>
 <li><strong>Wakeup Sources:</strong> RTC alarm, EXTI, USART, USB, tamper</li>
 <li><strong>Regulator Modes:</strong> Main/Low-power regulator seçimi</li>
@@ -275,7 +275,7 @@ struct PowerConfig do
     low_power_deepsleep: mantık = true
 end</code></pre>
 
-<h2> Örnek 1: Sleep Mode - Periodic Sensor Reading</h2>
+<h2> Example 1: Sleep Mode - Periodic Sensor Reading</h2>
 <div class="example-box">
 <h3>Problem: 1 saniyede bir sensör okuyup enerji tasarrufu yapmak</h3>
 <pre><code>import hal::power, hal::rtc, hal::adc, hal::gpio
@@ -337,7 +337,7 @@ end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Sleep mode ~1-2 mA (peripherals active), Run mode ~20 mA. Ortalama ~2 mA (90% sleep, 10% active).</p>
 </div>
 
-<h2> Örnek 2: Stop Mode - Button Wakeup (Ultra Low Power)</h2>
+<h2> Example 2: Stop Mode - Button Wakeup (Ultra Low Power)</h2>
 <div class="example-box">
 <h3>Problem: Buton basılana kadar minimum güç tüketimi</h3>
 <pre><code>import hal::power, hal::exti, hal::gpio, hal::rcc
@@ -395,7 +395,7 @@ end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Stop mode <1 μA (STM32L4), ~10 μA (STM32F4). Wakeup time ~5-10 μs.</p>
 </div>
 
-<h2> Örnek 3: Standby Mode - RTC Alarm Wakeup (Deepest Sleep)</h2>
+<h2> Example 3: Standby Mode - RTC Alarm Wakeup (Deepest Sleep)</h2>
 <div class="example-box">
 <h3>Problem: 1 saat uyuyup uyanma, SRAM kaybedilir ama backup domain korunur</h3>
 <pre><code>import hal::power, hal::rtc, hal::backup
@@ -469,7 +469,7 @@ end</code></pre>
 <p><strong>Güç Tüketimi:</strong> Standby mode ~0.3-2 μA. 1 saat uyku = 0.0003 mAh. 1000 mAh batarya ile 380+ yıl!</p>
 </div>
 
-<h2> Örnek 4: Voltage Scaling for Dynamic Performance</h2>
+<h2> Example 4: Voltage Scaling for Dynamic Performance</h2>
 <div class="example-box">
 <h3>Problem: Yüksek performans gerektiğinde Scale 1, düşük güçte Scale 3 kullanmak</h3>
 <pre><code>import hal::power, hal::rcc
@@ -547,7 +547,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> Dynamic scaling ile ortalama güç tüketimi %40-60 azalır.</p>
 </div>
 
-<h2> API Referansı</h2>
+<h2> API Referenceı</h2>
 <h3>Power Modes</h3>
 <pre><code>// Sleep mode entry
 function enter_sleep_mode(mode: SleepMode)
@@ -583,7 +583,7 @@ function flash_power_down_enable()
 function flash_power_down_disable()</code></pre>
 
 <div class="warning">
-<strong> Önemli Notlar:</strong>
+<strong> Important Notes:</strong>
 <ul>
 <li><strong>Stop Mode Wakeup:</strong> Clock kaynağı HSI/8'e döner, sysclk_restore() gerekli</li>
 <li><strong>Standby Wakeup:</strong> Full system reset, tüm SRAM kaybolur (backup domain hariç)</li>
@@ -636,7 +636,7 @@ function flash_power_down_disable()</code></pre>
 <li> <strong>SRAM güvenme:</strong> Standby'de SRAM kaybolur, kritik veriyi backup domain'e yaz</li>
 </ul>
 
-<h2> İlgili Modüller</h2>
+<h2> İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-rtc-tr.html">hal::rtc</a> - Wakeup timer configuration</li>
 <li><a href="hal-exti-tr.html">hal::exti</a> - External wakeup sources</li>
@@ -645,7 +645,7 @@ function flash_power_down_disable()</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html"> HAL Modülleri</a> | 
+<a href="hal-index-tr.html"> HAL Moduleleri</a> | 
 <a href="hal-power-en.html"> English</a>
 </p>
 </main>

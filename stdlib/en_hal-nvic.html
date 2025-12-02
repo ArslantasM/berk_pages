@@ -199,7 +199,7 @@
 </div>
 
 <h2> Genel Bakış</h2>
-<p>NVIC modülü, ARM Cortex-M serisi işlemcilerde interrupt yönetimini sağlar. 240+ interrupt kaynağını 16 öncelik seviyesi ile yönetir, nested interrupts destekler and kritik bölgeleri koruma mekanizmaları sunar. Gerçek zamanlı embedded sistemlerin omurgasıdır.</p>
+<p>NVIC Moduleü, ARM Cortex-M serisi işlemcilerde interrupt yönetimini sağlar. 240+ interrupt kaynağını 16 öncelik seviyesi ile yönetir, nested interrupts destekler and kritik bölgeleri koruma mekanizmaları sunar. Gerçek zamanlı embedded sistemlerin omurgasıdır.</p>
 
 <h2> Temel Özellikler</h2>
 <ul>
@@ -280,7 +280,7 @@ struct NVICConfig do
     enabled: mantık = true
 end</code></pre>
 
-<h2> Örnek 1: Priority Grouping & Preemption</h2>
+<h2> Example 1: Priority Grouping & Preemption</h2>
 <div class="example-box">
 <h3>Problem: USART and Timer interrupt'larının öncelik yönetimi</h3>
 <pre><code>import hal::nvic, hal::usart, hal::timer
@@ -338,7 +338,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> USART interrupt'ı TIM2'ye girebilir (preempt), ama TIM2 USART'a giremez. ADC her ikisi tarafından preempt edilebilir.</p>
 </div>
 
-<h2> Örnek 2: Critical Section (Disable All Interrupts)</h2>
+<h2> Example 2: Critical Section (Disable All Interrupts)</h2>
 <div class="example-box">
 <h3>Problem: Paylaşımlı değişkeni koruma (thread-safe erişim)</h3>
 <pre><code>import hal::nvic
@@ -374,7 +374,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> sayac değişkeni interrupt'lardan korunur. Race condition önlenir.</p>
 </div>
 
-<h2> Örnek 3: Vector Table Relocation (Bootloader)</h2>
+<h2> Example 3: Vector Table Relocation (Bootloader)</h2>
 <div class="example-box">
 <h3>Problem: Bootloader'dan application'a geçiş</h3>
 <pre><code>import hal::nvic, hal::flash
@@ -432,7 +432,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> Bootloader 0x0800_0000'den çalışır, uygulama 0x0800_8000'e yüklenir. Reset sonrası true vector table kullanılır.</p>
 </div>
 
-<h2> API Referansı</h2>
+<h2> API Referenceı</h2>
 <h3>Temel Functions</h3>
 <pre><code>// Interrupt enable/disable
 function enable_irq(irq: IRQn, config: NVICConfig)
@@ -465,10 +465,10 @@ function get_vector_table() -> sayı
 function system_reset()</code></pre>
 
 <div class="warning">
-<strong> Önemli Notlar:</strong>
+<strong> Important Notes:</strong>
 <ul>
 <li><strong>Priority Inversion:</strong> Düşük öncelikli interrupt uzun sürerse, yüksek öncelikli bekler</li>
-<li><strong>Shared Peripherals:</strong> Aynı periferali kullanan interrupt'ların önceliği dikkatli ayarlanmalı</li>
+<li><strong>Shared Peripherals:</strong> Aynı periferali kullanan interrupt'ların önceliği Attentionli ayarlanmalı</li>
 <li><strong>Stack Overflow:</strong> Nested interrupt çok derinleşirse stack overflow olabilir</li>
 <li><strong>Vector Table:</strong> RAM'e relocation yaparken alignment (0x200) gerekli</li>
 </ul>
@@ -524,7 +524,7 @@ function system_reset()</code></pre>
 <li> <strong>Uzun kritik bölge:</strong> disable_all_interrupts() minimum süre</li>
 </ul>
 
-<h2> İlgili Modüller</h2>
+<h2> İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-exti-tr.html">hal::exti</a> - External interrupts</li>
 <li><a href="hal-systick-tr.html">hal::systick</a> - SysTick interrupt</li>
@@ -534,7 +534,7 @@ function system_reset()</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html"> HAL Modülleri</a> | 
+<a href="hal-index-tr.html"> HAL Moduleleri</a> | 
 <a href="hal-nvic-en.html"> English</a>
 </p>
 </main>

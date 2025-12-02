@@ -227,14 +227,14 @@ git push origin feature/aciklayici-isim
 # GitHub'da Pull Request açın
 # - Açıklayıcı başlık and description
 # - İlgili issue'yu bağlayın (#123)
-# - Screenshot/örnek ekleyin (UI değişikliği ise)</code></pre>
+# - Screenshot/Example ekleyin (UI değişikliği ise)</code></pre>
 
                         <h2>📐 Kod Standartları</h2>
 
                         <h3>Rust Kodu</h3>
                         <ul>
                             <li><strong>Rustfmt:</strong> <code>cargo fmt</code> ile formatlanmalı</li>
-                            <li><strong>Clippy:</strong> <code>cargo clippy</code> uyarısız olmalı</li>
+                            <li><strong>Clippy:</strong> <code>cargo clippy</code> Warningsız olmalı</li>
                             <li><strong>Naming:</strong> snake_case (function/variable), PascalCase (type/trait)</li>
                             <li><strong>Documentation:</strong> Public API'ler doc comment'e sahip olmalı</li>
                         </ul>
@@ -267,7 +267,7 @@ pub fn parse_expression(
 /// @param b İkinci sayı
 /// @return Toplam sonucu
 ///
-/// @örnek
+/// @Example
 /// variable sonuç = topla(5, 3)  // 8
 function topla(a: tam, b: tam) -> tam {
     döndür a + b
@@ -345,7 +345,7 @@ Fixes #123</code></pre>
                         <ul>
                             <li><code>feat</code> - Yeni trait</li>
                             <li><code>fix</code> - Bug fix</li>
-                            <li><code>docs</code> - Dokümantasyon</li>
+                            <li><code>docs</code> - Documentation</li>
                             <li><code>style</code> - Format değişikliği</li>
                             <li><code>refactor</code> - Kod refactoring</li>
                             <li><code>test</code> - Test ekleme/düzeltme</li>
@@ -356,7 +356,7 @@ Fixes #123</code></pre>
                         <h3>Examples:</h3>
                         <pre><code class="language-bash">git commit -m "feat(parser): pattern matching desteği eklendi"
 git commit -m "fix(codegen): LLVM pointer hatası düzeltildi"
-git commit -m "docs(stdlib): math modülü Examplesi eklendi"
+git commit -m "docs(stdlib): math Moduleü Examplesi eklendi"
 git commit -m "perf(lexer): token buffer size optimize edildi"</code></pre>
 
                         <h2>🎯 Best Practices</h2>
@@ -414,8 +414,8 @@ fn read_file(path: &str) -> Result<String, BerkError> {
                         <ul>
                             <li>☑️ Tüm testler geçiyor mu?</li>
                             <li>☑️ Yeni testler eklendi mi?</li>
-                            <li>☑️ Dokümantasyon güncellendi mi?</li>
-                            <li>☑️ <code>cargo clippy</code> uyarısız mı?</li>
+                            <li>☑️ Documentation güncellendi mi?</li>
+                            <li>☑️ <code>cargo clippy</code> Warningsız mı?</li>
                             <li>☑️ <code>cargo fmt</code> uygulandı mı?</li>
                             <li>☑️ Breaking change var mı? (CHANGELOG.md)</li>
                             <li>☑️ Commit mesajları standartlara uygun mu?</li>
@@ -429,10 +429,10 @@ fn read_file(path: &str) -> Result<String, BerkError> {
                             <li>Review'ları <code>Re-request review</code> butonuna tıklayarak bildirin</li>
                         </ul>
 
-                        <h2>🚀 İleri Seviye Konular</h2>
+                        <h2>🚀 Advanced Konular</h2>
 
                         <h3>LLVM Code Generation</h3>
-                        <pre><code class="language-rust">// Örnek: Binary operasyon for LLVM IR üretme
+                        <pre><code class="language-rust">// Example: Binary operasyon for LLVM IR üretme
 fn codegen_binary_op(
     &mut self,
     op: BinaryOp,

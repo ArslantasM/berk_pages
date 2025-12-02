@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>EXTI modülü, GPIO pinlerinde meydana gelen değişiklikleri (rising edge, falling edge) yakalayarak interrupt üretir. Buton basımları, harici sensör sinyalleri and asenkron olaylar for kritik öneme sahiptir. Polling gerektirmeden düşük güç tüketimi and yüksek tepki süresi sağlar.</p>
+<p>EXTI Moduleü, GPIO pinlerinde meydana gelen değişiklikleri (rising edge, falling edge) yakalayarak interrupt üretir. Buton basımları, harici sensör sinyalleri and asenkron olaylar for kritik öneme sahiptir. Polling gerektirmeden düşük güç tüketimi and yüksek tepki süresi sağlar.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -273,7 +273,7 @@ struct EXTIConfig do
     debounce_ms: sayı = 0  // Software debounce
 end</code></pre>
 
-<h2>💡 Örnek 1: Button with Debounce</h2>
+<h2>💡 Example 1: Button with Debounce</h2>
 <div class="example-box">
 <h3>Problem: Mekanik butonlarda bouncing problemi</h3>
 <pre><code>import hal::exti, hal::gpio, hal::systick
@@ -319,7 +319,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> Bouncing problemi olmadan temiz buton algılama. 50ms içinde tekrar tetiklemeleri filtreler.</p>
 </div>
 
-<h2>💡 Örnek 2: Rotary Encoder (Quadrature Decoder)</h2>
+<h2>💡 Example 2: Rotary Encoder (Quadrature Decoder)</h2>
 <div class="example-box">
 <h3>Problem: Mekanik encoder ile konum okuma</h3>
 <pre><code>import hal::exti, hal::gpio
@@ -397,7 +397,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> Rotary encoder konumunu gerçek zamanlı takip eder. CW/CCW yönü otomatik algılanır.</p>
 </div>
 
-<h2>💡 Örnek 3: Multi-Source Priority Handling</h2>
+<h2>💡 Example 3: Multi-Source Priority Handling</h2>
 <div class="example-box">
 <h3>Problem: Birden fazla interrupt kaynağını öncelik sırasına göre yönetme</h3>
 <pre><code>import hal::exti, hal::gpio, hal::nvic
@@ -458,7 +458,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> Kritik olaylar düşük öncelikli interrupt'ları preempt eder. Sistem güvenliği sağlanır.</p>
 </div>
 
-<h2>📚 API Referansı</h2>
+<h2>📚 API Referenceı</h2>
 <h3>Temel Functions</h3>
 <pre><code>// EXTI hattını yapılandırır
 function init(line: sayı, config: EXTIConfig) -> Sonuç
@@ -482,7 +482,7 @@ function trigger_software(line: sayı)
 function connect_gpio(line: sayı, port: gpio.Port, pin: sayı)</code></pre>
 
 <div class="warning">
-<strong>⚠️ Önemli Notlar:</strong>
+<strong>⚠️ Important Notes:</strong>
 <ul>
 <li><strong>Shared IRQs:</strong> EXTI5-9 and EXTI10-15 paylaşımlı IRQ kullanır</li>
 <li><strong>Pin Mapping:</strong> Aynı pin numarası farklı portlarda aynı EXTI hattını kullanır (PA0, PB0, PC0 -> EXTI0)</li>
@@ -541,7 +541,7 @@ function connect_gpio(line: sayı, port: gpio.Port, pin: sayı)</code></pre>
 <li>❌ <strong>Uzun delay kullanma:</strong> Blocking delay callback içinde kullanılmamalı</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-gpio-tr.html">hal::gpio</a> - GPIO pin configuration</li>
 <li><a href="hal-nvic-tr.html">hal::nvic</a> - Interrupt priority management</li>
@@ -551,7 +551,7 @@ function connect_gpio(line: sayı, port: gpio.Port, pin: sayı)</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-index-tr.html">🔙 HAL Moduleleri</a> | 
 <a href="hal-exti-en.html">🌐 English</a>
 </p>
 </main>

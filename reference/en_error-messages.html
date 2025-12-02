@@ -291,7 +291,7 @@ sonuç = topla(5)  // 2 parametre gerekli, 1 verildi
 // ÇÖZÜM
 sonuç = topla(5, 10)</code></pre>
 
-                        <h4><code>E303: Dönüş tipi uyumsuz</code></h4>
+                        <h4><code>E303: Return Type uyumsuz</code></h4>
                         <pre><code class="language-berk">// HATA
 function al_isim() -> metin {
     döndür 42  // tam, metin not
@@ -352,18 +352,18 @@ if 5 < dizi.uzunluk {
 
                         <h4><code>R201: Dosya bulunamadı</code></h4>
                         <pre><code class="language-berk">// HATA
-variable içerik = fs.oku_dosya("yok.txt")
+variable Content = fs.oku_dosya("yok.txt")
 
 // ÇÖZÜM
 if fs.var_mı("dosya.txt") {
-    variable içerik = fs.oku_dosya("dosya.txt")
+    variable Content = fs.oku_dosya("dosya.txt")
 } else {
     print("Dosya bulunamadı")
 }
 
 // or try-catch kullan
 dene {
-    variable içerik = fs.oku_dosya("dosya.txt")
+    variable Content = fs.oku_dosya("dosya.txt")
 } yakala hata {
     print("Hata: " + hata.mesaj)
 }</code></pre>
@@ -446,8 +446,8 @@ io.print("Tip: " + type_of(x))</code></pre>
                             <ul>
                                 <li><strong>GitHub Issues:</strong> Hata raporu gönderin</li>
                                 <li><strong>Discord:</strong> Topluluktan yardım isteyin</li>
-                                <li><strong>Dokümantasyon:</strong> İlgili module sayfasını inceleyin</li>
-                                <li><strong>Examples:</strong> Örnek kodları kontrol edin</li>
+                                <li><strong>Documentation:</strong> İlgili module Pagesını inceleyin</li>
+                                <li><strong>Examples:</strong> Example kodları kontrol edin</li>
                             </ul>
                         </div>
 

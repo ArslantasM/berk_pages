@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>RNG modülü, hardware tabanlı gerçek rastgele sayı üretir. Analog noise source kullanarak kriptografik kalitede random değerler sağlar. IoT güvenliği, UUID generation, cryptographic key generation and Monte Carlo simülasyonları for kritiktir.</p>
+<p>RNG Moduleü, hardware tabanlı gerçek rastgele sayı üretir. Analog noise source kullanarak kriptografik kalitede random değerler sağlar. IoT güvenliği, UUID generation, cryptographic key generation and Monte Carlo simülasyonları for kritiktir.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -251,7 +251,7 @@ struct RNGConfig do
     error_callback: function(Flag) = null
 end</code></pre>
 
-<h2>💡 Örnek 1: UUID Generation (RFC 4122)</h2>
+<h2>💡 Example 1: UUID Generation (RFC 4122)</h2>
 <div class="example-box">
 <h3>Problem: Unique identifier oluşturmak (IoT device ID)</h3>
 <pre><code>import hal::rng
@@ -304,7 +304,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> UUID: 550e8400-e29b-41d4-a716-446655440000 (benzersiz her çalıştırmada)</p>
 </div>
 
-<h2>💡 Örnek 2: Cryptographic Key Generation</h2>
+<h2>💡 Example 2: Cryptographic Key Generation</h2>
 <div class="example-box">
 <h3>Problem: AES-256 for 256-bit random key oluşturmak</h3>
 <pre><code>import hal::rng, hal::crypto
@@ -361,7 +361,7 @@ end</code></pre>
 <p><strong>Güvenlik:</strong> Hardware RNG Usageı software PRNG'den çok daha güvenlidir.</p>
 </div>
 
-<h2>💡 Örnek 3: Random Number Distribution (Dice Roll)</h2>
+<h2>💡 Example 3: Random Number Distribution (Dice Roll)</h2>
 <div class="example-box">
 <h3>Problem: Uniform distribution ile dice roll simulation</h3>
 <pre><code>import hal::rng
@@ -413,7 +413,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> Uniform distribution ~16.67% her yüz for (ideal: 16.666...%).</p>
 </div>
 
-<h2>📚 API Referansı</h2>
+<h2>📚 API Referenceı</h2>
 <h3>Temel Functions</h3>
 <pre><code>// RNG initialization and control
 function init()
@@ -435,7 +435,7 @@ function interrupt_enable(it: Interrupt)
 function interrupt_disable(it: Interrupt)</code></pre>
 
 <div class="warning">
-<strong>⚠️ Önemli Notlar:</strong>
+<strong>⚠️ Important Notes:</strong>
 <ul>
 <li><strong>Clock Required:</strong> RNG for 48 MHz clock gerekli (PLL'den)</li>
 <li><strong>Error Handling:</strong> CECS/SECS flagleri kontrol edilmeli</li>
@@ -494,7 +494,7 @@ function interrupt_disable(it: Interrupt)</code></pre>
 <li>❌ <strong>Clock dependency:</strong> 48 MHz clock olmadan çalışmaz</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-crypto-tr.html">hal::crypto</a> - AES/DES encryption with random keys</li>
 <li><a href="hal-clock-tr.html">hal::clock</a> - 48 MHz clock configuration</li>
@@ -502,7 +502,7 @@ function interrupt_disable(it: Interrupt)</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-index-tr.html">🔙 HAL Moduleleri</a> | 
 <a href="hal-rng-en.html">🌐 English</a>
 </p>
 </main>

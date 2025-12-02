@@ -224,7 +224,7 @@ function hello() {
 <ul>
 <li><strong>İmperatif Programlama</strong>: Prosedürel kod, direct memory control</li>
 <li><strong>Fonksiyonel Programlama</strong>: İteratörler, higher-order Functions, immutability</li>
-<li><strong>Yapısal Programlama</strong>: Struct'lar, modüler mimari, pattern matching</li>
+<li><strong>Yapısal Programlama</strong>: Struct'lar, Moduleer mimari, pattern matching</li>
 <li><strong>Sistem Programlama</strong>: Düşük seviye kontrol, zero-cost abstractions, inline assembly (v1.0 planned)</li>
 <li><strong>Tip Güvenliği</strong>: Güçlü statik tip kontrolü, <strong>generic types (Phase 4.1-4.4 complete)</strong></li>
 </ul>
@@ -232,9 +232,9 @@ function hello() {
 <p>Hayır, BERK manuel bellek yönetimi kullanır. <strong>Rust-style ownership sistemi v0.9.0'da tamamlandı</strong> - borrow checker, non-lexical lifetimes (NLL), move semantics (<code>geçir</code>, <code>paylaş</code>, <code>değiştir</code>) ile Rust seviyesinde bellek güvenliği sağlar. Ayrıca Region Memory (263x malloc'tan hızlı) and mimalloc entegrasyonu mevcuttur.</p>
 <h3 id="performans-rust-c-ile-nasıl-karşılaştırılır"><a class="header" href="#performans-rust-c-ile-nasıl-karşılaştırılır">Performans Rust/C ile nasıl karşılaştırılır?</a></h3>
 <p>BERK, LLVM backend sayesinde C/C++ ile karşılaştırılabilir performans sunar (%98-100). LLVM IR optimization passes, region memory allocator (263x speedup), and mimalloc entegrasyonu kullanır. -O0'dan -O3'e kadar optimizasyon seviyeleri destekler. Benchmark suite ile sürekli performans takibi yapılır.</p>
-<h2 id="standart-kütüphane"><a class="header" href="#standart-kütüphane">Standart Kütüphane</a></h2>
+<h2 id="standart-Library"><a class="header" href="#standart-Library">Standart Library</a></h2>
 <h3 id="stdlib-neler-içerir"><a class="header" href="#stdlib-neler-içerir">Stdlib neler içerir?</a></h3>
-<p>BERK v1.0.0 kapsamlı bir standart kütüphane sunar:</p>
+<p>BERK v1.0.0 kapsamlı bir standart Library sunar:</p>
 <p><strong>Core Modules (11)</strong>: io, string, collections, result, time, fs, thread, sys, terminal, iter, fmt<br />
 <strong>Math &amp; Science (7)</strong>: math, physics, complex, random, linalg, stats, optim<br />
 <strong>Web &amp; Data (12)</strong>: http, json, xml, yaml, csv, regex, network, async, encoding, compression, crypto, sqlite<br />
@@ -243,7 +243,7 @@ function hello() {
 <strong>Embedded HAL (33)</strong>: gpio, adc, dac, timer, pwm, usart, spi, i2c, can, usb, dma, clock, power, rtc, rng, crc, flash, exti, nvic, interrupts, systick, watchdog and daha fazlası</p>
 <p><strong>Toplam</strong>: 75 module, 4100+ function, 1140 KB kod</p>
 <h3 id="numpyscipy-benzeri-özellikler-var-mı"><a class="header" href="#numpyscipy-benzeri-özellikler-var-mı">NumPy/SciPy benzeri özellikler var mı?</a></h3>
-<p>Evet! v1.0.0 bilimsel hesaplama modülleri native performansla:</p>
+<p>Evet! v1.0.0 bilimsel hesaplama Moduleleri native performansla:</p>
 <ul>
 <li><code>linalg</code>: Matrix operations, LU/QR/Cholesky decomposition, eigenvalue/eigenvector, linear solvers</li>
 <li><code>stats</code>: Descriptive statistics, probability distributions, hypothesis testing (t-test, ANOVA), regression</li>
@@ -252,8 +252,8 @@ function hello() {
 <li><code>math_3d</code>: 3D vector/matrix operations</li>
 <li><code>complex</code>: Complex number arithmetic</li>
 </ul>
-<h3 id="cc-kütüphanelerini-kullanabilir-miyim"><a class="header" href="#cc-kütüphanelerini-kullanabilir-miyim">C/C++ kütüphanelerini kullanabilir miyim?</a></h3>
-<p><strong>Evet!</strong> FFI (Foreign Function Interface) sistemi v0.9.0'da tamamlandı. 30+ test ile tam C ABI desteği, libm entegrasyonu (40+ Mathematics fonksiyonu), and doğrudan C kütüphane çağrıları yapabilirsiniz. Rust unsafe FFI benzeri syntax ile güvenli C interop sağlanır.</p>
+<h3 id="cc-Librarylerini-kullanabilir-miyim"><a class="header" href="#cc-Librarylerini-kullanabilir-miyim">C/C++ Librarylerini kullanabilir miyim?</a></h3>
+<p><strong>Evet!</strong> FFI (Foreign Function Interface) sistemi v0.9.0'da tamamlandı. 30+ test ile tam C ABI desteği, libm entegrasyonu (40+ Mathematics fonksiyonu), and doğrudan C Library çağrıları yapabilirsiniz. Rust unsafe FFI benzeri syntax ile güvenli C interop sağlanır.</p>
 <h2 id="performance-and-optimizasyon"><a class="header" href="#performance-and-optimizasyon">Performance and Optimizasyon</a></h2>
 <h3 id="berk-ne-kadar-hızlı"><a class="header" href="#berk-ne-kadar-hızlı">BERK ne kadar hızlı?</a></h3>
 <p>LLVM backend sayesinde C/C++ ile karşılaştırılabilir performans sunar. Native kod üretimi, LLVM optimization passes and zero-cost abstractions ile sistem programlama for gerekli hızı sağlar. Yol haritasında JIT compiler and BLAS/LAPACK entegrasyonu bulunmaktadır.</p>
@@ -265,7 +265,7 @@ berk build -O3  # Agresif optimizasyon (maksimum hız)
 </code></pre>
 <p>LLVM optimization pipeline kullanır: dead code elimination, constant folding, loop unrolling, inline expansion. İlerleyen versiyonlarda link-time optimization (LTO) desteği eklenecektir.</p>
 <h3 id="paralel-programlama-destekleniyor-mu"><a class="header" href="#paralel-programlama-destekleniyor-mu">Paralel programlama destekleniyor mu?</a></h3>
-<p>Evet, <code>thread</code> modülü ile multi-threading yapabilirsiniz:</p>
+<p>Evet, <code>thread</code> Moduleü ile multi-threading yapabilirsiniz:</p>
 <pre><code class="language-berk">import thread
 
 işlev işçi(id: Sayı) {
@@ -313,8 +313,8 @@ işlev ana() {
 <p><strong>JIT Mode</strong>: Dosyaları direkt çalıştırma (derleme gerekmez):</p>
 <pre><code class="language-bash">berk run program.berk  # Instant execution
 </code></pre>
-<h3 id="api-dokümantasyonu-var-mı"><a class="header" href="#api-dokümantasyonu-var-mı">API dokümantasyonu var mı?</a></h3>
-<p><strong>Evet!</strong> Berkdoc tool ile otomatik dokümantasyon:</p>
+<h3 id="api-Documentationu-var-mı"><a class="header" href="#api-Documentationu-var-mı">API Documentationu var mı?</a></h3>
+<p><strong>Evet!</strong> Berkdoc tool ile otomatik Documentation:</p>
 <ul>
 <li><strong>Live Site</strong>: <a href="https://arslantasm.github.io/berk-stdlib-docs/">arslantasm.github.io/berk-stdlib-docs</a></li>
 <li><strong>1,662 documented items</strong>: Functions, types, modules</li>
@@ -327,9 +327,9 @@ işlev ana() {
 <h3 id="nasıl-katkıda-bulunabilirim"><a class="header" href="#nasıl-katkıda-bulunabilirim">Nasıl katkıda bulunabilirim?</a></h3>
 <ol>
 <li><strong>Kod</strong>: GitHub'dan projeyi fork'layın, feature branch açın, PR gönderin</li>
-<li><strong>Dokümantasyon</strong>: Typo düzeltmeleri, yeni Examples, çeviri iyileştirmeleri</li>
+<li><strong>Documentation</strong>: Typo düzeltmeleri, yeni Examples, çeviri iyileştirmeleri</li>
 <li><strong>Test</strong>: Bug raporları, test case'leri, benchmark'lar</li>
-<li><strong>Stdlib</strong>: Yeni modüller, Functions, algoritma iyileştirmeleri</li>
+<li><strong>Stdlib</strong>: Yeni Moduleler, Functions, algoritma iyileştirmeleri</li>
 </ol>
 <h3 id="hangi-teknolojileri-bilmem-gerekir"><a class="header" href="#hangi-teknolojileri-bilmem-gerekir">Hangi teknolojileri bilmem gerekir?</a></h3>
 <ul>
@@ -393,11 +393,11 @@ işlev ana() {
 <tr><td>Ownership</td><td>Yok</td><td><strong>Rust-style (v0.9.0)</strong></td></tr>
 </tbody></table>
 </div>
-<p>BERK, C/C++'ın sistem programlama gücünü modern dil özellikleriyle birleştirir. <strong>FFI sistemi v0.9.0'da tamamlandı</strong> - C kütüphaneleriyle tam uyumluluk, libm entegrasyonu, 30+ test ile production-ready.</p>
+<p>BERK, C/C++'ın sistem programlama gücünü modern dil özellikleriyle birleştirir. <strong>FFI sistemi v0.9.0'da tamamlandı</strong> - C Libraryleriyle tam uyumluluk, libm entegrasyonu, 30+ test ile production-ready.</p>
 <h2 id="sorun-giderme"><a class="header" href="#sorun-giderme">Sorun Giderme</a></h2>
-<h3 id="tanımlanmamış-referans-hatası-alıyorum"><a class="header" href="#tanımlanmamış-referans-hatası-alıyorum">"Tanımlanmamış referans" hatası alıyorum</a></h3>
-<p>Modülü import etmeyi unutmuş olabilirsiniz:</p>
-<pre><code class="language-berk">import math  // math modülünü ekleyin
+<h3 id="tanımlanmamış-Reference-hatası-alıyorum"><a class="header" href="#tanımlanmamış-Reference-hatası-alıyorum">"Tanımlanmamış Reference" hatası alıyorum</a></h3>
+<p>Moduleü import etmeyi unutmuş olabilirsiniz:</p>
+<pre><code class="language-berk">import math  // math Moduleünü ekleyin
 
 işlev ana() {
     variable x = math.sqrt(16)  // Artık çalışır

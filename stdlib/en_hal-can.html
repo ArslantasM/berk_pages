@@ -240,7 +240,7 @@ if msg = can.receive(can1, 100) ise do
 end</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: ECU Simulator</h3>
+<h3>💡 Example: ECU Simulator</h3>
 <pre><code>import hal::can, hal::core
 
 constant ENGINE_RPM = 0x100
@@ -325,7 +325,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: CAN Bus Monitor</h3>
+<h3>💡 Example: CAN Bus Monitor</h3>
 <pre><code>import hal::can
 
 function message_name(id: u32) -> string do
@@ -397,7 +397,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: OBD-II Diagnostics</h3>
+<h3>💡 Example 3: OBD-II Diagnostics</h3>
 <pre><code>import hal::can
 
 constant OBD_REQUEST = 0x7DF
@@ -456,13 +456,13 @@ function send(handle: Handle, msg: Message) -> Sonuç[Hiçbir, Hata]
 function receive(handle: Handle, timeout_ms: sayı) -> İsteğe_Bağlı[Message]
 function filter_config(handle: Handle, config: FilterConfig)</code></pre>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>CAN transceiver (TJA1050, MCP2551) gereklidir</li>
 <li>120Ω termination resistors gerekir (bus'ın her iki ucunda)</li>
 <li>Max bus length: 40m (1 Mbps), 500m (125 kbps)</li>
 <li>Twisted-pair kablo kullanın (CAN_H, CAN_L)</li>
-<li>Filter configuration önemli (yüksek trafikte)</li>
+<li>Filter configuration Important (yüksek trafikte)</li>
 <li>ISO 11898 standardı kullanılır</li>
 </ul>
 
@@ -481,16 +481,16 @@ function filter_config(handle: Handle, config: FilterConfig)</code></pre>
 <li><strong>ESP32:</strong> TWAI</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - CAN TX/RX pins</li>
 <li><code>hal::int</code> - CAN interrupts</li>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

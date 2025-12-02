@@ -244,7 +244,7 @@ i2c.write(i2c1, 0x3C, [0x00, 0xAE])  // Address 0x3C
 variable data = i2c.read(i2c1, 0x50, 16)  // Read 16 bytes</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: BMP280 Temperature/Pressure Sensor</h3>
+<h3>💡 Example: BMP280 Temperature/Pressure Sensor</h3>
 <pre><code>import hal::i2c
 
 constant BMP280_ADDR = 0x76
@@ -304,7 +304,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: MPU6050 6-Axis IMU (Accelerometer + Gyroscope)</h3>
+<h3>💡 Example 2: MPU6050 6-Axis IMU (Accelerometer + Gyroscope)</h3>
 <pre><code>import hal::i2c
 
 constant MPU6050_ADDR = 0x68
@@ -382,7 +382,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: OLED Display (SSD1306)</h3>
+<h3>💡 Example 3: OLED Display (SSD1306)</h3>
 <pre><code>import hal::i2c
 
 constant SSD1306_ADDR = 0x3C
@@ -491,7 +491,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 4: I2C Scanner (Device Discovery)</h3>
+<h3>💡 Example 4: I2C Scanner (Device Discovery)</h3>
 <pre><code>import hal::i2c
 
 function i2c_scan(i2c1: i2c.Handle) do
@@ -533,7 +533,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 5: Multi-Device Communication</h3>
+<h3>💡 Example 5: Multi-Device Communication</h3>
 <pre><code>import hal::i2c
 
 constant EEPROM_ADDR = 0x50
@@ -716,12 +716,12 @@ function read_dma(handle: Handle, addr: u8, buffer: &mut [u8]) -> Sonuç[Hiçbir
 <li><strong>Clock Stretching:</strong> Yavaş slave'ler for enable edin</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>SCL and SDA pinlerinde <strong>external pull-up</strong> gerekir (4.7kΩ)</li>
 <li>GPIO pinlerini <strong>MODE_AF_OD</strong> (open-drain) olarak yapılandırın</li>
 <li>Bus üzerinde maksimum 112 device (7-bit) or 1024 device (10-bit)</li>
-<li>Start/stop condition timing hassasiyeti önemli</li>
+<li>Start/stop condition timing hassasiyeti Important</li>
 <li>Multi-master mode'da arbitration kaybı oluşabilir</li>
 <li>5V tolerant pinler elseif level shifter kullanın</li>
 <li>EMI/noise for twisted-pair kablo or shielding kullanın</li>
@@ -750,14 +750,14 @@ function read_dma(handle: Handle, addr: u8, buffer: &mut [u8]) -> Sonuç[Hiçbir
 <li><strong>nRF52:</strong> TWI (Two-Wire Interface)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - SCL/SDA pin config</li>
 <li><code>hal::dma</code> - DMA transfers</li>
 <li><code>hal::int</code> - Interrupt handling</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li>NXP UM10204 - I2C-bus specification and user manual</li>
 <li>STM32 AN2824 - I2C optimized examples</li>
@@ -765,9 +765,9 @@ function read_dma(handle: Handle, addr: u8, buffer: &mut [u8]) -> Sonuç[Hiçbir
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

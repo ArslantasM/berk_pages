@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>DAC modülü, dijital değerleri analog voltaja dönüştürür. Dalga üretimi, audio, sensör simülasyonu for kullanılır.</p>
+<p>DAC Moduleü, dijital değerleri analog voltaja dönüştürür. Dalga üretimi, audio, sensör simülasyonu for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -225,7 +225,7 @@ variable dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
 dac.write(dac1, 2048)  // ~1.65V (mid-scale)</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: Sine Wave Generator</h3>
+<h3>💡 Example: Sine Wave Generator</h3>
 <pre><code>import hal::dac, hal::timer, math
 
 constant SAMPLES = 100
@@ -262,7 +262,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Audio Tone Generator</h3>
+<h3>💡 Example: Audio Tone Generator</h3>
 <pre><code>import hal::dac, math
 
 function play_tone(freq: kesir, duration_ms: sayı) do
@@ -291,7 +291,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Function Generator (Triangle, Sawtooth, Square)</h3>
+<h3>💡 Example: Function Generator (Triangle, Sawtooth, Square)</h3>
 <pre><code>import hal::dac, hal::timer, hal::dma
 
 enum Waveform {
@@ -376,7 +376,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Dual Channel DAC (Stereo Output)</h3>
+<h3>💡 Example: Dual Channel DAC (Stereo Output)</h3>
 <pre><code>import hal::dac, hal::gpio
 
 function dac_dual_init() -> (dac.Handle, dac.Handle) do
@@ -421,7 +421,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Voltage Reference / Sensor Simulation</h3>
+<h3>💡 Example: Voltage Reference / Sensor Simulation</h3>
 <pre><code>import hal::dac
 
 function voltage_to_dac(voltage: kesir) -> u16 do
@@ -472,7 +472,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: PWM-like DC Motor Control via DAC</h3>
+<h3>💡 Example: PWM-like DC Motor Control via DAC</h3>
 <pre><code>import hal::dac
 
 function motor_speed_control() do
@@ -623,7 +623,7 @@ function clock_disable()</code></pre>
 <li><strong>GD32</strong>: Compatible DAC</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li><strong>Voltage Range</strong>: 0V - 3.3V (VDDA reference)</li>
 <li><strong>Output Current</strong>: Maximum ~5mA without buffer, 10-20mA with buffer</li>
@@ -635,7 +635,7 @@ function clock_disable()</code></pre>
 <li><strong>Dual Mode</strong>: Her iki channel simultane güncelleme (synchronized output)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::timer</code> - DAC trigger source</li>
 <li><code>hal::dma</code> - Waveform generation</li>
@@ -643,14 +643,14 @@ function clock_disable()</code></pre>
 <li><code>hal::gpio</code> - Pin configuration</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li><a href="https://www.st.com/resource/en/application_note/dm00087957.pdf">AN3126: Audio and Waveform Generation using DAC</a></li>
 <li>Reference Manual: Digital-to-analog converter (DAC) chapter</li>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a>
 </p>
 </main>
 </div>

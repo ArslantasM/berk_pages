@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>CRC modülü, hardware accelerated CRC32 hesaplaması sağlar. Polynomial 0x04C11DB7 kullanır (Ethernet standardı). Firmware integrity check, flash verification, communication protocols and data corruption detection for kritiktir. Software CRC'den 10-100x daha hızlıdır.</p>
+<p>CRC Moduleü, hardware accelerated CRC32 hesaplaması sağlar. Polynomial 0x04C11DB7 kullanır (Ethernet standardı). Firmware integrity check, flash verification, communication protocols and data corruption detection for kritiktir. Software CRC'den 10-100x daha hızlıdır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -248,7 +248,7 @@ struct CRCResult do
     valid: mantık
 end</code></pre>
 
-<h2>💡 Örnek 1: Firmware Integrity Check</h2>
+<h2>💡 Example 1: Firmware Integrity Check</h2>
 <div class="example-box">
 <h3>Problem: Flash'taki firmware'in bozulmadığını doğrulamak</h3>
 <pre><code>import hal::crc, hal::flash
@@ -325,7 +325,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> Boot sırasında firmware corruption detect edilir. Güvenli başlatma sağlanır.</p>
 </div>
 
-<h2>💡 Örnek 2: UART Packet Verification</h2>
+<h2>💡 Example 2: UART Packet Verification</h2>
 <div class="example-box">
 <h3>Problem: Serial communication'da packet integrity kontrolü</h3>
 <pre><code>import hal::crc, hal::usart
@@ -415,7 +415,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> UART üzerinden gelen corrupt paketler reddedilir. Data integrity garanti edilir.</p>
 </div>
 
-<h2>💡 Örnek 3: SD Card File Verification</h2>
+<h2>💡 Example 3: SD Card File Verification</h2>
 <div class="example-box">
 <h3>Problem: SD card'dan okunan dosyanın bozulmadığını kontrol etmek</h3>
 <pre><code>import hal::crc, hal::sdio
@@ -477,7 +477,7 @@ end</code></pre>
 <p><strong>Usage:</strong> Firmware update dosyalarının SD card'dan okunurken bozulmadığını garanti eder.</p>
 </div>
 
-<h2>📚 API Referansı</h2>
+<h2>📚 API Referenceı</h2>
 <h3>Temel Functions</h3>
 <pre><code>// CRC initialization
 function init()
@@ -496,10 +496,10 @@ function get_value() -> sayı
 function verify(data: Dizi&lt;sayı&gt;, expected: sayı) -> mantık</code></pre>
 
 <div class="warning">
-<strong>⚠️ Önemli Notlar:</strong>
+<strong>⚠️ Important Notes:</strong>
 <ul>
 <li><strong>Word Alignment:</strong> CRC hardware 32-bit word aligned çalışır</li>
-<li><strong>Byte Order:</strong> Little-endian işlemci for byte order dikkat edilmeli</li>
+<li><strong>Byte Order:</strong> Little-endian işlemci for byte order Attention edilmeli</li>
 <li><strong>Initial Value:</strong> Reset sonrası 0xFFFFFFFF (not 0x00000000)</li>
 <li><strong>Final XOR:</strong> Bazı protokoller final XOR 0xFFFFFFFF gerektirir</li>
 </ul>
@@ -555,7 +555,7 @@ function verify(data: Dizi&lt;sayı&gt;, expected: sayı) -> mantık</code></pre
 <li>❌ <strong>Byte alignment:</strong> Non-aligned erişim performans kaybı yaratır</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-flash-tr.html">hal::flash</a> - Firmware integrity verification</li>
 <li><a href="hal-usart-tr.html">hal::usart</a> - UART packet CRC</li>
@@ -564,7 +564,7 @@ function verify(data: Dizi&lt;sayı&gt;, expected: sayı) -> mantık</code></pre
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-index-tr.html">🔙 HAL Moduleleri</a> | 
 <a href="hal-crc-en.html">🌐 English</a>
 </p>
 </main>

@@ -231,7 +231,7 @@ variable D = linalg_mat_skaler(2.0, A, 2, 2)
 // Matris çarpımı (A: 2×3, B: 3×2 → C: 2×2)
 variable C = linalg_mat_çarp(A, B, 2, 3, 2)
 </code></pre>
-<h2 id="-api-referansı"><a class="header" href="#-api-referansı">📚 API Referansı</a></h2>
+<h2 id="-api-Referenceı"><a class="header" href="#-api-Referenceı">📚 API Referenceı</a></h2>
 <h3 id="matris-oluşturma-1"><a class="header" href="#matris-oluşturma-1">Matris Oluşturma</a></h3>
 <h4 id="linalg_birim_matn-tam_sayı---float"><a class="header" href="#linalg_birim_matn-tam_sayı---float"><code>linalg_birim_mat(n: tam_sayı) -&gt; [float]</code></a></h4>
 <p>n×n boyutunda birim (identity) matris oluşturur.</p>
@@ -240,7 +240,7 @@ variable C = linalg_mat_çarp(A, B, 2, 3, 2)
 <li><code>n</code>: Matris boyutu</li>
 </ul>
 <p><strong>Döndürür:</strong> Birim matris (düz dizi formatında)</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable I3 = linalg_birim_mat(3)
 // I3 = [1, 0, 0,
 //       0, 1, 0,
@@ -252,7 +252,7 @@ variable C = linalg_mat_çarp(A, B, 2, 3, 2)
 <p>m×n boyutunda tüm elemanları 1 olan matris oluşturur.</p>
 <h4 id="linalg_diyagonal_matd-float-n-tam_sayı---float"><a class="header" href="#linalg_diyagonal_matd-float-n-tam_sayı---float"><code>linalg_diyagonal_mat(d: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
 <p>Köşegen elemanları <code>d</code> dizisi olan n×n matris oluşturur.</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable d = [2.0, 3.0, 5.0]
 variable D = linalg_diyagonal_mat(d, 3)
 // D = [2, 0, 0,
@@ -273,7 +273,7 @@ variable D = linalg_diyagonal_mat(d, 3)
 <li>B: k×n</li>
 <li>C: m×n</li>
 </ul>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">// 2×2 matris çarpımı
 variable A = [1.0, 2.0,
               3.0, 4.0]
@@ -288,7 +288,7 @@ variable C = linalg_mat_çarp(A, B, 2, 2, 2)
 <h3 id="vektör-İşlemleri"><a class="header" href="#vektör-İşlemleri">Vektör İşlemleri</a></h3>
 <h4 id="linalg_iç_çarpımu-float-v-float-n-tam_sayı---float"><a class="header" href="#linalg_iç_çarpımu-float-v-float-n-tam_sayı---float"><code>linalg_iç_çarpım(u: [float], v: [float], n: tam_sayı) -&gt; float</code></a></h4>
 <p>İç çarpım (dot product): u · v = Σ(u[i] × v[i])</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable u = [1.0, 2.0, 3.0]
 variable v = [4.0, 5.0, 6.0]
 variable dot = linalg_iç_çarpım(u, v, 3)  // 32.0
@@ -305,7 +305,7 @@ variable dot = linalg_iç_çarpım(u, v, 3)  // 32.0
 <p>Dış çarpım (outer product): A[i,j] = u[i] × v[j]</p>
 <h4 id="linalg_cross_3du-float-v-float---float"><a class="header" href="#linalg_cross_3du-float-v-float---float"><code>linalg_cross_3d(u: [float], v: [float]) -&gt; [float]</code></a></h4>
 <p>3D vektör cross product (vektörel çarpım): w = u × v</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable u = [1.0, 0.0, 0.0]
 variable v = [0.0, 1.0, 0.0]
 variable w = linalg_cross_3d(u, v)  // [0, 0, 1]
@@ -322,7 +322,7 @@ variable w = linalg_cross_3d(u, v)  // [0, 0, 1]
 <h3 id="matris-tersi"><a class="header" href="#matris-tersi">Matris Tersi</a></h3>
 <h4 id="linalg_inverse_2x2a-float---float"><a class="header" href="#linalg_inverse_2x2a-float---float"><code>linalg_inverse_2x2(A: [float]) -&gt; [float]</code></a></h4>
 <p>2×2 matris tersini hesaplar: A⁻¹</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable A = [4.0, 7.0,
               2.0, 6.0]
 variable A_inv = linalg_inverse_2x2(A)
@@ -341,7 +341,7 @@ variable A_inv = linalg_inverse_2x2(A)
 <li>Forward elimination</li>
 <li>Back substitution</li>
 </ul>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">// 3x + 2y = 7
 // 2x + 5y = 12
 variable A = [3.0, 2.0,
@@ -374,7 +374,7 @@ variable x = linalg_gauss_çöz(A, b, 2)
 <h4 id="linalg_power_iterationa-float-n-tam_sayı-max_iter-tam_sayı-tolerans-float---float-float"><a class="header" href="#linalg_power_iterationa-float-n-tam_sayı-max_iter-tam_sayı-tolerans-float---float-float"><code>linalg_power_iteration(A: [float], n: tam_sayı, max_iter: tam_sayı, tolerans: float) -&gt; ([float], float)</code></a></h4>
 <p>Güç iterasyonu ile dominant eigenvector bulma.</p>
 <p><strong>Döndürür:</strong> (eigenvector, eigenvalue) tuple'ı</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable A = [4.0, 1.0,
               1.0, 3.0]
 variable (v, λ) = linalg_power_iteration(A, 2, 100, 1e-6)
@@ -393,14 +393,14 @@ variable (v, λ) = linalg_power_iteration(A, 2, 100, 1e-6)
 <h3 id="matris-rankı"><a class="header" href="#matris-rankı">Matris Rankı</a></h3>
 <h4 id="linalg_ranka-float-m-tam_sayı-n-tam_sayı-tolerans-float---tam_sayı"><a class="header" href="#linalg_ranka-float-m-tam_sayı-n-tam_sayı-tolerans-float---tam_sayı"><code>linalg_rank(A: [float], m: tam_sayı, n: tam_sayı, tolerans: float) -&gt; tam_sayı</code></a></h4>
 <p>Matris rankını Gaussian elimination ile hesaplar.</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable A = [1.0, 2.0, 3.0,
               2.0, 4.0, 6.0,
               3.0, 6.0, 9.0]
 variable r = linalg_rank(A, 3, 3, 1e-10)  // r = 1
 </code></pre>
 <h2 id="-Usage-Examplesi"><a class="header" href="#-Usage-Examplesi">🔬 Usage Examplesi</a></h2>
-<h3 id="Örnek-1-doğrusal-regresyon"><a class="header" href="#Örnek-1-doğrusal-regresyon">Örnek 1: Doğrusal Regresyon</a></h3>
+<h3 id="Example-1-doğrusal-regresyon"><a class="header" href="#Example-1-doğrusal-regresyon">Example 1: Doğrusal Regresyon</a></h3>
 <pre><code class="language-berk">kullan linalg
 kullan stats
 
@@ -420,7 +420,7 @@ function linear_fit(X: [float], y: [float], n: tam_sayı): (float, float) do
     return (params[0], params[1])  // (b, a)
 end
 </code></pre>
-<h3 id="Örnek-2-pca-principal-component-analysis"><a class="header" href="#Örnek-2-pca-principal-component-analysis">Örnek 2: PCA (Principal Component Analysis)</a></h3>
+<h3 id="Example-2-pca-principal-component-analysis"><a class="header" href="#Example-2-pca-principal-component-analysis">Example 2: PCA (Principal Component Analysis)</a></h3>
 <pre><code class="language-berk">kullan linalg
 
 // Veriyi merkeze al
@@ -467,7 +467,7 @@ function covariance_matrix(data: [float], m: tam_sayı, n: tam_sayı): [float] d
     return cov
 end
 </code></pre>
-<h3 id="Örnek-3-matris-normu-and-condition-number"><a class="header" href="#Örnek-3-matris-normu-and-condition-number">Örnek 3: Matris Normu and Condition Number</a></h3>
+<h3 id="Example-3-matris-normu-and-condition-number"><a class="header" href="#Example-3-matris-normu-and-condition-number">Example 3: Matris Normu and Condition Number</a></h3>
 <pre><code class="language-berk">kullan linalg
 
 function analyze_matrix(A: [float], n: tam_sayı): hiçbir do
@@ -487,7 +487,7 @@ function analyze_matrix(A: [float], n: tam_sayı): hiçbir do
             print("κ(A) = " + κ)
             
             if (κ &gt; 100.0) ise do
-                print("UYARI: Matris kötü koşullu!")
+                print("Warning: Matris kötü koşullu!")
             end
         end
     end
@@ -498,9 +498,9 @@ function analyze_matrix(A: [float], n: tam_sayı): hiçbir do
     end
 end
 </code></pre>
-<h2 id="-performans-notları"><a class="header" href="#-performans-notları">⚡ Performans Notları</a></h2>
+<h2 id="-performans-Notesı"><a class="header" href="#-performans-Notesı">⚡ Performans Notesı</a></h2>
 <h3 id="kompleksite"><a class="header" href="#kompleksite">Kompleksite</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Operasyon</th><th>Kompleksite</th><th>Notlar</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>Operasyon</th><th>Kompleksite</th><th>Notes</th></tr></thead><tbody>
 <tr><td>Matris çarpımı</td><td>O(n³)</td><td>Naive algoritma</td></tr>
 <tr><td>LU decomposition</td><td>O(n³)</td><td>Gaussian elimination</td></tr>
 <tr><td>QR decomposition</td><td>O(mn²)</td><td>Gram-Schmidt</td></tr>
@@ -530,7 +530,7 @@ variable C = cuda_matmul(A, B, m, k, n)
 </code></pre>
 </li>
 </ol>
-<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 İlgili Modüller</a></h2>
+<h2 id="-İlgili-Moduleler"><a class="header" href="#-İlgili-Moduleler">🔗 İlgili Moduleler</a></h2>
 <ul>
 <li><a href="./stats.html">stats</a> - İstatistiksel hesaplamalar for linalg kullanır</li>
 <li><a href="./optim.html">optim</a> - Optimizasyon algoritmaları for matris işlemleri</li>

@@ -192,7 +192,7 @@
     geri return a + b * c
 }
 </code></pre>
-<h2 id="varsayılan-değerler"><a class="header" href="#varsayılan-değerler">Varsayılan Değerler</a></h2>
+<h2 id="varsayılan-değerler"><a class="header" href="#varsayılan-değerler">Default Valueler</a></h2>
 <pre><code class="language-berk">işlev selamla(isim: string = "Misafir") {
     print("Merhaba, ", isim)
 }
@@ -202,9 +202,9 @@ selamla("Ahmet")   // Merhaba, Ahmet
 </code></pre>
 <h2 id="Çoklu-dönüş-tuple"><a class="header" href="#Çoklu-dönüş-tuple">Çoklu Dönüş (Tuple)</a></h2>
 <pre><code class="language-berk">işlev böl(a: Sayı, b: Sayı) -&gt; (Sayı, Sayı) {
-    variable bölüm = a / b
+    variable Section = a / b
     variable kalan = a % b
-    geri return (bölüm, kalan)
+    geri return (Section, kalan)
 }
 
 variable (q, r) = böl(10, 3)

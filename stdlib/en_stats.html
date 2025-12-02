@@ -214,17 +214,17 @@ variable variance = stats_varyans(data, n)        // 3.68
 variable std_dev = stats_standart_sapma(data, n) // 1.92
 variable range = stats_aralık(data, n)           // 5.6
 </code></pre>
-<h2 id="-api-referansı"><a class="header" href="#-api-referansı">📚 API Referansı</a></h2>
+<h2 id="-api-Referenceı"><a class="header" href="#-api-Referenceı">📚 API Referenceı</a></h2>
 <h3 id="tanımlayıcı-İstatistikler"><a class="header" href="#tanımlayıcı-İstatistikler">Tanımlayıcı İstatistikler</a></h3>
 <h4 id="merkez-eğilimi"><a class="header" href="#merkez-eğilimi">Merkez Eğilimi</a></h4>
 <h5 id="stats_ortalamadata-float-n-tam_sayı---float"><a class="header" href="#stats_ortalamadata-float-n-tam_sayı---float"><code>stats_ortalama(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
 <p>Aritmetik ortalama: x̄ = (Σxᵢ) / n</p>
 <h5 id="stats_ağırlıklı_ortalamadata-float-weights-float-n-tam_sayı---float"><a class="header" href="#stats_ağırlıklı_ortalamadata-float-weights-float-n-tam_sayı---float"><code>stats_ağırlıklı_ortalama(data: [float], weights: [float], n: tam_sayı) -&gt; float</code></a></h5>
 <p>Ağırlıklı ortalama: x̄ = (Σwᵢxᵢ) / (Σwᵢ)</p>
-<p><strong>Örnek:</strong></p>
-<pre><code class="language-berk">variable notlar = [70.0, 80.0, 90.0]
+<p><strong>Example:</strong></p>
+<pre><code class="language-berk">variable Notes = [70.0, 80.0, 90.0]
 variable ağırlıklar = [0.2, 0.3, 0.5]  // %20, %30, %50
-variable ort = stats_ağırlıklı_ortalama(notlar, ağırlıklar, 3)  // 82.0
+variable ort = stats_ağırlıklı_ortalama(Notes, ağırlıklar, 3)  // 82.0
 </code></pre>
 <h5 id="stats_geometrik_ortalamadata-float-n-tam_sayı---float"><a class="header" href="#stats_geometrik_ortalamadata-float-n-tam_sayı---float"><code>stats_geometrik_ortalama(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
 <p>Geometrik ortalama: ⁿ√(x₁ × x₂ × ... × xₙ)</p>
@@ -238,7 +238,7 @@ variable ort = stats_ağırlıklı_ortalama(notlar, ağırlıklar, 3)  // 82.0
 <p>En sık görülen değer</p>
 <h4 id="yayılım-Ölçüleri"><a class="header" href="#yayılım-Ölçüleri">Yayılım Ölçüleri</a></h4>
 <h5 id="stats_varyansdata-float-n-tam_sayı---float"><a class="header" href="#stats_varyansdata-float-n-tam_sayı---float"><code>stats_varyans(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
-<p>Örneklem varyansı: s² = Σ(xᵢ - x̄)² / (n-1)</p>
+<p>Examplelem varyansı: s² = Σ(xᵢ - x̄)² / (n-1)</p>
 <h5 id="stats_popülasyon_varyansıdata-float-n-tam_sayı---float"><a class="header" href="#stats_popülasyon_varyansıdata-float-n-tam_sayı---float"><code>stats_popülasyon_varyansı(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
 <p>Popülasyon varyansı: σ² = Σ(xᵢ - μ)² / n</p>
 <h5 id="stats_standart_sapmadata-float-n-tam_sayı---float"><a class="header" href="#stats_standart_sapmadata-float-n-tam_sayı---float"><code>stats_standart_sapma(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
@@ -250,7 +250,7 @@ variable ort = stats_ağırlıklı_ortalama(notlar, ağırlıklar, 3)  // 82.0
 <h3 id="quantile-and-percentile"><a class="header" href="#quantile-and-percentile">Quantile and Percentile</a></h3>
 <h5 id="stats_quantiledata-float-n-tam_sayı-p-float---float"><a class="header" href="#stats_quantiledata-float-n-tam_sayı-p-float---float"><code>stats_quantile(data: [float], n: tam_sayı, p: float) -&gt; float</code></a></h5>
 <p>p-quantile değerini hesaplar (0 ≤ p ≤ 1)</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable data = [1.0, 2.0, 3.0, 4.0, 5.0]
 variable q1 = stats_quantile(data, 5, 0.25)  // 2.0 (1. çeyrek)
 variable q2 = stats_quantile(data, 5, 0.50)  // 3.0 (medyan)
@@ -284,7 +284,7 @@ variable q3 = stats_quantile(data, 5, 0.75)  // 4.0 (3. çeyrek)
 </blockquote>
 </li>
 </ul>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
 variable skew = stats_skewness(data, 7)  // ≈ 0 (simetrik)
 variable kurt = stats_kurtosis(data, 7)  // Basıklık
@@ -299,7 +299,7 @@ variable kurt = stats_kurtosis(data, 7)  // Basıklık
 <li>0: Korelasyon yok</li>
 <li>+1: Mükemmel pozitif korelasyon</li>
 </ul>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable boy = [160.0, 165.0, 170.0, 175.0, 180.0]
 variable kilo = [55.0, 60.0, 65.0, 75.0, 80.0]
 variable r = stats_correlation(boy, kilo, 5)  // ≈ 0.98 (güçlü pozitif)
@@ -316,7 +316,7 @@ variable r = stats_correlation(boy, kilo, 5)  // ≈ 0.98 (güçlü pozitif)
 <li>b: Eğim (slope)</li>
 <li>R²: Belirlilik katsayısı</li>
 </ul>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable X = [1.0, 2.0, 3.0, 4.0, 5.0]
 variable y = [2.1, 3.9, 6.2, 8.1, 9.8]
 
@@ -330,8 +330,8 @@ print("R² = " + r2)
 <p>Modelden tahmin: ŷ = a + bx</p>
 <h3 id="hipotez-testleri"><a class="header" href="#hipotez-testleri">Hipotez Testleri</a></h3>
 <h5 id="stats_t_scoredata-float-n-tam_sayı-μ0-float---float"><a class="header" href="#stats_t_scoredata-float-n-tam_sayı-μ0-float---float"><code>stats_t_score(data: [float], n: tam_sayı, μ0: float) -&gt; float</code></a></h5>
-<p>Tek örneklem t-skoru: t = (x̄ - μ₀) / (s / √n)</p>
-<p><strong>Örnek:</strong></p>
+<p>Tek Examplelem t-skoru: t = (x̄ - μ₀) / (s / √n)</p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">// H₀: μ = 100
 variable scores = [105.0, 110.0, 95.0, 108.0, 102.0]
 variable t = stats_t_score(scores, 5, 100.0)
@@ -341,7 +341,7 @@ if (math_mutlak(t) &gt; 2.776) ise do  // α = 0.05, df = 4
 end
 </code></pre>
 <h5 id="stats_t_test_independentx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_t_test_independentx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code>stats_t_test_independent(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
-<p>İki bağımsız örneklem t-testi</p>
+<p>İki bağımsız Examplelem t-testi</p>
 <p><strong>Usage:</strong> İki grubun ortalamalarını karşılaştırma</p>
 <h5 id="stats_t_test_pairedx-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_t_test_pairedx-float-y-float-n-tam_sayı---float"><code>stats_t_test_paired(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
 <p>Eşleştirilmiş t-testi</p>
@@ -355,7 +355,7 @@ end
 <h5 id="stats_confidence_intervaldata-float-n-tam_sayı-t_critical-float---float-float"><a class="header" href="#stats_confidence_intervaldata-float-n-tam_sayı-t_critical-float---float-float"><code>stats_confidence_interval(data: [float], n: tam_sayı, t_critical: float) -&gt; (float, float)</code></a></h5>
 <p>Ortalama for güven aralığı</p>
 <p><strong>Döndürür:</strong> (alt_sınır, üst_sınır)</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable data = [23.0, 25.0, 27.0, 24.0, 26.0]
 variable t_crit = 2.776  // %95 güven, df=4
 variable (lower, upper) = stats_confidence_interval(data, 5, t_crit)
@@ -376,7 +376,7 @@ print("95% CI: [" + lower + ", " + upper + "]")
 <h4 id="cdf-cumulative-distribution-function"><a class="header" href="#cdf-cumulative-distribution-function">CDF (Cumulative Distribution Function)</a></h4>
 <h5 id="stats_normal_cdfx-float-μ-float-σ-float---float"><a class="header" href="#stats_normal_cdfx-float-μ-float-σ-float---float"><code>stats_normal_cdf(x: float, μ: float, σ: float) -&gt; float</code></a></h5>
 <p>Normal dağılım CDF: P(X ≤ x)</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">// IQ testinde 110'dan düşük olma olasılığı
 // IQ ~ N(100, 15)
 variable p = stats_normal_cdf(110.0, 100.0, 15.0)  // ≈ 0.747
@@ -386,9 +386,9 @@ print("P(IQ ≤ 110) = " + (p * 100.0) + "%")
 <p>Standart normal CDF</p>
 <h5 id="stats_exponential_cdfx-float-λ-float---float"><a class="header" href="#stats_exponential_cdfx-float-λ-float---float"><code>stats_exponential_cdf(x: float, λ: float) -&gt; float</code></a></h5>
 <p>Üstel dağılım CDF</p>
-<h3 id="yeniden-Örnekleme"><a class="header" href="#yeniden-Örnekleme">Yeniden Örnekleme</a></h3>
+<h3 id="yeniden-Exampleleme"><a class="header" href="#yeniden-Exampleleme">Yeniden Exampleleme</a></h3>
 <h5 id="stats_bootstrap_sampledata-float-n-tam_sayı-tohum-tam_sayı---float"><a class="header" href="#stats_bootstrap_sampledata-float-n-tam_sayı-tohum-tam_sayı---float"><code>stats_bootstrap_sample(data: [float], n: tam_sayı, tohum: tam_sayı) -&gt; [float]</code></a></h5>
-<p>Bootstrap yeniden örnekleme (replacement ile)</p>
+<p>Bootstrap yeniden Exampleleme (replacement ile)</p>
 <p><strong>Usage:</strong></p>
 <pre><code class="language-berk">// Bootstrap güven aralığı
 variable data = [...]
@@ -407,7 +407,7 @@ variable ci_lower = stats_quantile(means, n_bootstrap, 0.025)
 variable ci_upper = stats_quantile(means, n_bootstrap, 0.975)
 </code></pre>
 <h5 id="stats_jackknife_sampledata-float-n-tam_sayı-exclude_index-tam_sayı---float"><a class="header" href="#stats_jackknife_sampledata-float-n-tam_sayı-exclude_index-tam_sayı---float"><code>stats_jackknife_sample(data: [float], n: tam_sayı, exclude_index: tam_sayı) -&gt; [float]</code></a></h5>
-<p>Jackknife yeniden örnekleme (bir eleman çıkarılmış)</p>
+<p>Jackknife yeniden Exampleleme (bir eleman çıkarılmış)</p>
 <h3 id="non-parametric-testler"><a class="header" href="#non-parametric-testler">Non-Parametric Testler</a></h3>
 <h5 id="stats_mann_whitney_ux-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_mann_whitney_ux-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code>stats_mann_whitney_u(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
 <p>Mann-Whitney U testi (rank-sum test)</p>
@@ -420,7 +420,7 @@ variable ci_upper = stats_quantile(means, n_bootstrap, 0.975)
 <p>Histogram oluşturur (eşit genişlikte binler)</p>
 <h5 id="stats_sturges_binsn-tam_sayı---tam_sayı"><a class="header" href="#stats_sturges_binsn-tam_sayı---tam_sayı"><code>stats_sturges_bins(n: tam_sayı) -&gt; tam_sayı</code></a></h5>
 <p>Sturges kuralı ile optimal bin sayısı: k = ⌈log₂(n) + 1⌉</p>
-<p><strong>Örnek:</strong></p>
+<p><strong>Example:</strong></p>
 <pre><code class="language-berk">variable data = [1.2, 2.3, 1.8, 3.5, 2.1, ...]
 variable n = 100
 variable k = stats_sturges_bins(n)  // ≈ 8
@@ -457,7 +457,7 @@ variable hist = stats_histogram(data, n, k)
 <h5 id="stats_moving_averagedata-float-n-tam_sayı-pencere-tam_sayı---float"><a class="header" href="#stats_moving_averagedata-float-n-tam_sayı-pencere-tam_sayı---float"><code>stats_moving_average(data: [float], n: tam_sayı, pencere: tam_sayı) -&gt; [float]</code></a></h5>
 <p>Hareketli ortalama</p>
 <h2 id="-Usage-Examplesi"><a class="header" href="#-Usage-Examplesi">🔬 Usage Examplesi</a></h2>
-<h3 id="Örnek-1-ab-testi"><a class="header" href="#Örnek-1-ab-testi">Örnek 1: A/B Testi</a></h3>
+<h3 id="Example-1-ab-testi"><a class="header" href="#Example-1-ab-testi">Example 1: A/B Testi</a></h3>
 <pre><code class="language-berk">kullan stats
 
 // Versiyon A and B'nin conversion rate'lerini karşılaştır
@@ -476,7 +476,7 @@ if (math_mutlak(t) &gt; 2.306) ise do  // α=0.05, df=8
     print("Versiyon B anlamlı derecede daha iyi!")
 end
 </code></pre>
-<h3 id="Örnek-2-veri-kalite-kontrolü"><a class="header" href="#Örnek-2-veri-kalite-kontrolü">Örnek 2: Veri Kalite Kontrolü</a></h3>
+<h3 id="Example-2-veri-kalite-kontrolü"><a class="header" href="#Example-2-veri-kalite-kontrolü">Example 2: Veri Kalite Kontrolü</a></h3>
 <pre><code class="language-berk">kullan stats
 
 function quality_check(data: [float], n: tam_sayı): hiçbir do
@@ -494,7 +494,7 @@ function quality_check(data: [float], n: tam_sayı): hiçbir do
     variable kurt = stats_kurtosis(data, n)
     
     if (math_mutlak(skew) &gt; 1.0) ise do
-        print("UYARI: Yüksek çarpıklık tespit edildi!")
+        print("Warning: Yüksek çarpıklık tespit edildi!")
     end
     
     // Outlier tespiti
@@ -512,7 +512,7 @@ function quality_check(data: [float], n: tam_sayı): hiçbir do
     end
 end
 </code></pre>
-<h3 id="Örnek-3-regresyon-analizi"><a class="header" href="#Örnek-3-regresyon-analizi">Örnek 3: Regresyon Analizi</a></h3>
+<h3 id="Example-3-regresyon-analizi"><a class="header" href="#Example-3-regresyon-analizi">Example 3: Regresyon Analizi</a></h3>
 <pre><code class="language-berk">kullan stats
 kullan fmt
 
@@ -542,11 +542,11 @@ function regression_analysis(X: [float], y: [float], n: tam_sayı): hiçbir do
     // Residual analizi
     variable residual_mean = stats_ortalama(residuals, n)
     if (math_mutlak(residual_mean) &gt; 0.1) ise do
-        print("UYARI: Residual ortalaması sıfırdan farklı!")
+        print("Warning: Residual ortalaması sıfırdan farklı!")
     end
 end
 </code></pre>
-<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 İlgili Modüller</a></h2>
+<h2 id="-İlgili-Moduleler"><a class="header" href="#-İlgili-Moduleler">🔗 İlgili Moduleler</a></h2>
 <ul>
 <li><a href="./math.html">math</a> - Mathematics Functionsı</li>
 <li><a href="./linalg.html">linalg</a> - Matris işlemleri</li>

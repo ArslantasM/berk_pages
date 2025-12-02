@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>ADC (Analog-to-Digital Converter) modülü, analog sinyalleri dijital değerlere dönüştürür. Sensör okuma, sıcaklık ölçümü, batarya voltajı kontrolü gibi uygulamalarda kullanılır.</p>
+<p>ADC (Analog-to-Digital Converter) Moduleü, analog sinyalleri dijital değerlere dönüştürür. Sensör okuma, sıcaklık ölçümü, batarya voltajı kontrolü gibi uygulamalarda kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -240,7 +240,7 @@ variable value = adc.read(adc1)
 io.println("ADC: " + value.yazıya())</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek 1: Temperature Sensor</h3>
+<h3>💡 Example 1: Temperature Sensor</h3>
 <pre><code>import hal::adc, hal::gpio, hal::core
 
 function sıcaklık_oku() -> kesir do
@@ -298,7 +298,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: Battery Voltage Monitor</h3>
+<h3>💡 Example 2: Battery Voltage Monitor</h3>
 <pre><code>import hal::adc, hal::gpio
 
 function batarya_voltaj_oku() -> kesir do
@@ -357,7 +357,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: Multi-Channel ADC with DMA</h3>
+<h3>💡 Example 3: Multi-Channel ADC with DMA</h3>
 <pre><code>import hal::adc, hal::dma, hal::gpio
 
 constant CHANNELS = 4
@@ -426,7 +426,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 4: Analog Watchdog (Voltage Monitor)</h3>
+<h3>💡 Example 4: Analog Watchdog (Voltage Monitor)</h3>
 <pre><code>import hal::adc, hal::gpio, hal::int
 
 constant THRESHOLD_LOW = 1500   // ~1.2V
@@ -436,7 +436,7 @@ variable alarm_triggered = false
 
 function adc_watchdog_handler() do
     alarm_triggered = true
-    io.println("⚠️ UYARI: Voltaj threshold dışında!")
+    io.println("⚠️ Warning: Voltaj threshold dışında!")
 end
 
 function ana() do
@@ -488,7 +488,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 5: Internal Temperature Sensor</h3>
+<h3>💡 Example 5: Internal Temperature Sensor</h3>
 <pre><code>import hal::adc
 
 function cpu_sicaklik_oku() -> kesir do
@@ -533,7 +533,7 @@ function ana() do
         
         // Thermal management
         if temp > 80.0 ise do
-            io.println("⚠️ UYARI: Yüksek sıcaklık!")
+            io.println("⚠️ Warning: Yüksek sıcaklık!")
             // Reduce clock speed or take action
         end
         
@@ -690,11 +690,11 @@ function interrupt_disable(handle: Handle, interrupt: Interrupt)
 <li><strong>Kalibrasyon:</strong> Her açılışta calibrate() çalıştırın</li>
 <li><strong>Ortalama Alma:</strong> Gürültüyü azaltmak for 10-100 sample ortalaması alın</li>
 <li><strong>DMA Usageı:</strong> Multi-channel okumada CPU yükünü azaltır</li>
-<li><strong>Continuous Mode:</strong> Yüksek hızlı örnekleme for kullanın</li>
+<li><strong>Continuous Mode:</strong> Yüksek hızlı Exampleleme for kullanın</li>
 <li><strong>Input Impedance:</strong> Yüksek empedanslı kaynaklarda sampling time arttırın</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>ADC kullanmadan önce <code>clock_enable()</code> çağırın</li>
 <li>Analog pinler for GPIO MODE_ANALOG kullanın</li>
@@ -737,7 +737,7 @@ function interrupt_disable(handle: Handle, interrupt: Interrupt)
 <li><strong>GD32VF103:</strong> 12-bit, 2 ADC (RISC-V)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - Analog pin configuration</li>
 <li><code>hal::dma</code> - DMA transfers for multi-channel</li>
@@ -745,7 +745,7 @@ function interrupt_disable(handle: Handle, interrupt: Interrupt)
 <li><code>hal::dac</code> - Digital-to-Analog conversion</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li>STM32 RM0008 - Reference Manual (ADC section)</li>
 <li>AN2834 - How to get the best ADC accuracy</li>
@@ -753,9 +753,9 @@ function interrupt_disable(handle: Handle, interrupt: Interrupt)
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

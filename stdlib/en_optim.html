@@ -289,7 +289,7 @@ print("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
 <li><code>optim_numerical_hessian</code> - Sayısal Hessian</li>
 </ul>
 <h2 id="-detaylı-Examples"><a class="header" href="#-detaylı-Examples">🔬 Detaylı Examples</a></h2>
-<h3 id="Örnek-1-makine-Öğrenmesi---logistic-regression"><a class="header" href="#Örnek-1-makine-Öğrenmesi---logistic-regression">Örnek 1: Makine Öğrenmesi - Logistic Regression</a></h3>
+<h3 id="Example-1-makine-Öğrenmesi---logistic-regression"><a class="header" href="#Example-1-makine-Öğrenmesi---logistic-regression">Example 1: Makine Öğrenmesi - Logistic Regression</a></h3>
 <pre><code class="language-berk">kullan optim
 
 // Logistic loss for gradient
@@ -304,7 +304,7 @@ end
 variable w_init = [0.0, 0.0]
 variable w_opt = optim_adam(logistic_gradient, w_init, 2, 0.01, 0.9, 0.999, 1e-8, 1000)
 </code></pre>
-<h3 id="Örnek-2-mühendislik---yapısal-optimizasyon"><a class="header" href="#Örnek-2-mühendislik---yapısal-optimizasyon">Örnek 2: Mühendislik - Yapısal Optimizasyon</a></h3>
+<h3 id="Example-2-mühendislik---yapısal-optimizasyon"><a class="header" href="#Example-2-mühendislik---yapısal-optimizasyon">Example 2: Mühendislik - Yapısal Optimizasyon</a></h3>
 <pre><code class="language-berk">// Kiriş optimizasyonu: minimum ağırlık, maksimum dayanım
 function beam_cost(dimensions: [float], n: tam_sayı): float do
     variable width = dimensions[0]
@@ -326,7 +326,7 @@ end
 variable initial = [10.0, 20.0]
 variable optimal = optim_simulated_annealing(beam_cost, initial, 2, 100.0, 0.95, 1000, 42)
 </code></pre>
-<h3 id="Örnek-3-eğri-uydurma-curve-fitting"><a class="header" href="#Örnek-3-eğri-uydurma-curve-fitting">Örnek 3: Eğri Uydurma (Curve Fitting)</a></h3>
+<h3 id="Example-3-eğri-uydurma-curve-fitting"><a class="header" href="#Example-3-eğri-uydurma-curve-fitting">Example 3: Eğri Uydurma (Curve Fitting)</a></h3>
 <pre><code class="language-berk">// y = a*exp(-b*x) + c modeline fit et
 function exponential_model(params: [float], x: float): float do
     variable a = params[0]
@@ -360,7 +360,7 @@ variable fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess, 3
 <tr><td>Simulated Annealing</td><td>O(T)</td><td>Hayır</td><td>Global optimum</td></tr>
 </tbody></table>
 </div>
-<p><strong>Notlar:</strong></p>
+<p><strong>Notes:</strong></p>
 <ul>
 <li>n: Boyut</li>
 <li>k: İterasyon sayısı</li>
@@ -406,7 +406,7 @@ variable fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess, 3
 </ul>
 </li>
 </ol>
-<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 İlgili Modüller</a></h2>
+<h2 id="-İlgili-Moduleler"><a class="header" href="#-İlgili-Moduleler">🔗 İlgili Moduleler</a></h2>
 <ul>
 <li><a href="./linalg.html">linalg</a> - Matris işlemleri</li>
 <li><a href="./stats.html">stats</a> - İstatistiksel optimizasyon</li>

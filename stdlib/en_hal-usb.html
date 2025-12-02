@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>USB modülü, USB 2.0 Full Speed (12 Mbps) iletişimi sağlar. CDC (Virtual COM), HID (Keyboard/Mouse), MSC (Mass Storage) device classları ile PC bağlantısı kurar. Host mode ile USB flash disk, keyboard okuma yapılabilir. IoT data logging, debug console, firmware update and user interface for kritiktir.</p>
+<p>USB Moduleü, USB 2.0 Full Speed (12 Mbps) iletişimi sağlar. CDC (Virtual COM), HID (Keyboard/Mouse), MSC (Mass Storage) device classları ile PC bağlantısı kurar. Host mode ile USB flash disk, keyboard okuma yapılabilir. IoT data logging, debug console, firmware update and user interface for kritiktir.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -290,7 +290,7 @@ struct USBConfig do
     pid: sayı16 = 0x5740
 end</code></pre>
 
-<h2>💡 Örnek 1: USB CDC Virtual COM Port (Debug Console)</h2>
+<h2>💡 Example 1: USB CDC Virtual COM Port (Debug Console)</h2>
 <div class="example-box">
 <h3>Problem: PC ile seri haberleşme for UART yerine USB kullanmak</h3>
 <pre><code>import hal::usb
@@ -379,7 +379,7 @@ end</code></pre>
 <p><strong>Usage:</strong> PC'de PuTTY/TeraTerm ile /dev/ttyACM0 or COM3 açın. 115200 baud ayarı gereksiz (USB CDC).</p>
 </div>
 
-<h2>💡 Örnek 2: USB HID Keyboard Emulation</h2>
+<h2>💡 Example 2: USB HID Keyboard Emulation</h2>
 <div class="example-box">
 <h3>Problem: MCU'yu USB klavye gibi göstermek (otomatik yazma)</h3>
 <pre><code>import hal::usb
@@ -447,7 +447,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> PC'ye takıldığında gerçek klavye gibi algılanır. Otomatik yazma, macro sistemi.</p>
 </div>
 
-<h2>💡 Örnek 3: USB MSC - Mass Storage (USB Disk Emulation)</h2>
+<h2>💡 Example 3: USB MSC - Mass Storage (USB Disk Emulation)</h2>
 <div class="example-box">
 <h3>Problem: SD card'ı USB flash disk gibi göstermek</h3>
 <pre><code>import hal::usb, hal::sdio
@@ -505,7 +505,7 @@ end</code></pre>
 <p><strong>Usage:</strong> PC'ye takıldığında USB flash disk gibi görünür. Dosya kopyalama çalışır.</p>
 </div>
 
-<h2>📚 API Referansı</h2>
+<h2>📚 API Referenceı</h2>
 <h3>Temel Functions</h3>
 <pre><code>// USB Initialization
 function init_cdc(config: CDCConfig)
@@ -533,7 +533,7 @@ function is_active() -> mantık
 function poll()  // Process USB events</code></pre>
 
 <div class="warning">
-<strong>⚠️ Önemli Notlar:</strong>
+<strong>⚠️ Important Notes:</strong>
 <ul>
 <li><strong>48 MHz Clock:</strong> USB for tam 48 MHz clock gerekli (tolerance ±0.25%)</li>
 <li><strong>VID/PID:</strong> Production'da kendi VID/PID'nizi alın (USB-IF'den)</li>
@@ -586,7 +586,7 @@ function poll()  // Process USB events</code></pre>
 <li>❌ <strong>Long callbacks:</strong> USB callback'leri kısa tutun (<1 ms)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-clock-tr.html">hal::clock</a> - 48 MHz USB clock configuration</li>
 <li><a href="hal-gpio-tr.html">hal::gpio</a> - USB D+/D- pin setup</li>
@@ -595,7 +595,7 @@ function poll()  // Process USB events</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">🔙 HAL Modülleri</a> | 
+<a href="hal-index-tr.html">🔙 HAL Moduleleri</a> | 
 <a href="hal-usb-en.html">🌐 English</a>
 </p>
 </main>

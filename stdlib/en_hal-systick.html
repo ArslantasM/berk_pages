@@ -250,7 +250,7 @@ struct SysTickConfig do
     interrupt_enable: mantık
 end</code></pre>
 
-<h2>💡 Örnek 1: Millisecond Delay İmplementasyonu</h2>
+<h2>💡 Example 1: Millisecond Delay İmplementasyonu</h2>
 <div class="example-box">
 <h3>Blocking delay and non-blocking timeout</h3>
 <pre><code>import hal::systick
@@ -303,7 +303,7 @@ function main_loop() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 2: Simple RTOS Scheduler</h2>
+<h2>💡 Example 2: Simple RTOS Scheduler</h2>
 <div class="example-box">
 <h3>Cooperative multitasking with SysTick</h3>
 <pre><code>import hal::systick
@@ -344,7 +344,7 @@ function scheduler_run() do
     end
 end
 
-// Örnek tasklar
+// Example tasklar
 function led_blink_task() do
     gpio.pin_toggle(LED_PIN)
 end
@@ -368,7 +368,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 3: Performance Profiling</h2>
+<h2>💡 Example 3: Performance Profiling</h2>
 <div class="example-box">
 <h3>function yürütme süresi ölçümü</h3>
 <pre><code>import hal::systick
@@ -412,7 +412,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>📊 API Referansı</h2>
+<h2>📊 API Referenceı</h2>
 
 <h3>Initialization</h3>
 <pre><code>function init(reload_value: sayı)  // 24-bit max
@@ -456,7 +456,7 @@ function get_ticks() -> sayı64</code></pre>
 <li><strong>Debug freeze:</strong> Debug sırasında SysTick'i durdurabilirsiniz</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>24-bit counter: Maximum reload value 0xFFFFFF (16,777,215)</li>
 <li>72 MHz'de 1ms for reload = 72000</li>
@@ -464,7 +464,7 @@ function get_ticks() -> sayı64</code></pre>
 <li>Atomic operations for interrupt disable gerekebilir</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-timer-tr.html">hal::timer</a> - Hardware timers for longer periods</li>
 <li><a href="hal-nvic-tr.html">hal::nvic</a> - Interrupt controller configuration</li>
@@ -472,7 +472,7 @@ function get_ticks() -> sayı64</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
 <a href="hal-systick-en.html">🇬🇧 English</a>
 </p>
 </main>

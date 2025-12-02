@@ -272,7 +272,7 @@ struct WatchdogConfig do
     reload_value: sayı
 end</code></pre>
 
-<h2>💡 Örnek 1: Basic IWDG Usageı</h2>
+<h2>💡 Example 1: Basic IWDG Usageı</h2>
 <div class="example-box">
 <h3>2 saniyelik watchdog ile sistem koruması</h3>
 <pre><code>import hal::watchdog, hal::gpio, hal::core
@@ -309,7 +309,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 2: Task Monitor ile Watchdog</h2>
+<h2>💡 Example 2: Task Monitor ile Watchdog</h2>
 <div class="example-box">
 <h3>Çoklu task izleme and watchdog besleme</h3>
 <pre><code>import hal::watchdog, hal::time
@@ -347,7 +347,7 @@ function watchdog_yonetici(wdg: WatchdogHandle) do
             watchdog.refresh(wdg)
         elseif do
             // Tasks hung! Let watchdog reset the system
-            io.println("UYARI: Görevler askıda! Watchdog resetleyecek...")
+            io.println("Warning: Görevler askıda! Watchdog resetleyecek...")
         end
         
         core.delay_ms(100)
@@ -372,7 +372,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 3: Window Watchdog (WWDG)</h2>
+<h2>💡 Example 3: Window Watchdog (WWDG)</h2>
 <div class="example-box">
 <h3>Pencere kontrolü ile hassas zamanlama</h3>
 <pre><code>import hal::watchdog
@@ -388,7 +388,7 @@ function wwdg_demo() do
     
     // Early warning interrupt handler
     watchdog.set_interrupt_handler(wwdg, || do
-        io.println("Watchdog erken uyarı!")
+        io.println("Watchdog erken Warning!")
         // Burası early wakeup interrupt (zamanında besle)
     end)
     
@@ -414,7 +414,7 @@ function wwdg_demo() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 4: Watchdog + Backup Register</h2>
+<h2>💡 Example 4: Watchdog + Backup Register</h2>
 <div class="example-box">
 <h3>Reset nedeni kaydetme and analiz</h3>
 <pre><code>import hal::watchdog, hal::rtc
@@ -471,7 +471,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>📊 API Referansı</h2>
+<h2>📊 API Referenceı</h2>
 
 <h3>Initialization</h3>
 <pre><code>function init_iwdg(config: WatchdogConfig) -> WatchdogHandle
@@ -512,15 +512,15 @@ function get_counter(handle: WatchdogHandle) -> sayı</code></pre>
 <li><strong>Power modes:</strong> IWDG low-power modlarda çalışır, WWDG durur</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>IWDG bir kez başlatıldı mı durdurulamaz (hardware restriction)</li>
 <li>Debug sırasında watchdog reset'lerini önlemek for DBGMCU_APB1_FZ register'ını ayarlayın</li>
-<li>LSI clock toleransı %40'a kadar olabilir - timeout hesaplamalarında dikkate alın</li>
+<li>LSI clock toleransı %40'a kadar olabilir - timeout hesaplamalarında Attentione alın</li>
 <li>Flash programming sırasında watchdog'u disable edin (erase uzun sürebilir)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-rtc-tr.html">hal::rtc</a> - Backup register for reset logging</li>
 <li><a href="hal-power-tr.html">hal::power</a> - Low-power modes and watchdog</li>
@@ -528,7 +528,7 @@ function get_counter(handle: WatchdogHandle) -> sayı</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
 <a href="hal-watchdog-en.html">🇬🇧 English</a>
 </p>
 </main>

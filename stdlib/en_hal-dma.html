@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>DMA (Direct Memory Access), CPU müdahalesi olmadan bellek and çevre birimleri arasında veri transferi sağlar. ADC, USART, SPI gibi modüllerle yüksek hızlı veri aktarımı for kullanılır.</p>
+<p>DMA (Direct Memory Access), CPU müdahalesi olmadan bellek and çevre birimleri arasında veri transferi sağlar. ADC, USART, SPI gibi Modulelerle yüksek hızlı veri aktarımı for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -231,7 +231,7 @@ dma.transfer(dma_ch, src.as_ptr(), dst.as_ptr(), 5)
 dma.wait(dma_ch)  // Wait for completion</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: ADC with DMA (Continuous Sampling)</h3>
+<h3>💡 Example: ADC with DMA (Continuous Sampling)</h3>
 <pre><code>import hal::dma, hal::adc
 
 constant SAMPLE_COUNT = 1000
@@ -290,7 +290,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: USART TX with DMA</h3>
+<h3>💡 Example: USART TX with DMA</h3>
 <pre><code>import hal::dma, hal::usart
 
 variable dma_complete = false
@@ -338,7 +338,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Memory-to-Memory Fast Copy</h3>
+<h3>💡 Example: Memory-to-Memory Fast Copy</h3>
 <pre><code>import hal::dma
 
 function fast_memcpy(dest: *variable u8, src: *u8, size: sayı) do
@@ -380,7 +380,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Double Buffer (Ping-Pong)</h3>
+<h3>💡 Example: Double Buffer (Ping-Pong)</h3>
 <pre><code>import hal::dma, hal::adc
 
 constant BUFFER_SIZE = 512
@@ -448,7 +448,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: SPI Display with DMA Burst</h3>
+<h3>💡 Example: SPI Display with DMA Burst</h3>
 <pre><code>import hal::dma, hal::spi, hal::gpio
 
 // Display framebuffer (128x64 OLED = 1024 bytes)
@@ -507,7 +507,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: USART RX with DMA Circular Buffer</h3>
+<h3>💡 Example: USART RX with DMA Circular Buffer</h3>
 <pre><code>import hal::dma, hal::usart
 
 constant RX_BUFFER_SIZE = 256
@@ -691,7 +691,7 @@ function clock_disable(dma: DMAInstance)</code></pre>
 <li><strong>ESP32</strong>: GDMA (general purpose DMA)</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li><strong>Memory Alignment</strong>: DMA buffer'ları RAM'de olmalıdır (not flash/peripheral memory)</li>
 <li><strong>Circular Mode</strong>: Infinite loop for kullanılır, ADC/USART streaming ideal</li>
@@ -703,7 +703,7 @@ function clock_disable(dma: DMAInstance)</code></pre>
 <li><strong>Priority</strong>: Aynı öncelikte multiple DMA Usageında arbitration olur</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::adc</code> - ADC with DMA (continuous sampling)</li>
 <li><code>hal::dac</code> - DAC with DMA (waveform generation)</li>
@@ -714,7 +714,7 @@ function clock_disable(dma: DMAInstance)</code></pre>
 <li><code>hal::timer</code> - Timer-triggered DMA</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4031: Using STM32 DMA Controller</a></li>
 <li><a href="https://www.st.com/resource/en/application_note/dm00272912.pdf">AN4943: DMA in STM32F7</a></li>
@@ -722,7 +722,7 @@ function clock_disable(dma: DMAInstance)</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a>
 </p>
 </main>
 </div>

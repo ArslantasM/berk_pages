@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Timer modülü, hardware zamanlayıcılar, PWM üretimi, input capture and output compare işlevleri sağlar. Motor kontrolü, servo kontrol, frekans ölçümü for kullanılır.</p>
+<p>Timer Moduleü, hardware zamanlayıcılar, PWM üretimi, input capture and output compare işlevleri sağlar. Motor kontrolü, servo kontrol, frekans ölçümü for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -235,7 +235,7 @@ timer.pwm_start(pwm)
 timer.pwm_set_duty(pwm, 75)  // 75%</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek 1: LED Breathing Effect</h3>
+<h3>💡 Example 1: LED Breathing Effect</h3>
 <pre><code>import hal::timer, hal::gpio, hal::core
 
 function ana() do
@@ -275,7 +275,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 2: Servo Motor Control</h3>
+<h3>💡 Example 2: Servo Motor Control</h3>
 <pre><code>import hal::timer
 
 struct Servo do
@@ -333,7 +333,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 3: DC Motor Speed Control (L298N Driver)</h3>
+<h3>💡 Example 3: DC Motor Speed Control (L298N Driver)</h3>
 <pre><code>import hal::timer, hal::gpio
 
 struct DCMotor do
@@ -420,7 +420,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 4: Rotary Encoder Reading (Quadrature Mode)</h3>
+<h3>💡 Example 4: Rotary Encoder Reading (Quadrature Mode)</h3>
 <pre><code>import hal::timer, hal::gpio
 
 function encoder_init() -> timer.Handle do
@@ -490,7 +490,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 5: Ultrasonic Sensor (HC-SR04)</h3>
+<h3>💡 Example 5: Ultrasonic Sensor (HC-SR04)</h3>
 <pre><code>import hal::timer, hal::gpio
 
 variable capture_start: u32 = 0
@@ -577,7 +577,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 6: WS2812 RGB LED Strip (DMA + PWM)</h3>
+<h3>💡 Example 6: WS2812 RGB LED Strip (DMA + PWM)</h3>
 <pre><code>import hal::timer, hal::dma, hal::gpio
 
 constant LED_COUNT = 8
@@ -687,7 +687,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek 7: Stepper Motor Control (A4988 Driver)</h3>
+<h3>💡 Example 7: Stepper Motor Control (A4988 Driver)</h3>
 <pre><code>import hal::timer, hal::gpio
 
 struct StepperMotor do
@@ -959,7 +959,7 @@ function generate_update_event(handle: Handle)
 // Example: 75% duty @ 1kHz
 // CCR = (75 * 999) / 100 = 749</code></pre>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>Her timer'ın <strong>belirli GPIO pinleri</strong> vardır (alternate function table'a bakın)</li>
 <li>PWM frequency = Timer_Clock / (Prescaler * Period) formülüne göre hesaplanır</li>
@@ -975,7 +975,7 @@ function generate_update_event(handle: Handle)
 <h2>🎯 Uygulama Senaryoları</h2>
 <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
 <tr style="background:#8e44ad;color:white">
-<th>Uygulama</th><th>Mod</th><th>Frequency</th><th>Notlar</th>
+<th>Uygulama</th><th>Mod</th><th>Frequency</th><th>Notes</th>
 </tr>
 <tr><td>Servo Motor</td><td>PWM</td><td>50 Hz</td><td>1-2ms pulse width</td></tr>
 <tr><td>DC Motor (L298N)</td><td>PWM</td><td>10-20 kHz</td><td>Audible noise reduction</td></tr>
@@ -1010,7 +1010,7 @@ function generate_update_event(handle: Handle)
 <li><strong>GD32VF103:</strong> TIMER0-TIMER6 (RISC-V)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - Timer pin configuration (alternate function)</li>
 <li><code>hal::int</code> - Timer interrupt handling</li>
@@ -1018,7 +1018,7 @@ function generate_update_event(handle: Handle)
 <li><code>hal::adc</code> - ADC triggered by timer (synchronized sampling)</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li>STM32 RM0008 - TIMx functional description</li>
 <li>AN4013 - General-purpose timer cookbook</li>
@@ -1027,9 +1027,9 @@ function generate_update_event(handle: Handle)
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
-<a href="index-tr.html">Tüm Modüller</a> | 
-<a href="../index-tr.html">Ana Sayfa</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
+<a href="index-tr.html">Tüm Moduleler</a> | 
+<a href="../index-tr.html">Ana Page</a>
 </p>
 </main>
 </div>

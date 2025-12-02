@@ -238,7 +238,7 @@ int.set_priority_grouping(int.PRIORITY_GROUP_4)
 // GROUP_4: 4 bits preemption, 0 bits sub (16 preemption levels)</code></pre>
 
 <div class="example-box">
-<h3>💡 Örnek: Nested Interrupts (Priority Preemption)</h3>
+<h3>💡 Example: Nested Interrupts (Priority Preemption)</h3>
 <pre><code>import hal::int, hal::timer, hal::gpio
 
 variable high_priority_count = 0
@@ -307,7 +307,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: External Interrupts (EXTI)</h3>
+<h3>💡 Example: External Interrupts (EXTI)</h3>
 <pre><code>import hal::int, hal::gpio
 
 variable button1_pressed = 0
@@ -363,7 +363,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Interrupt Latency Measurement</h3>
+<h3>💡 Example: Interrupt Latency Measurement</h3>
 <pre><code>import hal::int, hal::timer, hal::gpio
 
 variable interrupt_timestamp = 0
@@ -414,7 +414,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Software Interrupt Trigger</h3>
+<h3>💡 Example: Software Interrupt Trigger</h3>
 <pre><code>import hal::int
 
 variable software_int_count = 0
@@ -448,7 +448,7 @@ end</code></pre>
 </div>
 
 <div class="example-box">
-<h3>💡 Örnek: Critical Section (Interrupt Disable)</h3>
+<h3>💡 Example: Critical Section (Interrupt Disable)</h3>
 <pre><code>import hal::int
 
 variable shared_counter = 0
@@ -557,7 +557,7 @@ function set_callback(irq: IRQ, callback: fn())</code></pre>
 <tr style="background:var(--sidebar-bg)">
 <th style="padding:10px;border:1px solid var(--sidebar-fg)">Priority</th>
 <th style="padding:10px;border:1px solid var(--sidebar-fg)">Use Case</th>
-<th style="padding:10px;border:1px solid var(--sidebar-fg)">Örnek</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Example</th>
 </tr>
 <tr>
 <td style="padding:8px;border:1px solid var(--sidebar-fg)">0-2 (Highest)</td>
@@ -591,7 +591,7 @@ function set_callback(irq: IRQ, callback: fn())</code></pre>
 <li><strong>Critical Sections</strong>: Shared data erişiminde disable interrupts</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li><strong>Priority Number</strong>: Lower number = Higher priority (0 en yüksek)</li>
 <li><strong>Preemption</strong>: Farklı preemption priority → nesting mümkün</li>
@@ -603,7 +603,7 @@ function set_callback(irq: IRQ, callback: fn())</code></pre>
 <li><strong>Systick</strong>: Tipik priority 15 (en düşük, timing-critical not)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><code>hal::gpio</code> - EXTI external interrupts</li>
 <li><code>hal::timer</code> - Timer interrupts (overflow, capture)</li>
@@ -613,7 +613,7 @@ function set_callback(irq: IRQ, callback: fn())</code></pre>
 <li><code>hal::core</code> - Sleep mode wakeup</li>
 </ul>
 
-<h2>📖 Referanslar</h2>
+<h2>📖 Referencelar</h2>
 <ul>
 <li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4044: Using STM32 Interrupts</a></li>
 <li><a href="https://www.arm.com/technologies/cmsis">ARM CMSIS Documentation: NVIC</a></li>
@@ -621,7 +621,7 @@ function set_callback(irq: IRQ, callback: fn())</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a>
+<a href="hal-index-tr.html">← HAL Moduleleri</a>
 </p>
 </main>
 </div>

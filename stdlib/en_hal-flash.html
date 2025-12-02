@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>Flash memory modülü, mikrokontrolcünün dahili flash belleğine program kodu yazma, okuma and silme işlemlerini sağlar. Kalıcı veri saklama, firmware güncelleme (OTA), konfigürasyon ayarları and EEPROM emülasyonu for kullanılır.</p>
+<p>Flash memory Moduleü, mikrokontrolcünün dahili flash belleğine program kodu yazma, okuma and silme işlemlerini sağlar. Kalıcı veri saklama, firmware güncelleme (OTA), konfigürasyon ayarları and EEPROM emülasyonu for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -264,7 +264,7 @@ struct FlashInfo do
     write_alignment: sayı  // 1, 2, 4, 8 bytes
 end</code></pre>
 
-<h2>💡 Örnek 1: EEPROM Emulation</h2>
+<h2>💡 Example 1: EEPROM Emulation</h2>
 <div class="example-box">
 <h3>Flash'ta key-value storage sistemi</h3>
 <pre><code>import hal::flash
@@ -343,7 +343,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 2: Firmware Update (Bootloader)</h2>
+<h2>💡 Example 2: Firmware Update (Bootloader)</h2>
 <div class="example-box">
 <h3>OTA firmware güncelleme</h3>
 <pre><code>import hal::flash, hal::crc
@@ -448,7 +448,7 @@ function jump_to_application(addr: sayı) do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 3: Option Bytes Programming</h2>
+<h2>💡 Example 3: Option Bytes Programming</h2>
 <div class="example-box">
 <h3>Read protection and write protection ayarları</h3>
 <pre><code>import hal::flash
@@ -465,9 +465,9 @@ function set_read_protection(level: ReadProtection) do
     
     if level == ReadProtection.LEVEL_1 ise do
         flash.set_option_byte(flash.OB_RDP, 0x00)
-        io.println("UYARI: Read protection Level 1 etkinleştirildi")
+        io.println("Warning: Read protection Level 1 etkinleştirildi")
     elseif if level == ReadProtection.LEVEL_2 ise do
-        io.println("UYARI: Level 2 GERİ ALINAMAZ! continue edilsin mi? (y/n)")
+        io.println("Warning: Level 2 GERİ ALINAMAZ! continue edilsin mi? (y/n)")
         // Level 2 is permanent - chip cannot be debugged anymore!
     end
     
@@ -492,7 +492,7 @@ function protect_bootloader() do
 end</code></pre>
 </div>
 
-<h2>📊 API Referansı</h2>
+<h2>📊 API Referenceı</h2>
 
 <h3>Lock/Unlock</h3>
 <pre><code>function unlock()
@@ -537,13 +537,13 @@ function get_option_byte(option: sayı) -> sayı</code></pre>
 <ul>
 <li><strong>Write alignment:</strong> Data her zaman belirtilen alignment'a uygun olmalı</li>
 <li><strong>Erase before write:</strong> Flash sadece 1 → 0 yazabilir, önce erase (0xFF) gerekli</li>
-<li><strong>Wear leveling:</strong> Aynı sayfaya çok sık yazma yapılmamalı (100K cycle limit)</li>
+<li><strong>Wear leveling:</strong> Aynı Pageya çok sık yazma yapılmamalı (100K cycle limit)</li>
 <li><strong>Power loss:</strong> Yazma sırasında güç kaybında data corruption olabilir</li>
-<li><strong>Interrupts:</strong> Flash programming sırasında interrupt'ları dikkatli kullanın</li>
+<li><strong>Interrupts:</strong> Flash programming sırasında interrupt'ları Attentionli kullanın</li>
 <li><strong>Read-while-write:</strong> Bazı MCU'lar yazarken okuma yapamaz</li>
 </ul>
 
-<h2>⚠️ Önemli Notlar</h2>
+<h2>⚠️ Important Notes</h2>
 <ul>
 <li>Flash programming CPU'yu bloklar (~20-50ms per page)</li>
 <li>Option bytes Level 2 read protection <strong>geri alınamaz!</strong></li>
@@ -551,14 +551,14 @@ function get_option_byte(option: sayı) -> sayı</code></pre>
 <li>Data retention: 10+ yıl (25°C'de)</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-crc-tr.html">hal::crc</a> - CRC verification for stored data</li>
 <li><a href="hal-watchdog-tr.html">hal::watchdog</a> - Disable during flash erase</li>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
 <a href="hal-flash-en.html">🇬🇧 English</a>
 </p>
 </main>

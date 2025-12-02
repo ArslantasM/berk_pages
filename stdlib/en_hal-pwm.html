@@ -199,7 +199,7 @@
 </div>
 
 <h2>📖 Genel Bakış</h2>
-<p>PWM modülü, timer donanımını kullanarak variable genişlikli dijital sinyaller üretir. Motor hız kontrolü, LED parlaklık ayarı, servo kontrol and analog çıkış simülasyonu for kullanılır.</p>
+<p>PWM Moduleü, timer donanımını kullanarak variable genişlikli dijital sinyaller üretir. Motor hız kontrolü, LED parlaklık ayarı, servo kontrol and analog çıkış simülasyonu for kullanılır.</p>
 
 <h2>🔑 Temel Özellikler</h2>
 <ul>
@@ -276,7 +276,7 @@ struct PWMConfig do
     alignment: Alignment
 end</code></pre>
 
-<h2>💡 Örnek 1: LED Dimming (Parlaklık Kontrolü)</h2>
+<h2>💡 Example 1: LED Dimming (Parlaklık Kontrolü)</h2>
 <div class="example-box">
 <h3>LED parlaklığını PWM ile kontrol etme</h3>
 <pre><code>import hal::pwm, hal::core
@@ -313,7 +313,7 @@ function led_dimmer() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 2: DC Motor Hız Kontrolü</h2>
+<h2>💡 Example 2: DC Motor Hız Kontrolü</h2>
 <div class="example-box">
 <h3>L298N sürücüsü ile motor kontrolü</h3>
 <pre><code>import hal::pwm, hal::gpio
@@ -387,7 +387,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 3: Servo Motor Kontrolü (SG90)</h2>
+<h2>💡 Example 3: Servo Motor Kontrolü (SG90)</h2>
 <div class="example-box">
 <h3>50Hz PWM ile servo açı kontrolü</h3>
 <pre><code>import hal::pwm
@@ -448,7 +448,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>💡 Örnek 4: Buzzer Melodi Çalma</h2>
+<h2>💡 Example 4: Buzzer Melodi Çalma</h2>
 <div class="example-box">
 <h3>PWM frekans değiştirerek nota üretme</h3>
 <pre><code>import hal::pwm, hal::core
@@ -506,7 +506,7 @@ function ana() do
 end</code></pre>
 </div>
 
-<h2>📊 API Referansı</h2>
+<h2>📊 API Referenceı</h2>
 
 <h3>Initialization</h3>
 <pre><code>function init(timer: Timer, channel: Channel, config: PWMConfig) -> PWMHandle
@@ -545,7 +545,7 @@ function configure_dma(handle: PWMHandle, buffer: Dizi[sayı])</code></pre>
 <li><strong>Dead-time:</strong> H-bridge kontrolünde shoot-through önlemek for gerekli</li>
 </ul>
 
-<h2>🔗 İlgili Modüller</h2>
+<h2>🔗 İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-timer-tr.html">hal::timer</a> - Hardware timer (PWM'in temeli)</li>
 <li><a href="hal-gpio-tr.html">hal::gpio</a> - GPIO AF configuration</li>
@@ -553,7 +553,7 @@ function configure_dma(handle: PWMHandle, buffer: Dizi[sayı])</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="hal-index-tr.html">← HAL Moduleleri</a> | 
 <a href="hal-pwm-en.html">🇬🇧 English</a>
 </p>
 </main>

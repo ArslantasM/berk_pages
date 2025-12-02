@@ -199,7 +199,7 @@
         </div>
 
         <h2>📋 Genel Bakış</h2>
-        <p><code>crypto</code> modülü, modern kriptografi algoritmaları ile veri şifreleme, karma Functionsı, dijital imzalar and güvenli anahtar yönetimi for kapsamlı araçlar sağlar. AES, RSA, SHA, HMAC and daha fazlasını destekler.</p>
+        <p><code>crypto</code> Moduleü, modern kriptografi algoritmaları ile veri şifreleme, karma Functionsı, dijital imzalar and güvenli anahtar yönetimi for kapsamlı araçlar sağlar. AES, RSA, SHA, HMAC and daha fazlasını destekler.</p>
 
         <div class="function-group">
             <h3>🔐 Simetrik Şifreleme</h3>
@@ -416,7 +416,7 @@ class DosyaŞifreleyici {
         parola: Dize
     ) -> Sonuç&lt;null, Hata&gt; {
         // Dosyayı read
-        değer içerik = fs.dosya_oku(kaynak)?
+        değer Content = fs.dosya_oku(kaynak)?
         
         // Parola'dan anahtar türet
         değer tuz = crypto.rastgele_bayt(16)
@@ -432,7 +432,7 @@ class DosyaŞifreleyici {
         
         // AES-GCM ile şifrele
         değer şifreli = crypto.aes_gcm_şifrele(
-            veri: içerik,
+            veri: Content,
             anahtar: anahtar,
             nonce: nonce
         )
@@ -442,7 +442,7 @@ class DosyaŞifreleyici {
         fs.dosya_yaz(hedef, çıktı)?
         
         print(f"✓ Dosya şifrelendi: {kaynak} -> {hedef}")
-        print(f"  Boyut: {içerik.uzunluk} -> {çıktı.uzunluk} bayt")
+        print(f"  Boyut: {Content.uzunluk} -> {çıktı.uzunluk} bayt")
         
         return Tamam(null)
     }
@@ -469,17 +469,17 @@ class DosyaŞifreleyici {
         )
         
         // Şifreyi çöz
-        değer içerik = crypto.aes_gcm_çöz(
+        değer Content = crypto.aes_gcm_çöz(
             veri: şifreli,
             anahtar: anahtar,
             nonce: nonce
         )?
         
         // Dosyaya yaz
-        fs.dosya_yaz(hedef, içerik)?
+        fs.dosya_yaz(hedef, Content)?
         
         print(f"✓ Dosya çözüldü: {kaynak} -> {hedef}")
-        print(f"  Boyut: {veri.uzunluk} -> {içerik.uzunluk} bayt")
+        print(f"  Boyut: {veri.uzunluk} -> {Content.uzunluk} bayt")
         
         return Tamam(null)
     }
@@ -490,15 +490,15 @@ değer şifreleyici = DosyaŞifreleyici {}
 
 // Dosya şifreleme
 şifreleyici.dosya_şifrele(
-    "gizli_belgeler.pdf",
-    "gizli_belgeler.pdf.enc",
+    "gizli_Documentation.pdf",
+    "gizli_Documentation.pdf.enc",
     "çok_güçlü_parola_123"
 ).aç()
 
 // Dosya çözme
 şifreleyici.dosya_çöz(
-    "gizli_belgeler.pdf.enc",
-    "gizli_belgeler_çözülmüş.pdf",
+    "gizli_Documentation.pdf.enc",
+    "gizli_Documentation_çözülmüş.pdf",
     "çok_güçlü_parola_123"
 ).aç()</code></pre>
         </div>
@@ -515,15 +515,15 @@ değer şifreleyici = DosyaŞifreleyici {}
             <li>Eski kriptografi algoritmalarından (MD5, SHA1, DES) kaçının</li>
         </ul>
 
-        <h2>⚠️ Güvenlik Uyarıları</h2>
+        <h2>⚠️ Güvenlik Warningları</h2>
         <ul>
             <li>🔴 Özel anahtarları asla paylaşmayın or kaynak koduna eklemeyin</li>
             <li>🔴 Parola or anahtar üretiminde standart <code>random</code> kullanmayın</li>
             <li>🔴 Şifreli verileri değiştirme saldırılarına karşı HMAC or GCM kullanın</li>
-            <li>🔴 Hassas verileri bellekte tutarken dikkatli olun (bellek dökümleri)</li>
+            <li>🔴 Hassas verileri bellekte tutarken Attentionli olun (bellek dökümleri)</li>
         </ul>
 
-        <h2>🔗 İlgili Modüller</h2>
+        <h2>🔗 İlgili Moduleler</h2>
         <ul>
             <li><a href="encoding.html">encoding</a> - Base64, Hex kodlama</li>
             <li><a href="fs.html">fs</a> - Dosya sistemi işlemleri</li>

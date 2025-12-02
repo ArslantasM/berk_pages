@@ -187,8 +187,8 @@
 
 işlev ana() {
     deneme {
-        variable içerik = fs.read("veri.txt")
-        print(içerik)
+        variable Content = fs.read("veri.txt")
+        print(Content)
     } yakala e {
         print("Dosya okuma hatası: ", e)
     }
@@ -198,10 +198,10 @@ işlev ana() {
 <pre><code class="language-berk">import fs
 
 işlev ana() {
-    variable içerik = "Merhaba Dünya!"
+    variable Content = "Merhaba Dünya!"
     
     deneme {
-        fs.yaz("çıktı.txt", içerik)
+        fs.yaz("çıktı.txt", Content)
         print("Dosya başarıyla yazıldı")
     } yakala e {
         print("Yazma hatası: ", e)

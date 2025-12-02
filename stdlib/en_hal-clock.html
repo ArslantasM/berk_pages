@@ -199,7 +199,7 @@
 </div>
 
 <h2> Genel Bakış</h2>
-<p>Clock modülü, mikrodenetleyicinin kalp atışıdır. HSI/HSE/PLL kaynaklarını yapılandırır, sistem clockunu ayarlar and peripheral clocklarını dağıtır. true clock yapılandırması sistemin performansını, güç tüketimini and timing accuracy'sini doğrudan etkiler.</p>
+<p>Clock Moduleü, mikrodenetleyicinin kalp atışıdır. HSI/HSE/PLL kaynaklarını yapılandırır, sistem clockunu ayarlar and peripheral clocklarını dağıtır. true clock yapılandırması sistemin performansını, güç tüketimini and timing accuracy'sini doğrudan etkiler.</p>
 
 <h2> Temel Özellikler</h2>
 <ul>
@@ -273,7 +273,7 @@ struct ClockConfig do
     flash_latency: sayı = 2      // Wait states
 end</code></pre>
 
-<h2> Örnek 1: STM32F1 - 72 MHz Maximum Speed</h2>
+<h2> Example 1: STM32F1 - 72 MHz Maximum Speed</h2>
 <div class="example-box">
 <h3>Problem: STM32F103 for maksimum performans (72 MHz)</h3>
 <pre><code>import hal::clock, hal::flash
@@ -328,7 +328,7 @@ end</code></pre>
 <p><strong>Çıktı:</strong> SYSCLK: 72000000 Hz, HCLK: 72000000 Hz, PCLK1: 36000000 Hz, PCLK2: 72000000 Hz</p>
 </div>
 
-<h2> Örnek 2: STM32F4 - 168 MHz with USB Support</h2>
+<h2> Example 2: STM32F4 - 168 MHz with USB Support</h2>
 <div class="example-box">
 <h3>Problem: STM32F407 for 168 MHz + 48 MHz USB clock</h3>
 <pre><code>import hal::clock, hal::flash, hal::power
@@ -392,7 +392,7 @@ end</code></pre>
 <p><strong>Sonuç:</strong> 168 MHz sistem clocku + 48 MHz USB clock. Maksimum performans.</p>
 </div>
 
-<h2> Örnek 3: Clock Security System (CSS)</h2>
+<h2> Example 3: Clock Security System (CSS)</h2>
 <div class="example-box">
 <h3>Problem: HSE crystal failure durumunda otomatik HSI'ye geçiş</h3>
 <pre><code>import hal::clock, hal::nvic
@@ -464,7 +464,7 @@ end</code></pre>
 <p><strong>Güvenlik:</strong> HSE arızasında sistem donmaz, otomatik HSI'ye geçer.</p>
 </div>
 
-<h2> Örnek 4: MCO (Master Clock Output) for Debugging</h2>
+<h2> Example 4: MCO (Master Clock Output) for Debugging</h2>
 <div class="example-box">
 <h3>Problem: Oscilloscope ile clock sinyalini gözlemlemek</h3>
 <pre><code>import hal::clock, hal::gpio
@@ -506,7 +506,7 @@ end</code></pre>
 <p><strong>Debug:</strong> Oscilloscope ile gerçek clock frekansını doğrulayın. PLL lock problemlerini tespit edin.</p>
 </div>
 
-<h2> API Referansı</h2>
+<h2> API Referenceı</h2>
 <h3>Clock Source Control</h3>
 <pre><code>// HSE control
 function hse_enable()
@@ -552,7 +552,7 @@ function get_flag(flag: ClockFlag) -> mantık
 function clear_flag(flag: ClockFlag)</code></pre>
 
 <div class="warning">
-<strong> Önemli Notlar:</strong>
+<strong> Important Notes:</strong>
 <ul>
 <li><strong>Flash Latency:</strong> High frequency for wait state gerekli (168 MHz -> 5 WS)</li>
 <li><strong>APB1 Max:</strong> STM32F1 36 MHz, F4 42 MHz, F7 54 MHz</li>
@@ -611,7 +611,7 @@ function clear_flag(flag: ClockFlag)</code></pre>
 <li> <strong>APB limiti aşma:</strong> APB1 max frekansını kontrol et</li>
 </ul>
 
-<h2> İlgili Modüller</h2>
+<h2> İlgili Moduleler</h2>
 <ul>
 <li><a href="hal-flash-tr.html">hal::flash</a> - Flash latency configuration</li>
 <li><a href="hal-power-tr.html">hal::power</a> - Voltage scaling for high frequency</li>
@@ -620,7 +620,7 @@ function clear_flag(flag: ClockFlag)</code></pre>
 </ul>
 
 <p style="text-align:center;margin-top:40px">
-<a href="hal-index-tr.html"> HAL Modülleri</a> | 
+<a href="hal-index-tr.html"> HAL Moduleleri</a> | 
 <a href="hal-clock-en.html"> English</a>
 </p>
 </main>
