@@ -182,6 +182,290 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="cross-compilation"><a class="header" href="#cross-compilation">Cross-Compilation</a></h1>
+<p>BERK, <strong>LLVM backend</strong> sayesinde birçok farklı platform için derleme yapabilir. Bir platformda geliştirip başka bir platform için binary üretebilirsiniz.</p>
+<h2 id="cross-compilation-nedir"><a class="header" href="#cross-compilation-nedir">Cross-Compilation Nedir?</a></h2>
+<p><strong>Cross-compilation</strong>, bir platformda (host) başka bir platform (target) için kod derlemektir:</p>
+<ul>
+<li><strong>Host</strong>: Derlemenin yapıldığı platform (örn: Windows x64)</li>
+<li><strong>Target</strong>: Binary'nin çalışacağı platform (örn: Linux ARM)</li>
+</ul>
+<p><strong>Örnek</strong>: Windows PC'nizde Raspberry Pi için program derlemek</p>
+<h2 id="temel-kullanım"><a class="header" href="#temel-kullanım">Temel Kullanım</a></h2>
+<pre><code class="language-bash"># Target platform belirt
+berk-lang build --target=&lt;target-triple&gt; program.berk
+
+# Örnek: Windows'ta Linux için derle
+berk-lang build --target=x86_64-unknown-linux-gnu program.berk
+</code></pre>
+<h2 id="target-triple-formatı"><a class="header" href="#target-triple-formatı">Target Triple Formatı</a></h2>
+<p>Target specification formatı: <code>&lt;arch&gt;-&lt;vendor&gt;-&lt;os&gt;-&lt;abi&gt;</code></p>
+<ul>
+<li><strong>arch</strong>: Mimari (x86_64, aarch64, arm, wasm32...)</li>
+<li><strong>vendor</strong>: Üretici (pc, apple, unknown...)</li>
+<li><strong>os</strong>: İşletim sistemi (windows, linux, darwin, none...)</li>
+<li><strong>abi</strong>: ABI (gnu, msvc, musl, eabi...)</li>
+</ul>
+<h2 id="desteklenen-platformlar"><a class="header" href="#desteklenen-platformlar">Desteklenen Platformlar</a></h2>
+<h3 id="desktop-platformları"><a class="header" href="#desktop-platformları">Desktop Platformları</a></h3>
+<table><thead><tr><th>Platform</th><th>Target Triple</th><th>Binary Format</th></tr></thead><tbody>
+<tr><td>Windows x64</td><td><code>x86_64-pc-windows-msvc</code></td><td>.exe</td></tr>
+<tr><td>Windows x86</td><td><code>i686-pc-windows-msvc</code></td><td>.exe</td></tr>
+<tr><td>Linux x64</td><td><code>x86_64-unknown-linux-gnu</code></td><td>ELF</td></tr>
+<tr><td>Linux ARM64</td><td><code>aarch64-unknown-linux-gnu</code></td><td>ELF</td></tr>
+<tr><td>macOS x64</td><td><code>x86_64-apple-darwin</code></td><td>Mach-O</td></tr>
+<tr><td>macOS ARM</td><td><code>aarch64-apple-darwin</code></td><td>Mach-O</td></tr>
+</tbody></table>
+<h4 id="örnekler"><a class="header" href="#örnekler">Örnekler</a></h4>
+<pre><code class="language-bash"># Windows x64
+berk-lang build --target=x86_64-pc-windows-msvc program.berk -o program.exe
+
+# Linux x64
+berk-lang build --target=x86_64-unknown-linux-gnu program.berk -o program
+
+# macOS ARM (M1/M2)
+berk-lang build --target=aarch64-apple-darwin program.berk -o program
+</code></pre>
+<h3 id="webassembly-wasm"><a class="header" href="#webassembly-wasm">WebAssembly (WASM)</a></h3>
+<table><thead><tr><th>Platform</th><th>Target Triple</th><th>Kullanım</th></tr></thead><tbody>
+<tr><td>WASM (Browser)</td><td><code>wasm32-unknown-unknown</code></td><td>Web uygulamaları</td></tr>
+<tr><td>WASI</td><td><code>wasm32-wasi</code></td><td>Standalone WASM</td></tr>
+</tbody></table>
+<h4 id="browser-wasm"><a class="header" href="#browser-wasm">Browser WASM</a></h4>
+<pre><code class="language-bash"># WebAssembly derle
+berk-lang build --target=wasm32-unknown-unknown program.berk -o program.wasm
+
+# Optimize edilmiş (küçük boyut)
+berk-lang build --target=wasm32-unknown-unknown --opt-size program.berk -o program.wasm
+</code></pre>
+<h4 id="wasi-standalone"><a class="header" href="#wasi-standalone">WASI (Standalone)</a></h4>
+<pre><code class="language-bash"># WASI ile derle
+berk-lang build --target=wasm32-wasi program.berk -o program.wasm
+
+# Wasmtime ile çalıştır
+wasmtime program.wasm
+</code></pre>
+<h3 id="embedded-systems-gömülü-sistemler"><a class="header" href="#embedded-systems-gömülü-sistemler">Embedded Systems (Gömülü Sistemler)</a></h3>
+<h4 id="arm-cortex-m-stm32"><a class="header" href="#arm-cortex-m-stm32">ARM Cortex-M (STM32)</a></h4>
+<table><thead><tr><th>MCU Family</th><th>Target Triple</th></tr></thead><tbody>
+<tr><td>Cortex-M0/M0+</td><td><code>thumbv6m-none-eabi</code></td></tr>
+<tr><td>Cortex-M3</td><td><code>thumbv7m-none-eabi</code></td></tr>
+<tr><td>Cortex-M4/M7</td><td><code>thumbv7em-none-eabi</code></td></tr>
+<tr><td>Cortex-M4F/M7F</td><td><code>thumbv7em-none-eabihf</code></td></tr>
+</tbody></table>
+<pre><code class="language-bash"># STM32F4 için derle (Cortex-M4 with FPU)
+berk-lang build --target=thumbv7em-none-eabihf program.berk -o firmware.elf
+</code></pre>
+<h4 id="esp32-xtensa"><a class="header" href="#esp32-xtensa">ESP32 (Xtensa)</a></h4>
+<pre><code class="language-bash"># ESP32 için derle
+berk-lang build --target=xtensa-esp32-none-elf program.berk -o firmware.bin
+
+# ESP32-S3 için
+berk-lang build --target=xtensa-esp32s3-none-elf program.berk
+</code></pre>
+<h4 id="raspberry-pi-pico-rp2040"><a class="header" href="#raspberry-pi-pico-rp2040">Raspberry Pi Pico (RP2040)</a></h4>
+<pre><code class="language-bash"># RP2040 için derle
+berk-lang build --target=thumbv6m-none-eabi program.berk -o firmware.uf2
+</code></pre>
+<h4 id="arduino-avr"><a class="header" href="#arduino-avr">Arduino (AVR)</a></h4>
+<pre><code class="language-bash"># Arduino Uno (ATmega328P) için
+berk-lang build --target=avr-unknown-gnu-atmega328 program.berk -o firmware.hex
+
+# Arduino Mega (ATmega2560) için
+berk-lang build --target=avr-unknown-gnu-atmega2560 program.berk
+</code></pre>
+<h3 id="mobil-platformlar"><a class="header" href="#mobil-platformlar">Mobil Platformlar</a></h3>
+<table><thead><tr><th>Platform</th><th>Target Triple</th></tr></thead><tbody>
+<tr><td>Android ARM64</td><td><code>aarch64-linux-android</code></td></tr>
+<tr><td>Android ARMv7</td><td><code>armv7-linux-androideabi</code></td></tr>
+<tr><td>Android x86_64</td><td><code>x86_64-linux-android</code></td></tr>
+<tr><td>iOS ARM64</td><td><code>aarch64-apple-ios</code></td></tr>
+<tr><td>iOS Simulator</td><td><code>x86_64-apple-ios</code></td></tr>
+</tbody></table>
+<pre><code class="language-bash"># Android ARM64
+berk-lang build --target=aarch64-linux-android program.berk -o libprogram.so
+
+# iOS
+berk-lang build --target=aarch64-apple-ios program.berk -o libprogram.a
+</code></pre>
+<h2 id="çapraz-derleme-kurulumu"><a class="header" href="#çapraz-derleme-kurulumu">Çapraz Derleme Kurulumu</a></h2>
+<h3 id="windows-→-linux"><a class="header" href="#windows-→-linux">Windows → Linux</a></h3>
+<pre><code class="language-bash"># 1. Linux toolchain kur
+berk-lang target add x86_64-unknown-linux-gnu
+
+# 2. Derle
+berk-lang build --target=x86_64-unknown-linux-gnu program.berk
+</code></pre>
+<h3 id="linux-→-windows"><a class="header" href="#linux-→-windows">Linux → Windows</a></h3>
+<pre><code class="language-bash"># MinGW-w64 kur
+sudo apt install mingw-w64
+
+# Target ekle
+berk-lang target add x86_64-pc-windows-gnu
+
+# Derle
+berk-lang build --target=x86_64-pc-windows-gnu program.berk -o program.exe
+</code></pre>
+<h3 id="macos-→-linux"><a class="header" href="#macos-→-linux">macOS → Linux</a></h3>
+<pre><code class="language-bash"># Cross-compiler kur
+brew install FiloSottile/musl-cross/musl-cross
+
+# Derle
+berk-lang build --target=x86_64-unknown-linux-musl program.berk
+</code></pre>
+<h2 id="target-yönetimi"><a class="header" href="#target-yönetimi">Target Yönetimi</a></h2>
+<pre><code class="language-bash"># Mevcut target'ları listele
+berk-lang target list
+
+# Yeni target ekle
+berk-lang target add aarch64-unknown-linux-gnu
+
+# Target kaldır
+berk-lang target remove aarch64-unknown-linux-gnu
+
+# Varsayılan target ayarla
+berk-lang target default x86_64-pc-windows-msvc
+</code></pre>
+<h2 id="berk-toml-ile-multi-target"><a class="header" href="#berk-toml-ile-multi-target">berk.toml ile Multi-Target</a></h2>
+<pre><code class="language-toml">[package]
+name = "my_app"
+version = "1.0.0"
+
+# Varsayılan target
+[build]
+default-target = "x86_64-pc-windows-msvc"
+
+# Her platform için özel ayarlar
+[target.x86_64-pc-windows-msvc]
+linker = "link.exe"
+
+[target.x86_64-unknown-linux-gnu]
+linker = "gcc"
+strip = true
+
+[target.wasm32-unknown-unknown]
+optimization = "size"
+lto = true
+</code></pre>
+<h2 id="universal-binary-macos"><a class="header" href="#universal-binary-macos">Universal Binary (macOS)</a></h2>
+<p>Intel ve ARM Mac'ler için tek binary:</p>
+<pre><code class="language-bash"># Intel derle
+berk-lang build --target=x86_64-apple-darwin program.berk -o program_intel
+
+# ARM derle
+berk-lang build --target=aarch64-apple-darwin program.berk -o program_arm
+
+# Universal binary oluştur
+lipo -create program_intel program_arm -output program
+</code></pre>
+<h2 id="sysroot-ve-linker-ayarları"><a class="header" href="#sysroot-ve-linker-ayarları">Sysroot ve Linker Ayarları</a></h2>
+<pre><code class="language-bash"># Custom sysroot
+berk-lang build --target=aarch64-unknown-linux-gnu \
+  --sysroot=/opt/cross/aarch64-linux-gnu \
+  program.berk
+
+# Custom linker
+berk-lang build --target=x86_64-unknown-linux-gnu \
+  --linker=clang \
+  program.berk
+</code></pre>
+<h2 id="platform-özel-kod"><a class="header" href="#platform-özel-kod">Platform Özel Kod</a></h2>
+<h3 id="conditional-compilation"><a class="header" href="#conditional-compilation">Conditional Compilation</a></h3>
+<pre><code class="language-berk">#[eğer(hedef_os = "windows")]
+fonksiyon platform_özel() yap
+    yazdir("Windows üzerinde çalışıyorum")
+son
+
+#[eğer(hedef_os = "linux")]
+fonksiyon platform_özel() yap
+    yazdir("Linux üzerinde çalışıyorum")
+son
+
+#[eğer(hedef_arch = "wasm32")]
+fonksiyon platform_özel() yap
+    yazdir("WebAssembly'de çalışıyorum")
+son
+</code></pre>
+<h3 id="platform-sabitleri"><a class="header" href="#platform-sabitleri">Platform Sabitleri</a></h3>
+<pre><code class="language-berk">sabit PLATFORM = #hedef_os
+sabit ARCH = #hedef_arch
+
+fonksiyon ana() yap
+    yazdir("Platform: {}", PLATFORM)
+    yazdir("Mimari: {}", ARCH)
+son
+</code></pre>
+<h2 id="en-i̇yi-uygulamalar"><a class="header" href="#en-i̇yi-uygulamalar">En İyi Uygulamalar</a></h2>
+<ol>
+<li>
+<p>✅ <strong>CI/CD ile test edin</strong>:</p>
+<pre><code class="language-yaml"># GitHub Actions
+jobs:
+  build:
+    strategy:
+      matrix:
+        target:
+          - x86_64-pc-windows-msvc
+          - x86_64-unknown-linux-gnu
+          - aarch64-apple-darwin
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>Platform feature'ları kullanın</strong>:</p>
+<pre><code class="language-toml">[features]
+windows = []
+linux = []
+embedded = []
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>Binary boyutuna dikkat</strong> (embedded için):</p>
+<pre><code class="language-bash">berk-lang build --target=thumbv7em-none-eabihf --opt-size program.berk
+</code></pre>
+</li>
+<li>
+<p>⚠️ <strong>Endianness farkına</strong> dikkat:</p>
+<ul>
+<li>x86/ARM: Little-endian</li>
+<li>Bazı embedded: Big-endian</li>
+</ul>
+</li>
+</ol>
+<h2 id="debugging-cross-compiled-binaries"><a class="header" href="#debugging-cross-compiled-binaries">Debugging Cross-Compiled Binaries</a></h2>
+<h3 id="qemu-ile-test"><a class="header" href="#qemu-ile-test">QEMU ile Test</a></h3>
+<pre><code class="language-bash"># ARM binary'yi x86 PC'de çalıştır
+qemu-arm program_arm
+
+# Debug mode
+qemu-arm -g 1234 program_arm
+gdb-multiarch program_arm
+(gdb) target remote :1234
+</code></pre>
+<h3 id="remote-debugging"><a class="header" href="#remote-debugging">Remote Debugging</a></h3>
+<pre><code class="language-bash"># Hedef cihazda gdbserver çalıştır
+gdbserver :1234 program
+
+# Host'ta bağlan
+gdb program
+(gdb) target remote 192.168.1.100:1234
+</code></pre>
+<h2 id="performans-i̇puçları"><a class="header" href="#performans-i̇puçları">Performans İpuçları</a></h2>
+<table><thead><tr><th>Platform</th><th>Öneri</th></tr></thead><tbody>
+<tr><td>Desktop</td><td><code>-O2</code> veya <code>-O3</code></td></tr>
+<tr><td>WASM</td><td><code>--opt-size --lto</code></td></tr>
+<tr><td>Embedded</td><td><code>--opt-size</code> (memory sınırlı)</td></tr>
+<tr><td>Mobile</td><td><code>-O2 --lto</code></td></tr>
+</tbody></table>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ <strong>LLVM backend</strong>: Çok platform desteği</li>
+<li>✅ <strong>Desktop</strong>: Windows, Linux, macOS</li>
+<li>✅ <strong>Web</strong>: WebAssembly (WASM)</li>
+<li>✅ <strong>Embedded</strong>: ARM, ESP32, Arduino</li>
+<li>✅ <strong>Mobile</strong>: Android, iOS</li>
+<li>✅ <strong>Target yönetimi</strong>: <code>berk-lang target</code> komutu</li>
+<li>✅ <strong>Conditional compilation</strong>: Platform özel kod</li>
+<li>✅ <strong>QEMU</strong>: Cross-compiled binary testi</li>
+</ul>
 
                     </main>
 

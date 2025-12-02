@@ -182,6 +182,314 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="hata-ayıklama"><a class="header" href="#hata-ayıklama">Hata Ayıklama</a></h1>
+<p>BERK, <strong>modern debugging araçları</strong> ile güçlü hata ayıklama desteği sunar. DWARF/PDB debug sembolleri, GDB/LLDB entegrasyonu ve VS Code debugging ile profesyonel geliştirme deneyimi.</p>
+<h2 id="debug-build"><a class="header" href="#debug-build">Debug Build</a></h2>
+<h3 id="debug-sembollerini-aktifleştirme"><a class="header" href="#debug-sembollerini-aktifleştirme">Debug Sembollerini Aktifleştirme</a></h3>
+<pre><code class="language-bash"># Debug modda derle (optimizasyon yok, debug sembolleri var)
+berk-lang build --debug
+
+# Veya
+berk-lang build -g
+</code></pre>
+<h3 id="debug-vs-release"><a class="header" href="#debug-vs-release">Debug vs Release</a></h3>
+<table><thead><tr><th>Özellik</th><th>Debug (-g)</th><th>Release (-O2)</th></tr></thead><tbody>
+<tr><td>Debug sembolleri</td><td>✅ Var</td><td>❌ Yok</td></tr>
+<tr><td>Optimizasyon</td><td>❌ Yok (-O0)</td><td>✅ Var (-O2)</td></tr>
+<tr><td>Derleme hızı</td><td>🚀 Hızlı</td><td>🐌 Yavaş</td></tr>
+<tr><td>Çalışma hızı</td><td>🐌 Yavaş</td><td>🚀 Hızlı (10-50x)</td></tr>
+<tr><td>Binary boyutu</td><td>📦 Büyük</td><td>📦 Küçük</td></tr>
+<tr><td>Stack trace</td><td>✅ Detaylı</td><td>⚠️ Sınırlı</td></tr>
+</tbody></table>
+<h2 id="gdb-debugger"><a class="header" href="#gdb-debugger">GDB Debugger</a></h2>
+<h3 id="temel-kullanım"><a class="header" href="#temel-kullanım">Temel Kullanım</a></h3>
+<pre><code class="language-bash"># Program GDB ile başlat
+gdb ./output
+
+# GDB içinde
+(gdb) run                    # Programı çalıştır
+(gdb) break main.berk:10     # 10. satıra breakpoint
+(gdb) continue               # Devam et
+(gdb) next                   # Sonraki satır (step over)
+(gdb) step                   # Fonksiyon içine gir (step into)
+(gdb) print x                # Değişken değeri
+(gdb) backtrace              # Call stack
+(gdb) quit                   # Çık
+</code></pre>
+<h3 id="breakpoint-türleri"><a class="header" href="#breakpoint-türleri">Breakpoint Türleri</a></h3>
+<pre><code class="language-bash"># Satır breakpoint
+(gdb) break main.berk:25
+
+# Fonksiyon breakpoint
+(gdb) break hesapla
+
+# Koşullu breakpoint
+(gdb) break main.berk:30 if x &gt; 10
+
+# Watchpoint (değişken değiştiğinde dur)
+(gdb) watch x
+
+# Tüm breakpointleri listele
+(gdb) info breakpoints
+
+# Breakpoint sil
+(gdb) delete 1
+</code></pre>
+<h3 id="değişken-inceleme"><a class="header" href="#değişken-inceleme">Değişken İnceleme</a></h3>
+<pre><code class="language-bash"># Basit değişken
+(gdb) print x
+$1 = 42
+
+# Struct
+(gdb) print kisi
+$2 = {isim = \"Ali\", yaş = 25}
+
+# Array
+(gdb) print sayılar[0]@5  # İlk 5 eleman
+
+# Pointer
+(gdb) print *ptr
+
+# Format belirle
+(gdb) print/x x           # Hex
+(gdb) print/t x           # Binary
+(gdb) print/f x           # Float
+</code></pre>
+<h2 id="lldb-debugger"><a class="header" href="#lldb-debugger">LLDB Debugger</a></h2>
+<h3 id="temel-komutlar"><a class="header" href="#temel-komutlar">Temel Komutlar</a></h3>
+<pre><code class="language-bash"># LLDB başlat
+lldb ./output
+
+# LLDB içinde
+(lldb) run
+(lldb) breakpoint set --file main.berk --line 10
+(lldb) breakpoint set --name hesapla
+(lldb) continue
+(lldb) next
+(lldb) step
+(lldb) frame variable x
+(lldb) bt                    # Backtrace
+(lldb) quit
+</code></pre>
+<h2 id="vs-code-debugging"><a class="header" href="#vs-code-debugging">VS Code Debugging</a></h2>
+<h3 id="launch-json-yapılandırma"><a class="header" href="#launch-json-yapılandırma">launch.json Yapılandırma</a></h3>
+<p><code>.vscode/launch.json</code>:</p>
+<pre><code class="language-json">{
+  \"version\": \"0.2.0\",
+  \"configurations\": [
+    {
+      \"name\": \"Debug BERK Program\",
+      \"type\": \"cppdbg\",
+      \"request\": \"launch\",
+      \"program\": \"${workspaceFolder}/output.exe\",
+      \"args\": [],
+      \"stopAtEntry\": false,
+      \"cwd\": \"${workspaceFolder}\",
+      \"environment\": [],
+      \"externalConsole\": false,
+      \"MIMode\": \"gdb\",
+      \"miDebuggerPath\": \"gdb.exe\",
+      \"setupCommands\": [
+        {
+          \"description\": \"Enable pretty-printing\",
+          \"text\": \"-enable-pretty-printing\",
+          \"ignoreFailures\": true
+        }
+      ],
+      \"preLaunchTask\": \"build-debug\"
+    }
+  ]
+}
+</code></pre>
+<h3 id="tasks-json-debug-build"><a class="header" href="#tasks-json-debug-build">tasks.json (Debug Build)</a></h3>
+<p><code>.vscode/tasks.json</code>:</p>
+<pre><code class="language-json\">{
+  \"version\": \"2.0.0\",
+  \"tasks\": [
+    {
+      \"label\": \"build-debug\",
+      \"type\": \"shell\",
+      \"command\": \"berk-lang\",
+      \"args\": [\"build\", \"--debug\", \"-o\", \"output.exe\"],
+      \"group\": {
+        \"kind\": \"build\",
+        \"isDefault\": true
+      },
+      \"problemMatcher\": []
+    }
+  ]
+}
+</code></pre>
+<h3 id="vs-code-debugging-özellikleri"><a class="header" href="#vs-code-debugging-özellikleri">VS Code Debugging Özellikleri</a></h3>
+<h4 id="1-breakpointlar"><a class="header" href="#1-breakpointlar\">1. Breakpointlar</a></h4>
+<ul>
+<li>✅ Line breakpoints (F9)</li>
+<li>✅ Conditional breakpoints (sağ tık)</li>
+<li>✅ Logpoints (çıktı yazdir, durmaz)</li>
+<li>✅ Function breakpoints</li>
+</ul>
+<h4 id="2-stepping"><a class="header" href="#2-stepping\">2. Stepping</a></h4>
+<table><thead><tr><th>Kısayol</th><th>Aksiyon</th></tr></thead><tbody>
+<tr><td>F5</td><td>Continue</td></tr>
+<tr><td>F10</td><td>Step Over (fonksiyonun üzerinden geç)</td></tr>
+<tr><td>F11</td><td>Step Into (fonksiyonun içine gir)</td></tr>
+<tr><td>Shift+F11</td><td>Step Out (fonksiyondan çık)</td></tr>
+<tr><td>Ctrl+Shift+F5</td><td>Restart</td></tr>
+<tr><td>Shift+F5</td><td>Stop</td></tr>
+</tbody></table>
+<h4 id="3-variables-panel"><a class="header" href="#3-variables-panel\">3. Variables Panel</a></h4>
+<p>Sol taraftaki "Variables" panelinde:</p>
+<ul>
+<li>Local değişkenler</li>
+<li>Global değişkenler</li>
+<li>Değişken değerlerini düzenleme</li>
+</ul>
+<h4 id="4-watch-expressions"><a class="header" href="#4-watch-expressions\">4. Watch Expressions</a></h4>
+<p>"Watch" paneline ekleyin:</p>
+<pre><code>x * 2
+kisi.isim
+sayılar.uzunluk()
+</code></pre>
+<h4 id="5-call-stack"><a class="header" href="#5-call-stack\">5. Call Stack</a></h4>
+<p>Fonksiyon çağrı geçmişini gösterir - herhangi bir frame'e tıklayın</p>
+<h4 id="6-debug-console"><a class="header" href="#6-debug-console\">6. Debug Console</a></h4>
+<p>Canlı ifade değerlendirme:</p>
+<pre><code class="language-berk\">// Debug Console'da
+x + 10
+kisi.isim
+hesapla(5, 10)
+</code></pre>
+<h2 id="koşullu-breakpoint-örnekleri"><a class="header" href="#koşullu-breakpoint-örnekleri">Koşullu Breakpoint Örnekleri</a></h2>
+<pre><code class="language-berk\">// Sadece x &gt; 100 olduğunda dur
+fonksiyon işle(x: sayı) yap
+    eğer x &lt; 0 yap  // Breakpoint burada: x &lt; 0
+        dön 0
+    son
+    dön x * 2
+son
+</code></pre>
+<h2 id="logpoint-kullanımı"><a class="header" href="#logpoint-kullanımı">Logpoint Kullanımı</a></h2>
+<p>Satır numarasına sağ tık → "Add Logpoint":</p>
+<pre><code>x değeri: {x}, y değeri: {y}
+</code></pre>
+<p>Program durmaz, sadece log yazdırır</p>
+<h2 id="embedded-debugging"><a class="header" href="#embedded-debugging">Embedded Debugging</a></h2>
+<h3 id="esp32-jtag-debugging"><a class="header" href="#esp32-jtag-debugging\">ESP32 JTAG Debugging</a></h3>
+<pre><code class="language-bash\"># OpenOCD başlat
+openocd -f board/esp32.cfg
+
+# GDB bağlan
+xtensa-esp32-elf-gdb output.elf
+(gdb) target remote :3333
+(gdb) monitor reset halt
+(gdb) break main
+(gdb) continue
+</code></pre>
+<h3 id="stm32-swd-debugging"><a class="header" href="#stm32-swd-debugging\">STM32 SWD Debugging</a></h3>
+<pre><code class="language-bash\"># ST-Link ile
+st-util
+
+# GDB
+arm-none-eabi-gdb output.elf
+(gdb) target remote :4242
+(gdb) load
+(gdb) break main
+(gdb) continue
+</code></pre>
+<h2 id="performance-profiling"><a class="header" href="#performance-profiling\">Performance Profiling</a></h2>
+<h3 id="linux-perf"><a class="header" href="#linux-perf\">Linux (perf)</a></h3>
+<pre><code class="language-bash\"># Profiling verisi topla
+perf record -g ./output
+
+# Analiz et
+perf report
+
+# Flame graph
+perf script | flamegraph.pl &gt; flame.svg
+</code></pre>
+<h3 id="windows-performance-analyzer"><a class="header" href="#windows-performance-analyzer\">Windows (Performance Analyzer)</a></h3>
+<pre><code class="language-bash\"># Visual Studio Profiler
+devenv /DebugExe output.exe
+</code></pre>
+<h2 id="memory-debugging"><a class="header" href="#memory-debugging\">Memory Debugging</a></h2>
+<h3 id="valgrind-linux"><a class="header" href="#valgrind-linux\">Valgrind (Linux)</a></h3>
+<pre><code class="language-bash\"># Memory leak kontrolü
+valgrind --leak-check=full ./output
+
+# Cache profiling
+valgrind --tool=cachegrind ./output
+</code></pre>
+<h3 id="address-sanitizer"><a class="header" href="#address-sanitizer\">Address Sanitizer</a></h3>
+<pre><code class="language-bash\"># LLVM AddressSanitizer ile derle
+berk-lang build --sanitizer=address
+
+# Çalıştır - memory hataları otomatik yakalanır
+./output
+</code></pre>
+<h2 id="debugging-best-practices"><a class="header" href="#debugging-best-practices\">Debugging Best Practices</a></h2>
+<ol>
+<li>
+<p>✅ <strong>Debug build kullanın</strong>:</p>
+<pre><code class="language-bash\">berk-lang build --debug
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>Logpoint'leri tercih edin</strong> (program durmaz)</p>
+</li>
+<li>
+<p>✅ <strong>Conditional breakpoints</strong> kullanın (döngülerde)</p>
+</li>
+<li>
+<p>✅ <strong>Watch expressions</strong> ekleyin (karmaşık ifadeler)</p>
+</li>
+<li>
+<p>⚠️ <strong>Optimizasyon kapalı</strong> olmalı debug modda</p>
+</li>
+<li>
+<p>⚠️ <strong>Stack overflow</strong> kontrolü:</p>
+<pre><code class="language-bash\">ulimit -s unlimited  # Linux
+</code></pre>
+</li>
+</ol>
+<h2 id="debugging-teknikleri"><a class="header" href="#debugging-teknikleri\">Debugging Teknikleri</a></h2>
+<h3 id="1-binary-search-debugging"><a class="header" href="#1-binary-search-debugging\">1. Binary Search Debugging</a></h3>
+<p>Kodun yarısına breakpoint koy - hata hangi yarıda?</p>
+<h3 id="2-rubber-duck-debugging"><a class="header" href="#2-rubber-duck-debugging\">2. Rubber Duck Debugging</a></h3>
+<p>Kodu satır satır açıkla (kendin veya birine)</p>
+<h3 id="3-print-debugging"><a class="header" href="#3-print-debugging\">3. Print Debugging</a></h3>
+<pre><code class="language-berk\">yazdir(\"x değeri: {}\", x)
+yazdir(\"Buraya geldi mi?\")
+</code></pre>
+<h3 id="4-assertion-kullanımı"><a class="header" href=\"#4-assertion-kullanımı\">4. Assertion Kullanımı</a></h3>
+<pre><code class=\"language-berk\">iddia_et(x &gt; 0, \"x pozitif olmalı\")
+</code></pre>
+<h2 id=\"sorun-giderme\"><a class=\"header\" href=\"#sorun-giderme\">Sorun Giderme</a></h2>
+<h3 id=\"debug-sembolleri-yok\"><a class=\"header\" href=\"#debug-sembolleri-yok\">Debug Sembolleri Yok</a></h3>
+<pre><code class=\"language-bash\"># Kontrol et
+file output.exe | grep \"not stripped\"
+
+# Strip edilmişse yeniden derle
+berk-lang build --debug
+</code></pre>
+<h3 id=\"breakpoint-durmuyor\"><a class=\"header\" href=\"#breakpoint-durmuyor\">Breakpoint Durmuyor</a></h3>
+<ol>
+<li>Debug modda derlendiğinden emin olun</li>
+<li>Optimizasyon kapalı olmalı (-O0)</li>
+<li>Satır numarası doğru mu?</li>
+</ol>
+<h3 id=\"değişken-değerleri-gösterilmiyor\"><a class=\"header\" href=\"#değişken-değerleri-gösterilmiyor\">Değişken Değerleri Gösterilmiyor</a></h3>
+<p>Optimizasyon değişkeni kaldırmış olabilir - debug build kullanın</p>
+<h2 id=\"özet\"><a class=\"header\" href=\"#özet\">Özet</a></h2>
+<ul>
+<li>✅ Debug build (--debug)</li>
+<li>✅ GDB/LLDB entegrasyonu</li>
+<li>✅ VS Code debugging</li>
+<li>✅ Breakpoints (line, conditional, log)</li>
+<li>✅ Watch expressions</li>
+<li>✅ Call stack</li>
+<li>✅ Embedded debugging</li>
+<li>✅ Performance profiling</li>
+<li>✅ Memory debugging (Valgrind, ASan)</li>
+</ul>
 
                     </main>
 

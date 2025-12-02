@@ -182,6 +182,197 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="string-İşlemleri"><a class="header" href="#string-İşlemleri">String İşlemleri</a></h1>
+<p>BERK'te string işlemleri <strong>güvenli</strong>, <strong>hızlı</strong> ve <strong>kullanışlıdır</strong>. UTF-8 desteği, zengin stdlib API'si ve zero-copy operasyonlar.</p>
+<h2 id="string-oluşturma"><a class="header" href="#string-oluşturma">String Oluşturma</a></h2>
+<h3 id="literal-stringler"><a class="header" href="#literal-stringler">Literal Stringler</a></h3>
+<pre><code class="language-berk">değişken isim = "Ali"
+değişken mesaj = "Merhaba Dünya!"
+değişken çok_satırlı = """
+    Bu bir
+    çok satırlı
+    string'dir
+"""
+</code></pre>
+<h3 id="escape-karakterleri"><a class="header" href="#escape-karakterleri">Escape Karakterleri</a></h3>
+<pre><code class="language-berk">değişken yeni_satır = "Satır 1\nSatır 2"
+değişken tab = "Kolon\tDeğer"
+değişken tırnak = "O dedi: \"Merhaba\""
+değişken unicode = "\u{1F600}"  // 😀
+</code></pre>
+<h2 id="temel-işlemler"><a class="header" href="#temel-işlemler">Temel İşlemler</a></h2>
+<h3 id="birleştirme-concatenation"><a class="header" href="#birleştirme-concatenation">Birleştirme (Concatenation)</a></h3>
+<pre><code class="language-berk">değişken ad = "Ali"
+değişken soyad = "Yılmaz"
+
+// + operatörü
+değişken tam_ad = ad + " " + soyad
+
+// format! makrosu
+değişken mesaj = format!("Merhaba {}, yaşınız {}.", isim, yaş)
+</code></pre>
+<h3 id="uzunluk-ve-boş-kontrol"><a class="header" href="#uzunluk-ve-boş-kontrol">Uzunluk ve Boş Kontrol</a></h3>
+<pre><code class="language-berk">değişken s = "Merhaba"
+yazdır(s.uzunluk())      // 7
+yazdır(s.boş_mu())       // yanlış
+yazdır(s.karakter_sayısı()) // UTF-8 karakter sayısı
+</code></pre>
+<h2 id="string-modülü-fonksiyonları"><a class="header" href="#string-modülü-fonksiyonları">String Modülü Fonksiyonları</a></h2>
+<h3 id="büyük-küçük-harf-dönüşümü"><a class="header" href="#büyük-küçük-harf-dönüşümü">Büyük/Küçük Harf Dönüşümü</a></h3>
+<pre><code class="language-berk">kullan string;
+
+değişken metin = "Merhaba Dünya"
+yazdır(string::büyüt(metin))         // "MERHABA DÜNYA"
+yazdır(string::küçült(metin))        // "merhaba dünya"
+yazdır(string::baş_harfi_büyüt(metin)) // "Merhaba dünya"
+</code></pre>
+<h3 id="trim-ve-pad"><a class="header" href="#trim-ve-pad">Trim ve Pad</a></h3>
+<pre><code class="language-berk">değişken s = "  merhaba  "
+yazdır(string::trim(s))         // "merhaba"
+yazdır(string::trim_start(s))   // "merhaba  "
+yazdır(string::trim_end(s))     // "  merhaba"
+
+değişken x = "42"
+yazdır(string::pad_left(x, 5, '0'))  // "00042"
+</code></pre>
+<h3 id="bölme-split"><a class="header" href="#bölme-split">Bölme (Split)</a></h3>
+<pre><code class="language-berk">değişken metin = "elma,armut,muz"
+değişken parçalar = string::böl(metin, ",")
+// ["elma", "armut", "muz"]
+
+// Satırlara böl
+değişken çok_satır = "Satır 1\nSatır 2\nSatır 3"
+değişken satırlar = string::satırlara_böl(çok_satır)
+</code></pre>
+<h3 id="değiştir-replace"><a class="header" href="#değiştir-replace">Değiştir (Replace)</a></h3>
+<pre><code class="language-berk">değişken metin = "Merhaba Dünya"
+değişken yeni = string::değiştir(metin, "Dünya", "BERK")
+yazdır(yeni)  // "Merhaba BERK"
+
+// Tüm oluşumları değiştir
+değişken s = "test test test"
+yazdır(string::değiştir_tümü(s, "test", "deneme"))
+</code></pre>
+<h2 id="arama-ve-kontrol"><a class="header" href="#arama-ve-kontrol">Arama ve Kontrol</a></h2>
+<h3 id="içerir-contains"><a class="header" href="#içerir-contains">İçerir (Contains)</a></h3>
+<pre><code class="language-berk">değişken metin = "Merhaba Dünya"
+yazdır(string::içerir(metin, "Dünya"))  // doğru
+yazdır(string::içerir(metin, "Java"))   // yanlış
+</code></pre>
+<h3 id="başlar-ve-biter"><a class="header" href="#başlar-ve-biter">Başlar ve Biter</a></h3>
+<pre><code class="language-berk">değişken dosya = "resim.png"
+yazdır(string::ile_başlar(dosya, "resim"))  // doğru
+yazdır(string::ile_biter(dosya, ".png"))    // doğru
+</code></pre>
+<h3 id="bul-find"><a class="header" href="#bul-find">Bul (Find)</a></h3>
+<pre><code class="language-berk">değişken metin = "Merhaba Dünya"
+değişken index = string::bul(metin, "Dünya")
+
+eşleştir index yap
+    Bir(i) => yazdır("Bulundu: " + i),
+    Hiçbiri => yazdır("Bulunamadı")
+son
+</code></pre>
+<h2 id="string-formatla"><a class="header" href="#string-formatla">String Formatla</a></h2>
+<pre><code class="language-berk">// Basit interpolasyon
+değişken isim = "Ali"
+değişken yaş = 25
+değişken mesaj = format!("İsim: {}, Yaş: {}", isim, yaş)
+
+// İsimlendirilmiş parametreler
+değişken m = format!("x: {x}, y: {y}", x: 10, y: 20)
+
+// Sayı formatlama
+değişken pi = 3.14159
+yazdır(format!("Pi: {:.2}", pi))  // "Pi: 3.14"
+</code></pre>
+<h2 id="unicode-ve-utf-8"><a class="header" href="#unicode-ve-utf-8">Unicode ve UTF-8</a></h2>
+<h3 id="karakter-iterasyonu"><a class="header" href="#karakter-iterasyonu">Karakter İterasyonu</a></h3>
+<pre><code class="language-berk">değişken metin = "Merhaba 🌍"
+
+için karakter içinde string::karakterler(metin) yap
+    yazdır(karakter)
+son
+
+// Byte iterasyonu
+için byte içinde string::byte_lar(metin) yap
+    yazdır(byte)
+son
+</code></pre>
+<h3 id="türkçe-karakter-desteği"><a class="header" href="#türkçe-karakter-desteği">Türkçe Karakter Desteği</a></h3>
+<pre><code class="language-berk">değişken türkçe = "çalışma ığğöüş"
+yazdır(string::büyüt(türkçe))  // "ÇALIŞMA IĞĞÖÜŞ"
+yazdır(türkçe.uzunluk())       // Doğru byte sayısı
+yazdır(türkçe.karakter_sayısı()) // Görünen karakter sayısı
+</code></pre>
+<h2 id="regex-desteği"><a class="header" href="#regex-desteği">Regex Desteği</a></h2>
+<pre><code class="language-berk">kullan regex::Regex;
+
+değişken re = Regex::yeni(r"\d{3}-\d{4}")
+değişken telefon = "555-1234"
+
+eğer re.eşleşir(telefon) yap
+    yazdır("Geçerli telefon")
+son
+
+// Tüm eşleşmeleri bul
+değişken metin = "Email: ali@test.com ve ayse@test.com"
+değişken re2 = Regex::yeni(r"[a-z]+@[a-z]+\.[a-z]+")
+için eşleşme içinde re2.tüm_eşleşmeler(metin) yap
+    yazdır(eşleşme)
+son
+</code></pre>
+<h2 id="string-builder"><a class="header" href="#string-builder">String Builder</a></h2>
+<p>Verimli string birleştirme için:</p>
+<pre><code class="language-berk">kullan string::StringBuilder;
+
+değişken sb = StringBuilder::yeni()
+sb.ekle("Merhaba")
+sb.ekle(" ")
+sb.ekle("Dünya")
+sb.ekle_satır("!")
+
+değişken sonuç = sb.inşa_et()
+yazdır(sonuç)  // "Merhaba Dünya!\n"
+</code></pre>
+<h2 id="performans-i̇puçları"><a class="header" href="#performans-i̇puçları">Performans İpuçları</a></h2>
+<ol>
+<li>
+<p>✅ <strong>StringBuilder kullan</strong> (çoklu birleştirmeler için)</p>
+<pre><code class="language-berk">// ❌ Yavaş
+değişken s = ""
+için i içinde 0..1000 yap
+    s += "x"
+son
+
+// ✅ Hızlı
+değişken sb = StringBuilder::yeni()
+için i içinde 0..1000 yap
+    sb.ekle("x")
+son
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>String slice kullan</strong> (kopyalama yapmadan)</p>
+<pre><code class="language-berk">değişken s = "Merhaba Dünya"
+değişken alt = s[0..7]  // "Merhaba" (zero-copy)
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>Önceden boyut ayır</strong></p>
+<pre><code class="language-berk">değişken sb = StringBuilder::with_capacity(1000)
+</code></pre>
+</li>
+</ol>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ UTF-8 native desteği</li>
+<li>✅ Türkçe karakter desteği</li>
+<li>✅ Zengin stdlib API</li>
+<li>✅ Zero-copy operasyonlar</li>
+<li>✅ Regex desteği</li>
+<li>✅ String interpolasyon</li>
+<li>✅ StringBuilder performansı</li>
+</ul>
 
                     </main>
 

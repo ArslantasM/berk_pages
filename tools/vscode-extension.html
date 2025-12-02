@@ -182,6 +182,215 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="vs-code-eklentisi"><a class="header" href="#vs-code-eklentisi">VS Code Eklentisi</a></h1>
+<p>BERK VS Code Extension, <strong>profesyonel geliştirme deneyimi</strong> için tam özellikli bir IDE desteği sunar. Language Server Protocol (LSP) ile güçlendirilmiştir.</p>
+<h2 id="kurulum"><a class="header" href="#kurulum">Kurulum</a></h2>
+<h3 id="marketplace-üzerinden"><a class="header" href="#marketplace-üzerinden">Marketplace Üzerinden</a></h3>
+<ol>
+<li>VS Code'u açın</li>
+<li>Extensions (Ctrl+Shift+X) menüsüne gidin</li>
+<li>"BERK Language Support" aratyın</li>
+<li>"Install" butonuna tıklayın</li>
+</ol>
+<h3 id="komut-satırından"><a class="header" href="#komut-satırından">Komut Satırından</a></h3>
+<pre><code class=\"language-bash\">code --install-extension ArslantasM-tools.berk-lang
+</code></pre>
+<h2 id=\"temel-özellikler\"><a class=\"header\" href=\"#temel-özellikler\">Temel Özellikler</a></h2>
+<h3 id=\"1-syntax-highlighting\"><a class=\"header\" href=\"#1-syntax-highlighting\">1. Syntax Highlighting</a></h3>
+<ul>
+<li>✅ Türkçe ve İngilizce anahtar kelimeler</li>
+<li>✅ String interpolasyon</li>
+<li>✅ Yorum satırları</li>
+<li>✅ Tip vurguları</li>
+<li>✅ Fonksiyon isimleri</li>
+</ul>
+<h3 id=\"2-intelligisense-code-completion\"><a class=\"header\" href=\"#2-intelligisense-code-completion\">2. IntelliSense (Code Completion)</a></h3>
+<pre><code class=\"language-berk\">// 'değişken' yazın ve Ctrl+Space
+değişken x = 42
+
+// 'x.' yazın - otomatik metodlar gösterilir
+x.to_string()
+x.karakter_uzunluğu()
+</code></pre>
+<h3 id=\"3-go-to-definition-f12\"><a class=\"header\" href=\"#3-go-to-definition-f12\">3. Go to Definition (F12)</a></h3>
+<p>Herhangi bir fonksiyon/değişken üzerine F12 basın:</p>
+<pre><code class=\"language-berk\">değişken sonuç = hesapla(10)  // F12 ile hesapla() tanımına git
+</code></pre>
+<h3 id=\"4-find-all-references-shift-f12\"><a class=\"header\" href=\"#4-find-all-references-shift-f12\">4. Find All References (Shift+F12)</a></h3>
+<p>Bir sembolün tüm kullanıldığı yerleri bulun</p>
+<h3 id=\"5-rename-symbol-f2\"><a class=\"header\" href=\"#5-rename-symbol-f2\">5. Rename Symbol (F2)</a></h3>
+<p>Güvenli isim değiştirme - tüm referanslar otomatik güncellenir</p>
+<h3 id=\"6-hover-information\"><a class=\"header\" href=\"#6-hover-information\">6. Hover Information</a></h3>
+<p>Herhangi bir sembolün üzerine gelin:</p>
+<ul>
+<li>Tip bilgisi</li>
+<li>Dokümantasyon</li>
+<li>İmza bilgisi</li>
+</ul>
+<h3 id=\"7-diagnostics-error-checking\"><a class=\"header\" href=\"#7-diagnostics-error-checking\">7. Diagnostics (Error Checking)</a></h3>
+<p>Gerçek zamanlı hata kontrolü:</p>
+<ul>
+<li>🔴 Syntax hataları</li>
+<li>🟠 Uyarılar</li>
+<li>🔵 Bilgilendirmeler</li>
+</ul>
+<h3 id=\"8-code-actions-ctrl\"><a class=\"header\" href=\"#8-code-actions-ctrl\">8. Code Actions (Ctrl+.)</a></h3>
+<p>Hızlı düzeltmeler ve refactoring:</p>
+<ul>
+<li>Import otomatik ekleme</li>
+<li>Tip açıklaması ekleme</li>
+<li>Değişken ayıklama</li>
+</ul>
+<h3 id=\"9-signature-help-ctrl-shift-space\"><a class=\"header\" href=\"#9-signature-help-ctrl-shift-space\">9. Signature Help (Ctrl+Shift+Space)</a></h3>
+<pre><code class=\"language-berk\">fonksiyon hesapla(x: sayı, y: sayı, z: sayı) yap
+son
+
+hesapla(  // Ctrl+Shift+Space - parametre yardımı
+</code></pre>
+<h3 id=\"10-document-symbols-ctrl-shift-o\"><a class=\"header\" href=\"#10-document-symbols-ctrl-shift-o\">10. Document Symbols (Ctrl+Shift+O)</a></h3>
+<p>Dosyadaki tüm semboller (fonksiyonlar, değişkenler) listesi</p>
+<h3 id=\"11-semantic-tokens\"><a class=\"header\" href=\"#11-semantic-tokens\">11. Semantic Tokens</a></h3>
+<p>Gelişmiş syntax highlighting - tip bilgisine dayalı renklendirme</p>
+<h3 id=\"12-inlay-hints\"><a class=\"header\" href=\"#12-inlay-hints\">12. Inlay Hints</a></h3>
+<p>Inline tip ve parametre açıklamaları</p>
+<h3 id=\"13-code-lens\"><a class=\"header\" href=\"#13-code-lens\">13. Code Lens</a></h3>
+<p>Referans sayıları ve hızlı aksiyonlar</p>
+<h2 id=\"komutlar\"><a class=\"header\" href=\"#komutlar\">Komutlar</a></h2>
+<p>Command Palette (Ctrl+Shift+P) üzerinden:</p>
+<table><thead><tr><th>Komut</th><th>Açıklama</th><th>Kısayol</th></tr></thead><tbody>
+<tr><td>BERK: Build</td><td>Projeyi derle</td><td>Ctrl+B</td></tr>
+<tr><td>BERK: Run</td><td>Çalıştır</td><td>F5</td></tr>
+<tr><td>BERK: Build Release</td><td>Release derle</td><td>Ctrl+Shift+B</td></tr>
+<tr><td>BERK: Clean</td><td>Build cache temizle</td><td>-</td></tr>
+<tr><td>BERK: New Project</td><td>Yeni proje oluştur</td><td>-</td></tr>
+<tr><td>BERK: Generate Docs</td><td>Dokümantasyon üret</td><td>-</td></tr>
+<tr><td>BERK: Restart LSP</td><td>Language server yeniden başlat</td><td>-</td></tr>
+</tbody></table>
+<h2 id=\"kod-snippetleri\"><a class=\"header\" href=\"#kod-snippetleri\">Kod Snippetleri</a></h2>
+<h3 id=\"türkçe-snippetler\"><a class=\"header\" href=\"#türkçe-snippetler\">Türkçe Snippetler</a></h3>
+<table><thead><tr><th>Trigger</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>fonk</code></td><td>Fonksiyon şablonu</td></tr>
+<tr><td><code>eğer</code></td><td>If-else bloğu</td></tr>
+<tr><td><code>için</code></td><td>For döngüsü</td></tr>
+<tr><td><code>yapı</code></td><td>Struct tanımı</td></tr>
+<tr><td><code>enum</code></td><td>Enum tanımı</td></tr>
+<tr><td><code>test</code></td><td>Test fonksiyonu</td></tr>
+<tr><td><code>ana</code></td><td>Main fonksiyonu</td></tr>
+</tbody></table>
+<h3 id=\"kullanım-örneği\"><a class=\"header\" href=\"#kullanım-örneği\">Kullanım Örneği</a></h3>
+<pre><code class=\"language-berk\">// 'fonk' yazın ve Tab
+fonksiyon isim(parametre: tip) -> tip yap
+    // kod buraya
+son
+</code></pre>
+<h2 id=\"debugging-desteği\"><a class=\"header\" href=\"#debugging-desteği\">Debugging Desteği</a></h2>
+<p><code>launch.json</code> yapılandırması:</p>
+<pre><code class=\"language-json\">{
+  \"version\": \"0.2.0\",
+  \"configurations\": [
+    {
+      \"type\": \"berk\",
+      \"request\": \"launch\",
+      \"name\": \"Debug BERK Program\",
+      \"program\": \"${workspaceFolder}/main.berk\",
+      \"stopOnEntry\": false
+    }
+  ]
+}
+</code></pre>
+<h2 id=\"ayarlar\"><a class=\"header\" href=\"#ayarlar\">Ayarlar</a></h2>
+<p><code>settings.json</code>:</p>
+<pre><code class=\"language-json\">{
+  \"berk.lsp.enabled\": true,
+  \"berk.lsp.trace.server\": \"off\",
+  \"berk.build.optimizationLevel\": 2,
+  \"berk.format.indentSize\": 4,
+  \"berk.lint.warnings\": true,
+  \"berk.inlayHints.enabled\": true,
+  \"berk.semanticTokens.enabled\": true
+}
+</code></pre>
+<h2 id=\"format-on-save\"><a class=\"header\" href=\"#format-on-save\">Format on Save</a></h2>
+<pre><code class=\"language-json\">{
+  \"[berk]\": {
+    \"editor.formatOnSave\": true,
+    \"editor.defaultFormatter\": \"ArslantasM-tools.berk-lang\"
+  }
+}
+</code></pre>
+<h2 id=\"task-runner\"><a class=\"header\" href=\"#task-runner\">Task Runner</a></h2>
+<p><code>tasks.json</code>:</p>
+<pre><code class=\"language-json\">{
+  \"version\": \"2.0.0\",
+  \"tasks\": [
+    {
+      \"label\": \"build\",
+      \"type\": \"shell\",
+      \"command\": \"berk-lang build\",
+      \"group\": {
+        \"kind\": \"build\",
+        \"isDefault\": true
+      }
+    }
+  ]
+}
+</code></pre>
+<h2 id=\"problem-matcher\"><a class=\"header\" href=\"#problem-matcher\">Problem Matcher</a></h2>
+<p>BERK hata formatını otomatik algılar:</p>
+<pre><code>error[E0308]: tip uyuşmazlığı
+  --&gt; src/main.berk:5:14
+   |
+ 5 |     değişken x: sayı = \"merhaba\";
+   |              ^^^^      ^^^^^^^^^
+</code></pre>
+<h2 id=\"workspace-önerileri\"><a class=\"header\" href=\"#workspace-önerileri\">Workspace Önerileri</a></h2>
+<p><code>.vscode/extensions.json</code>:</p>
+<pre><code class=\"language-json\">{
+  \"recommendations\": [
+    \"ArslantasM-tools.berk-lang\"
+  ]
+}
+</code></pre>
+<h2 id=\"performans-i̇puçları\"><a class=\"header\" href=\"#performans-i̇puçları\">Performans İpuçları</a></h2>
+<ol>
+<li>
+<p>✅ <strong>LSP Cache</strong> kullanın:</p>
+<pre><code class=\"language-json\">\"berk.lsp.cache.enabled\": true
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>Incremental parsing</strong> aktif:</p>
+<pre><code class=\"language-json\">\"berk.lsp.incrementalSync\": true
+</code></pre>
+</li>
+<li>
+<p>⚠️ Çok büyük dosyalarda <strong>semantic tokens</strong> kapatın:</p>
+<pre><code class=\"language-json\">\"berk.semanticTokens.enabled\": false
+</code></pre>
+</li>
+</ol>
+<h2 id=\"sorun-giderme\"><a class=\"header\" href=\"#sorun-giderme\">Sorun Giderme</a></h2>
+<h3 id=\"lsp-çalışmıyorsa\"><a class=\"header\" href=\"#lsp-çalışmıyorsa\">LSP Çalışmıyorsa</a></h3>
+<ol>
+<li>Command Palette → "BERK: Restart LSP"</li>
+<li>VS Code'u yeniden başlatın</li>
+<li>Output panel → "BERK Language Server" log'larına bakın</li>
+</ol>
+<h3 id=\"syntax-highlighting-yok\"><a class=\"header\" href=\"#syntax-highlighting-yok\">Syntax Highlighting Yok</a></h3>
+<ol>
+<li>Dosya uzantısı <code>.berk</code> olmalı</li>
+<li>Language mode "BERK" seçili olmalı (sağ alt köşe)</li>
+</ol>
+<h2 id=\"özet\"><a class=\"header\" href=\"#özet\">Özet</a></h2>
+<ul>
+<li>✅ 13 LSP özelliği</li>
+<li>✅ Syntax highlighting</li>
+<li>✅ Code completion</li>
+<li>✅ Go to definition</li>
+<li>✅ Debugging</li>
+<li>✅ Task runner</li>
+<li>✅ Snippetler</li>
+<li>✅ Format on save</li>
+</ul>
 
                     </main>
 

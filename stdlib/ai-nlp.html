@@ -1,0 +1,646 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>nlp - Doğal Dil İşleme - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>nlp - Doğal Dil İşleme</h1>
+                        <p>BERT, Tokenizer, NER ve metin analizi araçları</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">BERT</div><div>Embeddings</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">5</div><div>Tokenizer</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">NER</div><div>Entity</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Multilang</div><div>Destek</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Genel Bakış</h2>
+                    <p>nlp modülü, metin işleme, embeddings, named entity recognition ve sentiment analysis için araçlar sağlar.</p>
+
+                    <h2>Tokenization</h2>
+
+                    <div class="example-box">
+                        <h3>BPE Tokenizer</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// Pre-trained tokenizer yükle
+değişken tokenizer = Tokenizer::yükle("bert-base-uncased")?;
+
+değişken text = "BERK programlama dili çok güçlü!";
+değişken tokens = tokenizer.encode(text);
+
+yazdir("Tokens: {:?}", tokens.ids);
+yazdir("Token texts: {:?}", tokens.tokens);
+
+// Decode
+değişken decoded = tokenizer.decode(tokens.ids);
+yazdir("Decoded: {}", decoded);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Custom Tokenizer</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// Kendi tokenizer'ınızı eğitin
+değişken trainer = TokenizerTrainer::yeni(
+    vocab_size: 30000,
+    special_tokens: ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"]
+);
+
+// Corpus üzerinde eğit
+değişken corpus = [
+    "BERK dili sistem programlama için idealdir.",
+    "Rust'tan ilham alınmış modern bir dildir.",
+    // ...
+];
+
+değişken tokenizer = trainer.train(corpus)?;
+tokenizer.save("tokenizer.json")?;
+</code></pre>
+                    </div>
+
+                    <h2>BERT Embeddings</h2>
+
+                    <div class="example-box">
+                        <h3>Sentence Embeddings</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// BERT model yükle
+değişken bert = BERT::yükle(
+    model: "bert-base-multilingual-cased",
+    device: "cuda"
+)?;
+
+değişken sentences = [
+    "BERK programlama dili",
+    "Rust benzeri syntax",
+    "Modern ve güvenli"
+];
+
+// Embeddings al
+değişken embeddings = bert.encode(sentences)?;
+yazdir("Shape: {:?}", embeddings.shape());  // [3, 768]
+
+// Similarity hesapla
+değişken sim_01 = cosine_similarity(embeddings[0], embeddings[1]);
+yazdir("Benzerlik: {:.4f}", sim_01);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Fine-tuning BERT</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+kullan ai/nn;
+kullan ai/optim;
+
+// BERT + Classification head
+sınıf SentimentClassifier {
+    değişken bert: BERT;
+    değişken classifier: Linear;
+    
+    fonksiyon yeni(num_classes: tamsayı) -> SentimentClassifier yap
+        değişken bert = BERT::yükle("bert-base-uncased")?;
+        değişken classifier = Linear::yeni(768, num_classes);
+        
+        dön SentimentClassifier { bert, classifier };
+    son
+    
+    fonksiyon ileri(değişken kendi, input_ids: Tensor) -> Tensor yap
+        değişken bert_output = kendi.bert.ileri(input_ids);
+        değişken cls_token = bert_output[:, 0, :];  // [CLS] token
+        dön kendi.classifier.ileri(cls_token);
+    son
+}
+
+// Eğitim
+değişken model = SentimentClassifier::yeni(num_classes: 3);
+değişken optimizer = AdamW::yeni(model.parametreler(), lr: 2e-5);
+
+her epoch içinde aralık(3) için yap
+    her batch içinde train_loader için yap
+        değişken logits = model.ileri(batch.input_ids);
+        değişken loss = cross_entropy(logits, batch.labels);
+        
+        optimizer.sıfırla();
+        loss.geri();
+        optimizer.adım();
+    son
+son
+</code></pre>
+                    </div>
+
+                    <h2>Named Entity Recognition (NER)</h2>
+
+                    <div class="example-box">
+                        <h3>Entity Detection</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// Pre-trained NER model
+değişken ner = NER::yükle("bert-base-ner")?;
+
+değişken text = "Ahmet Ankara'da Microsoft'ta çalışıyor.";
+değişken entities = ner.predict(text)?;
+
+her entity içinde entities için yap
+    yazdir!("{}: {} ({})", 
+            entity.text, 
+            entity.label, 
+            entity.confidence);
+son
+
+// Çıktı:
+// Ahmet: PERSON (0.98)
+// Ankara: LOCATION (0.95)
+// Microsoft: ORGANIZATION (0.97)
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Custom NER Training</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// NER model tanımla
+değişken model = NER::yeni(
+    base_model: "bert-base-cased",
+    labels: ["O", "B-PER", "I-PER", "B-LOC", "I-LOC", "B-ORG", "I-ORG"]
+);
+
+// Training data
+değişken train_data = [
+    NERExample {
+        text: "John lives in New York",
+        labels: ["B-PER", "O", "O", "B-LOC", "I-LOC"]
+    },
+    // ...
+];
+
+// Eğit
+değişken trainer = NERTrainer::yeni(model, optimizer);
+trainer.train(train_data, epochs: 5)?;
+</code></pre>
+                    </div>
+
+                    <h2>Sentiment Analysis</h2>
+
+                    <div class="example-box">
+                        <h3>Duygu Analizi</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken analyzer = SentimentAnalyzer::yükle("tr-sentiment")?;
+
+değişken reviews = [
+    "Bu ürün harika, çok beğendim!",
+    "Berbat bir deneyim, tavsiye etmem.",
+    "Fena değil, idare eder."
+];
+
+her review içinde reviews için yap
+    değişken sentiment = analyzer.predict(review)?;
+    yazdir!("{}: {} (güven: {:.2f})", 
+            review, 
+            sentiment.label,  // "Pozitif", "Negatif", "Nötr"
+            sentiment.score);
+son
+</code></pre>
+                    </div>
+
+                    <h2>Text Generation</h2>
+
+                    <div class="example-box">
+                        <h3>GPT-style Generation</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken generator = TextGenerator::yükle("gpt2-turkish")?;
+
+değişken prompt = "BERK programlama dili";
+değişken generated = generator.generate(
+    prompt: prompt,
+    max_length: 100,
+    temperature: 0.8,
+    top_k: 50,
+    top_p: 0.95,
+    num_return_sequences: 3
+)?;
+
+her (i, text) içinde generated.enumerate() için yap
+    yazdir!("Varyasyon {}: {}", i+1, text);
+son
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Beam Search</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken generated = generator.generate(
+    prompt: "Derin öğrenme",
+    max_length: 50,
+    num_beams: 5,        // Beam search
+    early_stopping: doğru,
+    no_repeat_ngram_size: 3
+)?;
+
+yazdir("{}", generated);
+</code></pre>
+                    </div>
+
+                    <h2>Question Answering</h2>
+
+                    <div class="example-box">
+                        <h3>Extractive QA</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken qa_model = QA::yükle("bert-large-qa")?;
+
+değişken context = "BERK, Rust'tan ilham alan modern bir sistem programlama dilidir. \
+                     Bellek güvenliği ve performans odaklı tasarlanmıştır.";
+
+değişken question = "BERK hangi dilden ilham alır?";
+
+değişken answer = qa_model.predict(
+    question: question,
+    context: context
+)?;
+
+yazdir("Cevap: {}", answer.text);      // "Rust"
+yazdir("Güven: {:.2f}", answer.score); // 0.95
+yazdir("Span: {:?}", answer.span);     // (6, 10)
+</code></pre>
+                    </div>
+
+                    <h2>Text Classification</h2>
+
+                    <div class="function-group">
+                        <h3>Multi-label Classification</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken classifier = TextClassifier::yeni(
+    base_model: "bert-base-uncased",
+    labels: ["teknoloji", "spor", "politika", "ekonomi"],
+    multi_label: doğru
+);
+
+değişken text = "Apple yeni iPhone modelini tanıttı. Hisse fiyatları yükseldi.";
+değişken predictions = classifier.predict(text)?;
+
+her pred içinde predictions için yap
+    eğer pred.score > 0.5 ise yap
+        yazdir!("{}: {:.2f}", pred.label, pred.score);
+    son
+son
+// Çıktı:
+// teknoloji: 0.92
+// ekonomi: 0.78
+</code></pre>
+                    </div>
+
+                    <h2>Language Detection</h2>
+
+                    <div class="example-box">
+                        <h3>Dil Tespiti</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken detector = LanguageDetector::yeni();
+
+değişken texts = [
+    "Bu bir Türkçe cümledir.",
+    "This is an English sentence.",
+    "Dies ist ein deutscher Satz.",
+    "これは日本語の文です。"
+];
+
+her text içinde texts için yap
+    değişken lang = detector.detect(text)?;
+    yazdir!("{}: {}", lang.code, text);
+son
+</code></pre>
+                    </div>
+
+                    <h2>Text Preprocessing</h2>
+
+                    <div class="function-group">
+                        <h3>Temizleme ve Normalizasyon</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+değişken processor = TextProcessor::yeni();
+
+// Pipeline oluştur
+processor
+    .lowercase()
+    .remove_punctuation()
+    .remove_stopwords(lang: "tr")
+    .stem(algorithm: "snowball")
+    .remove_urls()
+    .remove_emails();
+
+değişken text = "BERK'i https://berk-lang.org adresinden indirebilirsiniz! İletişim: info@berk.com";
+değişken cleaned = processor.process(text);
+
+yazdir!("{}", cleaned);
+// Çıktı: "berk adres indir iletisim"
+</code></pre>
+                    </div>
+
+                    <h2>Word Embeddings</h2>
+
+                    <div class="example-box">
+                        <h3>Word2Vec & FastText</h3>
+                        <pre><code class="language-berk">kullan ai/nlp;
+
+// Pre-trained embeddings yükle
+değişken w2v = Word2Vec::yükle("fasttext-tr-300d")?;
+
+// Kelime vektörü al
+değişken vec = w2v.get_vector("bilgisayar")?;
+yazdir!("Vektör boyutu: {}", vec.len());  // 300
+
+// En yakın kelimeler
+değişken similar = w2v.most_similar("programlama", top_k: 5)?;
+her (word, similarity) içinde similar için yap
+    yazdir!("{}: {:.4f}", word, similarity);
+son
+
+// Analoji: kral - erkek + kadın = ?
+değişken result = w2v.analogy("kral", "erkek", "kadın")?;
+yazdir!("Analoji sonucu: {}", result);  // "kraliçe"
+</code></pre>
+                    </div>
+
+                    <h2>Performans Metrikleri</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Model</th><th>Parametreler</th><th>Inference (ms)</th><th>Kullanım</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>BERT-base</td><td>110M</td><td>~40</td><td>Genel amaçlı NLP</td></tr>
+                            <tr><td>BERT-large</td><td>340M</td><td>~140</td><td>Yüksek doğruluk</td></tr>
+                            <tr><td>DistilBERT</td><td>66M</td><td>~20</td><td>Hızlı inference</td></tr>
+                            <tr><td>RoBERTa</td><td>125M</td><td>~45</td><td>SOTA performans</td></tr>
+                            <tr><td>GPT-2 small</td><td>117M</td><td>~50</td><td>Text generation</td></tr>
+                            <tr><td>T5-base</td><td>220M</td><td>~80</td><td>Seq2seq tasks</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>API Referansı</h2>
+
+                    <div class="function-group">
+                        <h3>Tokenizer Sınıfı</h3>
+                        <ul>
+                            <li><code>yükle(model: dizgi) -> Tokenizer</code> - Pre-trained tokenizer</li>
+                            <li><code>encode(text: dizgi) -> Encoding</code> - Text'i tokenize et</li>
+                            <li><code>decode(ids: [tamsayı]) -> dizgi</code> - Token ID'leri decode et</li>
+                            <li><code>encode_batch(texts: [dizgi]) -> [Encoding]</code> - Batch encoding</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>BERT Sınıfı</h3>
+                        <ul>
+                            <li><code>yükle(model: dizgi, ...) -> BERT</code> - BERT model yükle</li>
+                            <li><code>encode(texts: [dizgi]) -> Tensor</code> - Sentence embeddings</li>
+                            <li><code>ileri(input_ids: Tensor) -> BertOutput</code> - Forward pass</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>NER Sınıfı</h3>
+                        <ul>
+                            <li><code>yükle(model: dizgi) -> NER</code> - NER model yükle</li>
+                            <li><code>predict(text: dizgi) -> [Entity]</code> - Entity detection</li>
+                            <li><code>predict_batch(texts: [dizgi]) -> [[Entity]]</code></li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/ai-vision.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/ai-rl.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/ai-vision.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/ai-rl.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+
+    <!-- Custom JS scripts -->
+
+
+
+</div>
+</body>
+</html>

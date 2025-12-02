@@ -182,6 +182,200 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="modüller-ve-organizasyon"><a class="header" href="#modüller-ve-organizasyon">Modüller ve Organizasyon</a></h1>
+<p>BERK'te modül sistemi, kodunuzu organize etmek, yeniden kullanılabilirliği artırmak ve büyük projeleri yönetmeyi kolaylaştırmak için tasarlanmıştır.</p>
+<h2 id="modül-temelleri"><a class="header" href="#modül-temelleri">Modül Temelleri</a></h2>
+<p>Her BERK dosyası bir modül olarak değerlendirilir. Modüller, ilgili fonksiyonları, yapıları ve sabitleri bir araya getirmenizi sağlar.</p>
+<h3 id="basit-modül-örneği"><a class="header" href="#basit-modül-örneği">Basit Modül Örneği</a></h3>
+<pre><code class="language-berk">// matematik.berk
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı
+yap
+    dön a + b
+son
+
+dışa_aktar fonksiyon çarp(a: sayı, b: sayı) -&gt; sayı
+yap
+    dön a * b
+son
+
+dışa_aktar sabit PI = 3.14159
+</code></pre>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">Modül Kullanımı</a></h2>
+<h3 id="kullan-ifadesi-yerel-modüller"><a class="header" href="#kullan-ifadesi-yerel-modüller">Kullan İfadesi (Yerel Modüller)</a></h3>
+<p><code>kullan</code> ifadesi ile yerel modüllerden sembol içe aktarabilirsiniz:</p>
+<pre><code class="language-berk">// Tek fonksiyon içe aktarma
+kullan matematik::topla;
+
+// Birden fazla öğe içe aktarma
+kullan matematik::{topla, çarp, PI};
+
+// Tüm dışa aktarılanları içe aktarma
+kullan matematik::*;
+
+// Takma ad ile içe aktarma
+kullan matematik::PI olarak pi_sayısı;
+</code></pre>
+<h3 id="içe_aktar-ifadesi-harici-paketler"><a class="header" href="#içe_aktar-ifadesi-harici-paketler">İçe_aktar İfadesi (Harici Paketler)</a></h3>
+<p><code>içe_aktar</code> ifadesi harici paketleri yüklemek için kullanılır:</p>
+<pre><code class="language-berk">// Harici paket içe aktarma
+içe_aktar &quot;serde&quot; olarak json;
+
+// Seçici içe aktarma
+içe_aktar &quot;http&quot;::{get, post, İstek};
+</code></pre>
+<h2 id="modül-organizasyonu"><a class="header" href="#modül-organizasyonu">Modül Organizasyonu</a></h2>
+<h3 id="dizin-yapısı"><a class="header" href="#dizin-yapısı">Dizin Yapısı</a></h3>
+<p>Modüller dosya sistemi yapısını takip eder:</p>
+<pre><code>proje/
+├── ana.berk
+├── matematik/
+│   ├── temel.berk
+│   ├── geometri.berk
+│   └── istatistik.berk
+└── metin/
+    ├── işlemler.berk
+    └── biçimlendir.berk
+</code></pre>
+<h3 id="modül-yolları"><a class="header" href="#modül-yolları">Modül Yolları</a></h3>
+<pre><code class="language-berk">// Alt modül kullanımı
+kullan matematik::geometri::alan_hesapla;
+
+// İç içe modüller
+kullan matematik::geometri::{alan, çevre};
+</code></pre>
+<h2 id="dışa-aktarma"><a class="header" href="#dışa-aktarma">Dışa Aktarma</a></h2>
+<h3 id="tek-öğe-dışa-aktarma"><a class="header" href="#tek-öğe-dışa-aktarma">Tek Öğe Dışa Aktarma</a></h3>
+<pre><code class="language-berk">dışa_aktar fonksiyon hesapla() -&gt; sayı
+yap
+    dön 42
+son
+</code></pre>
+<h3 id="birden-fazla-öğe-dışa-aktarma"><a class="header" href="#birden-fazla-öğe-dışa-aktarma">Birden Fazla Öğe Dışa Aktarma</a></h3>
+<pre><code class="language-berk">// Gruplama sözdizimi
+dışa_aktar { fonk1, fonk2, YapıAdı };
+
+// Her birini ayrı ayrı
+dışa_aktar fonksiyon fonk1() yap son
+dışa_aktar fonksiyon fonk2() yap son
+dışa_aktar yapı YapıAdı yap son
+</code></pre>
+<h2 id="görünürlük-kuralları"><a class="header" href="#görünürlük-kuralları">Görünürlük Kuralları</a></h2>
+<p>BERK'te görünürlük varsayılan olarak özeldir (private):</p>
+<ul>
+<li><strong>Dışa aktarılan</strong> öğeler diğer modüller tarafından kullanılabilir</li>
+<li><strong>Dışa aktarılmayan</strong> öğeler yalnızca modül içinde kullanılabilir</li>
+</ul>
+<pre><code class="language-berk">// Bu fonksiyon dışa aktarıldı - dışarıdan erişilebilir
+dışa_aktar fonksiyon genel_işlev() yap son
+
+// Bu fonksiyon dışa aktarılmadı - yalnızca modül içinde
+fonksiyon özel_işlev() yap son
+</code></pre>
+<h2 id="modül-çözümleme"><a class="header" href="#modül-çözümleme">Modül Çözümleme</a></h2>
+<h3 id="arama-yolları"><a class="header" href="#arama-yolları">Arama Yolları</a></h3>
+<p>BERK derleyicisi modülleri şu sırayla arar:</p>
+<ol>
+<li>Geçerli dizin (<code>.</code>)</li>
+<li><code>./src/</code> dizini</li>
+<li><code>./stdlib/</code> dizini</li>
+<li>Harici paket yolları (<code>~/.berk/packages/</code>)</li>
+</ol>
+<h3 id="sembol-önceliği"><a class="header" href="#sembol-önceliği">Sembol Önceliği</a></h3>
+<p>İsim çakışmaları durumunda öncelik sırası:</p>
+<ol>
+<li>Yerel kapsam değişkenleri</li>
+<li>İçe aktarılan semboller</li>
+<li>Modül global'leri</li>
+</ol>
+<h2 id="en-iyi-uygulamalar"><a class="header" href="#en-iyi-uygulamalar">En İyi Uygulamalar</a></h2>
+<h3 id="modül-organizasyon-önerileri"><a class="header" href="#modül-organizasyon-önerileri">Modül Organizasyon Önerileri</a></h3>
+<ul>
+<li>✅ <strong>İlgili kodu grupla</strong>: Aynı fonksiyonaliteyi sağlayan kod aynı modülde olmalı</li>
+<li>✅ <strong>Açık isimler kullan</strong>: Modül isimleri içeriği net bir şekilde belirtmeli</li>
+<li>✅ <strong>Gereksiz dışa aktarma yapma</strong>: Sadece API'nin parçası olması gereken öğeleri dışa aktar</li>
+<li>✅ <strong>Döngüsel bağımlılıklardan kaçın</strong>: A -&gt; B -&gt; A şeklinde bağımlılıklar sorun yaratır</li>
+</ul>
+<h3 id="içe-aktarma-stilleri"><a class="header" href="#içe-aktarma-stilleri">İçe Aktarma Stilleri</a></h3>
+<pre><code class="language-berk">// ✅ İyi: Açık ve okunabilir
+kullan matematik::geometri::{alan, çevre};
+
+// ⚠️ Dikkatli kullan: Tüm içe aktarmalar isim çakışmasına neden olabilir
+kullan matematik::*;
+
+// ✅ İyi: Uzun isimler için takma ad
+kullan matematik::trigonometri olarak trig;
+</code></pre>
+<h2 id="gelişmiş-özellikler"><a class="header" href="#gelişmiş-özellikler">Gelişmiş Özellikler</a></h2>
+<h3 id="modül-tanımı"><a class="header" href="#modül-tanımı">Modül Tanımı</a></h3>
+<p>Bir dosya içinde satır içi modül tanımlayabilirsiniz:</p>
+<pre><code class="language-berk">modül yardımcılar yap
+    dışa_aktar fonksiyon yardımcı() yap
+        yazdır(&quot;Yardımcı fonksiyon&quot;)
+    son
+son
+
+kullan yardımcılar::yardımcı;
+</code></pre>
+<h3 id="yeniden-dışa-aktarma"><a class="header" href="#yeniden-dışa-aktarma">Yeniden Dışa Aktarma</a></h3>
+<p>Bir modülden içe aktardığınız öğeleri kendi modülünüzden dışa aktarabilirsiniz:</p>
+<pre><code class="language-berk">// matematik/index.berk
+kullan matematik::temel::*;
+kullan matematik::geometri::*;
+
+// Tüm alt modül fonksiyonlarını dışa aktar
+dışa_aktar *;
+</code></pre>
+<h2 id="paket-yönetimi-bpm"><a class="header" href="#paket-yönetimi-bpm">Paket Yönetimi (BPM)</a></h2>
+<p>BERK Paket Yöneticisi (BPM) ile harici paketleri yönetebilirsiniz:</p>
+<h3 id="berk-toml-yapılandırması"><a class="header" href="#berk-toml-yapılandırması">berk.toml Yapılandırması</a></h3>
+<pre><code class="language-toml">[package]
+name = &quot;projemiz&quot;
+version = &quot;1.0.0&quot;
+
+[dependencies]
+serde = &quot;1.0&quot;
+http = &quot;0.2&quot;
+</code></pre>
+<h3 id="paket-kullanımı"><a class="header" href="#paket-kullanımı">Paket Kullanımı</a></h3>
+<pre><code class="language-berk">içe_aktar &quot;serde&quot; olarak json;
+
+fonksiyon ana() yap
+    değişken veri = json::serileştir({isim: &quot;Ali&quot;, yaş: 30})
+    yazdır(veri)
+son
+</code></pre>
+<h2 id="örnek-proje-yapısı"><a class="header" href="#örnek-proje-yapısı">Örnek Proje Yapısı</a></h2>
+<pre><code class="language-berk">// src/matematik/temel.berk
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı yap
+    dön a + b
+son
+
+// src/matematik/geometri.berk  
+dışa_aktar fonksiyon alan(r: kesir) -&gt; kesir yap
+    kullan matematik::temel::çarp;
+    dön 3.14159 * r * r
+son
+
+// src/ana.berk
+kullan matematik::temel::topla;
+kullan matematik::geometri::alan;
+
+fonksiyon ana() yap
+    değişken sonuç1 = topla(5, 3)
+    değişken sonuç2 = alan(2.5)
+    
+    yazdır(&quot;Toplam: &quot; + sonuç1)
+    yazdır(&quot;Alan: &quot; + sonuç2)
+son
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>Her dosya bir modüldür</li>
+<li><code>kullan</code> yerel modüller için, <code>içe_aktar</code> harici paketler için</li>
+<li><code>dışa_aktar</code> öğeleri diğer modüllere açar</li>
+<li>Modüller dizin yapısını takip eder</li>
+<li>Görünürlük varsayılan olarak özeldir</li>
+<li>BPM ile paket yönetimi desteklenir</li>
+</ul>
 
                     </main>
 

@@ -1,0 +1,575 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>AI/ML Genel Bakış - BERK Programlama Dili</title>
+
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; 
+                padding: 40px 20px; 
+                margin: -20px -20px 30px -20px; 
+                border-radius: 8px; 
+            }
+            .module-stats { 
+                display: grid; 
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+                gap: 15px; 
+                margin-top: 20px; 
+            }
+            .stat-badge { 
+                background: rgba(255,255,255,0.2); 
+                padding: 10px; 
+                border-radius: 5px; 
+                text-align: center; 
+            }
+            .module-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .module-card {
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                padding: 20px;
+                border-left: 4px solid var(--links);
+                transition: transform 0.2s;
+            }
+            .module-card:hover {
+                transform: translateY(-2px);
+            }
+            .module-card h3 {
+                margin-top: 0;
+                color: var(--links);
+            }
+            .example-box { 
+                background: var(--sidebar-bg); 
+                padding: 20px; 
+                border-radius: 8px; 
+                margin: 20px 0; 
+            }
+            .perf-table {
+                width: 100%;
+                margin: 20px 0;
+            }
+            .perf-table td, .perf-table th {
+                padding: 10px;
+                border-bottom: 1px solid var(--table-border-color);
+            }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>AI/ML & Machine Learning</h1>
+                            <p style="font-size: 1.2em; opacity: 0.9;">Yüksek performanslı yapay zeka ve makine öğrenmesi kütüphanesi</p>
+                            <div class="module-stats">
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">15</div><div>Modül</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">28.8x</div><div>Hızlanma</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">70 GB/s</div><div>SIMD</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">882x</div><div>Sıkıştırma</div></div>
+                            </div>
+                        </div>
+
+                        <h2>Genel Bakış</h2>
+
+                        <p>BERK AI/ML kütüphanesi, modern yapay zeka ve makine öğrenmesi uygulamaları için kapsamlı araçlar sunar. PyTorch ve TensorFlow ile uyumlu API tasarımı, SIMD optimizasyonları ve paralel işleme desteği ile yüksek performans sağlar.</p>
+
+                        <div class="example-box">
+                            <h3>Temel Özellikler</h3>
+                            <ul>
+                                <li><strong>SIMD Optimizasyonu:</strong> AVX2 desteği ile 70 GB/s throughput</li>
+                                <li><strong>Paralel İşleme:</strong> Rayon ile 4.96x hızlanma</li>
+                                <li><strong>LZ4 Sıkıştırma:</strong> Model kaydetme 28.8x daha hızlı, 882x küçük dosyalar</li>
+                                <li><strong>Cache Optimizasyonu:</strong> Bloklu matris çarpımı ile 2.5x hızlanma</li>
+                                <li><strong>LLM Desteği:</strong> OpenAI, Anthropic, Gemini, Ollama API entegrasyonu</li>
+                                <li><strong>Sıfır Bağımlılık:</strong> Tamamen BERK ile yazılmış, native performans</li>
+                            </ul>
+                        </div>
+
+                        <h2>Performans Metrikleri</h2>
+                        
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>Optimizasyon</th>
+                                    <th>Öncesi</th>
+                                    <th>Sonrası</th>
+                                    <th>İyileştirme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Matris Çarpımı (256×256)</strong></td>
+                                    <td>0.97 GFLOPS</td>
+                                    <td>2.47 GFLOPS</td>
+                                    <td><strong>2.5x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Model Kaydetme (34.9 MB)</strong></td>
+                                    <td>880 ms</td>
+                                    <td>30 ms</td>
+                                    <td><strong>28.8x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Model Dosya Boyutu</strong></td>
+                                    <td>131 MB</td>
+                                    <td>0.15 MB</td>
+                                    <td><strong>882x küçük</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SIMD Throughput</strong></td>
+                                    <td>8.75 GB/s</td>
+                                    <td>70 GB/s</td>
+                                    <td><strong>8x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Batch Processing</strong></td>
+                                    <td>4,410 batch/sn</td>
+                                    <td>18,546 batch/sn</td>
+                                    <td><strong>4.96x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Model Yükleme</strong></td>
+                                    <td>~1000 ms</td>
+                                    <td>99 ms</td>
+                                    <td><strong>10.1x</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>AI/ML Modülleri</h2>
+
+
+                        <div class="module-grid">
+                            <div class="module-card">
+                                <h3><a href="ai-tensor.html">tensor</a></h3>
+                                <p>Tensör işlemleri ve matris operasyonları</p>
+                                <p><small>Bloklu algoritma, SIMD (AVX2), broadcasting</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-nn.html">nn</a></h3>
+                                <p>Sinir ağı katmanları ve aktivasyonlar</p>
+                                <p><small>Linear, Conv2D, LSTM, BatchNorm, Dropout</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-optim.html">optim</a></h3>
+                                <p>Optimizasyon algoritmaları</p>
+                                <p><small>Adam, AdamW, SGD, RMSprop, Schedulers</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-train.html">train</a></h3>
+                                <p>Model eğitimi ve callback sistemi</p>
+                                <p><small>Training loops, EarlyStopping, Checkpointing</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-model.html">model</a></h3>
+                                <p>Model yönetimi ve serileştirme</p>
+                                <p><small>LZ4 compression (28.8x faster), Quantization</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-llm.html">llm</a></h3>
+                                <p>Büyük dil modelleri API</p>
+                                <p><small>OpenAI, Anthropic, Gemini, Ollama</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-metrics.html">metrics</a></h3>
+                                <p>Değerlendirme metrikleri</p>
+                                <p><small>Accuracy, Precision, Recall, F1, MSE, R²</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-vision.html">vision</a></h3>
+                                <p>Bilgisayarlı görü modelleri</p>
+                                <p><small>ResNet, YOLO, UNet, Image preprocessing</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-nlp.html">nlp</a></h3>
+                                <p>Doğal dil işleme</p>
+                                <p><small>BERT, Tokenizers, Attention, NER</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="ai-rl.html">rl</a></h3>
+                                <p>Pekiştirmeli öğrenme</p>
+                                <p><small>DQN, PPO, SAC, Replay buffer</small></p>
+                            </div>
+                        </div>
+
+                        <h2>Hızlı Başlangıç</h2>
+
+                        <div class="example-box">
+                            <h3>Basit Sinir Ağı</h3>
+                            <pre><code class="language-berk">modül kullan ai/tensor;
+kullan ai/nn;
+kullan ai/optim;
+
+// Model oluştur
+değişken model = Sequential::yeni([
+    Linear::yeni(784, 128),
+    ReLU::yeni(),
+    Dropout::yeni(0.2),
+    Linear::yeni(128, 10),
+    Softmax::yeni()
+]);
+
+// Optimizer
+değişken optimizer = Adam::yeni(model.parametreler(), lr: 0.001);
+
+// Eğitim döngüsü
+her epoch içinde aralık(10) için yap
+    değişken çıktı = model.ileri(X_train);
+    değişken kayıp = cross_entropy(çıktı, y_train);
+    
+    optimizer.sıfırla();
+    kayıp.geri();
+    optimizer.adım();
+    
+    yazdir("Epoch {}: Kayıp = {:.4f}", epoch, kayıp);
+son
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>LLM API Kullanımı</h3>
+                            <pre><code class="language-berk">kullan ai/llm;
+kullan async;
+
+async fonksiyon sohbet() yap
+    // OpenAI istemcisi
+    değişken client = OpenAI::yeni("api-key");
+    
+    // Chat tamamlama
+    değişken yanit = await client.chat([
+        { role: "user", content: "Merhaba!" }
+    ]);
+    
+    yazdir(yanit.content);
+son
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Model Kaydetme/Yükleme (LZ4)</h3>
+                            <pre><code class="language-berk">kullan ai/model;
+
+// Model kaydet (LZ4 compressed - 28.8x faster)
+model.kaydet("model.berk");  // 880ms → 30ms
+
+// Model yükle (10x faster)
+değişken loaded_model = Model::yukle("model.berk");  // 99ms vs 1000ms
+
+// Dosya boyutu: 131 MB → 0.15 MB (882x smaller)
+</code></pre>
+                        </div>
+
+                        <h2>Teknik Detaylar</h2>
+
+                        <h3>SIMD Optimizasyonu</h3>
+                        <p>AVX2 komut seti ile 256-bit vektör işlemleri:</p>
+                        <ul>
+                            <li>8 float paralel toplama/çıkarma/çarpma/bölme</li>
+                            <li>Runtime CPU özellik tespiti</li>
+                            <li>Otomatik scalar fallback AVX2 yoksa</li>
+                            <li>70 GB/s throughput büyük tensörler için</li>
+                        </ul>
+
+                        <h3>Bloklu Matris Çarpımı</h3>
+                        <p>L1 cache-optimized tiling:</p>
+                        <ul>
+                            <li>32×32 bloklar (4KB, L1 cache: 32KB)</li>
+                            <li>Cache miss oranını minimize eder</li>
+                            <li>256×256 matrisler için 2.5x hızlanma</li>
+                            <li>512×512 matrisler için 1.8x hızlanma</li>
+                        </ul>
+
+                        <h3>LZ4 Model Sıkıştırma</h3>
+                        <p>Hızlı lossless compression:</p>
+                        <ul>
+                            <li>Level 1 (fast) compression</li>
+                            <li>Binary format: BERK magic + version + data</li>
+                            <li>28.8x daha hızlı kaydetme</li>
+                            <li>882x daha küçük dosyalar</li>
+                            <li>100% doğruluk, data integrity korunur</li>
+                        </ul>
+
+                        <h3>Paralel Batch İşleme</h3>
+                        <p>Rayon ile çoklu iş parçacığı:</p>
+                        <ul>
+                            <li>Batch processing 4.96x daha hızlı</li>
+                            <li>18,546 batch/sn (vs 4,410 sequential)</li>
+                            <li>Work stealing ile load balancing</li>
+                            <li>Otomatik thread pool yönetimi</li>
+                        </ul>
+
+                        <h2>Platform Desteği</h2>
+                        
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>SIMD</th>
+                                    <th>Paralel</th>
+                                    <th>LZ4</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>x86_64 (Intel/AMD)</td>
+                                    <td>✓ AVX2</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>ARM64 (Apple Silicon)</td>
+                                    <td>✓ NEON</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>ARM32</td>
+                                    <td>Scalar</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>WASM</td>
+                                    <td>✓ SIMD128</td>
+                                    <td>Limited</td>
+                                    <td>✓</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>Sonraki Adımlar</h2>
+                        <ul>
+                            <li><a href="ai-tensor.html">tensor - Tensör işlemlerini öğrenin</a></li>
+                            <li><a href="ai-nn.html">nn - Sinir ağı katmanlarını keşfedin</a></li>
+                            <li><a href="ai-train.html">train - Model eğitimi yapın</a></li>
+                            <li><a href="ai-model.html">model - Model kaydetme/yükleme</a></li>
+                            <li><a href="ai-llm.html">llm - LLM API'lerini kullanın</a></li>
+                            <li><a href="ai-metrics.html">metrics - Değerlendirme metrikleri</a></li>
+                            <li><a href="ai-vision.html">vision - Bilgisayarlı görü</a></li>
+                            <li><a href="ai-nlp.html">nlp - Doğal dil işleme</a></li>
+                            <li><a href="ai-rl.html">rl - Pekiştirmeli öğrenme</a></li>
+                        </ul>
+
+                        <div style="margin-top: 40px; padding: 20px; background: var(--sidebar-bg); border-radius: 8px;">
+                            <p><strong>Not:</strong> AI/ML kütüphanesi aktif geliştirme aşamasındadır. Yeni özellikler ve optimizasyonlar düzenli olarak eklenmektedir.</p>
+                            <p><strong>Versiyon:</strong> v0.9.0 (Aralık 2025)</p>
+                        </div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="rules.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ai-tensor.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a href="rules.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                <a href="ai-tensor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+    </div>
+    </body>
+</html>

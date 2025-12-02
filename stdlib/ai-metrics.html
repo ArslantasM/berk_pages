@@ -1,0 +1,513 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>metrics - Değerlendirme Metrikleri - BERK Programlama Dili</title>
+        
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 20px;
+                margin: -20px -20px 30px -20px;
+                border-radius: 8px;
+            }
+            .module-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .stat-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .function-group {
+                margin: 30px 0;
+                padding: 20px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 4px solid var(--links);
+            }
+            .example-box {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+        </style>
+
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>metrics - Değerlendirme Metrikleri</h1>
+                        <p>Model performansı için sınıflandırma ve regresyon metrikleri</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">12</div><div>Metrik</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">5</div><div>Loss Func</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Multi-Class</div><div>Destek</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Genel Bakış</h2>
+                    <p>metrics modülü, makine öğrenmesi modellerinin performansını değerlendirmek için yaygın kullanılan metrikleri sağlar.</p>
+
+                    <h2>Classification Metrics</h2>
+
+                    <div class="example-box">
+                        <h3>Accuracy</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken y_true = [0, 1, 1, 0, 1, 0];
+değişken y_pred = [0, 1, 0, 0, 1, 0];
+
+değişken acc = accuracy(y_true, y_pred);
+yazdir("Doğruluk: {:.2f}%", acc * 100.0);
+// Çıktı: Doğruluk: 83.33%
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Precision, Recall, F1</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken precision = precision_score(y_true, y_pred);
+değişken recall = recall_score(y_true, y_pred);
+değişken f1 = f1_score(y_true, y_pred);
+
+yazdir("Precision: {:.4f}", precision);
+yazdir("Recall: {:.4f}", recall);
+yazdir("F1 Score: {:.4f}", f1);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Confusion Matrix</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken cm = confusion_matrix(y_true, y_pred, num_classes: 2);
+
+yazdir("Confusion Matrix:");
+yazdir("{:?}", cm);
+// [[TP, FP],
+//  [FN, TN]]
+
+// Sınıf bazında metrikler
+her i içinde aralık(num_classes) için yap
+    değişken precision_i = cm[i][i] / cm[i].topla();
+    değişken recall_i = cm[i][i] / cm.column(i).topla();
+    yazdir("Sınıf {}: P={:.3f}, R={:.3f}", i, precision_i, recall_i);
+son
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>ROC-AUC Score</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+// Probability tahminleri
+değişken y_true = [0, 0, 1, 1];
+değişken y_proba = [0.1, 0.4, 0.35, 0.8];
+
+değişken auc = roc_auc_score(y_true, y_proba);
+yazdir("ROC-AUC: {:.4f}", auc);
+
+// ROC curve çizimi
+değişken (fpr, tpr, thresholds) = roc_curve(y_true, y_proba);
+plot_roc_curve(fpr, tpr, auc);
+</code></pre>
+                    </div>
+
+                    <h2>Multi-Class Metrics</h2>
+
+                    <div class="example-box">
+                        <h3>Macro/Micro/Weighted Averages</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken y_true = [0, 1, 2, 0, 1, 2];
+değişken y_pred = [0, 2, 1, 0, 0, 1];
+
+// Macro average (her sınıf eşit ağırlık)
+değişken f1_macro = f1_score(y_true, y_pred, average: "macro");
+
+// Micro average (tüm örnekler eşit)
+değişken f1_micro = f1_score(y_true, y_pred, average: "micro");
+
+// Weighted (sınıf dağılımına göre)
+değişken f1_weighted = f1_score(y_true, y_pred, average: "weighted");
+
+yazdir("F1 Macro: {:.4f}", f1_macro);
+yazdir("F1 Micro: {:.4f}", f1_micro);
+yazdir("F1 Weighted: {:.4f}", f1_weighted);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Classification Report</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken report = classification_report(
+    y_true,
+    y_pred,
+    target_names: ["Kedi", "Köpek", "Kuş"]
+);
+
+yazdir!("{}", report);
+// Çıktı:
+//              precision  recall  f1-score  support
+//
+//        Kedi      0.83    0.71     0.77       14
+//       Köpek      0.75    0.90     0.82       20
+//        Kuş      0.88    0.84     0.86       19
+//
+//     accuracy                      0.81       53
+//    macro avg      0.82    0.82     0.82       53
+// weighted avg      0.81    0.81     0.81       53
+</code></pre>
+                    </div>
+
+                    <h2>Regression Metrics</h2>
+
+                    <div class="example-box">
+                        <h3>MSE, RMSE, MAE</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken y_true = [3.0, -0.5, 2.0, 7.0];
+değişken y_pred = [2.5, 0.0, 2.1, 7.8];
+
+değişken mse = mean_squared_error(y_true, y_pred);
+değişken rmse = mse.sqrt();
+değişken mae = mean_absolute_error(y_true, y_pred);
+
+yazdir("MSE: {:.4f}", mse);
+yazdir("RMSE: {:.4f}", rmse);
+yazdir("MAE: {:.4f}", mae);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>R² Score</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+değişken r2 = r2_score(y_true, y_pred);
+yazdir("R² Score: {:.4f}", r2);
+
+// Adjusted R² (feature sayısı ile)
+değişken r2_adj = adjusted_r2_score(y_true, y_pred, n_features: 5);
+yazdir("Adjusted R²: {:.4f}", r2_adj);
+</code></pre>
+                    </div>
+
+                    <h2>Loss Functions</h2>
+
+                    <div class="example-box">
+                        <h3>Cross-Entropy Loss</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+// Binary cross-entropy
+değişken y_true = Tensor::yeni([1.0, 0.0, 1.0]);
+değişken y_pred = Tensor::yeni([0.9, 0.1, 0.8]);
+
+değişken bce = binary_cross_entropy(y_pred, y_true);
+yazdir("BCE Loss: {:.4f}", bce);
+
+// Categorical cross-entropy
+değişken y_true_cat = Tensor::yeni([[0., 1., 0.], [1., 0., 0.]]);
+değişken y_pred_cat = Tensor::yeni([[0.1, 0.8, 0.1], [0.9, 0.05, 0.05]]);
+
+değişken cce = categorical_cross_entropy(y_pred_cat, y_true_cat);
+yazdir("CCE Loss: {:.4f}", cce);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Focal Loss</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+// Imbalanced dataset için
+değişken focal = focal_loss(
+    y_pred,
+    y_true,
+    alpha: 0.25,  // Pozitif sınıf ağırlığı
+    gamma: 2.0    // Focusing parameter
+);
+yazdir("Focal Loss: {:.4f}", focal);
+</code></pre>
+                    </div>
+
+                    <h2>Custom Metrics</h2>
+
+                    <div class="example-box">
+                        <h3>Kendi Metriğinizi Oluşturun</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+
+fonksiyon custom_accuracy(y_true: Tensor, y_pred: Tensor) -> ondalık yap
+    değişken threshold = 0.7;
+    değişken high_conf_mask = y_pred.gt(threshold);
+    değişken correct = y_true.eq(y_pred.round()).ve(high_conf_mask);
+    
+    dön correct.topla() as ondalık / y_true.len() as ondalık;
+son
+
+// Kullanım
+değişken acc = custom_accuracy(y_true, y_pred);
+yazdir("High-confidence accuracy: {:.2f}%", acc * 100.0);
+</code></pre>
+                    </div>
+
+                    <h2>Batch Evaluation</h2>
+
+                    <div class="example-box">
+                        <h3>DataLoader ile Toplu Değerlendirme</h3>
+                        <pre><code class="language-berk">kullan ai/metrics;
+kullan ai/train;
+
+fonksiyon evaluate(model: Model, test_loader: DataLoader) -> Metrics yap
+    model.değerlendirme();
+    
+    değişken tüm_preds = [];
+    değişken tüm_targets = [];
+    
+    her (x, y) içinde test_loader için yap
+        değişken pred = model.ileri(x);
+        tüm_preds.extend(pred.argmax(dim: 1));
+        tüm_targets.extend(y);
+    son
+    
+    dön Metrics {
+        accuracy: accuracy(tüm_targets, tüm_preds),
+        f1: f1_score(tüm_targets, tüm_preds, average: "weighted"),
+        precision: precision_score(tüm_targets, tüm_preds, average: "weighted"),
+        recall: recall_score(tüm_targets, tüm_preds, average: "weighted")
+    };
+son
+</code></pre>
+                    </div>
+
+                    <h2>API Referansı</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Metrik</th><th>Fonksiyon</th><th>Kullanım</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Accuracy</td><td><code>accuracy(y_true, y_pred)</code></td><td>Genel doğruluk</td></tr>
+                            <tr><td>Precision</td><td><code>precision_score(y_true, y_pred)</code></td><td>Pozitif tahmin doğruluğu</td></tr>
+                            <tr><td>Recall</td><td><code>recall_score(y_true, y_pred)</code></td><td>Pozitif yakalama oranı</td></tr>
+                            <tr><td>F1 Score</td><td><code>f1_score(y_true, y_pred)</code></td><td>Precision-recall dengesi</td></tr>
+                            <tr><td>ROC-AUC</td><td><code>roc_auc_score(y_true, y_score)</code></td><td>Sınıflandırıcı kalitesi</td></tr>
+                            <tr><td>MSE</td><td><code>mean_squared_error(y_true, y_pred)</code></td><td>Regresyon hatası</td></tr>
+                            <tr><td>MAE</td><td><code>mean_absolute_error(y_true, y_pred)</code></td><td>Mutlak ortalama hata</td></tr>
+                            <tr><td>R² Score</td><td><code>r2_score(y_true, y_pred)</code></td><td>Açıklanan varyans</td></tr>
+                        </tbody>
+                    </table>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/ai-llm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/ai-vision.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/ai-llm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/ai-vision.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+</div>
+</body>
+</html>

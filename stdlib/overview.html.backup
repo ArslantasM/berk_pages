@@ -181,19 +181,15 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="standart-kütüphane-v094"><a class="header" href="#standart-kütüphane-v094">Standart Kütüphane v0.9.4</a></h1>
+                        <h1 id="standart-kütüphane-v14"><a class="header" href="#standart-kütüphane-v14">Standart Kütüphane v0.9.4</a></h1>
 <p>BERK Standart Kütüphanesi, modern yazılım geliştirme için gerekli tüm temel fonksiyonları sağlar. <strong>v0.9.4</strong> sürümü ile <strong>75 modül</strong> (42 stdlib + 33 HAL) ve <strong>4100+ fonksiyon</strong> sunarak kapsamlı bir ekosistem sağlar.</p>
-<blockquote>
-<p><strong>🎯 Embedded-First Approach:</strong> BERK stdlib, gömülü sistemler ve AI/ML edge deployment için optimize edilmiştir. 7 farklı MCU platformunu destekleyen 33 HAL modülü ile bare-metal programlama, RTOS entegrasyonu ve real-time AI inference mümkündür.</p>
-</blockquote>
 <h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊 İstatistikler</a></h2>
 <ul>
 <li><strong>75 modül</strong> - 42 stdlib + 33 HAL (gömülü sistemler)</li>
-<li><strong>1140 KB</strong> - Stdlib kod boyutu (minimal runtime: 2-5 KB)</li>
-<li><strong>4100+ fonksiyon</strong> - Kapsamlı API (NumPy/SciPy/Julia seviyesi)</li>
+<li><strong>1140 KB</strong> - Stdlib kod boyutu</li>
+<li><strong>4100+ fonksiyon</strong> - Kapsamlı API</li>
 <li><strong>7 embedded platform</strong> - ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
-<li><strong>AI/ML Ready</strong> - ONNX Runtime entegrasyonu, TinyML desteği</li>
-<li><strong>Sıfır bağımlılık</strong> - Sadece BERK ile yazılmış, portable</li>
+<li><strong>Sıfır bağımlılık</strong> - Sadece BERK ile yazılmış</li>
 </ul>
 <h2 id="-modül-kategorileri"><a class="header" href="#-modül-kategorileri">🎯 Modül Kategorileri</a></h2>
 <h3 id="1-temel-modüller-core"><a class="header" href="#1-temel-modüller-core">1. Temel Modüller (Core)</a></h3>
@@ -235,25 +231,7 @@
 <tr><td><strong>optim</strong></td><td>26.6 KB</td><td>Optimizasyon algoritmaları</td><td>SciPy.optimize, Optim.jl</td></tr>
 </tbody></table>
 </div>
-<h3 id="5-yapay-zeka-ve-makine-öğrenmesi-aiml"><a class="header" href="#5-yapay-zeka-ve-makine-öğrenmesi-aiml">5. Yapay Zeka ve Makine Öğrenmesi (AI/ML) 🤖</a></h3>
-<p><strong>Edge AI ve embedded ML</strong> için optimize edilmiş kütüphaneler:</p>
-<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Boyut</th><th>Açıklama</th><th>Platform Desteği</th></tr></thead><tbody>
-<tr><td><strong>ai_rl</strong></td><td>28.7 KB</td><td>Reinforcement Learning (Q-learning, SARSA, DQN)</td><td>Tüm platformlar</td></tr>
-<tr><td><strong>ml</strong></td><td>35.2 KB</td><td>Classical ML (Linear/Logistic Regression, KNN, Decision Trees)</td><td>Desktop + Edge</td></tr>
-<tr><td><strong>nn</strong></td><td>42.6 KB</td><td>Neural Networks (MLP, CNN layers, backprop)</td><td>Desktop + ARM Cortex-M7</td></tr>
-<tr><td><strong>onnx</strong></td><td>18.3 KB</td><td>ONNX Runtime entegrasyonu (model inference)</td><td>Desktop + ESP32/STM32F4</td></tr>
-<tr><td><strong>tinyml</strong></td><td>12.8 KB</td><td>TinyML (quantization, pruning, model compression)</td><td>All embedded</td></tr>
-</tbody></table>
-</div>
-<p><strong>AI/ML Özellikleri:</strong></p>
-<ul>
-<li><strong>Model Training</strong>: Python/PyTorch ile eğitim, ONNX export</li>
-<li><strong>Edge Inference</strong>: ARM Cortex-M, ESP32, RISC-V üzerinde &lt;10ms latency</li>
-<li><strong>Quantization</strong>: INT8/INT16 model optimization</li>
-<li><strong>Hardware Acceleration</strong>: NPU, DSP offloading desteği</li>
-<li><strong>Real-Time</strong>: Deterministic inference, RTOS uyumlu</li>
-</ul>
-<h3 id="6-gömülü-sistemler-hal-hardware-abstraction-layer"><a class="header" href="#6-gömülü-sistemler-hal-hardware-abstraction-layer">6. Gömülü Sistemler - HAL (Hardware Abstraction Layer) ⚡</a></h3>
+<h3 id="5-gömülü-sistemler-hal-hardware-abstraction-layer"><a class="header" href="#5-gömülü-sistemler-hal-hardware-abstraction-layer">5. Gömülü Sistemler - HAL (Hardware Abstraction Layer) ⚡</a></h3>
 <p><strong>33 HAL modülü</strong> ile 7 farklı platformu destekler:</p>
 <div class="table-wrapper"><table><thead><tr><th>Kategori</th><th>Modüller</th><th>Desteklenen Platformlar</th></tr></thead><tbody>
 <tr><td><strong>Temel Periferaller</strong></td><td>GPIO, UART, SPI, I2C, ADC, DAC, PWM</td><td>Tüm platformlar</td></tr>
@@ -446,143 +424,33 @@ değişken minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 
 yazdır("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
 // Beklenen: (1.0, 2.0)
 </code></pre>
-<h3 id="yapay-zeka-ve-makine-öğrenmesi"><a class="header" href="#yapay-zeka-ve-makine-öğrenmesi">Yapay Zeka ve Makine Öğrenmesi</a></h3>
-<pre><code class="language-berk">// Reinforcement Learning - Q-Learning
-kullan ai_rl
-
-// Labirent problemi için Q-learning
-değişken ortam = ai_rl_ortam_oluştur(durum_sayısı: 16, eylem_sayısı: 4)
-değişken ajan = ai_rl_q_learning_ajan(
-    öğrenme_oranı: 0.1,
-    keşif_oranı: 0.2,
-    indirim: 0.95
-)
-
-// Eğitim
-değişken bölüm = 0
-iken (bölüm &lt; 1000) yap
-    değişken durum = ortam_sıfırla(ortam)
-    değişken toplam_ödül = 0.0
-    
-    iken (durum_terminal_mi(durum) yok ise) yap
-        değişken eylem = ajan_eylem_seç(ajan, durum)
-        değişken (yeni_durum, ödül) = ortam_adım(ortam, eylem)
-        ajan_güncelle(ajan, durum, eylem, ödül, yeni_durum)
-        
-        durum = yeni_durum
-        toplam_ödül = toplam_ödül + ödül
-    son
-    
-    bölüm = bölüm + 1
-son
-
-yazdır("Eğitim tamamlandı! Ortalama ödül: " + toplam_ödül / 1000.0)
-</code></pre>
-<pre><code class="language-berk">// Neural Network - MLP Classification
-kullan nn
-kullan linalg
-
-// 2-katmanlı sinir ağı (784 → 128 → 10)
-değişken model = nn_mlp_oluştur([784, 128, 10])
-
-// MNIST veri seti yükleme
-değişken (X_train, y_train) = veri_yükle("mnist_train.csv")
-değişken (X_test, y_test) = veri_yükle("mnist_test.csv")
-
-// Eğitim
-değişken dönem = 0
-iken (dönem &lt; 10) yap
-    değişken kayıp = nn_mlp_eğit(
-        model, 
-        X_train, 
-        y_train,
-        öğrenme_oranı: 0.01,
-        batch_boyutu: 32
-    )
-    
-    // Test doğruluğu
-    değişken doğruluk = nn_mlp_değerlendir(model, X_test, y_test)
-    yazdır("Dönem " + dönem + ": Kayıp=" + kayıp + ", Doğruluk=" + doğruluk)
-    
-    dönem = dönem + 1
-son
-</code></pre>
-<pre><code class="language-berk">// Edge AI - ONNX Model Inference (ESP32/STM32)
-kullan onnx
-kullan hal_gpio
-
-// ONNX modelini yükle (quantized INT8)
-değişken model = onnx_model_yükle("mobilenet_v2_int8.onnx")
-
-// Kamera görüntüsü al (ESP32-CAM)
-değişken görüntü = kamera_çek()  // 224x224 RGB
-
-// Ön işleme
-değişken giriş = görüntü_normalize(görüntü, ortalama: 0.5, std: 0.5)
-
-// Inference (tipik: 5-8ms ESP32 üzerinde)
-değişken çıktı = onnx_inference(model, giriş)
-
-// Sonucu işle
-değişken sınıf = argmax(çıktı)
-değişken güven = çıktı[sınıf]
-
-yazdır("Tespit edilen: " + sınıf_isimleri[sınıf])
-yazdır("Güven: " + (güven * 100.0) + "%")
-
-// LED ile görsel geri bildirim
-eğer güven &gt; 0.8 ise yap
-    hal_gpio_yaz(LED_PIN, YÜKSEK)  // Yeşil LED
-son
-</code></pre>
-<h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 Implementation Status (v0.9.4)</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Kategori</th><th>Modül</th><th>Durum</th><th>Backend/Notlar</th></tr></thead><tbody>
-<tr><td rowspan="5"><strong>Temel</strong></td><td>io</td><td>✅</td><td>LLVM intrinsics</td></tr>
+<h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 Implementation Status</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Modül</th><th>Durum</th><th>Backend Gereksinimi</th></tr></thead><tbody>
+<tr><td>io</td><td>✅</td><td>LLVM intrinsics</td></tr>
 <tr><td>string</td><td>✅</td><td>UTF-8 support</td></tr>
 <tr><td>collections</td><td>✅</td><td>Heap allocation</td></tr>
 <tr><td>result</td><td>✅</td><td>Enum support</td></tr>
 <tr><td>time</td><td>✅</td><td>OS time APIs</td></tr>
-<tr><td rowspan="4"><strong>Sistem</strong></td><td>fs</td><td>🟡</td><td>POSIX/Win32 APIs</td></tr>
-<tr><td>thread</td><td>🟡</td><td>pthread/WinThreads</td></tr>
-<tr><td>sys</td><td>🟡</td><td>Platform-specific</td></tr>
-<tr><td>terminal</td><td>🟡</td><td>ANSI/VT100</td></tr>
-<tr><td rowspan="2"><strong>Fonksiyonel</strong></td><td>iter</td><td>✅</td><td>List operations</td></tr>
-<tr><td>fmt</td><td>✅</td><td>Printf-style</td></tr>
-<tr><td rowspan="8"><strong>Bilimsel</strong></td><td>math</td><td>🟡</td><td>libm + LLVM intrinsics</td></tr>
-<tr><td>physics</td><td>🟡</td><td>ODE solvers</td></tr>
-<tr><td>complex</td><td>🟡</td><td>Struct support</td></tr>
-<tr><td>random</td><td>🟡</td><td>Xoshiro256++</td></tr>
-<tr><td>linalg</td><td>🟡</td><td>BLAS/LAPACK (optional)</td></tr>
-<tr><td>stats</td><td>🟡</td><td>Distributions + regression</td></tr>
-<tr><td>optim</td><td>🟡</td><td>Numerical optimization</td></tr>
-<tr><td>plot</td><td>🟡</td><td>Terminal graphics</td></tr>
-<tr><td rowspan="5"><strong>AI/ML</strong></td><td>ai_rl</td><td>🟡</td><td>Q-learning, DQN</td></tr>
-<tr><td>ml</td><td>🟡</td><td>Classical algorithms</td></tr>
-<tr><td>nn</td><td>🟡</td><td>Backprop + autodiff</td></tr>
-<tr><td>onnx</td><td>🔴</td><td>ONNX Runtime C API</td></tr>
-<tr><td>tinyml</td><td>🔴</td><td>Model compression</td></tr>
-<tr><td rowspan="7"><strong>Web/Veri</strong></td><td>http</td><td>🟡</td><td>TCP socket + parser</td></tr>
-<tr><td>json</td><td>🟡</td><td>Parser + serializer</td></tr>
-<tr><td>xml</td><td>🟡</td><td>SAX/DOM parser</td></tr>
-<tr><td>yaml</td><td>🔴</td><td>libyaml binding</td></tr>
-<tr><td>csv</td><td>✅</td><td>Pure BERK</td></tr>
-<tr><td>regex</td><td>🟡</td><td>NFA/DFA engine</td></tr>
-<tr><td>sqlite</td><td>🔴</td><td>libsqlite3 FFI</td></tr>
-<tr><td rowspan="7"><strong>HAL (Embedded)</strong></td><td>GPIO</td><td>✅</td><td>7 platforms</td></tr>
-<tr><td>UART/SPI/I2C</td><td>✅</td><td>7 platforms</td></tr>
-<tr><td>Timer/PWM</td><td>✅</td><td>Hardware timers</td></tr>
-<tr><td>ADC/DAC</td><td>✅</td><td>Analog I/O</td></tr>
-<tr><td>WiFi/BT</td><td>✅</td><td>ESP32, nRF52</td></tr>
-<tr><td>DMA</td><td>🟡</td><td>STM32, ESP32</td></tr>
-<tr><td>Flash/EEPROM</td><td>🟡</td><td>Non-volatile storage</td></tr>
+<tr><td>fs</td><td>⏳</td><td>OS file APIs</td></tr>
+<tr><td>thread</td><td>⏳</td><td>pthread/WinThreads</td></tr>
+<tr><td>sys</td><td>⏳</td><td>OS info APIs</td></tr>
+<tr><td>terminal</td><td>⏳</td><td>ANSI codes</td></tr>
+<tr><td>iter</td><td>✅</td><td>List support</td></tr>
+<tr><td>fmt</td><td>✅</td><td>sprintf-like</td></tr>
+<tr><td>math</td><td>⏳</td><td>libm + LLVM intrinsics</td></tr>
+<tr><td>physics</td><td>⏳</td><td>math module</td></tr>
+<tr><td>complex</td><td>⏳</td><td>Struct support</td></tr>
+<tr><td>random</td><td>⏳</td><td>State management</td></tr>
+<tr><td>linalg</td><td>⏳</td><td>BLAS/LAPACK (optional)</td></tr>
+<tr><td>stats</td><td>⏳</td><td>math + linalg</td></tr>
+<tr><td>optim</td><td>⏳</td><td>linalg + numerical</td></tr>
 </tbody></table>
 </div>
 <p><strong>Durum Açıklaması:</strong></p>
 <ul>
-<li>✅ <strong>Stable</strong> - API finalized, production-ready</li>
-<li>🟡 <strong>Beta</strong> - API stable, implementation in progress</li>
-<li>🔴 <strong>Alpha</strong> - Experimental, API may change</li>
-<li>⏳ <strong>Planned</strong> - Design phase</li>
+<li>✅ Tamamen tasarlandı ve API hazır</li>
+<li>⏳ Backend implementasyonu devam ediyor</li>
+<li>🔄 Aktif geliştirme</li>
 </ul>
 <h2 id="-v10-roadmap"><a class="header" href="#-v10-roadmap">🎯 v1.0 Roadmap (Ocak 2026)</a></h2>
 <p>v1.0 için kalan geliştirmeler:</p>

@@ -182,7 +182,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="berk-programlama-dili"><a class="header" href="#berk-programlama-dili">BERK Programlama Dili</a></h1>
-<p><strong>BERK</strong>, dünyada ilk kez gerçek çift dilli syntax (Türkçe/İngilizce) ile tasarlanmış, <strong>gömülü sistemler ve AI/ML üretimi</strong> için optimize edilmiş, yüksek performanslı bir sistem programlama dilidir. <strong>C/C++ seviyesinde performans</strong> ile 19 farklı hedef platformda (ARM Cortex-M, RISC-V, ESP32, x64/ARM desktop, WebAssembly) üretkenlik sağlar.</p>
+<p><strong>BERK</strong>, dünyada ilk kez gerçek çift dilli syntax (Türkçe/İngilizce) ile tasarlanmış, modern, güvenli ve yüksek performanslı bir sistem programlama dilidir. 19 farklı hedef platformda (masaüstü, mobil, gömülü, WebAssembly) üretkenlik sağlar.</p>
 <h2 id="-neden-berk-adı-seçilmiştir"><a class="header" href="#-neden-berk-adı-seçilmiştir">📖 Neden BERK Adı Seçilmiştir?</a></h2>
 <h3 id="Öztürkçe-kökeni-güçlü-muhkem-sağlam"><a class="header" href="#Öztürkçe-kökeni-güçlü-muhkem-sağlam">Öztürkçe Kökeni: "Güçlü, Muhkem, Sağlam"</a></h3>
 <p><strong>BERK</strong> kelimesi, Öztürkçe'de <strong>"güçlü, dayanıklı, muhkem ve sağlam"</strong> anlamlarına gelir. Bu nitelikler, programlama dilinin teknik hedefleriyle doğrudan örtüşmektedir: bellek güvenliği, tip sistemi doğruluğu, güçlü derleyici mimarisi ve kararlı performans.</p>
@@ -258,67 +258,40 @@ cargo build --release --features llvm
 </code></pre>
 <hr />
 <h2 id="-berki-Özel-kılan-Özellikler"><a class="header" href="#-berki-Özel-kılan-Özellikler">🌟 BERK'i Özel Kılan Özellikler</a></h2>
-<h3 id="-gömülü-sistemler-ve-aiml-için-optimize"><a class="header" href="#-gömülü-sistemler-ve-aiml-için-optimize">🔧 Gömülü Sistemler ve AI/ML İçin Optimize</a></h3>
-<p>BERK, <strong>gömülü sistemler ve yapay zeka üretimi</strong> için tasarlanmış bir dildir:</p>
-<ul>
-<li><strong>Bare-Metal Programlama</strong>: RTOS olmadan doğrudan donanım erişimi</li>
-<li><strong>ARM Cortex-M/RISC-V Desteği</strong>: STM32, ESP32, Nordic nRF gibi popüler MCU'lar</li>
-<li><strong>Minimal Runtime</strong>: 2-5 KB memory overhead, kritik uygulamalar için ideal</li>
-<li><strong>AI/ML Inference</strong>: ONNX Runtime entegrasyonu, edge AI için optimize edilmiş kütüphaneler</li>
-<li><strong>High-Performance Computing</strong>: SIMD, vectorization, zero-cost abstractions</li>
-<li><strong>Real-Time Guarantees</strong>: Deterministik timing, interrupt handling, DMA desteği</li>
-<li><strong>Cross-Compilation</strong>: Desktop'tan tek komutla ARM/RISC-V hedeflerine derleme</li>
-</ul>
 <h3 id="-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#-dünyada-İlk-gerçek-Çift-dilli-syntax">🌍 Dünyada İlk: Gerçek Çift Dilli Syntax</a></h3>
 <p>Programlama dillerinde ilk kez, <strong>aynı derleyicide</strong> hem Türkçe hem İngilizce anahtar kelimelerle kod yazabilirsiniz. Bu sadece bir çeviri değil, dilin özünde bulunan bir özelliktir.</p>
-<h3 id="-ccrust-seviyesinde-performans"><a class="header" href="#-ccrust-seviyesinde-performans">⚡ C/C++/Rust Seviyesinde Performans + AI/ML Optimizasyonu</a></h3>
+<h3 id="-ccrust-seviyesinde-performans"><a class="header" href="#-ccrust-seviyesinde-performans">⚡ C/C++/Rust Seviyesinde Performans</a></h3>
 <ul>
 <li><strong>LLVM Backend</strong>: Native kod üretimi ile sıfır maliyet abstraksiyonlar</li>
 <li><strong>Benchmark Sonuçları</strong>: C++ ile %98-100 performans eşitliği</li>
-<li><strong>AI/ML Workloads</strong>: TensorFlow/PyTorch modellerini ONNX ile inference (edge devices)</li>
-<li><strong>SIMD/Vectorization</strong>: AVX2, NEON, RISC-V Vector extension desteği</li>
-<li><strong>Memory Efficiency</strong>: Manuel kontrol + güvenlik garantileri, embedded için kritik</li>
-<li><strong>Optimizasyon Seviyeleri</strong>: O0-O3 arası agresif optimizasyon + LTO (Link-Time Optimization)</li>
-<li><strong>Embedded ML</strong>: TinyML, quantization, model compression desteği</li>
+<li><strong>Memory Efficiency</strong>: Manuel kontrol + güvenlik garantileri</li>
+<li><strong>Optimizasyon Seviyeleri</strong>: O0-O3 arası agresif optimizasyon</li>
 </ul>
-<h3 id="-rules-based-ai-yaklaşımı"><a class="header" href="#-rules-based-ai-yaklaşımı">🧠 Rules-Based AI Yaklaşımı + ML Production</a></h3>
+<h3 id="-rules-based-ai-yaklaşımı"><a class="header" href="#-rules-based-ai-yaklaşımı">🧠 Rules-Based AI Yaklaşımı</a></h3>
 <p>Derleyici, <strong>kural tabanlı yapay zeka</strong> teknikleri kullanarak:</p>
 <ul>
-<li>Akıllı hata tespiti ve öneriler (AI-powered error recovery)</li>
-<li>Kod optimizasyon kararları (ML-guided optimization)</li>
-<li>Tip çıkarımı ve analiz (static analysis + inference)</li>
+<li>Akıllı hata tespiti ve öneriler</li>
+<li>Kod optimizasyon kararları</li>
+<li>Tip çıkarımı ve analiz</li>
 <li>Semantic analysis ile kalite garantisi</li>
 </ul>
-<p><strong>AI/ML Production Pipeline:</strong></p>
+<h3 id="-bilimsel-hesaplama-kütüphaneleri-stdlib-v14"><a class="header" href="#-bilimsel-hesaplama-kütüphaneleri-stdlib-v14">🔬 Bilimsel Hesaplama Kütüphaneleri (stdlib v1.4)</a></h3>
+<p><strong>18 modül</strong>, <strong>600+ fonksiyon</strong>, <strong>285 KB</strong> kod:</p>
 <ul>
-<li><strong>Model Training</strong>: Python/PyTorch ile eğitim, ONNX export</li>
-<li><strong>Model Optimization</strong>: Quantization (INT8/INT16), pruning, distillation</li>
-<li><strong>Edge Deployment</strong>: ARM Cortex-M, ESP32, RISC-V üzerinde inference</li>
-<li><strong>Real-Time Inference</strong>: <10ms latency, embedded cihazlarda AI</li>
-<li><strong>TinyML Support</strong>: TensorFlow Lite, ONNX Runtime entegrasyonu</li>
-<li><strong>Hardware Acceleration</strong>: NPU, DSP, GPU offloading (Metal, CUDA, Vulkan)</li>
-</ul>
-<h3 id="-bilimsel-hesaplama-kütüphaneleri-stdlib-v094"><a class="header" href="#-bilimsel-hesaplama-kütüphaneleri-stdlib-v094">🔬 Kapsamlı Standart Kütüphane (stdlib v0.9.4)</a></h3>
-<p><strong>75 modül</strong> (42 stdlib + 33 HAL), <strong>4100+ fonksiyon</strong>, <strong>1140 KB</strong> kod:</p>
-<ul>
-<li><strong>Bilimsel Hesaplama</strong>: math, linalg, stats, optim, physics, complex, random</li>
-<li><strong>Gömülü Sistemler (HAL)</strong>: 33 modül - GPIO, UART, SPI, I2C, WiFi, Bluetooth, Timer, DMA</li>
-<li><strong>7 Platform Desteği</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
-<li><strong>Web & Veri</strong>: http, json, xml, yaml, csv, sqlite, async</li>
-<li><strong>Grafik & Oyun</strong>: gui, graphics, audio, image, physics2d, cad3d</li>
+<li><strong>linalg</strong>: Matrix işlemleri, LU/QR/Cholesky decomposition, eigenvalue</li>
+<li><strong>stats</strong>: İstatistik, regresyon, hipotez testleri, dağılımlar</li>
+<li><strong>optim</strong>: Gradient descent, BFGS, simulated annealing</li>
 <li><strong>NumPy/SciPy/Julia</strong> seviyesinde bilimsel hesaplama</li>
 </ul>
-<h3 id="-19-farklı-hedef-platform"><a class="header" href="#-19-farklı-hedef-platform">🚀 19 Farklı Hedef Platform (Embedded-First)</a></h3>
+<h3 id="-19-farklı-hedef-platform"><a class="header" href="#-19-farklı-hedef-platform">🚀 19 Farklı Hedef Platform</a></h3>
 <p>Cross-compilation desteği:</p>
 <ul>
-<li><strong>Embedded (Öncelik)</strong>: ARM Cortex-M0/M3/M4/M7, RISC-V (32/64-bit), AVR, ESP32/ESP8266, Nordic nRF52/nRF53</li>
-<li><strong>Desktop</strong>: Windows (x64/ARM), Linux (x64/ARM/RISC-V), macOS (Intel/Apple Silicon)</li>
+<li><strong>Desktop</strong>: Windows (x64/ARM), Linux (x64/ARM), macOS (Intel/Apple Silicon)</li>
+<li><strong>Embedded</strong>: ARM Cortex-M, RISC-V, AVR, ESP32</li>
 <li><strong>Mobile</strong>: Android (ARM/x86), iOS (ARM64)</li>
-<li><strong>WebAssembly</strong>: Tarayıcı ve sunucu (WASI)</li>
-<li><strong>Cloud</strong>: AWS Lambda, Azure Functions, Google Cloud Run</li>
-<li><strong>IoT Platforms</strong>: Raspberry Pi, BeagleBone, NVIDIA Jetson (edge AI)</li>
+<li><strong>WebAssembly</strong>: Tarayıcı ve sunucu</li>
+<li><strong>Cloud</strong>: AWS Lambda, Azure Functions uyumlu</li>
 </ul>
-<p><strong>Desteklenen MCU Aileleri:</strong> STM32, ESP32, Nordic nRF, Microchip SAM, TI MSP430, SiFive HiFive, Kendryte K210</p>
 <h3 id="-son-derece-kolay-Öğrenme"><a class="header" href="#-son-derece-kolay-Öğrenme">📚 Son Derece Kolay Öğrenme</a></h3>
 <ul>
 <li><strong>Sezgisel Syntax</strong>: Python'un basitliği + Rust'ın gücü</li>
@@ -326,16 +299,13 @@ cargo build --release --features llvm
 <li><strong>Anlaşılır Hata Mesajları</strong>: Çözüm önerileriyle</li>
 <li><strong>Öğrenme Eğrisi</strong>: 1-2 hafta ile productive olma</li>
 </ul>
-<h3 id="-gömülü-sistem-kabiliyeti"><a class="header" href="#-gömülü-sistem-kabiliyeti">🔧 Gelişmiş Gömülü Sistem Kabiliyeti</a></h3>
+<h3 id="-gömülü-sistem-kabiliyeti"><a class="header" href="#-gömülü-sistem-kabiliyeti">🔧 Gömülü Sistem Kabiliyeti</a></h3>
 <ul>
-<li><strong>Bare-metal Programlama</strong>: RTOS olmadan donanım kontrolü (GPIO, UART, SPI, I2C)</li>
-<li><strong>RTOS Entegrasyonu</strong>: FreeRTOS, Zephyr, RIOT-OS ile sorunsuz çalışma</li>
-<li><strong>HAL Abstractions</strong>: Platform-agnostic donanım katmanı (ARM, RISC-V, AVR)</li>
-<li><strong>Interrupt Handling</strong>: Zero-overhead interrupt handlers, nested interrupts</li>
-<li><strong>DMA Support</strong>: Direct memory access, asenkron veri transferleri</li>
-<li><strong>Power Management</strong>: Sleep modes, low-power optimization, battery-powered devices</li>
-<li><strong>Minimal Runtime</strong>: 2-5 KB overhead, 8-bit MCU'larda bile çalışır</li>
-<li><strong>Bootloader Support</strong>: OTA updates, secure boot, firmware signing</li>
+<li><strong>Bare-metal</strong> programlama desteği</li>
+<li><strong>RTOS</strong> entegrasyonu (FreeRTOS, Zephyr)</li>
+<li><strong>Low-level</strong> donanım erişimi</li>
+<li><strong>Interrupt handling</strong> ve DMA desteği</li>
+<li><strong>Minimal runtime</strong>: 2-5 KB overhead</li>
 </ul>
 <h2 id="neden-berk"><a class="header" href="#neden-berk">Neden BERK?</a></h2>
 <h3 id="-akademisyenler-ve-araştırmacılar-İçin"><a class="header" href="#-akademisyenler-ve-araştırmacılar-İçin">🎯 Akademisyenler ve Araştırmacılar İçin</a></h3>
@@ -400,8 +370,8 @@ son
 <li>Zero-cost abstractions</li>
 <li>Inline assembly desteği</li>
 </ul>
-<h3 id="4-bilimsel-hesaplama-stdlib-v094"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v094">4. <strong>Kapsamlı Standart Kütüphane (stdlib v0.9.4)</strong></a></h3>
-<pre><code class="language-berk">kullan linalg, stats, optim
+<h3 id="4-bilimsel-hesaplama-stdlib-v14"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v14">4. <strong>Bilimsel Hesaplama (stdlib v1.4)</strong></a></h3>
+<pre><code class="language-berk">import linalg, stats, optim
 
 // Linear Algebra
 değişken A = linalg.matris_oluştur([[1, 2], [3, 4]])

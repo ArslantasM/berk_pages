@@ -182,6 +182,242 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="İki-dilli-syntax-türkçeİngilizce"><a class="header" href="#İki-dilli-syntax-türkçeİngilizce">İki Dilli Syntax (Türkçe/İngilizce)</a></h1>
+<p>BERK, <strong>dünyanın ilk gerçek çift dilli programlama dilidir</strong>. Aynı kodu hem Türkçe hem de İngilizce yazabilir, hatta aynı dosyada iki dili karıştırabilirsiniz!</p>
+<h2 id="neden-çift-dilli"><a class="header" href="#neden-çift-dilli">Neden Çift Dilli?</a></h2>
+<h3 id="öğrenme-kolaylığı"><a class="header" href="#öğrenme-kolaylığı">Öğrenme Kolaylığı</a></h3>
+<p>Türkçe konuşan yeni başlayanlar, anadillerinde programlama öğrenebilir:</p>
+<pre><code class="language-berk">fonksiyon merhaba() yap
+    yazdır(&quot;Merhaba Dünya!&quot;)
+son
+</code></pre>
+<h3 id="uluslararası-işbirliği"><a class="header" href="#uluslararası-işbirliği">Uluslararası İşbirliği</a></h3>
+<p>İngilizce bilen geliştiricilerle kolayca işbirliği yapabilirsiniz:</p>
+<pre><code class="language-berk">function hello() do
+    print(&quot;Hello World!&quot;)
+end
+</code></pre>
+<h2 id="dil-eşleştirmeleri"><a class="header" href="#dil-eşleştirmeleri">Dil Eşleştirmeleri</a></h2>
+<h3 id="kontrol-yapıları"><a class="header" href="#kontrol-yapıları">Kontrol Yapıları</a></h3>
+<table><thead><tr><th>Türkçe</th><th>English</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>eğer</code></td><td><code>if</code></td><td>Koşul kontrolü</td></tr>
+<tr><td><code>yoksa</code></td><td><code>else</code></td><td>Alternatif durum</td></tr>
+<tr><td><code>iken</code></td><td><code>while</code></td><td>Döngü</td></tr>
+<tr><td><code>için</code></td><td><code>for</code></td><td>For döngüsü</td></tr>
+<tr><td><code>içinde</code></td><td><code>in</code></td><td>İçinde operatörü</td></tr>
+<tr><td><code>yap</code></td><td><code>do</code></td><td>Blok başlangıcı</td></tr>
+<tr><td><code>son</code></td><td><code>end</code></td><td>Blok sonu</td></tr>
+<tr><td><code>dön</code></td><td><code>return</code></td><td>Değer döndürme</td></tr>
+<tr><td><code>kır</code></td><td><code>break</code></td><td>Döngüden çık</td></tr>
+<tr><td><code>devam</code></td><td><code>continue</code></td><td>Sonraki iterasyon</td></tr>
+</tbody></table>
+<h3 id="veri-tipleri"><a class="header" href="#veri-tipleri">Veri Tipleri</a></h3>
+<table><thead><tr><th>Türkçe</th><th>English</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>sayı</code></td><td><code>int</code></td><td>Tam sayı</td></tr>
+<tr><td><code>kesir</code></td><td><code>float</code></td><td>Kesirli sayı</td></tr>
+<tr><td><code>mantık</code></td><td><code>bool</code></td><td>Boolean</td></tr>
+<tr><td><code>metin</code></td><td><code>string</code></td><td>String</td></tr>
+<tr><td><code>doğru</code></td><td><code>true</code></td><td>Doğru değeri</td></tr>
+<tr><td><code>yanlış</code></td><td><code>false</code></td><td>Yanlış değeri</td></tr>
+<tr><td><code>boş</code></td><td><code>null</code></td><td>Null değer</td></tr>
+</tbody></table>
+<h3 id="değişken-ve-fonksiyon-tanımlamaları"><a class="header" href="#değişken-ve-fonksiyon-tanımlamaları">Değişken ve Fonksiyon Tanımlamaları</a></h3>
+<table><thead><tr><th>Türkçe</th><th>English</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>değişken</code></td><td><code>let</code></td><td>Değişken tanımlama</td></tr>
+<tr><td><code>sabit</code></td><td><code>const</code></td><td>Sabit tanımlama</td></tr>
+<tr><td><code>fonksiyon</code></td><td><code>function</code></td><td>Fonksiyon tanımlama</td></tr>
+<tr><td><code>yapı</code></td><td><code>struct</code></td><td>Yapı tanımlama</td></tr>
+</tbody></table>
+<h3 id="modül-sistemi"><a class="header" href="#modül-sistemi">Modül Sistemi</a></h3>
+<table><thead><tr><th>Türkçe</th><th>English</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>kullan</code></td><td><code>use</code></td><td>Modül kullanımı</td></tr>
+<tr><td><code>içe_aktar</code></td><td><code>import</code></td><td>Paket içe aktarma</td></tr>
+<tr><td><code>dışa_aktar</code></td><td><code>export</code></td><td>Dışa aktarma</td></tr>
+<tr><td><code>olarak</code></td><td><code>as</code></td><td>Takma ad</td></tr>
+</tbody></table>
+<h2 id="tam-eşdeğerlik"><a class="header" href="#tam-eşdeğerlik">Tam Eşdeğerlik</a></h2>
+<p>Her iki dil de <strong>aynı AST'yi (Abstract Syntax Tree) oluşturur</strong>. Yani:</p>
+<ul>
+<li>✅ Aynı performans</li>
+<li>✅ Aynı davranış</li>
+<li>✅ Aynı bytecode</li>
+<li>✅ Aynı hata mesajları</li>
+</ul>
+<h2 id="karşılaştırmalı-örnekler"><a class="header" href="#karşılaştırmalı-örnekler">Karşılaştırmalı Örnekler</a></h2>
+<h3 id="örnek-1-fibonacci"><a class="header" href="#örnek-1-fibonacci">Örnek 1: Fibonacci</a></h3>
+<p><strong>Türkçe:</strong></p>
+<pre><code class="language-berk">fonksiyon fibonacci(n: sayı) -&gt; sayı
+yap
+    eğer n &lt;= 1 yap
+        dön n
+    son
+    dön fibonacci(n-1) + fibonacci(n-2)
+son
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code class="language-berk">function fibonacci(n: int) -&gt; int
+do
+    if n &lt;= 1 do
+        return n
+    end
+    return fibonacci(n-1) + fibonacci(n-2)
+end
+</code></pre>
+<h3 id="örnek-2-sınıf-tanımı"><a class="header" href="#örnek-2-sınıf-tanımı">Örnek 2: Sınıf Tanımı</a></h3>
+<p><strong>Türkçe:</strong></p>
+<pre><code class="language-berk">yapı Kişi yap
+    isim: metin,
+    yaş: sayı
+son
+
+fonksiyon yeni_kişi(isim: metin, yaş: sayı) -&gt; Kişi
+yap
+    dön Kişi { isim: isim, yaş: yaş }
+son
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code class="language-berk">struct Person do
+    name: string,
+    age: int
+end
+
+function new_person(name: string, age: int) -&gt; Person
+do
+    return Person { name: name, age: age }
+end
+</code></pre>
+<h3 id="örnek-3-hata-yönetimi"><a class="header" href="#örnek-3-hata-yönetimi">Örnek 3: Hata Yönetimi</a></h3>
+<p><strong>Türkçe:</strong></p>
+<pre><code class="language-berk">fonksiyon dosya_oku(yol: metin) -&gt; Sonuç&lt;metin&gt;
+yap
+    eğer yol == &quot;&quot; yap
+        dön Hata(&quot;Boş yol&quot;)
+    son
+    
+    // Dosyayı oku
+    dön Tamam(içerik)
+son
+</code></pre>
+<p><strong>English:</strong></p>
+<pre><code class="language-berk">function read_file(path: string) -&gt; Result&lt;string&gt;
+do
+    if path == &quot;&quot; do
+        return Error(&quot;Empty path&quot;)
+    end
+    
+    // Read file
+    return Ok(content)
+end
+</code></pre>
+<h2 id="karışık-kullanım"><a class="header" href="#karışık-kullanım">Karışık Kullanım</a></h2>
+<p>En güçlü özellik: <strong>Aynı dosyada iki dili karıştırabilirsiniz!</strong></p>
+<pre><code class="language-berk">// Türkçe fonksiyon
+fonksiyon hesapla(x: sayı) -&gt; sayı yap
+    değişken sonuç = x * 2
+    dön sonuç
+son
+
+// English function  
+function calculate_advanced(x: int) -&gt; int do
+    let result = hesapla(x) + 10  // Türkçe fonksiyonu çağırıyoruz
+    return result
+end
+
+// Türkçe ana fonksiyon
+fonksiyon ana() yap
+    değişken değer = calculate_advanced(5)  // İngilizce fonksiyonu çağırıyoruz
+    yazdır(değer)
+son
+</code></pre>
+<h2 id="stil-önerileri"><a class="header" href="#stil-önerileri">Stil Önerileri</a></h2>
+<h3 id="proje-içinde-tutarlılık"><a class="header" href="#proje-içinde-tutarlılık">Proje İçinde Tutarlılık</a></h3>
+<ul>
+<li>✅ Bir proje içinde tek bir dil kullanmak genellikle daha iyidir</li>
+<li>✅ Takım üyeleriyle anlaşın: Türkçe mi İngilizce mi?</li>
+<li>⚠️ Karışık kullanım mümkün ama okunabilirlik azalabilir</li>
+</ul>
+<h3 id="kütüphaneler-için"><a class="header" href="#kütüphaneler-için">Kütüphaneler İçin</a></h3>
+<ul>
+<li>✅ Açık kaynak kütüphaneler genellikle İngilizce yazılmalı</li>
+<li>✅ Yerel/özel projeler Türkçe yazılabilir</li>
+<li>✅ API dokümantasyonu her iki dilde sunulabilir</li>
+</ul>
+<h2 id="geriye-uyumluluk"><a class="header" href="#geriye-uyumluluk">Geriye Uyumluluk</a></h2>
+<p>BERK'in gelecek sürümlerinde:</p>
+<ul>
+<li>✅ Her iki dil de tam olarak desteklenecek</li>
+<li>✅ Yeni özellikler her iki dilde eklenecek</li>
+<li>✅ Kod tabanınızı değiştirmeniz gerekmeyecek</li>
+</ul>
+<h2 id="ide-desteği"><a class="header" href="#ide-desteği">IDE Desteği</a></h2>
+<p>VS Code eklentisi her iki dili de destekler:</p>
+<ul>
+<li>✅ Syntax highlighting</li>
+<li>✅ Otomatik tamamlama</li>
+<li>✅ Hata kontrolü</li>
+<li>✅ Kod snippet'leri</li>
+<li>✅ Hover bilgileri</li>
+</ul>
+<h2 id="derleyici-davranışı"><a class="header" href="#derleyici-davranışı">Derleyici Davranışı</a></h2>
+<p>Derleyici aşamaları:</p>
+<ol>
+<li><strong>Lexer</strong>: Hem Türkçe hem İngilizce anahtar kelimeleri tanır</li>
+<li><strong>Parser</strong>: Her iki dil için aynı AST node'larını oluşturur</li>
+<li><strong>Semantic Analyzer</strong>: Dil farkı gözetmez</li>
+<li><strong>Code Generator</strong>: Aynı LLVM IR'ı üretir</li>
+</ol>
+<pre><code>Türkçe Kod    →  Lexer  →  Parser  →  AST
+İngilizce Kod →  Lexer  →  Parser  →  AST (Aynı!)
+                                       ↓
+                              Semantic Analysis
+                                       ↓
+                                  Code Gen
+                                       ↓
+                                   LLVM IR
+</code></pre>
+<h2 id="performans"><a class="header" href="#performans">Performans</a></h2>
+<p><strong>Sıfır maliyet!</strong></p>
+<ul>
+<li>Hangi dili kullanırsanız kullanın, performans aynıdır</li>
+<li>Derlenmiş kod identiktir</li>
+<li>Runtime'da hiçbir ek yük yoktur</li>
+</ul>
+<h2 id="dil-çevirisi-aracı"><a class="header" href="#dil-çevirisi-aracı">Dil Çevirisi Aracı</a></h2>
+<p>BERK CLI ile kod çevirisi yapabilirsiniz:</p>
+<pre><code class="language-bash"># Türkçe'den İngilizce'ye
+berk-lang convert --to=english dosya.berk -o file.berk
+
+# İngilizce'den Türkçe'ye
+berk-lang convert --to=turkish file.berk -o dosya.berk
+</code></pre>
+<h2 id="gelecek-planları"><a class="header" href="#gelecek-planları">Gelecek Planları</a></h2>
+<ul>
+<li>🔮 Otomatik dil algılama</li>
+<li>🔮 Kod analizi ve dil önerileri</li>
+<li>🔮 Hata mesajlarında dil tercihi</li>
+<li>🔮 Dokümantasyon otomatik çevirisi</li>
+</ul>
+<h2 id="topluluk-standartları"><a class="header" href="#topluluk-standartları">Topluluk Standartları</a></h2>
+<h3 id="açık-kaynak-projeler"><a class="header" href="#açık-kaynak-projeler">Açık Kaynak Projeler</a></h3>
+<ul>
+<li>README hem Türkçe hem İngilizce olmalı</li>
+<li>Kod genellikle İngilizce (uluslararası katkıcılar için)</li>
+<li>Yorum satırları her iki dilde olabilir</li>
+</ul>
+<h3 id="özel-kurumsal-projeler"><a class="header" href="#özel-kurumsal-projeler">Özel/Kurumsal Projeler</a></h3>
+<ul>
+<li>Takımın tercihine göre</li>
+<li>Türkiye'deki şirketler genellikle Türkçe tercih eder</li>
+<li>Uluslararası ekipler İngilizce kullanabilir</li>
+</ul>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ Dünyanın ilk gerçek çift dilli programlama dili</li>
+<li>✅ Tam eşdeğerlik: Aynı AST, aynı performans</li>
+<li>✅ Aynı dosyada karışık kullanım mümkün</li>
+<li>✅ IDE tam destek</li>
+<li>✅ Sıfır performans maliyeti</li>
+<li>✅ Öğrenme kolaylığı + Uluslararası işbirliği</li>
+</ul>
 
                     </main>
 

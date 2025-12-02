@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <title>tensor - Tensör İşlemleri - BERK Programlama Dili</title>
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+                if (theme && theme.startsWith('"')) localStorage.setItem('mdbook-theme', theme.slice(1, -1));
+                if (sidebar && sidebar.startsWith('"')) localStorage.setItem('mdbook-sidebar', sidebar.slice(1, -1));
+            } catch (e) { }
+        </script>
+
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust');
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>tensor - Tensör İşlemleri</h1>
+                            <p>Çok boyutlu diziler ve matris operasyonları - SIMD optimizasyonlu</p>
+                            <div class="module-stats">
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">2.5x</div><div>Hızlanma</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">70 GB/s</div><div>SIMD</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">AVX2</div><div>Optimizasyon</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">32×32</div><div>Block Size</div></div>
+                            </div>
+                        </div>
+
+                        <h2>Genel Bakış</h2>
+                        <p>Tensor modülü, çok boyutlu diziler üzerinde yüksek performanslı işlemler sağlar. NumPy ve PyTorch API'lerine benzer tasarım ile tanıdık kullanım sunar.</p>
+
+                        <div class="function-group">
+                            <h3>Temel Özellikler</h3>
+                            <ul>
+                                <li><strong>Çok Boyutlu Diziler:</strong> 1D, 2D, 3D, N-D tensor desteği</li>
+                                <li><strong>SIMD Optimizasyonu:</strong> AVX2 ile 70 GB/s throughput</li>
+                                <li><strong>Bloklu Matris Çarpımı:</strong> Cache-optimized, 2.5x hızlanma</li>
+                                <li><strong>Broadcasting:</strong> NumPy-style shape uyumluluğu</li>
+                                <li><strong>Memory Efficient:</strong> View ve slice desteği</li>
+                            </ul>
+                        </div>
+
+                        <h2>Performans</h2>
+                        <table>
+                            <thead>
+                                <tr><th>Operasyon</th><th>Boyut</th><th>Öncesi</th><th>Sonrası</th><th>İyileştirme</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Matris Çarpımı</td><td>256×256</td><td>0.97 GFLOPS</td><td>2.47 GFLOPS</td><td><strong>2.5x</strong></td></tr>
+                                <tr><td>Matris Çarpımı</td><td>512×512</td><td>1.30 GFLOPS</td><td>2.28 GFLOPS</td><td><strong>1.8x</strong></td></tr>
+                                <tr><td>Element-wise Add</td><td>10K elements</td><td>8.75 GB/s</td><td>70.2 GB/s</td><td><strong>8x</strong></td></tr>
+                                <tr><td>Element-wise Mul</td><td>10K elements</td><td>8.2 GB/s</td><td>65.9 GB/s</td><td><strong>8x</strong></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h2>Hızlı Başlangıç</h2>
+
+                        <div class="example-box">
+                            <h3>Tensor Oluşturma</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+// Sıfırlardan oluştur
+değişken a = Tensor::sıfırlar([3, 4]);  // 3×4 matris
+
+// Birlerden oluştur
+değişken b = Tensor::birler([2, 3, 4]);  // 2×3×4 tensör
+
+// Rastgele değerler
+değişken c = Tensor::rastgele([100, 50]);
+
+// Belirli değerlerle
+değişken d = Tensor::yeni([2, 2], [1.0, 2.0, 3.0, 4.0]);
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Temel İşlemler</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+değişken x = Tensor::yeni([3, 3], [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+değişken y = Tensor::yeni([3, 3], [9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0]);
+
+// Element-wise işlemler (SIMD optimizasyonlu)
+değişken toplam = x.topla(y);      // Addition
+değişken fark = x.çıkar(y);        // Subtraction
+değişken çarpım = x.çarp(y);       // Multiplication
+değişken bölüm = x.böl(y);         // Division
+
+// Skaler işlemler
+değişken scaled = x.skaler_çarp(2.5);
+değişken shifted = x.skaler_topla(10.0);
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Matris Çarpımı (Bloklu Algoritma)</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+// Küçük matrisler (naive algoritma)
+değişken A = Tensor::rastgele([32, 32]);
+değişken B = Tensor::rastgele([32, 64]);
+değişken C1 = A.matmul(B);  // 32×64 sonuç
+
+// Büyük matrisler (bloklu algoritma - 32×32 blocks)
+değişken M = Tensor::rastgele([256, 256]);
+değişken N = Tensor::rastgele([256, 256]);
+değişken P = M.matmul(N);  // 2.5x daha hızlı!
+
+yazdir("Sonuç boyutu: {}×{}", P.boyut(0), P.boyut(1));
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Broadcasting ve Reshape</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+// Broadcasting
+değişken x = Tensor::yeni([3, 1], [1.0, 2.0, 3.0]);
+değişken y = Tensor::yeni([1, 4], [1.0, 2.0, 3.0, 4.0]);
+değişken z = x.topla(y);  // Sonuç: [3, 4]
+
+// Reshape
+değişken a = Tensor::aralık(0.0, 12.0, 1.0);  // [12] shape
+değişken b = a.yeniden_şekillendir([3, 4]);   // [3, 4] shape
+değişken c = a.yeniden_şekillendir([2, 2, 3]); // [2, 2, 3] shape
+
+// Transpose
+değişken d = b.transpose();  // [4, 3] shape
+</code></pre>
+                        </div>
+
+                        <h2>İleri Seviye İşlemler</h2>
+
+                        <div class="function-group">
+                            <h3>Reduction İşlemleri</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+değişken x = Tensor::yeni([3, 4], [/*...*/]);
+
+// Tüm elemanlar üzerinde
+değişken toplam = x.sum();           // Skaler
+değişken ortalama = x.mean();        // Skaler
+değişken max = x.max();              // Skaler
+değişken min = x.min();              // Skaler
+
+// Belirli eksende
+değişken satır_toplamı = x.sum_eksen(0);    // [4] shape
+değişken sütun_toplamı = x.sum_eksen(1);    // [3] shape
+</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>Matematiksel Fonksiyonlar</h3>
+                            <pre><code class="language-berk">kullan ai/tensor;
+
+değişken x = Tensor::yeni([2, 3], [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
+
+// Element-wise fonksiyonlar
+değişken exp_x = x.exp();        // e^x
+değişken log_x = x.log();        // ln(x)
+değişken sqrt_x = x.sqrt();      // √x
+değişken pow_x = x.pow(2.0);     // x²
+
+// Trigonometrik
+değişken sin_x = x.sin();
+değişken cos_x = x.cos();
+değişken tanh_x = x.tanh();
+</code></pre>
+                        </div>
+
+                        <h2>Teknik Detaylar</h2>
+
+                        <h3>SIMD Optimizasyonu</h3>
+                        <p>AVX2 komut seti ile 256-bit vektör işlemleri:</p>
+                        <ul>
+                            <li>8 float paralel işleme (256 bit / 32 bit = 8)</li>
+                            <li>Runtime CPU özellik tespiti: <code>is_x86_feature_detected!("avx2")</code></li>
+                            <li>Otomatik scalar fallback AVX2 yoksa</li>
+                            <li>70 GB/s throughput 10K element ile</li>
+                            <li>Remainder handling: Son &lt;8 element scalar</li>
+                        </ul>
+
+                        <h3>Bloklu Matris Çarpımı</h3>
+                        <p>Cache-optimized tiling algoritması:</p>
+                        <ul>
+                            <li><strong>Block Size:</strong> 32×32 (4KB per block)</li>
+                            <li><strong>L1 Cache:</strong> 32KB (8 blocks fit)</li>
+                            <li><strong>Optimizasyon:</strong> Cache miss oranını minimize eder</li>
+                            <li><strong>Threshold:</strong> Matrisler ≥64 boyutunda aktif</li>
+                            <li><strong>Speedup:</strong> 256×256 için 2.5x, 512×512 için 1.8x</li>
+                        </ul>
+
+                        <h3>Memory Layout</h3>
+                        <pre><code class="language-rust">// Tensor internal structure
+struct Tensor {
+    data: Vec&lt;f32&gt;,        // Row-major order
+    shape: Vec&lt;usize&gt;,     // Dimensions
+    strides: Vec&lt;usize&gt;,   // Memory strides
+}
+
+// Example: [2, 3] tensor
+// data: [a, b, c, d, e, f]
+// shape: [2, 3]
+// strides: [3, 1]
+// Access: data[i*strides[0] + j*strides[1]]
+</code></pre>
+
+                        <h2>API Referansı</h2>
+
+                        <div class="function-group">
+                            <h3>Tensor::yeni(shape, data)</h3>
+                            <p>Yeni tensor oluştur</p>
+                            <pre><code>değişken t = Tensor::yeni([2, 3], [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>Tensor::sıfırlar(shape)</h3>
+                            <p>Sıfırlarla dolu tensor</p>
+                            <pre><code>değişken t = Tensor::sıfırlar([100, 50]);</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>tensor.matmul(other)</h3>
+                            <p>Matris çarpımı (bloklu algoritma ≥64)</p>
+                            <pre><code>değişken C = A.matmul(B);  // [m×k] × [k×n] = [m×n]</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>tensor.topla(other)</h3>
+                            <p>Element-wise toplama (SIMD optimizasyonlu)</p>
+                            <pre><code>değişken c = a.topla(b);  // 70 GB/s throughput</code></pre>
+                        </div>
+
+                        <h2>Platform Desteği</h2>
+                        <table>
+                            <thead>
+                                <tr><th>Platform</th><th>SIMD</th><th>Matmul</th><th>Broadcasting</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>x86_64 (Intel/AMD)</td><td>✓ AVX2</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>ARM64 (Apple Silicon)</td><td>✓ NEON</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>ARM32</td><td>Scalar</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>WASM</td><td>✓ SIMD128</td><td>✓</td><td>✓</td></tr>
+                            </tbody>
+                        </table>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/ai-overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/ai-nn.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/ai-overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/ai-nn.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    </body>
+</html>

@@ -182,6 +182,159 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="repl---etkileşimli-kabuk"><a class="header" href="#repl---etkileşimli-kabuk">REPL - Etkileşimli Kabuk</a></h1>
+<p>BERK REPL (Read-Eval-Print Loop), <strong>hızlı prototipleme</strong> ve <strong>öğrenme</strong> için etkileşimli bir programlama ortamıdır. Python REPL gibi anında kod çalıştırma imkanı sağlar.</p>
+<h2 id="repl-başlatma"><a class="header" href="#repl-başlatma">REPL Başlatma</a></h2>
+<pre><code class="language-bash"># Basit başlatma
+berk-lang repl
+
+# Veya
+berk-lang
+</code></pre>
+<p>Karşınıza şu ekran gelecek:</p>
+<pre><code>BERK v0.9.4 - Interactive Shell
+Type ':help' for help, ':quit' to exit
+
+berk&gt;
+</code></pre>
+<h2 id="temel-kullanım"><a class="header" href="#temel-kullanım">Temel Kullanım</a></h2>
+<h3 id="basit-ifadeler"><a class="header" href="#basit-ifadeler">Basit İfadeler</a></h3>
+<pre><code class="language-berk">berk&gt; 2 + 2
+4
+
+berk&gt; "Merhaba" + " Dünya"
+"Merhaba Dünya"
+
+berk&gt; [1, 2, 3].uzunluk()
+3
+</code></pre>
+<h3 id="değişken-tanımlama"><a class="header" href="#değişken-tanımlama">Değişken Tanımlama</a></h3>
+<pre><code class="language-berk">berk&gt; değişken x = 42
+berk&gt; değişken isim = "Ali"
+berk&gt; yazdır(isim + " - " + x)
+Ali - 42
+</code></pre>
+<h3 id="fonksiyon-tanımlama"><a class="header" href="#fonksiyon-tanımlama">Fonksiyon Tanımlama</a></h3>
+<pre><code class="language-berk">berk&gt; fonksiyon topla(a: sayı, b: sayı) -> sayı yap
+  ...     dön a + b
+  ... son
+berk&gt; topla(5, 3)
+8
+</code></pre>
+<h2 id="özel-komutlar"><a class="header" href="#özel-komutlar">Özel Komutlar</a></h2>
+<table><thead><tr><th>Komut</th><th>Açıklama</th></tr></thead><tbody>
+<tr><td><code>:help</code></td><td>Yardım menüsü</td></tr>
+<tr><td><code>:quit</code> / <code>:q</code></td><td>REPL'den çık</td></tr>
+<tr><td><code>:clear</code></td><td>Ekranı temizle</td></tr>
+<tr><td><code>:reset</code></td><td>Tüm tanımları sıfırla</td></tr>
+<tr><td><code>:vars</code></td><td>Tanımlı değişkenleri listele</td></tr>
+<tr><td><code>:funcs</code></td><td>Tanımlı fonksiyonları listele</td></tr>
+<tr><td><code>:type <expr></code></td><td>İfadenin tipini göster</td></tr>
+<tr><td><code>:load <file></code></td><td>Dosyayı yükle</td></tr>
+<tr><td><code>:save <file></code></td><td>Geçmişi dosyaya kaydet</td></tr>
+</tbody></table>
+<h3 id="kullanım-örnekleri"><a class="header" href="#kullanım-örnekleri">Kullanım Örnekleri</a></h3>
+<pre><code class="language-berk">berk&gt; :type 42
+sayı
+
+berk&gt; :type "merhaba"
+metin
+
+berk&gt; :vars
+x: sayı = 42
+isim: metin = "Ali"
+
+berk&gt; :load hesap.berk
+✓ hesap.berk yüklendi
+
+berk&gt; :quit
+Hoşça kalın!
+</code></pre>
+<h2 id="çok-satırlı-ifadeler"><a class="header" href="#çok-satırlı-ifadeler">Çok Satırlı İfadeler</a></h2>
+<pre><code class="language-berk">berk&gt; fonksiyon fibonacci(n: sayı) -> sayı yap
+  ...     eğer n <= 1 yap
+  ...         dön n
+  ...     son
+  ...     dön fibonacci(n-1) + fibonacci(n-2)
+  ... son
+berk&gt; fibonacci(10)
+55
+</code></pre>
+<h2 id="otomatik-tamamlama"><a class="header" href="#otomatik-tamamlama">Otomatik Tamamlama</a></h2>
+<p>Tab tuşu ile otomatik tamamlama:</p>
+<pre><code class="language-berk">berk&gt; değişken liste = [1, 2, 3]
+berk&gt; liste.uz<TAB>
+    uzunluk()
+berk&gt; liste.uzunluk()
+3
+</code></pre>
+<h2 id="geçmiş-navigation"><a class="header" href="#geçmiş-navigation">Geçmiş (Navigation)</a></h2>
+<ul>
+<li><strong>↑/↓</strong>: Geçmiş komutlarda gezin</li>
+<li><strong>Ctrl+R</strong>: Geçmişte ara</li>
+<li><strong>Ctrl+C</strong>: Mevcut satırı iptal et</li>
+<li><strong>Ctrl+D</strong>: REPL'den çık</li>
+</ul>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">Modül Kullanımı</a></h2>
+<pre><code class="language-berk">berk&gt; kullan math;
+berk&gt; math::sqrt(16.0)
+4.0
+
+berk&gt; kullan string;
+berk&gt; string::büyüt("merhaba")
+"MERHABA"
+</code></pre>
+<h2 id="performans-ölçümü"><a class="header" href="#performans-ölçümü">Performans Ölçümü</a></h2>
+<pre><code class="language-berk">berk&gt; :time fibonacci(30)
+Sonuç: 832040
+Süre: 234 ms
+</code></pre>
+<h2 id="hata-ayıklama"><a class="header" href="#hata-ayıklama">Hata Ayıklama</a></h2>
+<pre><code class="language-berk">berk&gt; değişken x: sayı = "merhaba"
+Error[E0308]: tip uyuşmazlığı
+  beklenen `sayı`, bulundu `metin`
+
+berk&gt; :last-error
+Detaylı hata bilgisi...
+</code></pre>
+<h2 id="konfigürasyon"><a class="header" href="#konfigürasyon">Konfigürasyon</a></h2>
+<p><code>~/.berk/repl.toml</code> dosyası ile özelleştirme:</p>
+<pre><code class="language-toml">[prompt]
+style = "colorful"  # minimal, colorful, classic
+show_type = true    # Tip bilgisi göster
+
+[history]
+max_size = 1000
+save_path = "~/.berk/repl_history"
+
+[keybindings]
+clear = "Ctrl+L"
+quit = "Ctrl+D"
+</code></pre>
+<h2 id="repl-ile-öğrenme"><a class="header" href="#repl-ile-öğrenme">REPL ile Öğrenme</a></h2>
+<h3 id="örnek-1-fibonacci"><a class="header" href="#örnek-1-fibonacci">Örnek 1: Fibonacci</a></h3>
+<pre><code class="language-berk">berk&gt; :load stdlib/examples/fibonacci.berk
+berk&gt; için i içinde 0..10 yap
+  ...     yazdır(fibonacci(i))
+  ... son
+0 1 1 2 3 5 8 13 21 34
+</code></pre>
+<h3 id="örnek-2-string-manipülasyonu"><a class="header" href="#örnek-2-string-manipülasyonu">Örnek 2: String Manipülasyonu</a></h3>
+<pre><code class="language-berk">berk&gt; değişken metin = "Merhaba Dünya"
+berk&gt; string::böl(metin, " ")
+["Merhaba", "Dünya"]
+berk&gt; string::tersine_çevir(metin)
+"aynüD abahreM"
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ Hızlı prototipleme</li>
+<li>✅ Otomatik tamamlama</li>
+<li>✅ Geçmiş navigasyonu</li>
+<li>✅ Çok satırlı ifadeler</li>
+<li>✅ Modül desteği</li>
+<li>✅ Performans ölçümü</li>
+<li>✅ Öğrenme için ideal</li>
+</ul>
 
                     </main>
 

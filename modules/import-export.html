@@ -182,6 +182,219 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="import-ve-export"><a class="header" href="#import-ve-export">Import ve Export</a></h1>
+<p>BERK'te modüller arası kod paylaşımı <code>kullan</code>, <code>içe_aktar</code> ve <code>dışa_aktar</code> anahtar kelimeleri ile yapılır.</p>
+<h2 id="dışa_aktar-export"><a class="header" href="#dışa_aktar-export">dışa_aktar (Export)</a></h2>
+<h3 id="temel-kullanım"><a class="header" href="#temel-kullanım">Temel Kullanım</a></h3>
+<p><code>dışa_aktar</code> anahtar kelimesi, bir öğeyi diğer modüllerden erişilebilir yapar:</p>
+<pre><code class="language-berk">// Fonksiyon dışa aktarma
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı yap
+    dön a + b
+son
+
+// Sabit dışa aktarma
+dışa_aktar sabit MAKSIMUM = 100
+
+// Yapı dışa aktarma
+dışa_aktar yapı Nokta yap
+    x: sayı
+    y: sayı
+son
+
+// Enum dışa aktarma
+dışa_aktar enum Renk yap
+    Kırmızı
+    Yeşil
+    Mavi
+son
+</code></pre>
+<h3 id="grup-dışa-aktarma"><a class="header" href="#grup-dışa-aktarma">Grup Dışa Aktarma</a></h3>
+<pre><code class="language-berk">// Birden fazla öğeyi birlikte dışa aktar
+dışa_aktar { topla, çarp, böl, PI, Nokta };
+
+// Veya tek tek
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı yap dön a + b son
+dışa_aktar fonksiyon çarp(a: sayı, b: sayı) -&gt; sayı yap dön a * b son
+</code></pre>
+<h3 id="varsayılan-görünürlük"><a class="header" href="#varsayılan-görünürlük">Varsayılan Görünürlük</a></h3>
+<p>BERK'te varsayılan görünürlük <strong>özel (private)</strong>dir:</p>
+<pre><code class="language-berk">// Bu fonksiyon SADECE bu modülde kullanılabilir
+fonksiyon dahili_fonksiyon() yap
+    // özel kod
+son
+
+// Bu fonksiyon DİĞER modüllerden erişilebilir
+dışa_aktar fonksiyon genel_fonksiyon() yap
+    dahili_fonksiyon()  // Modül içinde kullanılabilir
+son
+</code></pre>
+<h2 id="kullan-use-yerel-modüller"><a class="header" href="#kullan-use-yerel-modüller">kullan (Use) - Yerel Modüller</a></h2>
+<h3 id="basit-içe-aktarma"><a class="header" href="#basit-içe-aktarma">Basit İçe Aktarma</a></h3>
+<pre><code class="language-berk">// Tek bir fonksiyon
+kullan matematik::topla;
+
+// Birden fazla öğe
+kullan matematik::{topla, çarp, böl};
+
+// Tüm dışa aktarılanlar
+kullan matematik::*;
+</code></pre>
+<h3 id="alt-modül-kullanımı"><a class="header" href="#alt-modül-kullanımı">Alt Modül Kullanımı</a></h3>
+<pre><code class="language-berk">// İç içe modül yolları
+kullan matematik::geometri::alan;
+kullan matematik::geometri::{alan, çevre, hacim};
+
+// Modülün kendisini içe aktar
+kullan matematik::geometri;
+// Kullanımı: geometri::alan(5.0)
+</code></pre>
+<h3 id="takma-ad-aliasing"><a class="header" href="#takma-ad-aliasing">Takma Ad (Aliasing)</a></h3>
+<pre><code class="language-berk">// Fonksiyon için takma ad
+kullan matematik::topla olarak toplama;
+kullan matematik::çarp olarak çarpım;
+
+// Modül için takma ad
+kullan matematik::geometri olarak geo;
+
+// Kullanım
+değişken sonuç = toplama(5, 10)
+değişken alan = geo::daire_alanı(3.0)
+</code></pre>
+<h2 id="içe_aktar-import-harici-paketler"><a class="header" href="#içe_aktar-import-harici-paketler">içe_aktar (Import) - Harici Paketler</a></h2>
+<h3 id="harici-paket-kullanımı"><a class="header" href="#harici-paket-kullanımı">Harici Paket Kullanımı</a></h3>
+<p><code>içe_aktar</code> harici paketleri projeye dahil eder:</p>
+<pre><code class="language-berk">// Tüm paketi içe aktar
+içe_aktar "serde" olarak json;
+
+// Belirli öğeleri içe aktar
+içe_aktar "http"::{get, post, İstek};
+
+// Versiyon belirterek
+içe_aktar "json@1.0.5";
+</code></pre>
+<h3 id="paket-yapılandırması"><a class="header" href="#paket-yapılandırması">Paket Yapılandırması</a></h3>
+<p><code>berk.toml</code> dosyasında bağımlılıklar:</p>
+<pre><code class="language-toml">[dependencies]
+serde = "1.0"
+http = "0.2"
+json = { version = "1.0", features = ["preserve_order"] }
+</code></pre>
+<h2 id="kullan-vs-içe_aktar"><a class="header" href="#kullan-vs-içe_aktar">kullan vs içe_aktar</a></h2>
+<table><thead><tr><th>Özellik</th><th>kullan</th><th>içe_aktar</th></tr></thead><tbody>
+<tr><td><strong>Kullanım</strong></td><td>Yerel modüller</td><td>Harici paketler</td></tr>
+<tr><td><strong>Kaynak</strong></td><td>Proje içi dosyalar</td><td>Dışarıdan paketler</td></tr>
+<tr><td><strong>Yol</strong></td><td>Dosya sistemi</td><td>Paket yöneticisi</td></tr>
+<tr><td><strong>Örnek</strong></td><td><code>kullan matematik::topla</code></td><td><code>içe_aktar "serde"</code></td></tr>
+</tbody></table>
+<h2 id="modül-yolu-örnekleri"><a class="header" href="#modül-yolu-örnekleri">Modül Yolu Örnekleri</a></h2>
+<h3 id="proje-yapısı"><a class="header" href="#proje-yapısı">Proje Yapısı</a></h3>
+<pre><code>proje/
+├── ana.berk
+├── matematik/
+│   ├── temel.berk
+│   ├── geometri.berk
+│   └── ileri/
+│       ├── calculus.berk
+│       └── linear.berk
+└── io/
+    └── dosya.berk
+</code></pre>
+<h3 id="içe-aktarma-örnekleri"><a class="header" href="#içe-aktarma-örnekleri">İçe Aktarma Örnekleri</a></h3>
+<pre><code class="language-berk">// ana.berk içinde:
+
+// Temel matematik fonksiyonları
+kullan matematik::temel::{topla, çarp};
+
+// Geometri modülünün tamamı
+kullan matematik::geometri;
+
+// İç içe modül
+kullan matematik::ileri::calculus::türev;
+
+// IO modülü
+kullan io::dosya::{oku, yaz};
+</code></pre>
+<h2 id="re-export-yeniden-dışa-aktarma"><a class="header" href="#re-export-yeniden-dışa-aktarma">Re-export (Yeniden Dışa Aktarma)</a></h2>
+<p>Bir modül, başka bir modülden içe aktardığı öğeleri tekrar dışa aktarabilir:</p>
+<pre><code class="language-berk">// matematik/index.berk
+kullan matematik::temel::topla;
+kullan matematik::geometri::alan;
+
+// Yeniden dışa aktar
+dışa_aktar { topla, alan };
+</code></pre>
+<pre><code class="language-berk">// ana.berk
+kullan matematik::{topla, alan};  // Her ikisi de kullanılabilir
+</code></pre>
+<h2 id="wildcard-import"><a class="header" href="#wildcard-import">Wildcard Import</a></h2>
+<pre><code class="language-berk">// Tüm dışa aktarılanları içe aktar
+kullan matematik::*;
+
+// Kullanım
+değişken sonuç = topla(5, 10)  // matematik::topla çağrıldı
+</code></pre>
+<p>⚠️ <strong>Dikkat</strong>: Wildcard import isim çakışmalarına yol açabilir. Dikkatli kullanın!</p>
+<h2 id="circular-dependencies-döngüsel-bağımlılıklar"><a class="header" href="#circular-dependencies-döngüsel-bağımlılıklar">Circular Dependencies (Döngüsel Bağımlılıklar)</a></h2>
+<p>BERK döngüsel bağımlılıklara izin vermez:</p>
+<pre><code class="language-berk">// ❌ YANLIŞ: A → B → A
+// modül_a.berk
+kullan modül_b;
+
+// modül_b.berk
+kullan modül_a;  // HATA: Döngüsel bağımlılık!
+</code></pre>
+<p>✅ <strong>Çözüm</strong>: Ortak kodu üçüncü bir modüle taşıyın:</p>
+<pre><code class="language-berk">// ortak.berk
+dışa_aktar fonksiyon paylaşılan() yap son
+
+// modül_a.berk
+kullan ortak;
+
+// modül_b.berk
+kullan ortak;
+</code></pre>
+<h2 id="en-i̇yi-uygulamalar"><a class="header" href="#en-i̇yi-uygulamalar">En İyi Uygulamalar</a></h2>
+<h3 id="açık-içe-aktarmalar"><a class="header" href="#açık-içe-aktarmalar">Açık İçe Aktarmalar</a></h3>
+<pre><code class="language-berk">// ✅ İyi: Açık ve okunabilir
+kullan matematik::{topla, çarp, PI};
+
+// ❌ Kötü: Ne içe aktarıldığı belirsiz
+kullan matematik::*;
+</code></pre>
+<h3 id="minimal-dışa-aktarma"><a class="header" href="#minimal-dışa-aktarma">Minimal Dışa Aktarma</a></h3>
+<pre><code class="language-berk">// ✅ İyi: Sadece gerekli API
+dışa_aktar fonksiyon işle() yap
+    dahili_yardımcı()
+son
+
+fonksiyon dahili_yardımcı() yap
+    // özel implementasyon
+son
+
+// ❌ Kötü: Gereksiz dışa aktarma
+dışa_aktar fonksiyon dahili_yardımcı() yap son
+</code></pre>
+<h3 id="tutarlı-isimlendirme"><a class="header" href="#tutarlı-isimlendirme">Tutarlı İsimlendirme</a></h3>
+<pre><code class="language-berk">// Modül isimleri: küçük harf, alt çizgi
+matematik_ileri.berk
+dosya_sistemi.berk
+
+// Fonksiyon isimleri: küçük harf, alt çizgi
+dışa_aktar fonksiyon hesaplama_yap() yap son
+
+// Yapı/Enum isimleri: PascalCase
+dışa_aktar yapı KullanıcıVerisi yap son
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ <code>dışa_aktar</code>: Öğeleri dışarıya açar</li>
+<li>✅ <code>kullan</code>: Yerel modüllerden içe aktarır</li>
+<li>✅ <code>içe_aktar</code>: Harici paketleri yükler</li>
+<li>✅ <code>olarak</code>: Takma ad oluşturur</li>
+<li>✅ <code>::</code>: Modül yolu ayracı</li>
+<li>✅ <code>*</code>: Tüm öğeleri içe aktarır (dikkatli kullanın)</li>
+<li>❌ Döngüsel bağımlılıklardan kaçının</li>
+<li>✅ Açık içe aktarmaları tercih edin</li>
+</ul>
 
                     </main>
 

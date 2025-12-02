@@ -182,6 +182,174 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="tip-sistemi"><a class="header" href="#tip-sistemi">Tip Sistemi</a></h1>
+<p>BERK, <strong>güçlü statik tipleme</strong> ile güvenli ve <strong>tip çıkarımı</strong> ile pratik bir dil sunar. Rust ve TypeScript'ten ilham alan modern bir tip sistemi.</p>
+<h2 id="temel-tipler"><a class="header" href="#temel-tipler">Temel Tipler</a></h2>
+<h3 id="sayısal-tipler"><a class="header" href="#sayısal-tipler">Sayısal Tipler</a></h3>
+<table><thead><tr><th>Türkçe</th><th>English</th><th>Boyut</th><th>Aralık</th></tr></thead><tbody>
+<tr><td><code>sayı8</code></td><td><code>int8</code></td><td>8-bit</td><td>-128 to 127</td></tr>
+<tr><td><code>sayı16</code></td><td><code>int16</code></td><td>16-bit</td><td>-32,768 to 32,767</td></tr>
+<tr><td><code>sayı</code></td><td><code>int</code></td><td>32-bit</td><td>-2³¹ to 2³¹-1</td></tr>
+<tr><td><code>sayı64</code></td><td><code>int64</code></td><td>64-bit</td><td>-2⁶³ to 2⁶³-1</td></tr>
+<tr><td><code>usayı8</code></td><td><code>uint8</code></td><td>8-bit</td><td>0 to 255</td></tr>
+<tr><td><code>usayı16</code></td><td><code>uint16</code></td><td>16-bit</td><td>0 to 65,535</td></tr>
+<tr><td><code>usayı</code></td><td><code>uint</code></td><td>32-bit</td><td>0 to 2³²-1</td></tr>
+<tr><td><code>kesir32</code></td><td><code>float32</code></td><td>32-bit</td><td>IEEE 754</td></tr>
+<tr><td><code>kesir</code></td><td><code>float</code></td><td>64-bit</td><td>IEEE 754</td></tr>
+</tbody></table>
+<pre><code class="language-berk">değişken x: sayı = 42
+değişken y: kesir = 3.14
+değişken byte: sayı8 = 127
+</code></pre>
+<h3 id="boolean-ve-karakter-tipleri"><a class="header" href="#boolean-ve-karakter-tipleri">Boolean ve Karakter Tipleri</a></h3>
+<pre><code class="language-berk">değişken aktif: mantık = doğru
+değişken harf: karakter = 'A'
+</code></pre>
+<h2 id="tip-çıkarımı-type-inference"><a class="header" href="#tip-çıkarımı-type-inference">Tip Çıkarımı (Type Inference)</a></h2>
+<p>BERK derleyicisi tipleri otomatik çıkarabilir:</p>
+<pre><code class="language-berk">// Tip belirtilmemiş ama derleyici çıkarıyor
+değişken x = 42          // sayı
+değişken y = 3.14        // kesir
+değişken isim = "Ali"    // metin
+değişken liste = [1,2,3] // Dizi&lt;sayı&gt;
+</code></pre>
+<h2 id="koleksiyon-tipleri"><a class="header" href="#koleksiyon-tipleri">Koleksiyon Tipleri</a></h2>
+<h3 id="diziler-arrays"><a class="header" href="#diziler-arrays">Diziler (Arrays)</a></h3>
+<pre><code class="language-berk">// Sabit boyutlu dizi
+değişken sayılar: [sayı; 5] = [1, 2, 3, 4, 5]
+
+// Dinamik dizi
+değişken liste: Dizi&lt;sayı&gt; = Dizi::yeni()
+liste.ekle(42)
+</code></pre>
+<h3 id="vektörler"><a class="header" href="#vektörler">Vektörler</a></h3>
+<pre><code class="language-berk">değişken vec = Vec::from([1, 2, 3, 4])
+vec.push(5)
+yazdır(vec.len())  // 5
+</code></pre>
+<h3 id="hash-map"><a class="header" href="#hash-map">Hash Map</a></h3>
+<pre><code class="language-berk">kullan koleksiyonlar::HashMap;
+
+değişken yaşlar = HashMap::yeni()
+yaşlar.ekle("Ali", 25)
+yaşlar.ekle("Ayşe", 30)
+</code></pre>
+<h2 id="yapılar-structs"><a class="header" href="#yapılar-structs">Yapılar (Structs)</a></h2>
+<pre><code class="language-berk">yapı Nokta yap
+    x: kesir,
+    y: kesir
+son
+
+// Kullanım
+değişken p = Nokta { x: 1.0, y: 2.0 }
+yazdır(p.x)  // 1.0
+</code></pre>
+<h3 id="tuple-yapılar"><a class="header" href="#tuple-yapılar">Tuple Yapılar</a></h3>
+<pre><code class="language-berk">yapı Renkli(sayı, sayı, sayı);  // RGB
+
+değişken kırmızı = Renkli(255, 0, 0)
+yazdır(kırmızı.0)  // 255
+</code></pre>
+<h2 id="enum-tipleri"><a class="header" href="#enum-tipleri">Enum Tipleri</a></h2>
+<pre><code class="language-berk">enum Yön yap
+    Kuzey,
+    Güney,
+    Doğu,
+    Batı
+son
+
+değişken hareket = Yön::Kuzey
+</code></pre>
+<h3 id="veri-taşıyan-enumlar"><a class="header" href="#veri-taşıyan-enumlar">Veri Taşıyan Enumlar</a></h3>
+<pre><code class="language-berk">enum Mesaj yap
+    Çık,
+    Taşı(sayı, sayı),
+    Yaz(metin),
+    RenkDeğiştir(sayı, sayı, sayı)
+son
+</code></pre>
+<h2 id="seçenek-ve-sonuç-tipleri"><a class="header" href="#seçenek-ve-sonuç-tipleri">Seçenek ve Sonuç Tipleri</a></h2>
+<h3 id="seçenekoption"><a class="header" href="#seçenekoption">Seçenek<T> (Option)</a></h3>
+<pre><code class="language-berk">fonksiyon böl(a: kesir, b: kesir) -> Seçenek&lt;kesir&gt; yap
+    eğer b == 0.0 yap
+        dön Hiçbiri
+    son
+    dön Bir(a / b)
+son
+</code></pre>
+<h3 id="sonuçt-e-result"><a class="header" href="#sonuçt-e-result">Sonuç<T, E> (Result)</a></h3>
+<pre><code class="language-berk">fonksiyon dosya_oku(yol: metin) -> Sonuç&lt;metin, Hata&gt; yap
+    eğer yol == "" yap
+        dön Hata("Boş yol")
+    son
+    dön Tamam(içerik)
+son
+</code></pre>
+<h2 id="generic-tipler"><a class="header" href="#generic-tipler">Generic Tipler</a></h2>
+<pre><code class="language-berk">yapı Kutu&lt;T&gt; yap
+    değer: T
+son
+
+fonksiyon yeni_kutu&lt;T&gt;(değer: T) -> Kutu&lt;T&gt; yap
+    dön Kutu { değer: değer }
+son
+
+// Kullanım
+değişken sayı_kutusu = yeni_kutu(42)
+değişken metin_kutusu = yeni_kutu("merhaba")
+</code></pre>
+<h2 id="trait-sistemi-interfaces"><a class="header" href="#trait-sistemi-interfaces">Trait Sistemi (Interfaces)</a></h2>
+<pre><code class="language-berk">trait Yazdırılabilir yap
+    fonksiyon yazdır(self)
+son
+
+yapı Kişi yap
+    isim: metin
+son
+
+uygula Yazdırılabilir için Kişi yap
+    fonksiyon yazdır(self) yap
+        yazdır("Kişi: " + self.isim)
+    son
+son
+</code></pre>
+<h2 id="tip-dönüşümleri"><a class="header" href="#tip-dönüşümleri">Tip Dönüşümleri</a></h2>
+<h3 id="açık-dönüşüm-casting"><a class="header" href="#açık-dönüşüm-casting">Açık Dönüşüm (Casting)</a></h3>
+<pre><code class="language-berk">değişken x: sayı = 42
+değişken y: kesir = kayıt(kesir, x)
+değişken z: sayı8 = kayıt(sayı8, x)
+</code></pre>
+<h3 id="güvenli-dönüşüm"><a class="header" href="#güvenli-dönüşüm">Güvenli Dönüşüm</a></h3>
+<pre><code class="language-berk">değişken metin1 = "42"
+değişken sayı1 = metin1.sayıya_çevir()  // Sonuç&lt;sayı, Hata&gt;
+
+eşleştir sayı1 yap
+    Tamam(n) => yazdır(n),
+    Hata(e) => yazdır("Hata: " + e)
+son
+</code></pre>
+<h2 id="tip-takma-adları-type-aliases"><a class="header" href="#tip-takma-adları-type-aliases">Tip Takma Adları (Type Aliases)</a></h2>
+<pre><code class="language-berk">tip Sonuç&lt;T&gt; = Sonuç&lt;T, metin&gt;
+tip Nokta2D = (kesir, kesir)
+tip Matris3x3 = [[kesir; 3]; 3]
+</code></pre>
+<h2 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h2>
+<pre><code class="language-berk">eşleştir değer yap
+    0 => yazdır("Sıfır"),
+    1..10 => yazdır("Bir ile dokuz arası"),
+    x eğer x % 2 == 0 => yazdır("Çift sayı"),
+    _ => yazdır("Diğer")
+son
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">Özet</a></h2>
+<ul>
+<li>✅ Güçlü statik tipleme</li>
+<li>✅ Tip çıkarımı</li>
+<li>✅ Generic'ler</li>
+<li>✅ Trait sistemi</li>
+<li>✅ Pattern matching</li>
+<li>✅ Null güvenliği (Seçenek)</li>
+<li>✅ Hata yönetimi (Sonuç)</li>
+</ul>
 
                     </main>
 

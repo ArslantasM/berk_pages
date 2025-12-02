@@ -182,6 +182,148 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="modül-sistemi"><a class="header" href="#modül-sistemi">Modül Sistemi</a></h1>
+<p>BERK'te <strong>her dosya bir modüldür</strong>. Modül sistemi, kodunuzu organize etmenin ve yeniden kullanmanın temel yoludur.</p>
+<h2 id="temel-kavramlar"><a class="header" href="#temel-kavramlar">Temel Kavramlar</a></h2>
+<h3 id="modül-nedir"><a class="header" href="#modül-nedir">Modül Nedir?</a></h3>
+<p>Bir modül, ilgili fonksiyonları, yapıları ve sabitleri içeren bir kod birimidir. Her <code>.berk</code> dosyası otomatik olarak bir modüldür.</p>
+<pre><code class="language-berk">// matematik.berk - Bu dosya "matematik" modülüdür
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı yap
+    dön a + b
+son
+
+dışa_aktar sabit PI = 3.14159
+</code></pre>
+<h3 id="modül-hiyerarşisi"><a class="header" href="#modül-hiyerarşisi">Modül Hiyerarşisi</a></h3>
+<p>Modüller dosya sistemi yapısını takip eder:</p>
+<pre><code>proje/
+├── ana.berk
+├── matematik/
+│   ├── temel.berk       (matematik::temel)
+│   ├── geometri.berk    (matematik::geometri)
+│   └── ileri.berk       (matematik::ileri)
+└── io/
+    └── dosya.berk       (io::dosya)
+</code></pre>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">Modül Kullanımı</a></h2>
+<h3 id="kullan-ifadesi"><a class="header" href="#kullan-ifadesi">Kullan İfadesi</a></h3>
+<pre><code class="language-berk">// Modül içe aktarma
+kullan matematik;
+
+// Belirli öğeleri içe aktarma
+kullan matematik::topla;
+kullan matematik::{topla, çarp, PI};
+
+// Tüm öğeleri içe aktarma
+kullan matematik::*;
+
+// Takma ad ile kullanım
+kullan matematik::topla olarak toplama;
+</code></pre>
+<h3 id="modül-yolları"><a class="header" href="#modül-yolları">Modül Yolları</a></h3>
+<pre><code class="language-berk">// Alt modül erişimi
+kullan matematik::geometri::alan;
+
+// İç içe modüller
+kullan matematik::geometri::{alan, çevre, hacim};
+</code></pre>
+<h2 id="görünürlük"><a class="header" href="#görünürlük">Görünürlük</a></h2>
+<h3 id="dışa_aktar-anahtar-kelimesi"><a class="header" href="#dışa_aktar-anahtar-kelimesi">dışa_aktar Anahtar Kelimesi</a></h3>
+<p>Varsayılan olarak tüm öğeler <strong>özeldir</strong>. Dışarıdan erişim için <code>dışa_aktar</code> kullanın:</p>
+<pre><code class="language-berk">// Genel fonksiyon - dışarıdan erişilebilir
+dışa_aktar fonksiyon hesapla() -&gt; sayı yap
+    dön dahili_hesaplama()
+son
+
+// Özel fonksiyon - sadece bu modülde kullanılabilir
+fonksiyon dahili_hesaplama() -&gt; sayı yap
+    dön 42
+son
+</code></pre>
+<h3 id="yapı-ve-enum-görünürlüğü"><a class="header" href="#yapı-ve-enum-görünürlüğü">Yapı ve Enum Görünürlüğü</a></h3>
+<pre><code class="language-berk">// Genel yapı
+dışa_aktar yapı Nokta yap
+    x: sayı
+    y: sayı
+son
+
+// Özel yapı
+yapı DahiliVeri yap
+    değer: sayı
+son
+</code></pre>
+<h2 id="modül-organizasyonu"><a class="header" href="#modül-organizasyonu">Modül Organizasyonu</a></h2>
+<h3 id="tek-dosya-modül"><a class="header" href="#tek-dosya-modül">Tek Dosya Modül</a></h3>
+<pre><code class="language-berk">// matematik.berk
+dışa_aktar fonksiyon topla(a: sayı, b: sayı) -&gt; sayı yap dön a + b son
+dışa_aktar fonksiyon çarp(a: sayı, b: sayı) -&gt; sayı yap dön a * b son
+</code></pre>
+<h3 id="çok-dosya-modül"><a class="header" href="#çok-dosya-modül">Çok Dosya Modül</a></h3>
+<pre><code>matematik/
+├── temel.berk      // matematik::temel
+├── geometri.berk   // matematik::geometri
+└── trigonometri.berk // matematik::trigonometri
+</code></pre>
+<pre><code class="language-berk">// ana.berk
+kullan matematik::temel::topla;
+kullan matematik::geometri::alan;
+</code></pre>
+<h2 id="modül-çözümleme"><a class="header" href="#modül-çözümleme">Modül Çözümleme</a></h2>
+<h3 id="arama-sırası"><a class="header" href="#arama-sırası">Arama Sırası</a></h3>
+<p>BERK derleyicisi modülleri şu sırayla arar:</p>
+<ol>
+<li><strong>Geçerli dizin</strong>: <code>./</code></li>
+<li><strong>Kaynak dizini</strong>: <code>./src/</code></li>
+<li><strong>Standart kütüphane</strong>: <code>./stdlib/</code></li>
+<li><strong>Harici paketler</strong>: <code>~/.berk/packages/</code></li>
+</ol>
+<h3 id="örnek-çözümleme"><a class="header" href="#örnek-çözümleme">Örnek Çözümleme</a></h3>
+<pre><code class="language-berk">kullan matematik::geometri;
+// Arama sırası:
+// 1. ./matematik/geometri.berk
+// 2. ./src/matematik/geometri.berk
+// 3. ./stdlib/matematik/geometri.berk
+// 4. ~/.berk/packages/matematik/geometri.berk
+</code></pre>
+<h2 id="standart-kütüphane-modülleri"><a class="header" href="#standart-kütüphane-modülleri">Standart Kütüphane Modülleri</a></h2>
+<pre><code class="language-berk">kullan io;              // Giriş/Çıkış işlemleri
+kullan metin;           // String işlemleri
+kullan matematik;       // Matematik fonksiyonları
+kullan koleksiyonlar;   // Liste, HashMap vb.
+kullan dosya;           // Dosya işlemleri
+kullan ağ;              // Network işlemleri
+</code></pre>
+<h2 id="en-i̇yi-uygulamalar"><a class="header" href="#en-i̇yi-uygulamalar">En İyi Uygulamalar</a></h2>
+<ul>
+<li>✅ <strong>İlgili kodu grupla</strong>: Benzer işlevleri aynı modülde tut</li>
+<li>✅ <strong>Açık isimler kullan</strong>: Modül ismi içeriği açıkça belirtmeli</li>
+<li>✅ <strong>Minimal dışa aktarma</strong>: Sadece gerekli olanları dışa aktar</li>
+<li>✅ <strong>Döngüsel bağımlılıklardan kaçın</strong>: A → B → A yapma</li>
+<li>✅ <strong>Tutarlı yapı</strong>: Projedeki tüm modüller benzer yapıda olmalı</li>
+</ul>
+<h2 id="örnekler"><a class="header" href="#örnekler">Örnekler</a></h2>
+<h3 id="basit-matematik-modülü"><a class="header" href="#basit-matematik-modülü">Basit Matematik Modülü</a></h3>
+<pre><code class="language-berk">// matematik.berk
+dışa_aktar sabit PI = 3.14159
+dışa_aktar sabit E = 2.71828
+
+dışa_aktar fonksiyon kare(x: sayı) -&gt; sayı yap
+    dön x * x
+son
+
+dışa_aktar fonksiyon küp(x: sayı) -&gt; sayı yap
+    dön x * x * x
+son
+</code></pre>
+<h3 id="kullanımı"><a class="header" href="#kullanımı">Kullanımı</a></h3>
+<pre><code class="language-berk">// ana.berk
+kullan matematik::{kare, PI};
+
+fonksiyon ana() yap
+    değişken sonuç = kare(5)
+    yazdir("Kare: {}", sonuç)
+    yazdir("Pi: {}", PI)
+son
+</code></pre>
 
                     </main>
 

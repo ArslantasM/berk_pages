@@ -1,0 +1,500 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>nn - Sinir Ağları - BERK Programlama Dili</title>
+
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>nn - Sinir Ağları</h1>
+                            <p>Neural network katmanları ve aktivasyon fonksiyonları</p>
+                            <div class="module-stats">
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">15</div><div>Katman Tipi</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">8</div><div>Aktivasyon</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">38%</div><div>Hızlanma</div></div>
+                            </div>
+                        </div>
+
+                        <h2>Genel Bakış</h2>
+                        <p>nn modülü, modern sinir ağı mimarilerini oluşturmak için gereken tüm bileşenleri sağlar. PyTorch nn.Module API'sine benzer tasarım ile kolay kullanım sunar.</p>
+
+                        <h2>Katman Tipleri</h2>
+
+                        <div class="function-group">
+                            <h3>Linear (Fully Connected)</h3>
+                            <p>Tam bağlantılı katman: y = xW^T + b</p>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+// 784 giriş → 128 çıkış
+değişken layer = Linear::yeni(784, 128);
+
+// Forward pass
+değişken x = Tensor::rastgele([32, 784]);  // batch_size=32
+değişken y = layer.ileri(x);               // [32, 128]
+</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>Conv2d (2D Convolution)</h3>
+                            <p>2D konvolüsyon katmanı</p>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+// 3 kanal → 64 kanal, 3×3 kernel
+değişken conv = Conv2d::yeni(
+    in_channels: 3,
+    out_channels: 64,
+    kernel_size: 3,
+    stride: 1,
+    padding: 1
+);
+
+değişken x = Tensor::rastgele([32, 3, 224, 224]);  // NCHW format
+değişken y = conv.ileri(x);  // [32, 64, 224, 224]
+</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>LSTM (Long Short-Term Memory)</h3>
+                            <p>Tekrarlayan sinir ağı katmanı</p>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+// 100 girdi → 256 hidden units
+değişken lstm = LSTM::yeni(
+    input_size: 100,
+    hidden_size: 256,
+    num_layers: 2,
+    dropout: 0.2
+);
+
+// Sequence: [batch, seq_len, features]
+değişken x = Tensor::rastgele([32, 50, 100]);
+değişken (output, (h_n, c_n)) = lstm.ileri(x);
+// output: [32, 50, 256]
+</code></pre>
+                        </div>
+
+                        <h2>Aktivasyon Fonksiyonları</h2>
+
+                        <div class="example-box">
+                            <h3>ReLU (Rectified Linear Unit)</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken relu = ReLU::yeni();
+değişken x = Tensor::yeni([2, 3], [-1.0, 0.0, 1.0, 2.0, -2.0, 3.0]);
+değişken y = relu.ileri(x);  // [0.0, 0.0, 1.0, 2.0, 0.0, 3.0]
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Sigmoid</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken sigmoid = Sigmoid::yeni();
+değişken x = Tensor::yeni([3], [0.0, 1.0, -1.0]);
+değişken y = sigmoid.ileri(x);  // [0.5, 0.73, 0.27]
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>Softmax</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken softmax = Softmax::yeni(dim: -1);  // Son eksen
+değişken x = Tensor::yeni([2, 3], [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
+değişken y = softmax.ileri(x);
+// Her satır toplamı 1.0
+</code></pre>
+                        </div>
+
+                        <h2>Normalization Katmanları</h2>
+
+                        <div class="function-group">
+                            <h3>BatchNorm</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken bn = BatchNorm::yeni(
+    num_features: 64,
+    momentum: 0.1,
+    epsilon: 1e-5
+);
+
+değişken x = Tensor::rastgele([32, 64, 28, 28]);
+değişken y = bn.ileri(x);  // Normalized
+</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>LayerNorm</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken ln = LayerNorm::yeni(
+    normalized_shape: [512]
+);
+
+değişken x = Tensor::rastgele([32, 512]);
+değişken y = ln.ileri(x);
+</code></pre>
+                        </div>
+
+                        <h2>Regularization</h2>
+
+                        <div class="function-group">
+                            <h3>Dropout</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken dropout = Dropout::yeni(p: 0.5);
+
+// Training mode
+dropout.eğitim();
+değişken y_train = dropout.ileri(x);  // %50 dropout
+
+// Eval mode
+dropout.değerlendirme();
+değişken y_eval = dropout.ileri(x);   // Dropout yok
+</code></pre>
+                        </div>
+
+                        <h2>Sequential Model</h2>
+
+                        <div class="example-box">
+                            <h3>MNIST Classifier</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken model = Sequential::yeni([
+    Linear::yeni(784, 256),
+    ReLU::yeni(),
+    Dropout::yeni(0.2),
+    Linear::yeni(256, 128),
+    ReLU::yeni(),
+    Dropout::yeni(0.2),
+    Linear::yeni(128, 10),
+    Softmax::yeni()
+]);
+
+// Forward pass
+değişken x = Tensor::rastgele([32, 784]);
+değişken logits = model.ileri(x);  // [32, 10]
+</code></pre>
+                        </div>
+
+                        <h2>Custom Module</h2>
+
+                        <div class="example-box">
+                            <h3>Kendi Modülünüzü Oluşturun</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+kullan ai/tensor;
+
+sınıf ResBlock {
+    değişken conv1: Conv2d;
+    değişken bn1: BatchNorm;
+    değişken conv2: Conv2d;
+    değişken bn2: BatchNorm;
+    değişken relu: ReLU;
+    
+    fonksiyon yeni(channels: tamsayı) -> ResBlock yap
+        ResBlock {
+            conv1: Conv2d::yeni(channels, channels, 3, 1, 1),
+            bn1: BatchNorm::yeni(channels),
+            conv2: Conv2d::yeni(channels, channels, 3, 1, 1),
+            bn2: BatchNorm::yeni(channels),
+            relu: ReLU::yeni()
+        }
+    son
+    
+    fonksiyon ileri(değişken kendi, x: Tensor) -> Tensor yap
+        değişken identity = x;
+        
+        değişken out = kendi.conv1.ileri(x);
+        out = kendi.bn1.ileri(out);
+        out = kendi.relu.ileri(out);
+        
+        out = kendi.conv2.ileri(out);
+        out = kendi.bn2.ileri(out);
+        
+        out = out.topla(identity);  // Residual connection
+        out = kendi.relu.ileri(out);
+        
+        dön out;
+    son
+}
+</code></pre>
+                        </div>
+
+                        <h2>Loss Functions</h2>
+
+                        <div class="function-group">
+                            <h3>CrossEntropyLoss</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken criterion = CrossEntropyLoss::yeni();
+
+değişken logits = model.ileri(x);      // [32, 10]
+değişken targets = Tensor::yeni([32]); // Class indices
+değişken loss = criterion(logits, targets);
+
+yazdir("Loss: {:.4f}", loss.değer());
+</code></pre>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>MSELoss</h3>
+                            <pre><code class="language-berk">kullan ai/nn;
+
+değişken criterion = MSELoss::yeni();
+
+değişken predictions = model.ileri(x);
+değişken targets = Tensor::rastgele([32, 1]);
+değişken loss = criterion(predictions, targets);
+</code></pre>
+                        </div>
+
+                        <h2>Performans</h2>
+                        <table>
+                            <thead>
+                                <tr><th>Model</th><th>Öncesi</th><th>Sonrası</th><th>İyileştirme</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Small NN (128→64)</td><td>178K infer/sec</td><td>246K infer/sec</td><td><strong>+38%</strong></td></tr>
+                                <tr><td>Medium NN (256→128)</td><td>6.4K infer/sec</td><td>10.1K infer/sec</td><td><strong>+58%</strong></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h2>API Referansı</h2>
+
+                        <div class="function-group">
+                            <h3>Katmanlar</h3>
+                            <ul>
+                                <li><strong>Linear:</strong> Fully connected layer</li>
+                                <li><strong>Conv2d:</strong> 2D convolution</li>
+                                <li><strong>Conv3d:</strong> 3D convolution</li>
+                                <li><strong>LSTM:</strong> Long short-term memory</li>
+                                <li><strong>GRU:</strong> Gated recurrent unit</li>
+                                <li><strong>Transformer:</strong> Attention layer</li>
+                            </ul>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>Aktivasyonlar</h3>
+                            <ul>
+                                <li><strong>ReLU:</strong> max(0, x)</li>
+                                <li><strong>LeakyReLU:</strong> max(0.01x, x)</li>
+                                <li><strong>Sigmoid:</strong> 1/(1+e^-x)</li>
+                                <li><strong>Tanh:</strong> (e^x - e^-x)/(e^x + e^-x)</li>
+                                <li><strong>Softmax:</strong> e^xi / Σe^xj</li>
+                                <li><strong>GELU:</strong> Gaussian error linear unit</li>
+                            </ul>
+                        </div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/ai-tensor.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/ai-optim.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/ai-tensor.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/ai-optim.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    </body>
+</html>

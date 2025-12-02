@@ -1,13 +1,11 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html lang="tr" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>color - Renk Islemleri - BERK Programlama Dili</title>
-
+        <title>optim - Optimizasyon - BERK Programlama Dili</title>
 
         <!-- Custom HTML head -->
-
         <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -29,7 +27,6 @@
         <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-
         <style>
             .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
             .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
@@ -61,23 +58,19 @@
         </div>
     </div>
     <div id="body-container">
-        <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
                 let theme = localStorage.getItem('mdbook-theme');
                 let sidebar = localStorage.getItem('mdbook-sidebar');
-
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
                 }
-
                 if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
                     localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
                 }
             } catch (e) { }
         </script>
 
-        <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
             const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
             let theme;
@@ -91,7 +84,6 @@
 
         <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
-        <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             let sidebar = null;
             const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
@@ -110,7 +102,6 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
@@ -121,7 +112,6 @@
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
-
             <div class="page">
                 <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
@@ -154,10 +144,6 @@
                         <a href="https://github.com/ArslantasM/berk" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/color.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
-                            <i id="git-edit-button" class="fa fa-edit"></i>
-                        </a>
-
                     </div>
                 </div>
 
@@ -172,12 +158,10 @@
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
-                        </ul>
+                        <ul id="searchresults"></ul>
                     </div>
                 </div>
 
-                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
@@ -187,181 +171,182 @@
                 </script>
 
                 <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>optim - Optimizasyon</h1>
+                        <p>Gradient descent ve ileri seviye optimizer algoritmaları</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">4</div><div>Optimizer</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">5</div><div>Scheduler</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Adam</div><div>Varsayılan</div></div>
+                        </div>
+                    </div>
 
-                                            <main>
+                    <h2>Genel Bakış</h2>
+                    <p>optim modülü, sinir ağlarını eğitmek için gradient descent tabanlı optimizasyon algoritmaları sağlar.</p>
 
-                                                <div class="module-header">
-            <h1>🎨 color - Renk İşlemleri</h1>
-            <p>Renk dönüşümleri, karıştırma ve palet oluşturma</p>
-            <div class="module-stats">
-                <span class="stat-badge">📦 47 Fonksiyon</span>
-                <span class="stat-badge">📝 560 Satır</span>
-                <span class="stat-badge">💾 17.2 KB</span>
+                    <div class="example-box">
+                        <h3>Adam Optimizer</h3>
+                        <pre><code class="language-berk">kullan ai/optim;
+kullan ai/nn;
+
+değişken model = Sequential::yeni([/*...*/]);
+değişken optimizer = Adam::yeni(
+    parametreler: model.parametreler(),
+    lr: 0.001,
+    beta1: 0.9,
+    beta2: 0.999,
+    epsilon: 1e-8
+);
+
+// Training loop
+her epoch içinde aralık(100) için yap
+    değişken loss = model.eğit(x, y);
+    
+    optimizer.sıfırla();
+    loss.geri();
+    optimizer.adım();
+son
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>SGD (Stochastic Gradient Descent)</h3>
+                        <pre><code class="language-berk">kullan ai/optim;
+
+değişken optimizer = SGD::yeni(
+    parametreler: model.parametreler(),
+    lr: 0.01,
+    momentum: 0.9,
+    weight_decay: 1e-4,
+    nesterov: doğru
+);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>AdamW (Adam with Weight Decay)</h3>
+                        <pre><code class="language-berk">kullan ai/optim;
+
+değişken optimizer = AdamW::yeni(
+    parametreler: model.parametreler(),
+    lr: 0.001,
+    weight_decay: 0.01  // L2 regularization
+);
+</code></pre>
+                    </div>
+
+                    <h2>Learning Rate Schedulers</h2>
+
+                    <div class="example-box">
+                        <h3>StepLR</h3>
+                        <pre><code class="language-berk">kullan ai/optim;
+
+değişken scheduler = StepLR::yeni(
+    optimizer: optimizer,
+    step_size: 30,      // Her 30 epoch
+    gamma: 0.1          // LR × 0.1
+);
+
+her epoch içinde aralık(100) için yap
+    // Eğitim...
+    scheduler.adım();  // LR güncelle
+son
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>ReduceLROnPlateau</h3>
+                        <pre><code class="language-berk">kullan ai/optim;
+
+değişken scheduler = ReduceLROnPlateau::yeni(
+    optimizer: optimizer,
+    mode: "min",
+    factor: 0.5,
+    patience: 10
+);
+
+her epoch içinde aralık(100) için yap
+    değişken val_loss = validate();
+    scheduler.adım(val_loss);  // Metric'e göre LR ayarla
+son
+</code></pre>
+                    </div>
+
+                    <h2>Gradient Clipping</h2>
+
+                    <div class="example-box">
+                        <pre><code class="language-berk">kullan ai/optim;
+
+// Gradient norm clipping
+her batch için yap
+    loss.geri();
+    
+    // Gradient norm'u 1.0'a kırp
+    optim::clip_grad_norm(model.parametreler(), max_norm: 1.0);
+    
+    optimizer.adım();
+son
+</code></pre>
+                    </div>
+
+                    <h2>API Referansı</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Optimizer</th><th>LR Önerisi</th><th>Kullanım</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Adam</td><td>0.001</td><td>Genel amaçlı, adaptive</td></tr>
+                            <tr><td>AdamW</td><td>0.001</td><td>Transformers için</td></tr>
+                            <tr><td>SGD</td><td>0.01-0.1</td><td>Momentum ile vision</td></tr>
+                            <tr><td>RMSprop</td><td>0.001</td><td>RNN'ler için</td></tr>
+                        </tbody>
+                    </table>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/ai-nn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/ai-train.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
             </div>
         </div>
 
-        <h2>📋 Genel Bakış</h2>
-        <p><code>color</code> modülü, RGB, HSL, HSV renk uzayları arası dönüşümler, renk karıştırma ve palet oluşturma araçları sağlar.</p>
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/ai-nn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
 
-        <div class="function-group">
-            <h3>🎨 Renk Oluşturma</h3>
-            <ul>
-                <li><strong>color.rgb()</strong> - RGB renk (0-255)</li>
-                <li><strong>color.rgba()</strong> - Alpha kanallı RGB</li>
-                <li><strong>color.hsl()</strong> - HSL renk uzayı</li>
-                <li><strong>color.hsv()</strong> - HSV renk uzayı</li>
-                <li><strong>color.hex()</strong> - Hex string'den renk (#FF5733)</li>
-            </ul>
-        </div>
-
-        <div class="function-group">
-            <h3>🔄 Renk Dönüşümleri</h3>
-            <ul>
-                <li><strong>color.rgb_den_hsl()</strong> - RGB → HSL</li>
-                <li><strong>color.hsl_den_rgb()</strong> - HSL → RGB</li>
-                <li><strong>color.hex_e()</strong> - Hex string'e çevirme</li>
-            </ul>
-        </div>
-
-        <div class="function-group">
-            <h3>🖌️ Renk Manipülasyonu</h3>
-            <ul>
-                <li><strong>color.karıştır()</strong> - İki rengi karıştırma</li>
-                <li><strong>color.koyulaştır()</strong> - Rengi koyulaştırma</li>
-                <li><strong>color.açıklaştır()</strong> - Rengi açıklaştırma</li>
-                <li><strong>color.doygunluk_ayarla()</strong> - Saturation ayarlama</li>
-            </ul>
-        </div>
-
-        <div class="function-group">
-            <h3>🎨 Renk Paletleri</h3>
-            <ul>
-                <li><strong>color.tamamlayıcı()</strong> - Complementary color</li>
-                <li><strong>color.analog_renkler()</strong> - Analogous colors</li>
-                <li><strong>color.üçlü_renkler()</strong> - Triadic colors</li>
-                <li><strong>color.gradyan_oluştur()</strong> - Renk gradyanı</li>
-            </ul>
-        </div>
-
-        <h2>💡 Kullanım Örnekleri</h2>
-
-        <div class="example-box">
-            <h3>Renk Dönüşümleri</h3>
-            <pre><code class="language-berk">kullan color
-
-// RGB renk oluştur
-değer kırmızı = color.rgb(255, 0, 0)
-yazdır(f"RGB: {kırmızı}")
-
-// Hex'e çevir
-değer hex = kırmızı.hex_e()
-yazdır(f"Hex: {hex}")
-
-// HSL'e dönüştür
-değer hsl = color.rgb_den_hsl(255, 0, 0)
-yazdır(f"HSL: H={hsl.ton}, S={hsl.doygunluk}, L={hsl.parlaklık}")
-
-// Renk karıştırma
-değer mavi = color.rgb(0, 0, 255)
-değer mor = color.karıştır(kırmızı, mavi, oran: 0.5)
-yazdır(f"Mor: {mor.hex_e()}")</code></pre>
-        </div>
-
-        <div class="example-box">
-            <h3>Renk Paleti Oluşturma</h3>
-            <pre><code class="language-berk">kullan color
-
-// Ana renk
-değer ana_renk = color.hex("#3498db")
-
-// Tamamlayıcı renk
-değer tamamlayıcı = ana_renk.tamamlayıcı()
-yazdır(f"Tamamlayıcı: {tamamlayıcı.hex_e()}")
-
-// Analog renkler
-değer analoglar = ana_renk.analog_renkler()
-yazdır("\nAnalog Renkler:")
-için renk içinde analoglar {
-    yazdır(f"  {renk.hex_e()}")
-}
-
-// Gradyan oluştur
-değer gradyan = color.gradyan_oluştur(
-    color.rgb(255, 0, 0),
-    color.rgb(0, 0, 255),
-    adım_sayısı: 10
-)
-
-yazdır("\nGradyan:")
-için renk içinde gradyan {
-    yazdır(f"  {renk.hex_e()}")
-}</code></pre>
-        </div>
-
-        <h2>🎯 Önceden Tanımlı Renkler</h2>
-        <ul>
-            <li><strong>color.KIRMIZI</strong> - #FF0000</li>
-            <li><strong>color.YEŞİL</strong> - #00FF00</li>
-            <li><strong>color.MAVİ</strong> - #0000FF</li>
-            <li><strong>color.SARI</strong> - #FFFF00</li>
-            <li><strong>color.BEYAZ</strong> - #FFFFFF</li>
-            <li><strong>color.SİYAH</strong> - #000000</li>
-        </ul>
-
-        <h2>🔗 İlgili Modüller</h2>
-        <ul>
-            <li><a href="graphics.html">graphics</a> - 2D grafik</li>
-            <li><a href="image.html">image</a> - Görüntü işleme</li>
-            <li><a href="gui.html">gui</a> - Kullanıcı arayüzü</li>
-        </ul>
-
-                    <nav class="nav-wrapper" aria-label="Page navigation">
-                        <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../stdlib/math_3d.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-
-                            <a rel="next prefetch" href="../stdlib/rules.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-
-                        <div style="clear: both"></div>
-                    </nav>
-
-                    </main>
-
-                    <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../stdlib/math_3d.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-
-                    <a rel="next prefetch" href="../stdlib/rules.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-            </nav>
-
-        </div>
-
-
-
-
-        <script>
-            window.playground_copyable = true;
-        </script>
-
-
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
-
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
-
-        <!-- Custom JS scripts -->
-
-
+                <a rel="next prefetch" href="../stdlib/ai-train.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
 
     </div>
-    </body>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+</div>
+</body>
 </html>

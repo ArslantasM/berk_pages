@@ -1,0 +1,717 @@
+<!DOCTYPE HTML>
+<html lang="tr" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>rl - Pekiştirmeli Öğrenme - BERK Programlama Dili</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .algo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+            .algo-card { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; border: 2px solid var(--links); }
+            .algo-card h3 { margin-top: 0; color: var(--links); }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>rl - Pekiştirmeli Öğrenme</h1>
+                        <p>DQN, PPO, SAC ve RL algoritmaları</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">6</div><div>Algoritma</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Gym</div><div>Uyumlu</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Replay</div><div>Buffer</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">Multi-Env</div><div>Destek</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Genel Bakış</h2>
+                    <p>rl modülü, pekiştirmeli öğrenme için popüler algoritmaları (DQN, PPO, SAC) ve gym-uyumlu ortamları sağlar.</p>
+
+                    <div class="algo-grid">
+                        <div class="algo-card">
+                            <h3>DQN</h3>
+                            <p>Deep Q-Network</p>
+                            <ul>
+                                <li>Value-based</li>
+                                <li>Discrete actions</li>
+                                <li>Experience replay</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>PPO</h3>
+                            <p>Proximal Policy Optimization</p>
+                            <ul>
+                                <li>Policy gradient</li>
+                                <li>Clipped surrogate</li>
+                                <li>On-policy</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>SAC</h3>
+                            <p>Soft Actor-Critic</p>
+                            <ul>
+                                <li>Off-policy</li>
+                                <li>Continuous actions</li>
+                                <li>Maximum entropy</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>A2C/A3C</h3>
+                            <p>Actor-Critic</p>
+                            <ul>
+                                <li>Advantage estimation</li>
+                                <li>Async training</li>
+                                <li>Fast learning</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>DQN - Deep Q-Network</h2>
+
+                    <div class="example-box">
+                        <h3>CartPole-v1 Training</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+kullan ai/nn;
+
+// Q-Network tanımla
+değişken q_network = Sequential::yeni([
+    Linear::yeni(4, 128),   // State dimension
+    ReLU::yeni(),
+    Linear::yeni(128, 128),
+    ReLU::yeni(),
+    Linear::yeni(128, 2)    // Action dimension
+]);
+
+// DQN agent
+değişken agent = DQN::yeni(
+    q_network: q_network,
+    learning_rate: 0.001,
+    gamma: 0.99,
+    epsilon_start: 1.0,
+    epsilon_end: 0.01,
+    epsilon_decay: 0.995,
+    buffer_size: 10000,
+    batch_size: 64
+);
+
+// Ortam
+değişken env = gym::make("CartPole-v1")?;
+
+// Training loop
+her episode içinde aralık(500) için yap
+    değişken state = env.reset()?;
+    değişken total_reward = 0.0;
+    
+    çevrim yap
+        // Action seç (epsilon-greedy)
+        değişken action = agent.act(state);
+        
+        // Step
+        değişken (next_state, reward, done, _) = env.step(action)?;
+        
+        // Deneyimi kaydet
+        agent.remember(state, action, reward, next_state, done);
+        
+        // Replay ve öğren
+        eğer agent.buffer.len() > batch_size ise yap
+            agent.replay()?;
+        son
+        
+        state = next_state;
+        total_reward += reward;
+        
+        eğer done ise yap kır; son
+    son
+    
+    yazdir("Episode {}: Reward = {:.2f}, Epsilon = {:.3f}", 
+           episode, total_reward, agent.epsilon);
+son
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Double DQN</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+// Double DQN (overestimation önleme)
+değişken agent = DoubleDQN::yeni(
+    q_network: q_network,
+    target_update_freq: 100,  // Her 100 step'te target network güncelle
+    learning_rate: 0.001
+);
+
+// Target network periyodik güncelleme
+eğer step % agent.target_update_freq == 0 ise yap
+    agent.update_target_network();
+son
+</code></pre>
+                    </div>
+
+                    <h2>PPO - Proximal Policy Optimization</h2>
+
+                    <div class="example-box">
+                        <h3>Continuous Control</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+kullan ai/nn;
+
+// Actor-Critic network
+sınıf ActorCritic {
+    değişken shared: Sequential;
+    değişken actor: Linear;
+    değişken critic: Linear;
+    
+    fonksiyon yeni(state_dim: tamsayı, action_dim: tamsayı) -> ActorCritic yap
+        ActorCritic {
+            shared: Sequential::yeni([
+                Linear::yeni(state_dim, 256),
+                ReLU::yeni(),
+                Linear::yeni(256, 256),
+                ReLU::yeni()
+            ]),
+            actor: Linear::yeni(256, action_dim),
+            critic: Linear::yeni(256, 1)
+        }
+    son
+    
+    fonksiyon ileri(değişken kendi, state: Tensor) -> (Tensor, Tensor) yap
+        değişken features = kendi.shared.ileri(state);
+        değişken action_mean = kendi.actor.ileri(features);
+        değişken value = kendi.critic.ileri(features);
+        dön (action_mean, value);
+    son
+}
+
+// PPO agent
+değişken agent = PPO::yeni(
+    policy: ActorCritic::yeni(state_dim: 24, action_dim: 4),
+    learning_rate: 3e-4,
+    gamma: 0.99,
+    gae_lambda: 0.95,
+    clip_epsilon: 0.2,
+    epochs: 10,
+    batch_size: 64
+);
+
+// Training
+değişken env = gym::make("BipedalWalker-v3")?;
+
+her iteration içinde aralık(1000) için yap
+    // Rollout topla
+    değişken trajectories = agent.collect_rollouts(env, steps: 2048)?;
+    
+    // PPO update
+    değişken loss = agent.update(trajectories)?;
+    
+    // Değerlendirme
+    değişken eval_reward = agent.evaluate(env, episodes: 5)?;
+    yazdir("Iteration {}: Loss = {:.4f}, Reward = {:.2f}", 
+           iteration, loss, eval_reward);
+son
+</code></pre>
+                    </div>
+
+                    <h2>SAC - Soft Actor-Critic</h2>
+
+                    <div class="example-box">
+                        <h3>Off-Policy Learning</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+// SAC agent (continuous actions için ideal)
+değişken agent = SAC::yeni(
+    state_dim: 11,
+    action_dim: 3,
+    hidden_dims: [256, 256],
+    learning_rate: 3e-4,
+    gamma: 0.99,
+    tau: 0.005,          // Soft target update
+    alpha: 0.2,          // Entropy coefficient
+    auto_tune_alpha: doğru
+);
+
+değişken env = gym::make("Pendulum-v1")?;
+
+her step içinde aralık(100000) için yap
+    değişken state = env.reset()?;
+    
+    çevrim yap
+        // Action sample (stochastic policy)
+        değişken action = agent.select_action(state, evaluate: yanlış);
+        
+        değişken (next_state, reward, done, _) = env.step(action)?;
+        
+        // Replay buffer'a ekle
+        agent.buffer.push(state, action, reward, next_state, done);
+        
+        // Update
+        eğer step > 1000 ise yap  // Warm-up
+            agent.update(batch_size: 256)?;
+        son
+        
+        state = next_state;
+        eğer done ise yap kır; son
+    son
+son
+</code></pre>
+                    </div>
+
+                    <h2>Replay Buffer</h2>
+
+                    <div class="function-group">
+                        <h3>Experience Replay</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+// Standart replay buffer
+değişken buffer = ReplayBuffer::yeni(
+    capacity: 100000,
+    state_dim: 4,
+    action_dim: 2
+);
+
+// Deneyim ekle
+buffer.push(state, action, reward, next_state, done);
+
+// Batch sample
+değişken batch = buffer.sample(batch_size: 64)?;
+
+// Prioritized Experience Replay
+değişken per_buffer = PrioritizedReplayBuffer::yeni(
+    capacity: 100000,
+    alpha: 0.6,      // Prioritization derecesi
+    beta_start: 0.4,  // Importance sampling
+    beta_frames: 100000
+);
+
+// TD error ile priority güncelle
+per_buffer.update_priorities(indices, td_errors);
+</code></pre>
+                    </div>
+
+                    <h2>Custom Environment</h2>
+
+                    <div class="example-box">
+                        <h3>Kendi Ortamınızı Oluşturun</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+trait Environment {
+    fonksiyon reset(değişken kendi) -> Tensor;
+    fonksiyon step(değişken kendi, action: Tensor) -> (Tensor, ondalık, mantıksal, Metadata);
+    fonksiyon render(değişken kendi);
+    fonksiyon close(değişken kendi);
+}
+
+sınıf GridWorld {
+    değişken grid_size: tamsayı;
+    değişken agent_pos: (tamsayı, tamsayı);
+    değişken goal_pos: (tamsayı, tamsayı);
+}
+
+uygula Environment için GridWorld yap
+    fonksiyon reset(değişken kendi) -> Tensor yap
+        kendi.agent_pos = (0, 0);
+        dön kendi.get_state();
+    son
+    
+    fonksiyon step(değişken kendi, action: Tensor) -> (Tensor, ondalık, mantıksal, Metadata) yap
+        // Action: 0=up, 1=right, 2=down, 3=left
+        değişken (x, y) = kendi.agent_pos;
+        
+        match action.item() yap
+            0 => y -= 1,  // Up
+            1 => x += 1,  // Right
+            2 => y += 1,  // Down
+            3 => x -= 1,  // Left
+            _ => {}
+        son
+        
+        // Sınırları kontrol et
+        x = x.clamp(0, kendi.grid_size - 1);
+        y = y.clamp(0, kendi.grid_size - 1);
+        kendi.agent_pos = (x, y);
+        
+        // Reward hesapla
+        değişken reward = eğer kendi.agent_pos == kendi.goal_pos ise yap
+            1.0
+        son yoksa yap
+            -0.01  // Small penalty for each step
+        son;
+        
+        değişken done = kendi.agent_pos == kendi.goal_pos;
+        
+        dön (kendi.get_state(), reward, done, Metadata::yeni());
+    son
+son
+</code></pre>
+                    </div>
+
+                    <h2>Multi-Environment Training</h2>
+
+                    <div class="function-group">
+                        <h3>Parallel Environments</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+// Vectorized environment (paralel)
+değişken vec_env = VecEnv::yeni(
+    env_name: "CartPole-v1",
+    num_envs: 8,
+    parallel: doğru
+)?;
+
+// Tüm env'ler aynı anda step
+değişken states = vec_env.reset();
+değişken actions = agent.act_batch(states);
+değişken (next_states, rewards, dones, _) = vec_env.step(actions)?;
+
+// Her env için ayrı işlem
+her i içinde aralık(num_envs) için yap
+    eğer dones[i] ise yap
+        vec_env.reset_env(i);
+    son
+son
+</code></pre>
+                    </div>
+
+                    <h2>Policy Evaluation</h2>
+
+                    <div class="example-box">
+                        <h3>Agent Değerlendirme</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+fonksiyon evaluate_policy(
+    agent: Agent,
+    env: Environment,
+    num_episodes: tamsayı
+) -> ondalık yap
+    değişken total_rewards = [];
+    
+    her episode içinde aralık(num_episodes) için yap
+        değişken state = env.reset();
+        değişken episode_reward = 0.0;
+        
+        çevrim yap
+            // Deterministic action (no exploration)
+            değişken action = agent.select_action(state, evaluate: doğru);
+            değişken (next_state, reward, done, _) = env.step(action)?;
+            
+            episode_reward += reward;
+            state = next_state;
+            
+            eğer done ise yap kır; son
+        son
+        
+        total_rewards.push(episode_reward);
+    son
+    
+    dön total_rewards.iter().sum::<ondalık>() / num_episodes as ondalık;
+son
+
+// Kullanım
+değişken mean_reward = evaluate_policy(agent, env, num_episodes: 10);
+yazdir("Ortalama reward: {:.2f}", mean_reward);
+</code></pre>
+                    </div>
+
+                    <h2>Hyperparameter Tuning</h2>
+
+                    <div class="function-group">
+                        <h3>Grid Search</h3>
+                        <pre><code class="language-berk">kullan ai/rl;
+
+değişken learning_rates = [1e-4, 3e-4, 1e-3];
+değişken gammas = [0.95, 0.99, 0.999];
+
+değişken best_reward = -∞;
+değişken best_params = yok;
+
+her lr içinde learning_rates için yap
+    her gamma içinde gammas için yap
+        değişken agent = PPO::yeni(
+            policy: policy,
+            learning_rate: lr,
+            gamma: gamma
+        );
+        
+        değişken reward = train_and_evaluate(agent, env, iterations: 100)?;
+        
+        eğer reward > best_reward ise yap
+            best_reward = reward;
+            best_params = bazı((lr, gamma));
+        son
+        
+        yazdir("LR={}, Gamma={}: Reward={:.2f}", lr, gamma, reward);
+    son
+son
+</code></pre>
+                    </div>
+
+                    <h2>Algoritma Karşılaştırması</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Algoritma</th><th>Tip</th><th>Action Space</th><th>Sample Efficiency</th><th>Kullanım</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>DQN</td><td>Value-based</td><td>Discrete</td><td>Orta</td><td>Atari oyunları</td></tr>
+                            <tr><td>Double DQN</td><td>Value-based</td><td>Discrete</td><td>Orta</td><td>Overestimation önleme</td></tr>
+                            <tr><td>PPO</td><td>Policy gradient</td><td>Both</td><td>Düşük</td><td>Genel amaçlı</td></tr>
+                            <tr><td>A2C</td><td>Actor-Critic</td><td>Both</td><td>Düşük</td><td>Hızlı prototipleme</td></tr>
+                            <tr><td>SAC</td><td>Actor-Critic</td><td>Continuous</td><td>Yüksek</td><td>Robotik kontrol</td></tr>
+                            <tr><td>TD3</td><td>Actor-Critic</td><td>Continuous</td><td>Yüksek</td><td>Continuous control</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>API Referansı</h2>
+
+                    <div class="function-group">
+                        <h3>DQN Sınıfı</h3>
+                        <ul>
+                            <li><code>yeni(q_network: Network, ...) -> DQN</code></li>
+                            <li><code>act(kendi, state: Tensor) -> Tensor</code> - Action seç</li>
+                            <li><code>remember(kendi, ...) </code> - Deneyim kaydet</li>
+                            <li><code>replay(kendi) -> Sonuç</code> - Batch update</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>PPO Sınıfı</h3>
+                        <ul>
+                            <li><code>yeni(policy: ActorCritic, ...) -> PPO</code></li>
+                            <li><code>collect_rollouts(kendi, env: Environment, ...) -> Trajectories</code></li>
+                            <li><code>update(kendi, trajectories: Trajectories) -> ondalık</code></li>
+                            <li><code>evaluate(kendi, env: Environment, ...) -> ondalık</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>ReplayBuffer Sınıfı</h3>
+                        <ul>
+                            <li><code>yeni(capacity: tamsayı, ...) -> ReplayBuffer</code></li>
+                            <li><code>push(kendi, state, action, reward, next_state, done)</code></li>
+                            <li><code>sample(kendi, batch_size: tamsayı) -> Batch</code></li>
+                            <li><code>len(kendi) -> tamsayı</code></li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/ai-nlp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/hal-index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/ai-nlp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/hal-index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+
+    <!-- Custom JS scripts -->
+
+
+
+</div>
+</body>
+</html>
