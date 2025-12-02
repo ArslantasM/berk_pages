@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html lang="en" class="rust sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
@@ -75,7 +75,7 @@
             const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
             let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-            if (theme === null || theme === undefined) { theme = default_theme; }
+            if (theme === empty || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
             html.classList.remove('rust')
             html.classList.add(theme);
@@ -86,7 +86,7 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            let sidebar = null;
+            let sidebar = empty;
             const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
@@ -181,78 +181,78 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="merhaba-dünya"><a class="header" href="#merhaba-dünya">Merhaba Dünya!</a></h1>
-<p>Her programlama dilinde gelenek, ilk programın "Merhaba Dünya!" yazdırması olmuştur. BERK'ta da bu geleneği sürdürüyoruz!</p>
-<h2 id="İlk-programınız"><a class="header" href="#İlk-programınız">İlk Programınız</a></h2>
-<p>Favori metin editörünüzde <code>merhaba.berk</code> adında bir dosya oluşturun:</p>
+                        <h1 id="hello-world"><a class="header" href="#hello-world">Hello World!</a></h1>
+<p>The tradition in every programming language, the first program "Hello World!" is to print. We continue this tradition in BERK too!</p>
+<h2 id="your-first-program"><a class="header" href="#your-first-program">Your First Program</a></h2>
+<p>In your favorite text editor <code>hello.berk</code> create a file named:</p>
 <pre><code class="language-berk">function ana() -&gt; integer
 do
-    print("Merhaba Dünya!")
+    print("Hello World!")
     return 0
 end
 </code></pre>
-<h2 id="kodu-anlayalım"><a class="header" href="#kodu-anlayalım">Kodu Anlayalım</a></h2>
-<p>Satır satır inceleyelim:</p>
-<h3 id="1-function-tanımı"><a class="header" href="#1-function-tanımı">1. function Tanımı</a></h3>
+<h2 id="understanding-the-code"><a class="header" href="#understanding-the-code">Understanding the Code</a></h2>
+<p>Let's examine line by line:</p>
+<h3 id="1-function-Definition"><a class="header" href="#1-function-Definition">1. function Definition</a></h3>
 <pre><code class="language-berk">function ana() -&gt; integer
 </code></pre>
 <ul>
-<li><code>function</code> (or <code>function</code>): function tanımlar</li>
-<li><code>ana</code> (or <code>main</code>): Fonksiyonun adı. Program <code>ana()</code> fonksiyonundan başlar</li>
-<li><code>()</code>: Parametre listesi (null)</li>
+<li><code>function</code> (or <code>function</code>): defines a function</li>
+<li><code>ana</code> (or <code>main</code>): Function name. Program <code>ana()</code> function starts</li>
+<li><code>()</code>: Parameter list (empty)</li>
 <li><code>-&gt; integer</code>: Return Type (integer)</li>
 </ul>
-<h3 id="2-function-gövdesi"><a class="header" href="#2-function-gövdesi">2. function Gövdesi</a></h3>
+<h3 id="2-function-Body"><a class="header" href="#2-function-Body">2. function Body</a></h3>
 <pre><code class="language-berk">do
     ...
 end
 </code></pre>
 <ul>
-<li><code>do</code> (or <code>do</code>): Fonksiyonun başlangıcı</li>
-<li><code>end</code> (or <code>end</code>): Fonksiyonun bitişi</li>
+<li><code>do</code> (or <code>do</code>): Function start</li>
+<li><code>end</code> (or <code>end</code>): Function end</li>
 </ul>
-<h3 id="3-yazdırma"><a class="header" href="#3-yazdırma">3. Yazdırma</a></h3>
-<pre><code class="language-berk">print("Merhaba Dünya!")
+<h3 id="3-Printing"><a class="header" href="#3-Printing">3. Printing</a></h3>
+<pre><code class="language-berk">print("Hello World!")
 </code></pre>
 <ul>
-<li><code>print()</code> (or <code>print()</code>): Ekrana yazdırır</li>
-<li><code>"Merhaba Dünya!"</code>: String literal</li>
+<li><code>print()</code> (or <code>print()</code>): Prints to screen</li>
+<li><code>"Hello World!"</code>: String literal</li>
 </ul>
-<h3 id="4-dönüş-değeri"><a class="header" href="#4-dönüş-değeri">4. Return Value</a></h3>
+<h3 id="4-return-value"><a class="header" href="#4-return-value">4. Return Value</a></h3>
 <pre><code class="language-berk">return 0
 </code></pre>
 <ul>
-<li><code>return</code> (or <code>return</code>): Fonksiyondan çıkış</li>
-<li><code>0</code>: Başarılı programlar 0 döner (Unix geleneği)</li>
+<li><code>return</code> (or <code>return</code>): Exit from function</li>
+<li><code>0</code>: Successful programs return 0 (Unix tradition)</li>
 </ul>
-<h2 id="derleme-and-Çalıştırma"><a class="header" href="#derleme-and-Çalıştırma">Derleme and Çalıştırma</a></h2>
-<h3 id="adım-1-derleme"><a class="header" href="#adım-1-derleme">Adım 1: Derleme</a></h3>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba.exe
+<h2 id="Compilation-and-Execution"><a class="header" href="#Compilation-and-Execution">Compilation and Execution</a></h2>
+<h3 id="Step-1-Compilation"><a class="header" href="#Step-1-Compilation">Step 1: Compilation</a></h3>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba.exe
 </code></pre>
-<p>Çıktı:</p>
-<pre><code>🚀 BERK Derleyici v1.0.0
+<p>Output:</p>
+<pre><code>🚀 BERK Compiler v1.0.0
    LLVM 17.0.6 (19 Target Support)
 =========================================
-📂 Introduction: merhaba.berk
-📤 Çıkış: merhaba.exe
+📂 Introduction: hello.berk
+📤 Output: hello.exe
 🎯 Emit: Executable
-⚡ Optimizasyon: O0
+⚡ Optimization: O0
 =========================================
 
-✅ Derleme başarılı!
+✅ Compilation successful!
 </code></pre>
-<h3 id="adım-2-Çalıştırma"><a class="header" href="#adım-2-Çalıştırma">Adım 2: Çalıştırma</a></h3>
+<h3 id="Step-2-Execution"><a class="header" href="#Step-2-Execution">Step 2: Execution</a></h3>
 <p><strong>Windows:</strong></p>
 <pre><code class="language-powershell">.\merhaba.exe
 </code></pre>
 <p><strong>Linux/macOS:</strong></p>
 <pre><code class="language-bash">./merhaba
 </code></pre>
-<p>Çıktı:</p>
-<pre><code>Merhaba Dünya!
+<p>Output:</p>
+<pre><code>Hello World!
 </code></pre>
-<h2 id="İngilizce-versiyonu"><a class="header" href="#İngilizce-versiyonu">İngilizce Versiyonu</a></h2>
-<p>BERK iki dilli! Aynı programı İngilizce de yazabilirsiniz:</p>
+<h2 id="english-version"><a class="header" href="#english-version">English Version</a></h2>
+<p>BERK bilingual! You can write the same program in English:</p>
 <p><strong>hello.berk:</strong></p>
 <pre><code class="language-berk">function main() -&gt; integer
 do
@@ -260,188 +260,188 @@ do
     return 0
 end
 </code></pre>
-<p>Derleme:</p>
+<p>Compilation:</p>
 <pre><code class="language-bash">BERK-lang hello.berk -o hello.exe
 ./hello.exe
 </code></pre>
-<p>Çıktı:</p>
+<p>Output:</p>
 <pre><code>Hello World!
 </code></pre>
-<h2 id="karışık-Usage"><a class="header" href="#karışık-Usage">Karışık Usage</a></h2>
-<p>Hatta Türkçe and İngilizce'yi karıştırabilirsiniz:</p>
-<pre><code class="language-berk">function ana() -&gt; integer
+<h2 id="mixed-usage"><a class="header" href="#mixed-usage">Mixed Usage</a></h2>
+<p>You can even mix Turkish and English:</p>
+<pre><code class="language-berk">function main() -&gt; integer
 do
-    print("Hello Dünya!")
+    print("Hello World!")
     return 0
 end
 </code></pre>
-<p>Bu da geçerli bir BERK kodudur!</p>
-<h2 id="derleme-seçenekleri"><a class="header" href="#derleme-seçenekleri">Derleme Seçenekleri</a></h2>
+<p>This is also valid BERK code!</p>
+<h2 id="Compilation-options"><a class="header" href="#Compilation-options">Compilation options</a></h2>
 <h3 id="verbose-mode"><a class="header" href="#verbose-mode">Verbose Mode</a></h3>
-<p>Derleme adımlarını görmek for:</p>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba.exe -v
+<p>To see compilation steps:</p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba.exe -v
 </code></pre>
-<p>Çıktı:</p>
-<pre><code>🔍 Dil tanıma...
+<p>Output:</p>
+<pre><code>🔍 Language detection...
 ✅ Turkish detected (100.0% confidence)
 
-🌳 AST oluşturuluyor...
-✅ 1 ifade parse edildi
+🌳 AST being created...
+✅ 1 expressions parsed
 
-🧠 Akıllı analiz (Rules Engine)...
-✅ Analiz tamamlandı
+🧠 Smart analysis (Rules Engine)...
+✅ Analysis complete
 
-🔍 Tip kontrolü...
-✅ Tip kontrolü başarılı
+🔍 Type checking...
+✅ Type checking successful
 
-🔧 IR üretimi...
-✅ IR üretildi
+🔧 IR generation...
+✅ IR generated
 
-🎯 LLVM IR üretimi...
+🎯 LLVM IR generation...
 ✅ Object file: merhaba.o
 
 🔗 Linking...
-✅ Executable oluşturuldu: merhaba.exe
+✅ Executable created: merhaba.exe
 
-🎊 Derleme başarılı!
+🎊 Compilation successful!
 </code></pre>
-<h3 id="optimizasyon-seviyeleri"><a class="header" href="#optimizasyon-seviyeleri">Optimizasyon Seviyeleri</a></h3>
-<p><strong>O0 - Optimizasyon yok (varsayılan):</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba_o0.exe -O0
+<h3 id="optimizasyon-Levels"><a class="header" href="#optimizasyon-Levels">Optimizasyon Levels</a></h3>
+<p><strong>O0 - Optimizasyon none (default):</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o0.exe -O0
 </code></pre>
-<p><strong>O1 - Temel optimizasyonlar:</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba_o1.exe -O1
+<p><strong>O1 - Basic optimizations:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o1.exe -O1
 </code></pre>
-<p><strong>O2 - Orta seviye (önerilen):</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba_o2.exe -O2
+<p><strong>O2 - Medium level (recommended):</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o2.exe -O2
 </code></pre>
-<p><strong>O3 - Agresif optimizasyonlar:</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk -o merhaba_o3.exe -O3
+<p><strong>O3 - Aggressive optimizations:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o3.exe -O3
 </code></pre>
-<h3 id="farklı-Çıktı-formatları"><a class="header" href="#farklı-Çıktı-formatları">Farklı Çıktı Formatları</a></h3>
-<p><strong>LLVM IR göster:</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk --emit llvm-ir
+<h3 id="different-output-formats"><a class="header" href="#different-output-formats">Different Output Formats</a></h3>
+<p><strong>LLVM IR show:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit llvm-ir
 </code></pre>
-<p><strong>Assembly göster:</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk --emit asm
+<p><strong>Assembly show:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit asm
 </code></pre>
-<p><strong>IR göster:</strong></p>
-<pre><code class="language-bash">BERK-lang merhaba.berk --emit ir
+<p><strong>IR show:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit ir
 </code></pre>
-<h2 id="replde-deneme"><a class="header" href="#replde-deneme">REPL'de Deneme</a></h2>
-<p>Etkileşimli kabukta da deneyebilirsiniz:</p>
+<h2 id="try-in-repl"><a class="header" href="#try-in-repl">Try in REPL</a></h2>
+<p>You can also try it in the interactive shell:</p>
 <pre><code class="language-bash">BERK-repl
 </code></pre>
-<pre><code class="language-berk">BERK&gt; print("Merhaba REPL!")
-Merhaba REPL!
+<pre><code class="language-berk">BERK&gt; print("Hello REPL!")
+Hello REPL!
 =&gt; Result: Void
 
 BERK&gt; 1 + 2
 =&gt; Result: Integer = 3
 
 BERK&gt; :quit
-Güle güle!
+Goodbye!
 </code></pre>
-<h2 id="alıştırmalar"><a class="header" href="#alıştırmalar">Alıştırmalar</a></h2>
-<h3 id="alıştırma-1-kişiselleştirme"><a class="header" href="#alıştırma-1-kişiselleştirme">Alıştırma 1: Kişiselleştirme</a></h3>
-<p>Programı kendi adınızı yazdıracak şekilde değiştirin:</p>
-<pre><code class="language-berk">function ana() -&gt; integer
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h3 id="exercise-1-personalization"><a class="header" href="#exercise-1-personalization">Exercise 1: Personalization</a></h3>
+<p>Modify the program to print your own name:</p>
+<pre><code class="language-berk">function main() -&gt; integer
 do
-    print("Merhaba, [ADINIZ]!")
+    print("Hello, [YOUR NAME]!")
     return 0
 end
 </code></pre>
-<h3 id="alıştırma-2-Çoklu-yazdırma"><a class="header" href="#alıştırma-2-Çoklu-yazdırma">Alıştırma 2: Çoklu Yazdırma</a></h3>
-<p>Birden fazla satır yazdırın:</p>
-<pre><code class="language-berk">function ana() -&gt; integer
+<h3 id="exercise-2-multiple-printing"><a class="header" href="#exercise-2-multiple-printing">Exercise 2: Multiple Printing</a></h3>
+<p>Print multiple lines:</p>
+<pre><code class="language-berk">function main() -&gt; integer
 do
-    print("Merhaba Dünya!")
-    print("BERK'a hoş geldiniz!")
-    print("İyi kodlamalar!")
+    print("Hello World!")
+    print("Welcome to BERK!")
+    print("Happy coding!")
     return 0
 end
 </code></pre>
-<h3 id="alıştırma-3-variable-Usageı"><a class="header" href="#alıştırma-3-variable-Usageı">Alıştırma 3: variable Usageı</a></h3>
-<p>String'i bir değişkende saklayın:</p>
-<pre><code class="language-berk">function ana() -&gt; integer
+<h3 id="exercise-3-variable-usage"><a class="header" href="#exercise-3-variable-usage">Exercise 3: Variable Usage</a></h3>
+<p>Store the string in a variable:</p>
+<pre><code class="language-berk">function main() -&gt; integer
 do
-    variable mesaj = "Merhaba Dünya!"
+    variable message = "Hello World!"
     print(mesaj)
     return 0
 end
 </code></pre>
-<h3 id="alıştırma-4-string-birleştirme"><a class="header" href="#alıştırma-4-string-birleştirme">Alıştırma 4: String Birleştirme</a></h3>
-<p>İki string'i birleştirin:</p>
-<pre><code class="language-berk">function ana() -&gt; integer
+<h3 id="exercise-4-string-concatenation"><a class="header" href="#exercise-4-string-concatenation">Exercise 4: String Concatenation</a></h3>
+<p>Concatenate two strings:</p>
+<pre><code class="language-berk">function main() -&gt; integer
 do
-    variable selamlama = "Merhaba"
-    variable isim = "Ahmet"
-    print(selamlama + ", " + isim + "!")
+    variable greeting = "Hello"
+    variable name = "John"
+    print(greeting + ", " + name + "!")
     return 0
 end
 </code></pre>
-<h2 id="yaygın-hatalar"><a class="header" href="#yaygın-hatalar">Yaygın Hatalar</a></h2>
-<h3 id="hata-1-noktalı-virgül-yok"><a class="header" href="#hata-1-noktalı-virgül-yok">Hata 1: Noktalı Virgül Yok</a></h3>
-<p>BERK'ta noktalı virgül <strong>gerekmez</strong>:</p>
-<pre><code class="language-berk">// ❌ false
-print("Merhaba");
+<h2 id="common-errors"><a class="header" href="#common-errors">Common Errors</a></h2>
+<h3 id="error-1-no-semicolons"><a class="header" href="#error-1-no-semicolons">Error 1: No Semicolons</a></h3>
+<p>Semicolons are <strong>not required</strong> in BERK:</p>
+<pre><code class="language-berk">// ❌ Wrong
+print("Hello");
 
 // ✅ true
 print("Merhaba")
 </code></pre>
-<h3 id="hata-2-parantez-eksikliği"><a class="header" href="#hata-2-parantez-eksikliği">Hata 2: Parantez Eksikliği</a></h3>
-<pre><code class="language-berk">// ❌ false
-print "Merhaba"
+<h3 id="error-2-missing-parentheses"><a class="header" href="#error-2-missing-parentheses">Error 2: Missing Parentheses</a></h3>
+<pre><code class="language-berk">// ❌ Wrong
+print "Hello"
 
-// ✅ true
-print("Merhaba")
+// ✅ Correct
+print("Hello")
 </code></pre>
-<h3 id="hata-3-ana-fonksiyonu-yok"><a class="header" href="#hata-3-ana-fonksiyonu-yok">Hata 3: ana() Fonksiyonu Yok</a></h3>
-<pre><code class="language-berk">// ❌ false - ana() fonksiyonu yok
-print("Merhaba")
+<h3 id="error-3-no-main-function"><a class="header" href="#error-3-no-main-function">Error 3: No main() Function</a></h3>
+<pre><code class="language-berk">// ❌ Wrong - no main() function
+print("Hello")
 
-// ✅ true - ana() fonksiyonu var
-function ana() -&gt; integer
+// ✅ Correct - has main() function
+function main() -&gt; integer
 do
-    print("Merhaba")
+    print("Hello")
     return 0
 end
 </code></pre>
-<h3 id="hata-4-dönüş-değeri-eksik"><a class="header" href="#hata-4-dönüş-değeri-eksik">Hata 4: Return Value Eksik</a></h3>
-<pre><code class="language-berk">// ❌ false - return eksik
-function ana() -&gt; integer
+<h3 id="error-4-missing-return-value"><a class="header" href="#error-4-missing-return-value">Error 4: Missing Return Value</a></h3>
+<pre><code class="language-berk">// ❌ Wrong - missing return
+function main() -&gt; integer
 do
-    print("Merhaba")
+    print("Hello")
 end
 
-// ✅ true - return var
-function ana() -&gt; integer
+// ✅ Correct - has return
+function main() -&gt; integer
 do
-    print("Merhaba")
+    print("Hello")
     return 0
 end
 </code></pre>
-<h2 id="sonraki-adımlar"><a class="header" href="#sonraki-adımlar">Sonraki Adımlar</a></h2>
-<p>Tebrikler! İlk BERK programınızı yazdınız!</p>
-<p>Şimdi daha fazlasını öğrenmeye hazırsınız:</p>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<p>Congratulations! You've written your first BERK program!</p>
+<p>Now you're ready to learn more:</p>
 <ol>
-<li><strong><a href="./first-program.html">İlk Programınızı Yazmak</a></strong> - Daha karmaşık bir program</li>
-<li><strong><a href="./basics/variables.html">Değişkenler and Sabitler</a></strong> - Veri saklama</li>
-<li><strong><a href="./basics/data-types.html">Veri Tipleri</a></strong> - Tipler hakkında daha fazla</li>
+<li><strong><a href="./en_first-program.html">Your First Program</a></strong> - A more complex program</li>
+<li><strong><a href="./basics/en_variables.html">Variables and Constants</a></strong> - Data storage</li>
+<li><strong><a href="./basics/en_data-types.html">Data Types</a></strong> - More about types</li>
 </ol>
 <h2 id="Summary"><a class="header" href="#Summary">Summary</a></h2>
-<p>Bu Sectionde öğrendikleriniz:</p>
+<p>What you learned in this section:</p>
 <ul>
-<li>✅ Basit bir BERK programı yazmak</li>
-<li>✅ Program derlemek and çalıştırmak</li>
-<li>✅ <code>function</code>, <code>do</code>, <code>end</code> anahtar kelimeleri</li>
-<li>✅ <code>print()</code> fonksiyonu</li>
+<li>✅ Write a simple BERK program</li>
+<li>✅ Program compilation and execution</li>
+<li>✅ <code>function</code>, <code>do</code>, <code>end</code> keywords</li>
+<li>✅ <code>print()</code> function</li>
 <li>✅ <code>return</code> statement</li>
-<li>✅ İki dilli syntax Usageı</li>
-<li>✅ Yaygın hatalar and çözümleri</li>
+<li>✅ Bilingual syntax usage</li>
+<li>✅ Common errors and solutions</li>
 </ul>
 <hr />
-<p><strong>Önceki:</strong> <a href="./installation.html">Installation</a> | <strong>Sonraki:</strong> <a href="./first-program.html">İlk Programınızı Yazmak</a></p>
+<p><strong>Previous:</strong> <a href="./en_installation.html">Installation</a> | <strong>Next:</strong> <a href="./en_first-program.html">Your First Program</a></p>
 
                     </main>
 
@@ -495,3 +495,15 @@ end
     </div>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
