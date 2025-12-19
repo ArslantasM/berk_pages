@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::clock - 시계 구성 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #f39c12;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>상태::시계</h1>
+<p>클록 구성 - PLL 및 시스템 클록 설정</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~410줄</span>
+<span class="stat-badge">~22개 기능</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>개요</h2>
+<p>시계 모듈은 마이크로 컨트롤러의 심장 박동입니다. HSI/HSE/PLL 소스를 구성하고 시스템 클록을 설정하며 주변 장치 클록을 배포합니다. 올바른 클록 구조화는 시스템의 성능, 전력 소비 및 타이밍 정확도에 직접적인 영향을 미칩니다.</p>
+
+<h2>주요 특징</h2>
+<ul>
+<li><strong>시계 리소스:</strong>HSI(16MHz 내부), HSE(4~25MHz 외부), LSI(32kHz), LSE(32.768kHz)</li>
+<li><strong>PLL(위상 고정 루프):</strong>8MHz HSE -&gt; 168MHz 시스템 클록</li>
+<li><strong>클락트리:</strong>SYSCLK -&gt; AHB(CPU/DMA/메모리) -&gt; APB1(저속) -&gt; APB2(고속)</li>
+<li><strong>프리스케일러:</strong>AHB 분배기(1,2,4,...,512), APB1 분배기(1,2,4,8,16), APB2 분배기</li>
+<li><strong>CSS(시계 보안 시스템):</strong>HSE 장애 감지, HSI로 자동 전환</li>
+<li><strong>MCO(마스터 클럭 출력):</strong>GPIO 핀으로 클럭 신호 출력</li>
+<li><strong>RTC 시계:</strong>실시간 클록용 LSE/LSI</li>
+<li><strong>USB 시계:</strong>USB 주변 장치에 대한 48MHz 요구 사항</li>
+</ul>
+
+<h2>빠른 시작</h2>
+<pre><code>import hal::clock
+
+// HSE + PLL -&gt; 72 MHz (STM32F1)
+clock.init(do
+    source: clock.SOURCE_PLL,
+    hse_freq: 8_000_000,  // 8 MHz crystal
+    pll_mul: 9,           // 8 * 9 = 72 MHz
+    ahb_div: 1,           // HCLK = 72 MHz
+    apb1_div: 2,          // PCLK1 = 36 MHz (max 36 MHz)
+    apb2_div: 1           // PCLK2 = 72 MHz
+end)
+
+// Verify clock
+let sysclk = clock.get_sysclk_freq()
+io.yazdir_satır("SYSCLK: " + sysclk.metne() + " Hz")</code></pre>
+
+<h2>유형 및 열거형</h2>
+<pre><code>// Clock Sources
+enum ClockSource {
+    HSI,        // High-Speed Internal (16 MHz)
+    HSE,        // High-Speed External (4-25 MHz crystal)
+    PLL,        // Phase-Locked Loop (multiplied clock)
+    LSI,        // Low-Speed Internal (32 kHz, RTC)
+    LSE         // Low-Speed External (32.768 kHz, RTC)
+}
+
+// PLL Source
+enum PLLSource {
+    PLL_HSI,    // HSI as PLL input
+    PLL_HSE     // HSE as PLL input
+}
+
+// AHB Prescaler
+enum AHBPrescaler {
+    DIV_1, DIV_2, DIV_4, DIV_8, DIV_16,
+    DIV_64, DIV_128, DIV_256, DIV_512
+}
+
+// APB Prescaler
+enum APBPrescaler {
+    DIV_1, DIV_2, DIV_4, DIV_8, DIV_16
+}
+
+struct ClockConfig do
+    source: ClockSource,
+    hse_freq: int = 8_000_000,
+    pll_source: PLLSource = PLL_HSE,
+    pll_mul: int = 9,      // STM32F1: 2-16
+    pll_m: int = 8,        // STM32F4: input divider
+    pll_n: int = 336,      // STM32F4: multiplier
+    pll_p: int = 2,        // STM32F4: system clock divider
+    pll_q: int = 7,        // STM32F4: USB/SDIO divider
+    ahb_prescaler: AHBPrescaler = DIV_1,
+    apb1_prescaler: APBPrescaler = DIV_2,
+    apb2_prescaler: APBPrescaler = DIV_1,
+    css_enable: bool = true,  // Clock Security System
+    flash_latency: int = 2      // Wait states
+end</code></pre>
+
+<h2>예 1: STM32F1 - 72MHz 최대 속도</h2>
+<div class="example-box">
+<h3>문제: 최대 성능(72MHz)을 위한 STM32F103</h3>
+<pre><code>import hal::clock, hal::flash
+
+function clock_72mhz_init() do
+    // Enable HSE (8 MHz external crystal)
+    clock.hse_enable()
+    
+    // Wait for HSE ready
+    if not clock.hse_wait_ready(1000) do
+        io.yazdir_satır("HSE failed to start!")
+        return
+    end
+    
+    // Configure Flash latency (2 wait states for 72 MHz)
+    flash.set_latency(flash.LATENCY_2)
+    
+    // Configure PLL: HSE * 9 = 8 MHz * 9 = 72 MHz
+    clock.pll_config(do
+        source: clock.PLL_HSE,
+        mul: 9
+    end)
+    
+    // Enable PLL
+    clock.pll_enable()
+    clock.pll_wait_ready(1000)
+    
+    // Configure bus prescalers
+    clock.set_ahb_prescaler(clock.AHB_DIV_1)   // 72 MHz
+    clock.set_apb1_prescaler(clock.APB_DIV_2)  // 36 MHz (max!)
+    clock.set_apb2_prescaler(clock.APB_DIV_1)  // 72 MHz
+    
+    // Switch to PLL as system clock
+    clock.set_sysclk_source(clock.SOURCE_PLL)
+    
+    // Wait for switch
+    loop do
+        if clock.get_sysclk_source() == clock.SOURCE_PLL do
+            break
+        end
+    end
+    
+    // Update SystemCoreClock variable
+    clock.system_core_clock_update()
+    
+    io.yazdir_satır("Clock configured successfully!")
+    io.yazdir_satır("SYSCLK: " + clock.get_sysclk_freq().metne() + " Hz")
+    io.yazdir_satır("HCLK: " + clock.get_hclk_freq().metne() + " Hz")
+    io.yazdir_satır("PCLK1: " + clock.get_pclk1_freq().metne() + " Hz")
+    io.yazdir_satır("PCLK2: " + clock.get_pclk2_freq().metne() + " Hz")
+end</code></pre>
+<p><strong>산출:</strong>SYSCLK: 72000000Hz, HCLK: 72000000Hz, PCLK1: 36000000Hz, PCLK2: 72000000Hz</p>
+</div>
+
+<h2>예 2: STM32F4 - 168MHz(USB 지원 포함)</h2>
+<div class="example-box">
+<h3>문제: 168MHz + 48MHz USB 클록용 STM32F407</h3>
+<pre><code>import hal::clock, hal::flash, hal::power
+
+function clock_168mhz_usb_init() do
+    // Enable power interface clock
+    clock.periph_clock_enable(clock.PERIPH_PWR)
+    
+    // Voltage scaling for max frequency
+    power.set_voltage_scaling(power.SCALE_1)
+    
+    // Enable HSE (8 MHz)
+    clock.hse_enable()
+    clock.hse_wait_ready(1000)
+    
+    // Flash latency (5 wait states for 168 MHz @ 3.3V)
+    flash.set_latency(flash.LATENCY_5)
+    flash.prefetch_enable()
+    flash.instruction_cache_enable()
+    flash.data_cache_enable()
+    
+    // PLL configuration:
+    // VCO_IN = HSE / PLLM = 8 MHz / 8 = 1 MHz
+    // VCO_OUT = VCO_IN * PLLN = 1 MHz * 336 = 336 MHz
+    // SYSCLK = VCO_OUT / PLLP = 336 MHz / 2 = 168 MHz
+    // USB_CLK = VCO_OUT / PLLQ = 336 MHz / 7 = 48 MHz
+    clock.pll_config(do
+        source: clock.PLL_HSE,
+        pllm: 8,   // Input divider
+        plln: 336, // Multiplier
+        pllp: 2,   // System clock divider
+        pllq: 7    // USB clock divider
+    end)
+    
+    clock.pll_enable()
+    clock.pll_wait_ready(1000)
+    
+    // Bus prescalers
+    clock.set_ahb_prescaler(clock.AHB_DIV_1)   // 168 MHz
+    clock.set_apb1_prescaler(clock.APB_DIV_4)  // 42 MHz (max 42 MHz!)
+    clock.set_apb2_prescaler(clock.APB_DIV_2)  // 84 MHz (max 84 MHz!)
+    
+    // Switch to PLL
+    clock.set_sysclk_source(clock.SOURCE_PLL)
+    loop do
+        if clock.get_sysclk_source() == clock.SOURCE_PLL do
+            break
+        end
+    end
+    
+    clock.system_core_clock_update()
+    
+    // Verify USB clock
+    let usb_clk = clock.get_usb_freq()
+    io.yazdir_satır("USB Clock: " + usb_clk.metne() + " Hz")
+    
+    if usb_clk != 48_000_000 do
+        io.yazdir_satır("WARNING: USB clock is not 48 MHz!")
+    end
+end</code></pre>
+<p><strong>결과:</strong>168MHz 시스템 클록 + 48MHz USB 클록. 최대 성능.</p>
+</div>
+
+<h2>예시 3: 시계 보안 시스템(CSS)</h2>
+<div class="example-box">
+<h3>문제: HSE 크리스탈 고장 시 HSI로 자동 전환</h3>
+<pre><code>import hal::clock, hal::nvic
+
+let hse_failed: bool = false
+
+function clock_css_init() do
+    // Normal clock setup with HSE
+    clock.hse_enable()
+    clock.hse_wait_ready(1000)
+    
+    clock.pll_config(do
+        source: clock.PLL_HSE,
+        mul: 9
+    end)
+    clock.pll_enable()
+    clock.pll_wait_ready(1000)
+    
+    // Enable Clock Security System
+    clock.css_enable()
+    
+    // Enable NMI interrupt for CSS
+    nvic.enable_irq(nvic.RCC_IRQn, do priority: 0 end)
+    
+    clock.set_sysclk_source(clock.SOURCE_PLL)
+    
+    io.yazdir_satır("CSS enabled, monitoring HSE...")
+end
+
+// CSS failure interrupt handler
+function RCC_IRQHandler() do
+    if clock.get_flag(clock.FLAG_CSS) do
+        io.yazdir_satır("CSS INTERRUPT: HSE FAILURE DETECTED!")
+        
+        hse_failed = true
+        
+        // System automatically switched to HSI
+        // Reconfigure PLL with HSI
+        clock.pll_disable()
+        
+        clock.pll_config(do
+            source: clock.PLL_HSI,
+            mul: 16  // HSI/2 * 16 = 8 MHz * 8 = 64 MHz
+        end)
+        
+        clock.pll_enable()
+        clock.pll_wait_ready(1000)
+        
+        // Clear CSS flag
+        clock.clear_flag(clock.FLAG_CSS)
+        
+        io.yazdir_satır("Switched to HSI-based PLL (64 MHz)")
+    end
+end
+
+function main() do
+    clock_css_init()
+    
+    loop do
+        if hse_failed do
+            io.yazdir_satır("Running on backup HSI clock")
+            // Reduce performance or enter safe mode
+        end
+        
+        // Normal operation
+        delay_ms(1000)
+    end
+end</code></pre>
+<p><strong>보안:</strong>HSE 장애 시 시스템이 정지되지 않고 자동으로 HSI로 전환됩니다.</p>
+</div>
+
+<h2>예제 4: 디버깅을 위한 MCO(마스터 클럭 출력)</h2>
+<div class="example-box">
+<h3>문제: 오실로스코프를 사용하여 클럭 신호 관찰</h3>
+<pre><code>import hal::clock, hal::gpio
+
+function mco_debug_init() do
+    // MCO pin: PA8 (STM32F4)
+    gpio.pin_init(gpio.PORT_A, 8, do
+        mode: gpio.MODE_AF,
+        af: gpio.AF0_MCO,
+        speed: gpio.SPEED_VERY_HIGH
+    end)
+    
+    // Output SYSCLK / 4 to MCO
+    // (168 MHz / 4 = 42 MHz on PA8)
+    clock.mco1_config(do
+        source: clock.MCO_SYSCLK,
+        prescaler: clock.MCO_DIV_4
+    end)
+    
+    io.yazdir_satır("MCO output enabled on PA8")
+    io.yazdir_satır("Expected frequency: " + 
+                    (clock.get_sysclk_freq() / 4).metne() + " Hz")
+end
+
+// Alternative: Output PLL clock for verification
+function mco_pll_check() do
+    gpio.pin_init(gpio.PORT_A, 8, do
+        mode: gpio.MODE_AF, af: gpio.AF0_MCO
+    end)
+    
+    // Output PLL / 2
+    clock.mco1_config(do
+        source: clock.MCO_PLL,
+        prescaler: clock.MCO_DIV_2
+    end)
+    
+    io.yazdir_satır("PLL clock on PA8 (use oscilloscope)")
+end</code></pre>
+<p><strong>디버그:</strong>오실로스코프로 실제 클럭 주파수를 확인하십시오. PLL 잠금 문제를 감지합니다.</p>
+</div>
+
+<h2>API 참조</h2>
+<h3>클럭 소스 제어</h3>
+<pre><code>// HSE control
+function hse_enable()
+function hse_disable()
+function hse_wait_ready(timeout_ms: int) -&gt; bool
+
+// HSI control
+function hsi_enable()
+function hsi_disable()
+function hsi_calibration_set(value: int)
+
+// PLL control
+function pll_config(config: PLLConfig)
+function pll_enable()
+function pll_disable()
+function pll_wait_ready(timeout_ms: int) -&gt; bool
+
+// System clock
+function set_sysclk_source(source: ClockSource)
+function get_sysclk_source() -&gt; ClockSource
+function get_sysclk_freq() -&gt; int
+
+// Bus clocks
+function set_ahb_prescaler(div: AHBPrescaler)
+function set_apb1_prescaler(div: APBPrescaler)
+function set_apb2_prescaler(div: APBPrescaler)
+function get_hclk_freq() -&gt; int
+function get_pclk1_freq() -&gt; int
+function get_pclk2_freq() -&gt; int
+
+// Peripheral clocks
+function periph_clock_enable(periph: Peripheral)
+function periph_clock_disable(periph: Peripheral)
+
+// CSS and MCO
+function css_enable()
+function css_disable()
+function mco1_config(source: MCOSource, div: MCODiv)
+
+// Utilities
+function system_core_clock_update()
+function get_flag(flag: ClockFlag) -&gt; bool
+function clear_flag(flag: ClockFlag)</code></pre>
+
+<div class="warning">
+<strong>중요 사항:</strong>
+<ul>
+<li><strong>플래시 지연 시간:</strong>대기 상태에 대한 고주파수 필요(168MHz -&gt; 5WS)</li>
+<li><strong>APB1 최대:</strong>STM32F1 36MHz, F4 42MHz, F7 54MHz</li>
+<li><strong>USB 시계:</strong>정확히 48MHz여야 합니다(공차 0.25%).</li>
+<li><strong>PLL 잠금 시간:</strong>~200μs, 타임아웃 사용</li>
+</ul>
+</div>
+
+<h2>플랫폼 지원</h2>
+<table>
+<tbody><tr>
+<th>플랫폼</th>
+<th>최대 SYSCLK</th>
+<th>HSE 범위</th>
+<th>PLL 승수</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>72MHz</td>
+<td>4~16MHz</td>
+<td>2-16배</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>168MHz</td>
+<td>4~26MHz</td>
+<td>PLLM/N/P/Q</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>216MHz</td>
+<td>4~26MHz</td>
+<td>PLLM/N/P/Q</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>480MHz</td>
+<td>4~48MHz</td>
+<td>PLLM/N/P/Q/R</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>108MHz</td>
+<td>4~25MHz</td>
+<td>2-32x</td>
+</tr>
+</tbody></table>
+
+<h2>모범 사례</h2>
+<ul>
+<li> <strong>HSE를 사용하십시오:</strong>내부 HSI 대신 외부 크리스털의 정확도</li>
+<li> <strong>CSS 활성화:</strong>시계 보안 시스템이 생산 시스템에서 활성화되어 있습니다.</li>
+<li> <strong>플래시 대기 시간:</strong>시계를 변경하기 전에 플래시 대기 상태 설정</li>
+<li> <strong>사용 시간 초과:</strong>HSE/PLL 준비를 기다리는 동안 시간 초과 추가</li>
+<li> <strong>직접 스위치 도메인:</strong>HSE-&gt;PLL 전환 전에 PLL이 준비될 때까지 기다리십시오.</li>
+<li> <strong>APB 한도 초과:</strong>APB1 최대 주파수 확인</li>
+</ul>
+
+<h2>관련 모듈</h2>
+<ul>
+<li><a href="en_hal-flash-en.html">상태::플래시</a>- 플래시 대기 시간 구성</li>
+<li><a href="en_hal-power-en.html">상태::전력</a>- 고주파에 대한 전압 스케일링</li>
+<li><a href="en_hal-rtc-en.html">상태::rtc</a>- RTC용 LSE/LSI 클럭</li>
+<li><a href="en_hal-gpio-en.html">상태::gpio</a>- MCO 핀 구성</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-en.html">HAL 모듈</a> | 
+<a href="en_hal-clock-en.html">터키어</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>वेबसॉकेट - वेबसॉकेट प्रोटोकॉल | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔌वेबसॉकेट</h1>
+<p>वेबसॉकेट प्रोटोकॉल - वास्तविक समय द्विदिश संचार</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~800 पंक्तियाँ</span>
+<span class="stat-badge">~45 कार्य</span>
+<span class="stat-badge">आरएफसी 6455</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>WebSocket मॉड्यूल एक पूर्ण विशेषताओं वाला WebSocket क्लाइंट और सर्वर प्रदान करता है जो RFC 6455 के अनुरूप है। रीयल-टाइम चैट, लाइव नोटिफिकेशन, मल्टीप्लेयर गेम और IoT के लिए आदर्श।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>आरएफसी 6455 के अनुरूप</li>
+<li>क्लाइंट और सर्वर समर्थन</li>
+<li>टेक्स्ट और बाइनरी संदेश</li>
+<li>पिंग/पोंग को जीवित रखें</li>
+<li>संदेश विखंडन</li>
+<li>UTF-8 सत्यापन</li>
+<li>ग्रेसफुल क्लोज हैंडशेक</li>
+<li>इवेंट-संचालित एपीआई</li>
+</ul>
+
+<h2>🚀 त्वरित प्रारंभ - ग्राहक</h2>
+<pre><code>import websocket olarakws
+
+function main() do
+    // Connect
+    let client = ws.connect("ws://localhost:8080")?
+    
+    // Event handlers
+    client.on_open(|| do
+        io.println("Connected!")
+    end)
+    
+    client.on_message(|msg| do
+        io.println("Received: {}", msg.text())
+    end)
+    
+    // Send message
+    client.send_text("Hello Server!")?
+    
+    // Keep alive
+    client.run()
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: रीयल-टाइम चैट सर्वर</h3>
+<pre><code>import websocket olarakws, thread, collections
+
+struct ChatServer do
+    clients: Map[sayı, ws.Connection],
+    next_id: sayı
+end
+
+function chat_server_new() -&gt; ChatServer do
+    ChatServer do
+        clients: Map.new(),
+        next_id: 1
+    end
+end
+
+function broadcast(server: ChatServer, message: yazı, sender_id: sayı) do
+    her (id, client) in server.clients for do
+        if id != sender_id then do
+            client.send_text(message).ok()
+        end
+    end
+end
+
+function handle_client(server: ChatServer, conn: ws.Connection, client_id: sayı) do
+    io.println("Client {} connected", client_id)
+    
+    // Welcome message
+    conn.send_text("Welcome to chat! Your ID: {}".formatla(client_id))?
+    
+    // Announce to others
+    broadcast(server, "User {} joined".formatla(client_id), client_id)
+    
+    // Message loop
+    for do
+        let msg = conn.receive()?
+        
+        eşle msg.opcode do
+            ws.TEXT =&gt; do
+                let text = msg.text()
+                io.println("[{}] {}", client_id, text)
+                
+                // Broadcast to all
+                let broadcast_msg = "[{}] {}".formatla(client_id, text)
+                broadcast(server, broadcast_msg, client_id)
+            end,
+            
+            ws.CLOSE =&gt; do
+                io.println("Client {} disconnected", client_id)
+                server.clients.remove(client_id)
+                broadcast(server, "User {} left".formatla(client_id), client_id)
+                kır
+            end,
+            
+            ws.PING =&gt; do
+                conn.send_pong(msg.data)?
+            end,
+            
+            _ =&gt; do end
+        end
+    end
+end
+
+function main() do
+    let server = chat_server_new()
+    let ws_server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Chat server listening on ws://localhost:8080")
+    
+    for do
+        // Accept new connections
+        let conn = ws_server.accept()?
+        
+        let client_id = server.next_id
+        server.next_id += 1
+        server.clients.insert(client_id, conn.clone())
+        
+        // Spawn thread for each client
+        thread.spawn(|| do
+            handle_client(server, conn, client_id)
+        end)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: लाइव डैशबोर्ड (डेटा स्ट्रीमिंग)</h3>
+<pre><code>import websocket olarakws, time, thread, json
+
+struct SystemStats do
+    cpu_usage: kesir,
+    memory_usage: kesir,
+    disk_usage: kesir,
+    timestamp: time.Instant
+end
+
+function collect_stats() -&gt; SystemStats do
+    SystemStats do
+        cpu_usage: sys.cpu_usage(),
+        memory_usage: sys.memory_usage(),
+        disk_usage: sys.disk_usage(),
+        timestamp: time.now()
+    end
+end
+
+function stream_stats_to_client(conn: ws.Connection) do
+    io.println("Dashboard client connected")
+    
+    for do
+        // Collect system stats
+        let stats = collect_stats()
+        
+        // Send as JSON
+        let json_data = json.encode(stats)
+        
+        eşle conn.send_text(json_data) do
+            Ok(_) =&gt; do end,
+            Err(_) =&gt; do
+                io.println("Client disconnected")
+                kır
+            end
+        end
+        
+        // Update every second
+        thread.sleep_ms(1000)
+    end
+end
+
+function main() do
+    let server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Dashboard server: ws://localhost:8080")
+    
+    for do
+        let conn = server.accept()?
+        
+        thread.spawn(|| do
+            stream_stats_to_client(conn)
+        end)
+    end
+end
+
+// HTML Client
+// &lt;script&gt;
+//   const ws = new WebSocket('ws://localhost:8080');
+//   ws.onmessage = (e) =&gt; {
+//     const stats = JSON.parse(e.data);
+//     document.getElementById('cpu').textContent = stats.cpu_usage + '%';
+//     document.getElementById('memory').textContent = stats.memory_usage + '%';
+//   };
+// &lt;/script&gt;</code></pre>
+</div>
+
+<h2>🎮 उपयोग के मामले</h2>
+<ul>
+<li>रीयल-टाइम चैट एप्लिकेशन</li>
+<li>लाइव सूचनाएं</li>
+<li>मल्टीप्लेयर गेम</li>
+<li>स्टॉक/क्रिप्टो मूल्य फ़ीड</li>
+<li>IoT डिवाइस संचार</li>
+<li>सहयोगात्मक संपादन</li>
+<li>लाइव डैशबोर्ड</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">http</code>- HTTP अपग्रेड</li>
+<li><code data-no-translate="true">network</code>-सॉकेट संचालन</li>
+<li><code data-no-translate="true">json</code>- संदेश क्रमबद्धता</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

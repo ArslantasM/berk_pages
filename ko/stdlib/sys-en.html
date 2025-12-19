@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>sys - 시스템 정보 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️sys</h1>
+<p>시스템 정보 및 제어</p>
+<div style="margin-top:15px">
+<span class="stat-badge">82가지 기능</span>
+<span class="stat-badge">607라인</span>
+<span class="stat-badge">크로스 플랫폼</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>시스템 정보: OS 세부 정보, CPU/메모리/디스크 사용량, 환경 변수, 프로세스 제어, 시스템 모니터링.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import sys
+
+// System info
+println("OS: {}", sys.os_name())
+println("CPU: {}%", sys.cpu_usage())
+println("Memory: {} MB", sys.memory_usage())
+
+// Environment
+let home = sys.env("HOME")?
+sys.set_env("MY_VAR", "value")</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a> | <a href="ko_sys-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

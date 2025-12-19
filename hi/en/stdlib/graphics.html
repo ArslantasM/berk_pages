@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ग्राफ़िक्स - 2डी ग्राफ़िक्स - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/graphics.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                                            <main>
+                                                <div class="module-header">
+            <h1>🎨 ग्राफिक्स - 2डी ग्राफिक्स और ड्राइंग</h1>
+            <p>वेक्टर ग्राफिक्स, आकार, रंग और 2डी रेंडरिंग</p>
+            <div class="module-stats">
+                <span class="stat-badge">📦 163 कार्य</span>
+                <span class="stat-badge">📝 1624 पंक्तियाँ</span>
+                <span class="stat-badge">💾 56.5 केबी</span>
+            </div>
+        </div>
+
+        <h2>📋अवलोकन</h2>
+        <p><code data-no-translate="true">graphics</code>मॉड्यूल 2डी ग्राफिक्स ड्राइंग, आकार, रंग, परिवर्तन और प्रतिपादन के लिए व्यापक उपकरण प्रदान करता है। कैनवास पर चित्र बनाएं, सजीव करें और कल्पना करें।</p>
+
+        <div class="function-group">
+            <h3>🖌️ मूल ड्राइंग</h3>
+            <ul>
+                <li><strong>ग्राफ़िक्स.कैनवास()</strong>-एक ड्राइंग सतह बनाना</li>
+                <li><strong>ग्राफ़िक्स.लाइन()</strong>-रेखाएँ खींचना</li>
+                <li><strong>ग्राफ़िक्स.आयत()</strong>- एक आयत बनाना</li>
+                <li><strong>ग्राफ़िक्स.सर्कल()</strong>- एक वृत्त खींचना</li>
+                <li><strong>ग्राफ़िक्स.एलिप्से()</strong>- दीर्घवृत्त खींचना</li>
+                <li><strong>ग्राफ़िक्स.बहुभुज()</strong>-बहुभुज बनाना</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🎨 रंग और शैली</h3>
+            <ul>
+                <li><strong>ग्राफ़िक्स.सेट_रंग()</strong>- ड्राइंग का रंग सेट करें</li>
+                <li><strong>ग्राफ़िक्स.सेट_फिल()</strong>-रंग भरना</li>
+                <li><strong>ग्राफ़िक्स.लाइन_मोटाई()</strong>- रेखा मोटाई</li>
+                <li><strong>ग्राफ़िक्स.ग्रेडिएंट()</strong>- ग्रेडिएंट भरण</li>
+                <li><strong>ग्राफ़िक्स.पैटर्न()</strong>-पैटर्न भरें</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>✏️ टेक्स्ट और फ़ॉन्ट</h3>
+            <ul>
+                <li><strong>ग्राफ़िक्स.metin_yaz()</strong>- ड्राइंग पाठ</li>
+                <li><strong>ग्राफ़िक्स.फ़ॉन्ट_सेट()</strong>- फ़ॉन्ट समायोजन</li>
+                <li><strong>ग्राफ़िक्स.text_size()</strong>- पाठ आकार की गणना</li>
+                <li><strong>ग्राफ़िक्स.पाठ_संरेखण()</strong>-पाठ संरेखण</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔄 रूपांतरण</h3>
+            <ul>
+                <li><strong>ग्राफ़िक्स.अनुवाद()</strong>- समन्वय अनुवाद</li>
+                <li><strong>ग्राफ़िक्स.रोटेट()</strong>-रोटेशन</li>
+                <li><strong>ग्राफ़िक्स.स्केल()</strong>-स्केलिंग</li>
+                <li><strong>ग्राफिक्स.शिफ्ट()</strong>- स्क्रॉल (तिरछा)</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🖼️ छवि और बिटमैप</h3>
+            <ul>
+                <li><strong>ग्राफ़िक्स.इमेज_लोड()</strong>- छवियाँ अपलोड करें</li>
+                <li><strong>ग्राफ़िक्स.ड्रॉ_इमेज()</strong>- चित्र बनाना</li>
+                <li><strong>ग्राफिक्स.डिस्प्ले()</strong>-कैनवास सहेजें</li>
+            </ul>
+        </div>
+
+        <h2>💡 उपयोग के उदाहरण</h2>
+
+        <div class="example-box">
+            <h3>मूल आकार और रंग</h3>
+            <pre><code class="language-berk">use graphics
+use color
+
+// Canvas oluştur
+değer canvas = graphics.Canvas(800, 600)
+canvas.arkaplan_ayarla(color.BEYAZ)
+
+// Renkli dikdörtgenler
+canvas.dolgu_ayarla(color.rgb(255, 0, 0))  // Kırmızı
+canvas.dikdörtgen(50, 50, 200, 150, dolgu: true)
+
+canvas.dolgu_ayarla(color.rgb(0, 255, 0))  // Yeşil
+canvas.dikdörtgen(300, 50, 200, 150, dolgu: true)
+
+canvas.dolgu_ayarla(color.rgb(0, 0, 255))  // Mavi
+canvas.dikdörtgen(550, 50, 200, 150, dolgu: true)
+
+// Çerçeveli daireler
+canvas.renk_ayarla(color.SİYAH)
+canvas.çizgi_kalınlığı(3)
+canvas.daire(150, 350, 80, dolgu: false)
+
+canvas.renk_ayarla(color.rgb(255, 165, 0))  // Turuncu
+canvas.daire(400, 350, 80, dolgu: true)
+
+// Yıldız şekli (çokgen)
+değer yıldız_noktaları = [
+    (650, 300), (670, 350), (720, 360),
+    (680, 390), (690, 440), (650, 410),
+    (610, 440), (620, 390), (580, 360),
+    (630, 350)
+]
+canvas.dolgu_ayarla(color.rgb(255, 215, 0))  // Altın
+canvas.çokgen(yıldız_noktaları, dolgu: true)
+
+// Gradyan çizgi
+değer gradyan = graphics.doğrusal_gradyan(
+    100, 500, 700, 500,
+    [(0.0, color.KIRMIZI), (0.5, color.SARI), (1.0, color.MAVİ)]
+)
+canvas.gradyan_ayarla(gradyan)
+canvas.çizgi_kalınlığı(10)
+canvas.çizgi(100, 500, 700, 500)
+
+// Canvas'ı kaydet
+canvas.png_olarak_kaydet("şekiller.png")
+print("✓ Grafik oluşturuldu: şekiller.png")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>ग्राफिक ड्राइंग (चार्ट)</h3>
+            <pre><code class="language-berk">use graphics
+use color
+
+sınıf ÇubukGrafik {
+    değer canvas: graphics.Canvas
+    değer genişlik: Tam
+    değer yükseklik: Tam
+    
+    function new(genişlik: Tam, yükseklik: Tam) -&gt; ÇubukGrafik {
+        değer canvas = graphics.Canvas(genişlik, yükseklik)
+        canvas.arkaplan_ayarla(color.BEYAZ)
+        
+        return ÇubukGrafik {
+            canvas: canvas,
+            genişlik: genişlik,
+            yükseklik: yükseklik
+        }
+    }
+    
+    function çiz(veri: Liste&lt;(Dize, Gerçek)&gt;, başlık: Dize) {
+        değer kenar_boşluk = 50
+        değer grafik_genişlik = bu.genişlik - 2 * kenar_boşluk
+        değer grafik_yükseklik = bu.yükseklik - 2 * kenar_boşluk
+        
+        // Başlık
+        bu.canvas.font_ayarla("Arial", 24, kalın: true)
+        bu.canvas.renk_ayarla(color.SİYAH)
+        bu.canvas.metin_yaz(başlık, bu.genişlik / 2, 30, hizalama: "merkez")
+        
+        // Maksimum değeri bul
+        değer max_değer = 0.0
+        for (_, değer) in veri {
+            if değer &gt; max_değer {
+                max_değer = değer
+            }
+        }
+        
+        // Eksenler
+        bu.canvas.çizgi_kalınlığı(2)
+        bu.canvas.renk_ayarla(color.SİYAH)
+        
+        // Y ekseni
+        bu.canvas.çizgi(kenar_boşluk, kenar_boşluk, kenar_boşluk, bu.yükseklik - kenar_boşluk)
+        
+        // X ekseni
+        bu.canvas.çizgi(kenar_boşluk, bu.yükseklik - kenar_boşluk, 
+                       bu.genişlik - kenar_boşluk, bu.yükseklik - kenar_boşluk)
+        
+        // Çubukları çiz
+        değer çubuk_genişlik = grafik_genişlik / (veri.len * 2)
+        değer boşluk = çubuk_genişlik / 2
+        değer renkler = [
+            color.rgb(255, 99, 132),   // Kırmızı-pembe
+            color.rgb(54, 162, 235),   // Mavi
+            color.rgb(255, 206, 86),   // Sarı
+            color.rgb(75, 192, 192),   // Turkuaz
+            color.rgb(153, 102, 255),  // Mor
+            color.rgb(255, 159, 64)    // Turuncu
+        ]
+        
+        for (i, (etiket, değer)) in veri.numaralandır() {
+            değer x = kenar_boşluk + boşluk + i * (çubuk_genişlik + boşluk)
+            değer çubuk_yükseklik = (değer / max_değer) * grafik_yükseklik
+            değer y = bu.yükseklik - kenar_boşluk - çubuk_yükseklik
+            
+            // Çubuğu çiz
+            bu.canvas.dolgu_ayarla(renkler[i % renkler.len])
+            bu.canvas.dikdörtgen(x, y, çubuk_genişlik, çubuk_yükseklik, dolgu: true)
+            
+            // Etiket
+            bu.canvas.font_ayarla("Arial", 12)
+            bu.canvas.renk_ayarla(color.SİYAH)
+            bu.canvas.metin_yaz(etiket, x + çubuk_genişlik / 2, 
+                              bu.yükseklik - kenar_boşluk + 20, hizalama: "merkez")
+            
+            // Değer
+            bu.canvas.metin_yaz(değer.dizgeye(), x + çubuk_genişlik / 2, y - 10, 
+                              hizalama: "merkez")
+        }
+    }
+    
+    function kaydet(dosya_adı: Dize) {
+        bu.canvas.png_olarak_kaydet(dosya_adı)
+    }
+}
+
+// Kullanım
+değer satış_verileri = [
+    ("Ocak", 12500.0),
+    ("Şubat", 15800.0),
+    ("Mart", 18200.0),
+    ("Nisan", 14500.0),
+    ("Mayıs", 21000.0),
+    ("Haziran", 19500.0)
+]
+
+değer grafik = ÇubukGrafik.new(800, 500)
+grafik.çiz(satış_verileri, "Aylık Satış Grafiği")
+grafik.kaydet("satış_grafiği.png")
+
+print("✓ Grafik oluşturuldu!")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>एनीमेशन और कण प्रणाली</h3>
+            <pre><code class="language-berk">use graphics
+use color
+use random
+use math
+
+sınıf Partikül {
+    değer x: Gerçek
+    değer y: Gerçek
+    değer hız_x: Gerçek
+    değer hız_y: Gerçek
+    değer yarıçap: Gerçek
+    değer renk: color.Renk
+    değer lifespan: Gerçek
+    
+    function güncelle(delta_zaman: Gerçek) {
+        bu.x += bu.hız_x * delta_zaman
+        bu.y += bu.hız_y * delta_zaman
+        bu.hız_y += 0.5  // Yerçekimi
+        bu.lifespan -= delta_zaman
+    }
+    
+    function çiz(canvas: graphics.Canvas) {
+        değer alfa = (bu.lifespan / 2.0).kısıtla(0.0, 1.0)
+        değer renk_alfa = color.rgba(
+            bu.renk.kırmızı(),
+            bu.renk.yeşil(),
+            bu.renk.mavi(),
+            (alfa * 255).tam()
+        )
+        canvas.dolgu_ayarla(renk_alfa)
+        canvas.daire(bu.x, bu.y, bu.yarıçap, dolgu: true)
+    }
+    
+    function canlı_mı() -&gt; Mantıksal {
+        return bu.lifespan &gt; 0
+    }
+}
+
+sınıf PartikülSistemi {
+    değer canvas: graphics.Canvas
+    değer partiküller: Liste&lt;Partikül&gt;
+    
+    function new(genişlik: Tam, yükseklik: Tam) -&gt; PartikülSistemi {
+        return PartikülSistemi {
+            canvas: graphics.Canvas(genişlik, yükseklik),
+            partiküller: []
+        }
+    }
+    
+    function partikül_oluştur(x: Gerçek, y: Gerçek, sayı: Tam) {
+        for _ in 0..sayı {
+            değer açı = random.gerçek(0.0, 2.0 * math.PI)
+            değer hız = random.gerçek(50.0, 150.0)
+            
+            değer partikül = Partikül {
+                x: x,
+                y: y,
+                hız_x: math.cos(açı) * hız,
+                hız_y: math.sin(açı) * hız,
+                yarıçap: random.gerçek(2.0, 6.0),
+                renk: color.rgb(
+                    random.tam(100, 255),
+                    random.tam(50, 150),
+                    random.tam(0, 100)
+                ),
+                lifespan: random.gerçek(1.0, 3.0)
+            }
+            
+            bu.partiküller.push(partikül)
+        }
+    }
+    
+    function güncelle(delta_zaman: Gerçek) {
+        // Partikülleri güncelle
+        for partikül in bu.partiküller {
+            partikül.güncelle(delta_zaman)
+        }
+        
+        // Ölü partikülleri temizle
+        bu.partiküller = bu.partiküller.filtrele(|p| p.canlı_mı())
+    }
+    
+    function çiz() {
+        // Arkaplanı temizle (solma efekti for)
+        bu.canvas.dolgu_ayarla(color.rgba(0, 0, 0, 10))
+        bu.canvas.dikdörtgen(0, 0, bu.canvas.genişlik, bu.canvas.yükseklik, dolgu: true)
+        
+        // Partikülleri çiz
+        for partikül in bu.partiküller {
+            partikül.çiz(bu.canvas)
+        }
+    }
+    
+    function kare_kaydet(kare_no: Tam) {
+        bu.canvas.png_olarak_kaydet(f"partikül_{kare_no:04}.png")
+    }
+}
+
+// Animasyon oluştur (60 FPS, 5 saniye)
+değer sistem = PartikülSistemi.new(800, 600)
+değer fps = 60.0
+değer toplam_kare = 300  // 5 saniye
+
+print("Animasyon oluşturuluyor...")
+
+for kare in 0..toplam_kare {
+    // Her 10 karede bir partikül patlaması
+    if kare % 10 == 0 {
+        sistem.partikül_oluştur(400.0, 300.0, 30)
+    }
+    
+    sistem.güncelle(1.0 / fps)
+    sistem.çiz()
+    sistem.kare_kaydet(kare)
+    
+    if kare % 60 == 0 {
+        print(f"  {kare / 60 + 1}. saniye tamamlandı")
+    }
+}
+
+print("✓ Animasyon kareleri oluşturuldu!")
+print("ffmpeg ile video oluşturmak for:")
+print("  ffmpeg -framerate 60 -i partikül_%04d.png -c:v libx264 output.mp4")</code></pre>
+        </div>
+
+        <h2>🎯अच्छे आचरण</h2>
+        <ul>
+            <li>बड़े चित्रों के लिए कैनवास को परतों में विभाजित करें</li>
+            <li>एनिमेशन में डबल बफ़रिंग का उपयोग करें</li>
+            <li>रंग परिवर्तन के लिए ग्रेडिएंट चुनें</li>
+            <li>प्रदर्शन के लिए वेक्टर के बजाय बिटमैप का उपयोग करने पर विचार करें</li>
+            <li>एंटी-एलियासिंग के साथ सहज चित्र प्राप्त करें</li>
+            <li>सेव/रिस्टोर के साथ ट्रांसफॉर्मेशन मैट्रिक्स प्रबंधित करें</li>
+        </ul>
+
+        <h2>🔗संबंधित मॉड्यूल</h2>
+        <ul>
+            <li><a href="en_gui.html">जीयूआई</a>- ग्राफिकल इंटरफ़ेस</li>
+            <li><a href="en_image.html">छवि</a>-मूर्ति प्रोद्योगिकी</li>
+            <li><a href="en_color.html">रंग</a>- रंग प्रक्रियाएं</li>
+            <li><a href="en_math.html">अंक शास्त्र</a>- गणितीय गणना</li>
+        </ul>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_en_gui.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_en_audio.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+
+                    </main>
+
+                    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_en_gui.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_en_audio.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+</div></div>    <script src="lang-switcher.js"></script>
+</body></html>

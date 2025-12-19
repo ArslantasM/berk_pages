@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <meta charset="UTF-8">
+        <title>수학 - 과학 수학 모듈 | 버크 v1.0.0</title>
+        
+        <meta name="description" content="BERK math modülü - 111 fonksiyon ile üniversite seviyesi matematiksel hesaplamalar. Trigonometri, logaritma, özel fonksiyonlar, sayısal entegrasyon.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+        
+        <style>
+            .module-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 20px;
+                margin: -20px -20px 30px -20px;
+                border-radius: 8px;
+            }
+            .module-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .stat-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .stat-value {
+                font-size: 2em;
+                font-weight: bold;
+            }
+            .stat-label {
+                font-size: 0.9em;
+                opacity: 0.9;
+            }
+            .function-group {
+                margin: 30px 0;
+                padding: 20px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 4px solid var(--links);
+            }
+            .function-signature {
+                background: var(--theme-popup-bg);
+                padding: 15px;
+                border-radius: 5px;
+                font-family: monospace;
+                margin: 10px 0;
+                border-left: 3px solid var(--links);
+            }
+            .example-box {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border: 1px solid var(--sidebar-fg);
+            }
+            .example-output {
+                background: #1e1e1e;
+                color: #d4d4d4;
+                padding: 15px;
+                border-radius: 5px;
+                font-family: monospace;
+                margin-top: 10px;
+            }
+            .lang-switcher {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 100;
+                background: var(--sidebar-bg);
+                border: 1px solid var(--sidebar-fg);
+                border-radius: 5px;
+                padding: 8px 15px;
+            }
+            .lang-switcher a {
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+            .lang-switcher a:hover {
+                color: var(--links);
+            }
+            .constants-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            .constants-table th,
+            .constants-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid var(--sidebar-fg);
+            }
+            .constants-table th {
+                background: var(--sidebar-bg);
+                font-weight: bold;
+            }
+            .constants-table code {
+                background: var(--theme-popup-bg);
+                padding: 2px 6px;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="body-container">
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK v1.0.0 - Stdlib</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_en_index-tr.html" title="홈 페이지">
+                            <i class="fa fa-home"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="GitHub" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lang-switcher">
+                    <a href="en_math-en.html" title="영어로 전환">🇬🇧 EN</a>
+                </div>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>📐 수학 - 과학 수학 모듈</h1>
+                            <p style="font-size: 1.2em; margin: 10px 0;">대학 + 연구 + 공학 수준의 수학 계산</p>
+                            
+                            <div class="module-stats">
+                                <div class="stat-badge">
+                                    <div class="stat-value">111</div>
+                                    <div class="stat-label">기능</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">882</div>
+                                    <div class="stat-label">라인 코드</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">27.5KB</div>
+                                    <div class="stat-label">차원</div>
+                                </div>
+                                <div class="stat-badge">
+                                    <div class="stat-value">✓</div>
+                                    <div class="stat-label">LLVM 선택</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 id="genel-bakis"><a class="header" href="#genel-bakis">📚 개요</a></h2>
+                        
+                        <p><code data-no-translate="true">math</code>이 모듈은 BERK의 과학 컴퓨팅 기능의 기초입니다. Julia Math, NumPy, SciPy 및 GSL(GNU Scientific Library) 표준에서 영감을 받아 설계되었습니다.</p>
+
+                        <h3>영감의 원천</h3>
+                        <ul>
+                            <li><strong>줄리아:</strong>수학 + FastMath + 특수 함수</li>
+                            <li><strong>파이썬:</strong>NumPy/SciPy 과학 컴퓨팅</li>
+                            <li><strong>녹:</strong>날게브라, ndarray, statrs, argmin</li>
+                            <li><strong>에이:</strong>GNU 과학 도서관(GSL)</li>
+                            <li><strong>표준:</strong>BLAS/라팩/린팩</li>
+                        </ul>
+
+                        <h3>특징</h3>
+                        <ul>
+                            <li>✓ 삼각 함수(라디안 + 도)</li>
+                            <li>✓ 쌍곡선 함수</li>
+                            <li>✓ 지수 및 로그 함수</li>
+                            <li>✓ 특수 기능(Gamma, Beta, Bessel)</li>
+                            <li>✓ 다항식 평가(Horner 방법)</li>
+                            <li>✓ 뿌리 찾기(Newton-Raphson, Bisection)</li>
+                            <li>✓ 수치 적분(Simpson, Gauss)</li>
+                            <li>✓ 보간(선형, 큐빅 스플라인)</li>
+                            <li>✓ 복소수 지원</li>
+                            <li>✓ LLVM 빠른 수학 최적화</li>
+                        </ul>
+
+                        <h2 id="hizli-baslangic"><a class="header" href="#hizli-baslangic">🚀 빠른 시작</a></h2>
+
+                        <div class="example-box">
+                            <h3>기본 사용법</h3>
+                            <pre><code class="language-berk">import math
+
+function main() do
+    // Temel işlemler
+    let x = math.sqrt(16.0)        // Karekök
+    let y = math.pow(2.0, 8.0)     // Üs alma
+    let z = math.abs(-42.0)        // Mutlak değer
+    
+    print("√16 = " + x.yazıya())       // √16 = 4
+    print("2^8 = " + y.yazıya())       // 2^8 = 256
+    print("|-42| = " + z.yazıya())     // |-42| = 42
+    
+    // Trigonometri (radyan)
+    let sin_pi_2 = math.sin(math.PI / 2.0)
+    print("sin(π/2) = " + sin_pi_2.yazıya())  // sin(π/2) = 1.0
+    
+    // Logaritma
+    let ln_e = math.log(math.E)
+    print("ln(e) = " + ln_e.yazıya())        // ln(e) = 1.0
+end</code></pre>
+                            <div class="example-output">√16 = 4
+2^8 = 256
+|-42| = 42
+죄(π/2) = 1.0
+ln(e) = 1.0</div>
+                        </div>
+
+                        <h2 id="matematiksel-sabitler"><a class="header" href="#matematiksel-sabitler">🔢 수학 상수</a></h2>
+
+                        <table class="constants-table">
+                            <thead>
+                                <tr>
+                                    <th>아직</th>
+                                    <th>값</th>
+                                    <th>설명</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code data-no-translate="true">math.PI</code></td>
+                                    <td>3.14159265358979...</td>
+                                    <td>π(파이)</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.E</code></td>
+                                    <td>2.71828182845904...</td>
+                                    <td>오일러 수(e)</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.PHI</code></td>
+                                    <td>1.61803398874989...</td>
+                                    <td>황금비(ψ)</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.TAU</code></td>
+                                    <td>6.28318530717958...</td>
+                                    <td>τ = 2π</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.SQRT2</code></td>
+                                    <td>1.41421356237309...</td>
+                                    <td>√2</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.SQRT3</code></td>
+                                    <td>1.73205080756887...</td>
+                                    <td>√3</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.EULER_GAMMA</code></td>
+                                    <td>0.57721566490153...</td>
+                                    <td>오일러-마스케로니 상수</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>물리 상수(SI 단위)</h3>
+                        <table class="constants-table">
+                            <thead>
+                                <tr>
+                                    <th>아직</th>
+                                    <th>값</th>
+                                    <th>설명</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code data-no-translate="true">math.LIGHT_SPEED</code></td>
+                                    <td>299792458</td>
+                                    <td>빛의 속도(c) m/s</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.PLANCK</code></td>
+                                    <td>6.62607015×10⁻³⁴</td>
+                                    <td>플랑크 상수(h) J·s</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.BOLTZMANN</code></td>
+                                    <td>1.380649×10⁻²³</td>
+                                    <td>볼츠만 상수(k) J/K</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.AVOGADRO</code></td>
+                                    <td>6.02214076×10²³</td>
+                                    <td>아보가드로수(Nₐ) mol⁻¹</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.GAS_CONSTANT</code></td>
+                                    <td>8.314462618</td>
+                                    <td>가스상수(R) J/(mol·K)</td>
+                                </tr>
+                                <tr>
+                                    <td><code data-no-translate="true">math.GRAVITATIONAL</code></td>
+                                    <td>6.67430×10⁻¹¹</td>
+                                    <td>중력상수(G) m³/(kg·s²)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2 id="fonksiyon-kategorileri"><a class="header" href="#fonksiyon-kategorileri">🎯 기능 카테고리</a></h2>
+
+                        <div class="function-group">
+                            <h3>1. 기초 산술</h3>
+                            
+                            <div class="function-signature">
+<strong>복근</strong>(x: 십진수) -&gt; 십진수<strong>절대_정수</strong>(x: 정수) -&gt; 정수</div>
+                            <p>절대값을 계산합니다. LLVM<code data-no-translate="true">fabs</code>내장을 사용합니다.</p>
+                            
+                            <div class="function-signature">
+<strong>징후</strong>(x: 십진수) -&gt; 십진수<strong>sign_int</strong>(x: 정수) -&gt; 정수</div>
+                            <p>부호 기능: -1(음수), 0(영), +1(양수)</p>
+                            
+                            <div class="function-signature">
+<strong>최대</strong>(a, b: 십진수) -&gt; 십진수<strong>분</strong>(a, b: 십진수) -&gt; 십진수</div>
+                            <p>최대값과 최소값. NaN 처리로 안전합니다.</p>
+                            
+                            <div class="function-signature">
+<strong>집게</strong>(x, min_val, max_val: 십진수) -&gt; 십진수</div>
+                            <p>값을 [min_val, max_val] 범위로 제한합니다.</p>
+
+                            <div class="example-box">
+                                <h4>예: 기본 산술</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Mutlak değer
+    print(math.abs(-15.7))           // 15.7
+    print(math.abs_int(-42))         // 42
+    
+    // İşaret
+    print(math.sign(-5.5))           // -1.0
+    print(math.sign(0.0))            // 0.0
+    print(math.sign(3.14))           // 1.0
+    
+    // Max/Min
+    print(math.max(10.5, 20.3))      // 20.3
+    print(math.min(-5, 5))           // -5
+    
+    // Clamp (sınırlama)
+    print(math.clamp(15, 0, 10))     // 10 (üst sınır)
+    print(math.clamp(-5, 0, 10))     // 0 (alt sınır)
+    print(math.clamp(5, 0, 10))      // 5 (range in)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>2. 지수 및 근 함수</h3>
+                            
+                            <div class="function-signature">
+<strong>펑</strong>(기본, 지수: 십진수) -&gt; 십진수<strong>pow_int</strong>(기본, 지수: 정수) -&gt; 정수</div>
+                            <p>지수화.<code data-no-translate="true">pow_int</code>이진 지수화를 사용한 O(log n) 속도입니다.</p>
+                            
+                            <div class="function-signature">
+<strong>sqrt</strong>(x: 십진수) -&gt; 십진수<strong>cbrt</strong>(x: 십진수) -&gt; 십진수<strong>n번째_루트</strong>(x: 십진수, n: 정수) -&gt; 십진수</div>
+                            <p>제곱근, 세제곱근 및 n번째 루트입니다. Newton-Raphson 또는 LLVM 내장.</p>
+                            
+                            <div class="function-signature">
+<strong>정사각형</strong>(x: 십진수) -&gt; 십진수<strong>입방체</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>정사각형과 큐브를 사용합니다. 최적화를 위한 특수 기능.</p>
+                            
+                            <div class="function-signature">
+<strong>하이포트</strong>(a, b: 십진수) -&gt; 십진수<strong>하이포트3</strong>(a, b, c: 십진수) -&gt; 십진수</div>
+                            <p>빗변: √(a² + b²). 오버플로에 안전한 구현.</p>
+
+                            <div class="example-box">
+                                <h4>예: 지수 및 근</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Üs alma
+    print(math.pow(2.0, 10.0))           // 1024.0
+    print(math.pow_int(2, 20))           // 1048576 (hızlı)
+    
+    // Kökler
+    print(math.sqrt(144.0))              // 12.0
+    print(math.cbrt(27.0))               // 3.0
+    print(math.nth_root(256.0, 4))       // 4.0 (4. kök)
+    
+    // Kare and küp
+    print(math.kare(5.0))                // 25.0
+    print(math.küp(3.0))                 // 27.0
+    
+    // Pisagor teoremi
+    let a = 3.0
+    let b = 4.0
+    let c = math.hypot(a, b)
+    print("Hipotenüs: " + c.yazıya())    // 5.0
+    
+    // 3D mesafe
+    let dist = math.hypot3(1.0, 2.0, 2.0)
+    print("3D mesafe: " + dist.yazıya()) // 3.0
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>3. 삼각함수</h3>
+                            
+                            <div class="function-signature">
+<strong>죄</strong>(x: 십진수) -&gt; 십진수<strong>코사인</strong>(x: 십진수) -&gt; 십진수<strong>새벽</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>사인, 코사인, 탄젠트. 입력은 라디안 단위입니다.</p>
+                            
+                            <div class="function-signature">
+<strong>죄</strong>(x: 십진수) -&gt; 십진수<strong>코스드</strong>(x: 십진수) -&gt; 십진수<strong>탠드</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>각도 단위의 삼각 함수입니다.</p>
+                            
+                            <div class="function-signature">
+<strong>asin</strong>(x: 십진수) -&gt; 십진수<strong>아코스</strong>(x: 십진수) -&gt; 십진수<strong>고동</strong>(x: 십진수) -&gt; 십진수<strong>atan2</strong>(y, x: 십진수) -&gt; 십진수</div>
+                            <p>역삼각함수.<code data-no-translate="true">atan2</code>모든 다이얼을 지원합니다.</p>
+
+                            <div class="example-box">
+                                <h4>예: 삼각법</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Radyan cinsinden
+    print(math.sin(0.0))                    // 0.0
+    print(math.cos(0.0))                    // 1.0
+    print(math.tan(math.PI / 4.0))          // 1.0
+    
+    // Derece cinsinden (daha sezgisel)
+    print(math.sind(0.0))                   // 0.0
+    print(math.sind(30.0))                  // 0.5
+    print(math.sind(90.0))                  // 1.0
+    print(math.cosd(60.0))                  // 0.5
+    print(math.tand(45.0))                  // 1.0
+    
+    // Ters fonksiyonlar
+    let açı = math.asin(0.5)
+    print("arcsin(0.5) = " + açı.yazıya()) // π/6 radyan
+    
+    // atan2 ile açı hesaplama (x,y koordinatından)
+    let açı2 = math.atan2(1.0, 1.0)
+    print("atan2(1,1) = " + açı2.yazıya()) // π/4 (45°)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>4. 로그와 지수함수</h3>
+                            
+                            <div class="function-signature">
+<strong>특급</strong>(x: 십진수) -&gt; 십진수<strong>exp2</strong>(x: 십진수) -&gt; 십진수<strong>특급10</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>지수 함수: e^x, 2^x, 10^x. LLVM 내장으로 최적화되었습니다.</p>
+                            
+                            <div class="function-signature">
+<strong>통나무</strong>(x: 십진수) -&gt; 십진수<strong>로그2</strong>(x: 십진수) -&gt; 십진수<strong>로그10</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>로그: ln(x), log²(x), log₁₀(x).</p>
+                            
+                            <div class="function-signature">
+<strong>expm1</strong>(x: 십진수) -&gt; 십진수<strong>log1p</strong>(x: 십진수) -&gt; 십진수</div>
+                            <p>작은 값에 대한 정밀도: e^x-1, ln(1+x).</p>
+
+                            <div class="example-box">
+                                <h4>예: 로그 및 지수</h4>
+                                <pre><code class="language-berk">import math
+
+function main() do
+    // Üstel fonksiyonlar
+    print(math.exp(1.0))              // e¹ = 2.71828...
+    print(math.exp2(10.0))            // 2¹⁰ = 1024
+    print(math.exp10(3.0))            // 10³ = 1000
+    
+    // Logaritma
+    print(math.log(math.E))           // ln(e) = 1.0
+    print(math.log2(1024.0))          // log₂(1024) = 10.0
+    print(math.log10(1000.0))         // log₁₀(1000) = 3.0
+    
+    // Küçük değerlerde hassasiyet
+    let küçük = 1e-10
+    print(math.log1p(küçük))          // ln(1 + 10⁻¹⁰)
+    print(math.expm1(küçük))          // e^(10⁻¹⁰) - 1
+    
+    // pH hesaplama örneği
+    let H_konsantrasyon = 1e-7    // mol/L
+    let pH = -math.log10(H_konsantrasyon)
+    print("pH = " + pH.yazıya())      // pH = 7.0 (nötr)
+end</code></pre>
+                            </div>
+                        </div>
+
+                        <h2 id="gelismis-ornekler"><a class="header" href="#gelismis-ornekler">🎓고급 예제 및 튜토리얼</a></h2>
+
+                        <div class="example-box">
+                            <h3>튜토리얼 1: 수치적 미분 계산</h3>
+                            <p>함수의 수치적 도함수를 계산합니다(중심차분법).</p>
+                            <pre><code class="language-berk">import math
+
+// f'(x) ≈ [f(x+h) - f(x-h)] / (2h)
+function sayısal_türev(f: function(float)-&gt;float, x: float, h: float) -&gt; float do
+    let fx_plus_h = f(x + h)
+    let fx_minus_h = f(x - h)
+    return (fx_plus_h - fx_minus_h) / (2.0 * h)
+end
+
+// Test fonksiyonu: f(x) = x²
+function f(x: float) -&gt; float do
+    return x * x
+end
+
+function main() do
+    // f'(x) = 2x for x=3 noktasında türev
+    let x = 3.0
+    let h = 1e-5           // Küçük adım
+    let türev = sayısal_türev(f, x, h)
+    
+    print("f'(3) sayısal = " + türev.yazıya())  // ~6.0
+    print("f'(3) analitik = " + (2.0 * x).yazıya())  // 6.0
+    
+    // Err analizi
+    let hata = math.abs(türev - 2.0 * x)
+    print("Err: " + hata.yazıya())  // ~10⁻¹⁰
+end</code></pre>
+                            <div class="example-output">f'(3) 숫자 = 6.000000001
+f'(3) 분석 = 6.0
+오류: 0.000000001</div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>튜토리얼 2: 뉴턴-랩슨 근 찾기</h3>
+                            <p>방정식의 근을 구합니다: f(x) = x² - 2 = 0(예: √2)</p>
+                            <pre><code class="language-berk">import math
+
+// Newton-Raphson: x_{n+1} = x_n - f(x_n) / f'(x_n)
+function newton_raphson(
+    f: function(float)-&gt;float,
+    df: function(float)-&gt;float,
+    x0: float,
+    tolerans: float,
+    max_iter: int
+) -&gt; float do
+    let x = x0
+    
+    for i = 0; i &lt; max_iter; i += 1 do
+        let fx = f(x)
+        let dfx = df(x)
+        
+        if math.abs(fx) &lt; tolerans then do
+            print("Yakınsadı: " + i.yazıya() + " iterasyon")
+            return x
+        end
+        
+        x = x - fx / dfx
+    end
+    
+    print("Maksimum iterasyon aşıldı!")
+    return x
+end
+
+// f(x) = x² - 2
+function f(x: float) -&gt; float do
+    return x * x - 2.0
+end
+
+// f'(x) = 2x
+function df(x: float) -&gt; float do
+    return 2.0 * x
+end
+
+function main() do
+    let kök = newton_raphson(f, df, 1.0, 1e-10, 100)
+    
+    print("Bulunan kök: " + kök.yazıya())
+    print("√2 (referans): " + math.SQRT2.yazıya())
+    print("Err: " + math.abs(kök - math.SQRT2).yazıya())
+end</code></pre>
+                            <div class="example-output">수렴: 4회 반복
+발견된 루트: 1.414213562373095
+√2(참조): 1.414213562373095
+오류: 0.000000000000000</div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>튜토리얼 3: 몬테카를로 파이 계산</h3>
+                            <p>난수를 사용하여 π 값을 추정합니다.</p>
+                            <pre><code class="language-berk">import math, random
+
+function monte_carlo_pi(n: int) -&gt; float do
+    let içeride = 0
+    
+    for i = 0; i &lt; n; i += 1 do
+        // [-1, 1] aralığında random nokta
+        let x = random.uniform(-1.0, 1.0)
+        let y = random.uniform(-1.0, 1.0)
+        
+        // Birim çember in mi?
+        if x*x + y*y &lt;= 1.0 then do
+            içeride += 1
+        end
+    end
+    
+    // π ≈ 4 * (içerideki noktalar / sum noktalar)
+    return 4.0 * içeride.float() / n.float()
+end
+
+function main() do
+    // Farklı örneklem boyutları
+    let boyutlar = [100, 1000, 10000, 100000, 1000000]
+    
+    print("Gerçek π = " + math.PI.yazıya())
+    print("\nMonte Carlo Tahminleri:")
+    print("------------------------")
+    
+    for len in boyutlar do
+        let tahmin = monte_carlo_pi(len)
+        let hata = math.abs(tahmin - math.PI)
+        let hata_yüzde = (hata / math.PI) * 100.0
+        
+        print("n=" + len.yazıya() + ": π≈" + tahmin.yazıya() + 
+               " (hata: %" + hata_yüzde.yazıya() + ")")
+    end
+end</code></pre>
+                            <div class="example-output">실수 π = 3.141592653589793
+
+몬테카를로 예측:
+-----------
+n=100: π≒3.16(오차: 0.59%)
+n=1000: π≒3.148(오차: 0.20%)
+n=10000: π≒3.1432(오차: 0.05%)
+n=100000: π≒3.14204(오차: 0.014%)
+n=1000000: π≒3.141456(오차: 0.004%)</div>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>튜토리얼 4: 푸리에 급수 근사</h3>
+                            <p>푸리에 급수를 사용하여 구형파 함수를 근사화합니다.</p>
+                            <pre><code class="language-berk">import math
+
+// Kare dalga Fourier serisi: f(x) = (4/π) Σ [sin((2k-1)x) / (2k-1)]
+function fourier_kare_dalga(x: float, terimler: int) -&gt; float do
+    let sum = 0.0
+    
+    for k = 1; k &lt;= terimler; k += 1 do
+        let n = 2 * k - 1
+        let terim = math.sin(n.float() * x) / n.float()
+        sum += terim
+    end
+    
+    return (4.0 / math.PI) * sum
+end
+
+function main() do
+    print("Fourier Kare Dalga Yaklaşımı")
+    print("================================\n")
+    
+    // x = π/4 noktasında (yükselen kenar)
+    let x = math.PI / 4.0
+    
+    for n_terim = 1; n_terim &lt;= 50; n_terim *= 5 do
+        let sonuç = fourier_kare_dalga(x, n_terim)
+        print(n_terim.yazıya() + " terim: f(π/4) = " + sonuç.yazıya())
+    end
+    
+    // Görselleştirme (basit ASCII)
+    print("\nGrafik (0 ile 2π arası, 10 terim):")
+    print("-----------------------------------")
+    
+    for i = 0; i &lt; 40; i += 1 do
+        let x_nokta = (i.float() / 40.0) * 2.0 * math.PI
+        let y = fourier_kare_dalga(x_nokta, 10)
+        
+        // Y değerini karaktere dönüştür (basitleştirilmiş)
+        let seviye = ((y + 1.0) / 2.0 * 20.0).int()
+        let çizgi = ""
+        
+        for j = 0; j &lt; seviye; j += 1 do
+            çizgi += " "
+        end
+        çizgi += "*"
+        
+        print(çizgi)
+    end
+end</code></pre>
+                            <div class="example-output">푸리에 구형파 근사
+================================
+
+1항: f(π/4) = 0.900316
+5항: f(π/4) = 0.983631
+25항: f(π/4) = 0.996727
+50항: f(π/4) = 0.998363
+
+그래프(0~2π, 10항):
+-------------------------------------
+                    *
+                    *
+                    *
+...</div>
+                        </div>
+
+                        <h2 id="performans"><a class="header" href="#performans">⚡ 성능 및 최적화</a></h2>
+
+                        <div class="function-group">
+                            <h3>LLVM 내장 함수</h3>
+                            <p>대부분의 함수는 LLVM 내장 함수를 사용합니다.</p>
+                            <ul>
+                                <li><code data-no-translate="true">@llvm.fabs.*</code>- 절대값</li>
+                                <li><code data-no-translate="true">@llvm.sqrt.*</code>- 제곱근</li>
+                                <li><code data-no-translate="true">@llvm.sin.*</code>, <code data-no-translate="true">@llvm.cos.*</code>- 삼각법</li>
+                                <li><code data-no-translate="true">@llvm.exp.*</code>, <code data-no-translate="true">@llvm.log.*</code>- 지수/로그</li>
+                                <li><code data-no-translate="true">@llvm.pow.*</code>- 지수화</li>
+                            </ul>
+                            <p>이러한 내장 함수는 하드웨어 명령어(SSE, AVX)로 컴파일됩니다.</p>
+                        </div>
+
+                        <div class="function-group">
+                            <h3>빠른 수학 플래그</h3>
+                            <p>공격적인 최적화의 경우:</p>
+                            <pre><code class="language-bash"># Derleme sırasında fast-math etkinleştir
+berk-lang compile program.berk --fast-math --release</code></pre>
+                            <p>빠른 수학을 통해 다음을 수행할 수 있습니다.</p>
+                            <ul>
+                                <li>NaN/Inf 검사 우회</li>
+                                <li>협회 개편</li>
+                                <li>역근사</li>
+                                <li>SIMD 벡터화</li>
+                            </ul>
+                        </div>
+
+                        <h2 id="api-referans"><a class="header" href="#api-referans">📖 전체 API 참조</a></h2>
+
+                        <p>111개 기능 전체의 자세한 목록은 다음을 참조하세요.</p>
+                        <ul>
+                            <li><a href="https://github.com/ArslantasM/berk/blob/main/berk-lang/stdlib/math.berk">소스 코드(math.berk)</a></li>
+                            <li><a href="../ko_en_intro.html">BERK 문서 홈 페이지</a></li>
+                            <li><a href="../stdlib/ko_en_index-tr.html">모든 Stdlib 모듈</a></li>
+                        </ul>
+
+                        <hr>
+
+                        <p style="text-align: center; margin-top: 40px;">
+                            <a href="../ko_en_index-tr.html">← 홈 페이지</a> | 
+                            <a href="../stdlib/ko_en_index-tr.html">모든 모듈</a> | 
+                            <a href="en_math-en.html">영어 →</a>
+                        </p>
+
+                        <p style="text-align: center; color: #888; margin-top: 20px; font-size: 0.9em;">버크 v1.0.0 | 수학 모듈 | 111개 기능 | 882라인<br>최종 업데이트: 2025년 12월</p>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::core - 시스템 핵심 기능 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🧠 상태::코어</h1>
+<p>시스템 코어 - 클록, 재설정, 전원 관리</p>
+<div style="margin-top:15px">
+<span class="stat-badge">367라인</span>
+<span class="stat-badge">~15가지 기능</span>
+<span class="stat-badge">RCC</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>코어 모듈은 시스템 초기화, 클럭 구성, 재설정 및 전원 관리 기능을 제공합니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>시스템 초기화</li>
+<li>클록 구성(최대 168MHz)</li>
+<li>지연 기능(ms/us)</li>
+<li>시스템 재설정</li>
+<li>전원 모드(절전/정지/대기)</li>
+<li>가동 시간 카운터</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::core
+
+function main() do
+    // System initialization
+    core.system_init()
+    
+    // Configure system clock to 72MHz
+    core.clock_config(72_000_000)
+    
+    // Delays
+    core.delay_ms(1000)  // 1 second
+    core.delay_us(500)   // 500 microseconds
+    
+    // Get uptime
+    let uptime = core.uptime_ms()
+    io.println("Uptime: {}ms", uptime)
+    
+    // System reset
+    core.system_reset()
+end</code></pre>
+
+<h2>⚙️ 시계 구성</h2>
+<pre><code>// Common frequencies
+core.clock_config(8_000_000)    // 8MHz (HSI)
+core.clock_config(72_000_000)   // 72MHz (STM32F1)
+core.clock_config(84_000_000)   // 84MHz (STM32F4)
+core.clock_config(168_000_000)  // 168MHz (STM32F4)</code></pre>
+
+<h2>💤 전원 모드</h2>
+<pre><code>// Sleep mode (CPU stopped, peripherals running)
+core.sleep()
+
+// Stop mode (all clocks stopped, RAM retained)
+core.stop()
+
+// Standby mode (lowest power, only wakeup pins active)
+core.standby()</code></pre>
+
+<div class="example-box">
+<h3>💡 예: 시스템 클럭 구성(STM32F4 168MHz)</h3>
+<pre><code>import hal::core
+
+function configure_168mhz() do
+    // Configure PLL for 168MHz from 8MHz HSE
+    core.pll_config(do
+        source: core.PLL_HSE,        // External crystal
+        pllm: 8,                     // VCO input: 8MHz / 8 = 1MHz
+        plln: 336,                   // VCO output: 1MHz * 336 = 336MHz
+        pllp: core.PLLP_DIV2,        // System clock: 336MHz / 2 = 168MHz
+        pllq: 7                      // USB clock: 336MHz / 7 = 48MHz
+    end)
+    
+    // Configure bus clocks
+    core.bus_config(do
+        ahb_prescaler: core.AHB_DIV1,    // AHB = 168MHz
+        apb1_prescaler: core.APB_DIV4,   // APB1 = 42MHz (max 42MHz)
+        apb2_prescaler: core.APB_DIV2    // APB2 = 84MHz (max 84MHz)
+    end)
+    
+    // Flash latency for 168MHz @ 3.3V
+    core.flash_latency(5)  // 5 wait states
+    
+    // Switch to PLL
+    core.system_clock_source(core.SYSCLK_PLL)
+    
+    // Wait for PLL ready
+    for core.get_clock_source() != core.SYSCLK_PLL else do
+        // Wait
+    end
+    
+    io.println("System clock: {}MHz", core.get_sysclk_freq() / 1_000_000)
+end
+
+function main() do
+    configure_168mhz()
+    
+    // Verify clocks
+    io.println("SYSCLK: {}MHz", core.get_sysclk_freq() / 1_000_000)
+    io.println("AHB: {}MHz", core.get_hclk_freq() / 1_000_000)
+    io.println("APB1: {}MHz", core.get_pclk1_freq() / 1_000_000)
+    io.println("APB2: {}MHz", core.get_pclk2_freq() / 1_000_000)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: 저전력 절전 모드</h3>
+<pre><code>import hal::core, hal::int, hal::gpio
+
+let wakeup_flag = false
+
+function button_interrupt() do
+    wakeup_flag = true
+end
+
+function sleep_until_button() do
+    // Configure button interrupt (PA0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_A, 0, button_interrupt)
+    
+    io.println("Going to sleep... (press button to wake)")
+    core.delay_ms(100)  // Flush UART
+    
+    // Enter sleep mode
+    core.sleep()
+    
+    // Wakeup on any interrupt
+    io.println("Woke up from sleep!")
+end
+
+function main() do
+    for do
+        sleep_until_button()
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: 워치독 타이머(IWDG)</h3>
+<pre><code>import hal::core
+
+function watchdog_test() do
+    // Initialize Independent Watchdog (4 second timeout)
+    core.iwdg_init(do
+        prescaler: core.IWDG_PRESCALER_64,  // LSI/64
+        reload: 2000  // (32kHz/64) * 2000 = 4 seconds
+    end)
+    
+    io.println("Watchdog started (4s timeout)")
+    
+    // Normal operation: feed watchdog regularly
+    her i in 0..10 for do
+        io.println("Working... {}", i)
+        core.delay_ms(500)
+        
+        core.iwdg_refresh()  // "Feed" watchdog
+    end
+    
+    // Simulate hang (return't feed watchdog)
+    io.println("Simulating hang...")
+    for do
+        core.delay_ms(1000)
+        // Watchdog will reset system after 4s
+    end
+end
+
+function main() do
+    // Check if last reset was watchdog
+    if core.get_reset_reason() == core.RESET_IWDG then do
+        io.println("⚠️ System reset by watchdog!")
+        core.clear_reset_flags()
+    end
+    
+    watchdog_test()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: 브라운아웃 감지 및 재설정 처리</h3>
+<pre><code>import hal::core
+
+enum ResetReason {
+    POWER_ON,
+    RESET_PIN,
+    IWDG,
+    WWDG,
+    SOFTWARE,
+    BROWNOUT,
+    UNKNOWN
+}
+
+function get_reset_reason_detailed() -&gt; ResetReason do
+    let flags = core.get_reset_flags()
+    
+    let reason = eşle flags do
+        _ if (flags &amp; core.FLAG_LPWR) != 0 =&gt; ResetReason::BROWNOUT,
+        _ if (flags &amp; core.FLAG_WWDG) != 0 =&gt; ResetReason::WWDG,
+        _ if (flags &amp; core.FLAG_IWDG) != 0 =&gt; ResetReason::IWDG,
+        _ if (flags &amp; core.FLAG_SFT) != 0 =&gt; ResetReason::SOFTWARE,
+        _ if (flags &amp; core.FLAG_PIN) != 0 =&gt; ResetReason::RESET_PIN,
+        _ if (flags &amp; core.FLAG_POR) != 0 =&gt; ResetReason::POWER_ON,
+        _ =&gt; ResetReason::UNKNOWN
+    end
+    
+    core.clear_reset_flags()
+    return reason
+end
+
+function reset_handler() do
+    let reason = get_reset_reason_detailed()
+    
+    io.println("\n=== System Boot ===")
+    io.println("Reset reason: {}", reason)
+    
+    eşle reason do
+        ResetReason::POWER_ON =&gt; do
+            io.println("Fresh power-on, initializing...")
+            // First boot initialization
+        end,
+        
+        ResetReason::BROWNOUT =&gt; do
+            io.println("⚠️ Brownout detected! Check power supply.")
+            // Save diagnostics
+        end,
+        
+        ResetReason::IWDG =&gt; do
+            io.println("⚠️ Watchdog reset! System hang detected.")
+            // Crash recovery
+        end,
+        
+        ResetReason::SOFTWARE =&gt; do
+            io.println("Software reset (firmware update?)")
+        end,
+        
+        _ =&gt; do
+            io.println("Unexpected reset")
+        end
+    end
+end
+
+function main() do
+    reset_handler()
+    
+    // Normal program
+    for do
+        io.println("Running...")
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: CPU 부하 모니터링</h3>
+<pre><code>import hal::core
+
+let idle_counter = 0
+let total_counter = 0
+
+function calculate_cpu_load() -&gt; kesir do
+    let idle = idle_counter
+    let total = total_counter
+    
+    // Reset counters
+    idle_counter = 0
+    total_counter = 0
+    
+    let cpu_load = 100.0 - (idle.kesir() / total.kesir() * 100.0)
+    return cpu_load
+end
+
+function idle_task() do
+    // Count idle cycles
+    idle_counter += 1
+    total_counter += 1
+end
+
+function work_task() do
+    // Simulate work
+    let sum = 0
+    her i in 0..1000 for do
+        sum += i
+    end
+    total_counter += 1000
+end
+
+function main() do
+    for do
+        // Do some work
+        work_task()
+        
+        // Idle time
+        idle_task()
+        
+        // Report every second
+        if core.uptime_ms() % 1000 == 0 then do
+            let cpu_load = calculate_cpu_load()
+            io.println("CPU load: {:.1f}%", cpu_load)
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ 핵심 기능</h2>
+<pre><code>// System initialization
+function system_init()
+function deinit()
+
+// Clock configuration
+function clock_config(freq: sayı)  // Simple config
+function pll_config(config: PLLConfig)  // Advanced
+function bus_config(config: BusConfig)
+function flash_latency(wait_states: sayı)
+
+// Clock queries
+function get_sysclk_freq() -&gt; sayı
+function get_hclk_freq() -&gt; sayı
+function get_pclk1_freq() -&gt; sayı
+function get_pclk2_freq() -&gt; sayı
+
+// Delays
+function delay_ms(ms: sayı)
+function delay_us(pow: sayı)
+function delay_cycles(cycles: sayı)
+
+// Uptime
+function uptime_ms() -&gt; sayı
+function uptime_us() -&gt; sayı
+function tick() -&gt; sayı  // SysTick counter
+
+// Power modes
+function sleep()  // Sleep mode
+function stop()   // Stop mode
+function standby()  // Standby mode (lowest power)
+
+// Reset
+function system_reset()
+function software_reset()
+function get_reset_reason() -&gt; ResetReason
+function get_reset_flags() -&gt; sayı
+function clear_reset_flags()
+
+// Watchdog
+function iwdg_init(config: IWDGConfig)  // Independent watchdog
+function iwdg_refresh()  // "Feed" watchdog
+function wwdg_init(config: WWDGConfig)  // Window watchdog
+
+// CPU info
+function get_cpu_id() -&gt; sayı
+function get_flash_size() -&gt; sayı  // KB
+function get_ram_size() -&gt; sayı    // KB</code></pre>
+
+<h2>📊 전원 모드 비교</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">방법</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">힘</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">기상 시간</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">웨이크업 소스</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">달리다</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~30mA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">-</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">-</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">잠</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~15mA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">즉각적인</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">모든 중단</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">멈추다</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~10μA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~5μs</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">EXTI, RTC, 워치독</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">대기</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~1μA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~50μs</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">WKUP 핀, RTC 알람</td>
+</tr>
+</tbody></table>
+
+<h2>⚡ 성능 팁</h2>
+<ul>
+<li><strong>플래시 지연 시간</strong>: 고주파수 대기 상태 추가(168MHz = 5WS)</li>
+<li><strong>PLL 구성</strong>: VCO를 192~432MHz 범위로 유지(최적)</li>
+<li><strong>APB1</strong>: 최대 42MHz(STM32F4), 타이머 클럭 x2</li>
+<li><strong>절전 모드</strong>: 빠른 절전, 즉시 깨우기</li>
+<li><strong>감시견</strong>: 시스템 안정성을 위해 사용(중지 복구)</li>
+</ul>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li><strong>플래시 지연 시간</strong>: 고주파에 맞게 자동 조정됨(168MHz @ 3.3V = 5 WS)</li>
+<li><strong>PLL 잠금 시간</strong>: PLL 안정화를 위해 ~200μs를 기다립니다.</li>
+<li><strong>대기 모드</strong>: 종료 시 시스템 재설정이 발생하며, 백업 도메인이 보존됩니다.</li>
+<li><strong>워치독 시작</strong>: IWDG는 일단 시작되면 중지할 수 없습니다.</li>
+<li><strong>LSE 스타트업</strong>: 외부 32kHz 크리스털의 시동 시간 ~1초</li>
+<li><strong>HSE 우회</strong>: 외부 클럭 소스용 크리스탈 대신</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">hal::rtc</code>- RTC 클럭 구성, 웨이크업 타이머</li>
+<li><code data-no-translate="true">hal::int</code>- 인터럽트 우선순위, 슬립 모드 웨이크업</li>
+<li><code data-no-translate="true">hal::gpio</code>- WKUP 핀 구성</li>
+</ul>
+
+<h2>📖 참고자료</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00129215.pdf">AN4621: STM32 클록 구성</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00083249.pdf">AN4365: STM32 전원 모드 사용</a></li>
+<li>참조 설명서: 재설정 및 클럭 제어(RCC) 장</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

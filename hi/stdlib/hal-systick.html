@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>हैल-सिस्टिक - सिस्टम टिक टाइमर - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-systick.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>⏱️ राज्य::सिस्टिक</h1>
+<p>सिस्टम टिक टाइमर - आरटीओएस और देरी के लिए मिलीसेकंड टाइमबेस</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~240 पंक्तियाँ</span>
+<span class="stat-badge">~10 कार्य</span>
+<span class="stat-badge">एआरएम कॉर्टेक्स-एम</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>SysTick एक 24-बिट सिस्टम टाइमर है जो ARM Cortex-M आर्किटेक्चर पर उपलब्ध है। इसका उपयोग आम तौर पर 1ms टिक इंटरप्ट उत्पन्न करने के लिए किया जाता है और RTOS (रियल-टाइम ऑपरेटिंग सिस्टम) शेड्यूलर का आधार बनता है। एमएस-आधारित विलंब कार्यों और अपटाइम काउंटरों के लिए भी उपयोग किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>24-बिट डाउन काउंटर (0xFFFFFF)</li>
+<li>कॉन्फ़िगर करने योग्य टिक दर (आमतौर पर 1ms)</li>
+<li>अपवाद/व्यवधान उत्पन्न करना</li>
+<li>सीपीयू घड़ी या बाहरी घड़ी से प्राप्त</li>
+<li>कम ओवरहेड टाइमिंग</li>
+<li>आरटीओएस शेड्यूलर टाइमबेस</li>
+<li>मिलीसेकंड विलंब कार्य</li>
+<li>अपटाइम काउंटर</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::systick, hal::core
+
+let g_tick_count: u64 = 0
+
+// SysTick interrupt handler
+@interrupt
+function SysTick_Handler() do
+    g_tick_count += 1
+end
+
+function main() do
+    // 72 MHz CPU, 1ms tick
+    systick.init(72000000 / 1000)  // 1ms period
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Now delay_ms() works
+    for do
+        io.println("Uptime: " + g_tick_count.yazıya() + " ms")
+        systick.delay_ms(1000)
+    end
+end</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// Clock Source
+enum ClockSource {
+    EXTERNAL,  // External clock (HCLK/8)
+    PROCESSOR  // Processor clock (HCLK)
+}
+
+struct SysTickConfig do
+    reload_value: sayı,      // 24-bit (0 - 0xFFFFFF)
+    clock_source: ClockSource,
+    interrupt_enable: mantık
+end</code></pre>
+
+<h2>💡 उदाहरण 1: मिलीसेकंड विलंब कार्यान्वयन</h2>
+<div class="example-box">
+<h3>ब्लॉकिंग विलंब और नॉन-ब्लॉकिंग टाइमआउट</h3>
+<pre><code>import hal::systick
+
+let g_ticks: sayacı64 = 0
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+// Blocking delay
+function delay_ms(ms: sayı) do
+    let start = g_ticks
+    for (g_ticks - start) &lt; ms.to_u64() for do
+        // Wait
+    end
+end
+
+// Non-blocking timeout
+struct Timeout do
+    start: sayı64,
+    duration: sayı64
+end
+
+function timeout_start(ms: sayı) -&gt; Timeout do
+    return Timeout do
+        start: g_ticks,
+        duration: ms.to_u64()
+    end
+end
+
+function timeout_expired(timeout: Timeout) -&gt; mantık do
+    return (g_ticks - timeout.start) &gt;= timeout.duration
+end
+
+// Kullanım örneği
+function main_loop() do
+    let timeout = timeout_start(5000)  // 5 saniye
+    
+    for do
+        // Non-blocking işlemler
+        process_data()
+        
+        if timeout_expired(timeout) then do
+            io.println("5 saniye geçti!")
+            timeout = timeout_start(5000)  // Reset
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 उदाहरण 2: सरल आरटीओएस शेड्यूलर</h2>
+<div class="example-box">
+<h3>SysTick के साथ सहकारी मल्टीटास्किंग</h3>
+<pre><code>import hal::systick
+
+struct Task do
+    function: Fonksiyon(),
+    period_ms: sayı,
+    son_calistirma: sayı64
+end
+
+let g_ticks: sayı64 = 0
+let g_tasks: Dizi[Task] = []
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+function task_register(func: Fonksiyon(), period_ms: sayı) do
+    g_tasks.push(Task do
+        function: func,
+        period_ms: period_ms,
+        son_calistirma: 0
+    end)
+end
+
+function scheduler_run() do
+    for do
+        her task in g_tasks for do
+            let elapsed = g_ticks - task.son_calistirma
+            
+            if elapsed &gt;= task.period_ms.to_u64() then do
+                // Task zamanı geldi
+                task.function()
+                task.son_calistirma = g_ticks
+            end
+        end
+    end
+end
+
+// Örnek tasklar
+function led_blink_task() do
+    gpio.pin_toggle(LED_PIN)
+end
+
+function sensor_read_task() do
+    let temp = sensor.read_temperature()
+    io.println("Sıcaklık: " + temp.yazıya())
+end
+
+function main() do
+    systick.init(72000000 / 1000)  // 1ms
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Register tasks
+    task_register(led_blink_task, 500)      // 500ms period
+    task_register(sensor_read_task, 1000)   // 1000ms period
+    
+    // Run scheduler
+    scheduler_run()
+end</code></pre>
+</div>
+
+<h2>💡 उदाहरण 3: प्रदर्शन प्रोफ़ाइलिंग</h2>
+<div class="example-box">
+<h3>फ़ंक्शन निष्पादन समय माप</h3>
+<pre><code>import hal::systick
+
+function micros() -&gt; sayı64 do
+    // SysTick counts down from reload value
+    let reload = systick.get_reload()
+    let current = systick.get_value()
+    
+    // Calculate microseconds
+    let ticks_elapsed = reload - current
+    let us_per_tick = 1000 / reload  // Assuming 1ms period
+    
+    return (g_ticks * 1000) + (ticks_elapsed * us_per_tick).to_u64()
+end
+
+function profile_start() -&gt; sayı64 do
+    return micros()
+end
+
+function profile_end(start: sayı64) -&gt; sayı64 do
+    return micros() - start
+end
+
+// Kullanım
+function slow_function() do
+    for i in 0..1000 for do
+        math.sqrt(i.kesir())
+    end
+end
+
+function main() do
+    systick.init(72000)  // 1ms
+    systick.enable()
+    
+    let start = profile_start()
+    slow_function()
+    let duration = profile_end(start)
+    
+    io.println("Süre: " + duration.yazıya() + " μs")
+end</code></pre>
+</div>
+
+<h2>📊एपीआई संदर्भ</h2>
+
+<h3>प्रारंभ</h3>
+<pre><code>function init(reload_value: sayı)  // 24-bit max
+function deinit()
+function enable()
+function disable()</code></pre>
+
+<h3>विन्यास</h3>
+<pre><code>function enable_interrupt()
+function disable_interrupt()
+function set_clock_source(source: ClockSource)
+function get_reload() -&gt; sayı
+function set_reload(value: sayı)</code></pre>
+
+<h3>स्थिति</h3>
+<pre><code>function get_value() -&gt; sayı  // Current counter value
+function get_calib() -&gt; sayı  // Calibration value
+function has_reference() -&gt; mantık</code></pre>
+
+<h3>उपयोगिता</h3>
+<pre><code>function delay_ms(ms: sayı)
+function delay_us(pow: sayı)
+function get_ticks() -&gt; sayı64</code></pre>
+
+<h2>⚙️ प्लेटफ़ॉर्म समर्थन</h2>
+<table>
+<tbody><tr><th>प्लैटफ़ॉर्म</th><th>घड़ी स्रोत</th><th>अधिकतम पुनः लोड करें</th><th>शुद्धता</th></tr>
+<tr><td>कॉर्टेक्स- एम 0</td><td>एचसीएलके, एचसीएलके/8</td><td>0xFFFFFF (16.7M)</td><td>1 चक्र</td></tr>
+<tr><td>कॉर्टेक्स- एम 3</td><td>एचसीएलके, एचसीएलके/8</td><td>0xFFFFFF</td><td>1 चक्र</td></tr>
+<tr><td>कॉर्टेक्स- एम 4</td><td>एचसीएलके, एचसीएलके/8</td><td>0xFFFFFF</td><td>1 चक्र</td></tr>
+<tr><td>कॉर्टेक्स- M7</td><td>एचसीएलके, एचसीएलके/8</td><td>0xFFFFFF</td><td>1 चक्र</td></tr>
+</tbody></table>
+
+<h2>💡 सर्वोत्तम प्रथाएँ</h2>
+<ul>
+<li><strong>टिक दर:</strong>आरटीओएस के लिए 1ms उद्योग मानक</li>
+<li><strong>व्यवधान प्राथमिकता:</strong>SysTick आमतौर पर सबसे कम प्राथमिकता है (15)</li>
+<li><strong>हैंडलर अवधि:</strong>इंटरप्ट हैंडलर को न्यूनतम रखा जाना चाहिए (&lt;10μs)</li>
+<li><strong>अतिप्रवाह प्रबंधन:</strong>64-बिट काउंटर का उपयोग करके अतिप्रवाह को रोकें</li>
+<li><strong>शक्ति अनुकूलन:</strong>टिकलेस आइडल मोड (आरटीओएस) पर विचार करें</li>
+<li><strong>डीबग फ़्रीज़:</strong>आप डिबग के दौरान SysTick को रोक सकते हैं</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>24-बिट काउंटर: अधिकतम पुनः लोड मान 0xFFFFFF (16,777,215)</li>
+<li>72 मेगाहर्ट्ज पर 1 एमएस के लिए पुनः लोड = 72000</li>
+<li>इंटरप्ट हैंडलर में लंबी प्रोसेसिंग (संदर्भ स्विच ओवरहेड)</li>
+<li>परमाणु संचालन के लिए इंटरप्ट डिसेबल की आवश्यकता हो सकती है</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="hi_hal-timer-tr.html">राज्य::टाइमर</a>- लंबी अवधि के लिए हार्डवेयर टाइमर</li>
+<li><a href="hi_hal-nvic-tr.html">राज्य::एनविक</a>- नियंत्रक कॉन्फ़िगरेशन को बाधित करें</li>
+<li><a href="hi_hal-power-tr.html">राज्य::शक्ति</a>- टिक रहित निष्क्रिय एकीकरण</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_hal-systick-en.html">🇬🇧अंग्रेज़ी</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_hal-int.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_hal-watchdog.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_hal-int.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_hal-watchdog.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HAL - 하드웨어 추상화 계층 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/hal/overview.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="hal-hardware-abstraction-layer"><a class="header" href="#hal-hardware-abstraction-layer">HAL - 하드웨어 추상화 계층</a></h1>
+<p>BERK HAL(Hardware Abstraction Layer)은 임베디드 시스템을 위한 통합 하드웨어 추상화 계층입니다.<strong>33개 모듈</strong>~와 함께<strong>7가지 마이크로컨트롤러 플랫폼</strong>100% 시장 커버리지를 지원하고 제공합니다.</p>
+
+<h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊 통계</a></h2>
+<ul>
+<li><strong>HAL 모듈 33개</strong>- 포괄적인 하드웨어 지원</li>
+<li><strong>7개 플랫폼</strong>- ESP32, STM32F4, RP2040, nRF52, GD32, 누보톤, 아두이노</li>
+<li><strong>2,380 LOC</strong>- 최적화된 HAL 코드</li>
+<li><strong>100% 시장 커버리지</strong>- 마이크로컨트롤러 부문 전체 커버리지</li>
+<li><strong>95% 완료</strong>- 생산 준비 상태</li>
+</ul>
+
+<h2 id="-desteklenen-platformlar"><a class="header" href="#-desteklenen-platformlar">🎯 지원되는 플랫폼</a></h2>
+
+<h3 id="1-esp32-espressif"><a class="header" href="#1-esp32-espressif">1. ESP32(Epressive)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: 듀얼 코어 Xtensa LX6 @ 240MHz</li>
+<li><strong>숫양</strong>: 520KB SRAM</li>
+<li><strong>플래시</strong>: 4~16MB</li>
+<li><strong>특징</strong>: WiFi 802.11 b/g/n, 블루투스 4.2/BLE</li>
+<li><strong>사용 분야</strong>: IoT, 스마트홈, 웨어러블</li>
+<li><strong>인기</strong>: ⭐⭐⭐⭐⭐ (가장 인기 있는 IoT 플랫폼)</li>
+</ul>
+
+<h3 id="2-stm32f4-stmicroelectronics"><a class="header" href="#2-stm32f4-stmicroelectronics">2. STM32F4(ST마이크로일렉트로닉스)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: ARM Cortex-M4F @ 168MHz</li>
+<li><strong>숫양</strong>: 192KB SRAM</li>
+<li><strong>플래시</strong>: 512KB - 1MB</li>
+<li><strong>특징</strong>: FPU, DSP 명령어, 이더넷, USB OTG</li>
+<li><strong>사용 분야</strong>: 산업자동화, 로봇공학, 모터제어</li>
+<li><strong>인기</strong>: ⭐⭐⭐⭐⭐ (전문가 기준)</li>
+</ul>
+
+<h3 id="3-rp2040-raspberry-pi"><a class="header" href="#3-rp2040-raspberry-pi">3. RP2040(라즈베리파이)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: 듀얼 코어 ARM Cortex-M0+ @ 133MHz</li>
+<li><strong>숫양</strong>: 264KB SRAM</li>
+<li><strong>플래시</strong>: 2~16MB(외부 QSPI)</li>
+<li><strong>특징</strong>: PIO(프로그래밍 가능 I/O), USB 1.1</li>
+<li><strong>사용 분야</strong>: 메이커 프로젝트, 교육, 프로토타입</li>
+<li><strong>인기</strong>: ⭐⭐⭐⭐⭐ (라즈베리파이 생태계)</li>
+</ul>
+
+<h3 id="4-nrf52-nordic-semiconductor"><a class="header" href="#4-nrf52-nordic-semiconductor">4. nRF52(노르딕 반도체)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: ARM Cortex-M4F @ 64MHz</li>
+<li><strong>숫양</strong>: 256KB</li>
+<li><strong>플래시</strong>: 1MB</li>
+<li><strong>특징</strong>: Bluetooth 5.x/BLE, 초저전력</li>
+<li><strong>사용 분야</strong>: 웨어러블, 비콘, 무선 센서</li>
+<li><strong>인기</strong>: ⭐⭐⭐⭐ (BLE 산업 표준)</li>
+</ul>
+
+<h3 id="5-gd32-gigadevice"><a class="header" href="#5-gd32-gigadevice">5. GD32(기가디바이스)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: ARM Cortex-M4 @ 120MHz</li>
+<li><strong>숫양</strong>: 128KB SRAM</li>
+<li><strong>플래시</strong>: 512KB</li>
+<li><strong>특징</strong>: STM32 핀 호환, 저비용</li>
+<li><strong>사용 분야</strong>: 가전제품, 산업용</li>
+<li><strong>인기</strong>: ⭐⭐⭐ (가성비 좋은 대안)</li>
+</ul>
+
+<h3 id="6-nuvoton"><a class="header" href="#6-nuvoton">6. 누보톤</a></h3>
+<ul>
+<li><strong>프로세서</strong>: ARM Cortex-M23/M4 @ 72-192MHz</li>
+<li><strong>숫양</strong>: 64-512KB</li>
+<li><strong>플래시</strong>: 256KB - 1MB</li>
+<li><strong>특징</strong>: 보안 기능, CAN-FD</li>
+<li><strong>사용 분야</strong>: 자동차, 산업보안</li>
+<li><strong>인기</strong>: ⭐⭐⭐ (특수 응용 프로그램)</li>
+</ul>
+
+<h3 id="7-arduino-avr-arm"><a class="header" href="#7-arduino-avr-arm">7. 아두이노(AVR/ARM)</a></h3>
+<ul>
+<li><strong>프로세서</strong>: ATmega328P @ 16MHz(AVR), ARM Cortex-M0+ @ 48MHz</li>
+<li><strong>숫양</strong>: 2~32KB</li>
+<li><strong>플래시</strong>: 32-256KB</li>
+<li><strong>특징</strong>: 폭넓은 생태계, 간편한 사용</li>
+<li><strong>사용 분야</strong>: 교육, 취미 프로젝트, 프로토타이핑</li>
+<li><strong>인기</strong>: ⭐⭐⭐⭐⭐ (가장 일반적인 메이커 플랫폼)</li>
+</ul>
+
+<h2 id="-hal-modül-kategorileri"><a class="header" href="#-hal-modül-kategorileri">🔧 HAL 모듈 카테고리</a></h2>
+
+<h3 id="1-temel-periferaller-core-peripherals"><a class="header" href="#1-temel-periferaller-core-peripherals">1. 핵심 주변기기</a></h3>
+<p>각 플랫폼에서 지원되는 주요 하드웨어 인터페이스:</p>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>플랫폼 지원</th></tr></thead><tbody>
+<tr><td><strong>GPIO</strong></td><td>디지털 입출력, 인터럽트</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>UART</strong></td><td>직렬 통신(TX/RX)</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>SPI</strong></td><td>동기식 직렬(MOSI/MISO/SCK)</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>I2C</strong></td><td>2선 통신(SDA/SCL)</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>ADC</strong></td><td>아날로그-디지털 변환기</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>DAC</strong></td><td>디지털-아날로그 변환기</td><td>STM32F4, ESP32, RP2040</td></tr>
+<tr><td><strong>PWM</strong></td><td>펄스 폭 변조</td><td>✅ 모든 플랫폼</td></tr>
+</tbody></table>
+</div>
+
+<h3 id="2-zamanlayıcılar-timers"><a class="header" href="#2-zamanlayıcılar-timers">2. 타이머</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>플랫폼 지원</th></tr></thead><tbody>
+<tr><td><strong>시간제 노동자</strong></td><td>범용 타이머</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>WDT</strong></td><td>워치독 타이머(시스템 보안)</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>RTC</strong></td><td>실시간 시계(날짜/시간)</td><td>STM32F4, ESP32, nRF52</td></tr>
+<tr><td><strong>SysTick</strong></td><td>시스템 틱 타이머(OS용)</td><td>ARM Cortex-M(모두)</td></tr>
+</tbody></table>
+</div>
+
+<h3 id="3-dma--bellek-dma--memory"><a class="header" href="#3-dma--bellek-dma--memory">3. DMA 및 메모리</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>플랫폼 지원</th></tr></thead><tbody>
+<tr><td><strong>DMA</strong></td><td>직접 메모리 액세스(CPU가 필요 없는 전송)</td><td>STM32F4, ESP32, nRF52, GD32</td></tr>
+<tr><td><strong>플래시</strong></td><td>내부 플래시 읽기/쓰기/삭제</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>EEPROM</strong></td><td>비휘발성 메모리(영구 데이터)</td><td>Arduino, STM32F4(에뮬레이트됨)</td></tr>
+<tr><td><strong>스램</strong></td><td>정적 RAM 제어</td><td>STM32F4(외부)</td></tr>
+</tbody></table>
+</div>
+
+<h3 id="4-ağ--kablosuz-network--wireless"><a class="header" href="#4-ağ--kablosuz-network--wireless">4. 네트워크 및 무선</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>플랫폼 지원</th></tr></thead><tbody>
+<tr><td><strong>와이파이</strong></td><td>802.11b/g/n 무선</td><td>ESP32</td></tr>
+<tr><td><strong>블루투스</strong></td><td>BT 클래식 + BLE</td><td>ESP32, nRF52</td></tr>
+<tr><td><strong>이더넷</strong></td><td>10/100Mbps 유선 네트워크</td><td>STM32F4(MAC+PHY)</td></tr>
+<tr><td><strong>삶</strong></td><td>컨트롤러 영역 네트워크(자동차)</td><td>STM32F4, GD32, 누보톤</td></tr>
+<tr><td><strong>USB</strong></td><td>USB 1.1/2.0 장치/호스트</td><td>STM32F4, RP2040, ESP32</td></tr>
+</tbody></table>
+</div>
+
+<h3 id="5-güç-yönetimi-power-management"><a class="header" href="#5-güç-yönetimi-power-management">5. 전원 관리</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>플랫폼 지원</th></tr></thead><tbody>
+<tr><td><strong>힘</strong></td><td>전력 모드 제어</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>잠</strong></td><td>저전력 절전 모드</td><td>✅ 모든 플랫폼</td></tr>
+<tr><td><strong>딥슬립</strong></td><td>초저전력(μA 수준)</td><td>ESP32, nRF52, STM32F4</td></tr>
+<tr><td><strong>시계</strong></td><td>클록 트리 구성</td><td>STM32F4, GD32, 누보톤</td></tr>
+</tbody></table>
+</div>
+
+<h3 id="6-ekran--sensör-arayüzleri"><a class="header" href="#6-ekran--sensör-arayüzleri">6. 디스플레이 및 센서 인터페이스</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>기준 치수</th><th>설명</th><th>의사소통</th></tr></thead><tbody>
+<tr><td><strong>LCD</strong></td><td>문자 LCD(16x2, 20x4)</td><td>병렬/I2C</td></tr>
+<tr><td><strong>OLED</strong></td><td>OLED 디스플레이(SSD1306)</td><td>SPI/I2C</td></tr>
+<tr><td><strong>TFT</strong></td><td>TFT 컬러 디스플레이(ILI9341)</td><td>SPI</td></tr>
+<tr><td><strong>만지다</strong></td><td>정전식 터치 센서</td><td>I2C</td></tr>
+<tr><td><strong>LED_매트릭스</strong></td><td>LED 매트릭스(MAX7219)</td><td>SPI</td></tr>
+</tbody></table>
+</div>
+
+<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🚀 빠른 시작</a></h2>
+
+<h3 id="gpio-led-blink"><a class="header" href="#gpio-led-blink">GPIO - LED 깜박임</a></h3>
+<pre><code class="language-berk">// ESP32 - GPIO LED kontrolü
+import hal_gpio
+
+// GPIO2'yi çıkış as ayarla (ESP32 yerleşik LED)
+hal_gpio_init(2, GPIO_MODE_OUTPUT)
+
+// Sonsuz for
+while true do
+    hal_gpio_write(2, 1)  // LED aç
+    hal_delay_ms(1000)     // 1 saniye sleep
+    
+    hal_gpio_write(2, 0)  // LED kapat
+    hal_delay_ms(1000)
+end
+</code></pre>
+
+<h3 id="uart-seri-haberleşme"><a class="header" href="#uart-seri-haberleşme">UART - 직렬 통신</a></h3>
+<pre><code class="language-berk">// STM32F4 - UART ile veri gönderme
+import hal_uart
+
+// UART1'i 115200 baud rate ile başlat
+hal_uart_init(UART1, 115200)
+
+let mesaj = "Merhaba BERK!\n"
+hal_uart_write_string(UART1, mesaj)
+
+// Veri okuma
+let buffer = yeni_dizi(64)
+let okunan = hal_uart_read(UART1, buffer, 64, 1000)  // 1sn timeout
+
+if okunan &gt; 0 then do
+    print("Alınan: " + buffer)
+end
+</code></pre>
+
+<h3 id="i2c-sensör-okuma"><a class="header" href="#i2c-sensör-okuma">I2C - 센서 판독</a></h3>
+<pre><code class="language-berk">// RP2040 - BME280 sıcaklık/nem sensörü
+import hal_i2c
+
+let BME280_ADDR = 0x76
+let REG_TEMP = 0xFA
+
+// I2C0'ı 100 kHz ile başlat
+hal_i2c_init(I2C0, 100000)
+
+// Sıcaklık register'ını input (3 byte)
+let veri = yeni_dizi(3)
+hal_i2c_read_reg(I2C0, BME280_ADDR, REG_TEMP, veri, 3)
+
+// Ham veriyi işle
+let adc_T = (veri[0] &lt;&lt; 12) | (veri[1] &lt;&lt; 4) | (veri[2] &gt;&gt; 4)
+let sıcaklık = adc_T / 5120.0  // Basitleştirilmiş
+print("Sıcaklık: " + sıcaklık + "°C")
+</code></pre>
+
+<h3 id="adc-analog-okuma"><a class="header" href="#adc-analog-okuma">ADC - 아날로그 판독</a></h3>
+<pre><code class="language-berk">// ESP32 - Analog potansiyometre okuma
+import hal_adc
+
+// ADC1 Channel 0 (GPIO36)
+hal_adc_init(ADC1, CHANNEL_0, ADC_WIDTH_12BIT, ADC_ATTEN_11DB)
+
+while true do
+    // 0-4095 arası değer input (12-bit)
+    let ham = hal_adc_read(ADC1, CHANNEL_0)
+    
+    // Voltaja çevir (0-3.3V)
+    let voltaj = (ham / 4095.0) * 3.3
+    
+    print("ADC: " + ham + " -&gt; " + voltaj + "V")
+    hal_delay_ms(500)
+end
+</code></pre>
+
+<h3 id="pwm-motor-kontrolü"><a class="header" href="#pwm-motor-kontrolü">PWM - 모터 제어</a></h3>
+<pre><code class="language-berk">// STM32F4 - DC motor PWM kontrolü
+import hal_pwm
+
+// Timer2, Channel 1, Pin PA5
+// 1 kHz frekans, %50 duty cycle
+hal_pwm_init(TIMER2, CHANNEL_1, 1000, 50)
+
+// PWM'i başlat
+hal_pwm_start(TIMER2, CHANNEL_1)
+
+// Yavaşça hızlan (0% -&gt; 100%)
+let i = 0
+while i &lt;= 100 do
+    hal_pwm_set_duty(TIMER2, CHANNEL_1, i)
+    hal_delay_ms(50)
+    i = i + 1
+end
+
+// PWM'i durdur
+hal_pwm_stop(TIMER2, CHANNEL_1)
+</code></pre>
+
+<h3 id="wifi-esp32"><a class="header" href="#wifi-esp32">WiFi(ESP32)</a></h3>
+<pre><code class="language-berk">// ESP32 - WiFi bağlantısı and HTTP GET
+import hal_wifi
+import hal_http
+
+// WiFi'ye bağlan
+let ssid = "EvWiFi"
+let şifre = "12345678"
+
+hal_wifi_init()
+hal_wifi_connect(ssid, şifre, 10000)  // 10sn timeout
+
+if hal_wifi_is_connected() then do
+    print("WiFi bağlı!")
+    print("IP: " + hal_wifi_get_ip())
+    
+    // HTTP GET isteği
+    let url = "http://api.example.com/data"
+    let yanıt = hal_http_get(url)
+    print(yanıt)
+end
+</code></pre>
+
+<h2 id="-platform-karşılaştırması"><a class="header" href="#-platform-karşılaştırması">📊 플랫폼 비교</a></h2>
+
+<div class="table-wrapper"><table><thead><tr><th>특징</th><th>ESP32</th><th>STM32F4</th><th>RP2040</th><th>nRF52</th><th>아두이노</th></tr></thead><tbody>
+<tr><td><strong>빈도</strong></td><td>240MHz</td><td>168MHz</td><td>133MHz</td><td>64MHz</td><td>16MHz</td></tr>
+<tr><td><strong>숫양</strong></td><td>520KB</td><td>192KB</td><td>264KB</td><td>256KB</td><td>2KB</td></tr>
+<tr><td><strong>플래시</strong></td><td>4~16MB</td><td>512KB~1MB</td><td>2~16MB</td><td>1MB</td><td>32KB</td></tr>
+<tr><td><strong>FPU</strong></td><td>✅</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td></tr>
+<tr><td><strong>와이파이</strong></td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr><td><strong>블루투스</strong></td><td>✅</td><td>❌</td><td>❌</td><td>✅ (BLE)</td><td>❌</td></tr>
+<tr><td><strong>USB</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td><strong>DMA</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td><strong>ADC 분해능</strong></td><td>12비트</td><td>12비트</td><td>12비트</td><td>12비트</td><td>10비트</td></tr>
+<tr><td><strong>전력 소비</strong></td><td>가운데</td><td>가운데</td><td>낮은</td><td>매우 낮음</td><td>낮은</td></tr>
+<tr><td><strong>가격</strong></td><td>$4-8</td><td>$8-15</td><td>$4</td><td>$5-10</td><td>$2-5</td></tr>
+<tr><td><strong>사용</strong></td><td>사물인터넷, 와이파이</td><td>산업</td><td>만드는 사람</td><td>BLE, 웨어러블</td><td>교육</td></tr>
+</tbody></table>
+</div>
+
+<h2 id="-kullanım-senaryoları"><a class="header" href="#-kullanım-senaryoları">🎓 사용 시나리오</a></h2>
+
+<h3 id="iot-akıllı-ev-cihazı-esp32"><a class="header" href="#iot-akıllı-ev-cihazı-esp32">IoT 스마트홈 디바이스(ESP32)</a></h3>
+<pre><code class="language-berk">// Akıllı termostat - WiFi + sensör
+import hal_wifi, hal_adc, hal_gpio, hal_http
+
+function akıllı_termostat() do
+    // WiFi bağlan
+    hal_wifi_connect("EvWiFi", "sifre123", 10000)
+    
+    // Sıcaklık sensörü (LM35 - ADC)
+    hal_adc_init(ADC1, CHANNEL_0, ADC_WIDTH_12BIT, ADC_ATTEN_11DB)
+    
+    // Röle çıkışı (ısıtıcı kontrolü)
+    hal_gpio_init(GPIO_ROLE, GPIO_MODE_OUTPUT)
+    
+    while true do
+        // Sıcaklık input
+        let adc = hal_adc_read(ADC1, CHANNEL_0)
+        let sıcaklık = (adc / 4095.0) * 330.0  // LM35: 10mV/°C
+        
+        // Buluta gönder
+        let url = "http://api.iot.com/temp?value=" + sıcaklık
+        hal_http_post(url, "")
+        
+        // Isıtıcı kontrolü (20°C altı)
+        if sıcaklık &lt; 20.0 then do
+            hal_gpio_write(GPIO_ROLE, 1)  // Isıtıcı aç
+        else do
+            hal_gpio_write(GPIO_ROLE, 0)  // Isıtıcı kapat
+        end
+        
+        hal_delay_ms(60000)  // 1 dakika sleep
+    end
+end
+</code></pre>
+
+<h3 id="motor-kontrol-sistemi-stm32f4"><a class="header" href="#motor-kontrol-sistemi-stm32f4">엔진 제어 시스템(STM32F4)</a></h3>
+<pre><code class="language-berk">// BLDC motor kontrolü - PWM + encoder + PID
+import hal_pwm, hal_timer, hal_gpio
+
+let hedef_hız = 1000  // RPM
+let encoder_sayac = 0
+
+// Encoder interrupt callback
+function encoder_callback() do
+    encoder_sayac = encoder_sayac + 1
+end
+
+function motor_kontrol() do
+    // PWM başlat (20 kHz)
+    hal_pwm_init(TIMER1, CHANNEL_1, 20000, 0)
+    hal_pwm_start(TIMER1, CHANNEL_1)
+    
+    // Encoder interrupt
+    hal_gpio_init_interrupt(GPIO_ENC_A, GPIO_MODE_INPUT_PULLUP, 
+                           GPIO_INT_RISING, encoder_callback)
+    
+    // PID değişkenleri
+    let Kp = 0.5, Ki = 0.1, Kd = 0.01
+    let integral = 0.0, son_hata = 0.0
+    
+    while true do
+        // Hız hesapla (encoder sayacından)
+        let anlık_hız = encoder_sayac * 60  // RPM
+        encoder_sayac = 0
+        
+        // PID kontrol
+        let hata = hedef_hız - anlık_hız
+        integral = integral + hata
+        let türev = hata - son_hata
+        
+        let çıkış = Kp*hata + Ki*integral + Kd*türev
+        son_hata = hata
+        
+        // PWM duty cycle ayarla (0-100%)
+        let duty = math_clamp(çıkış, 0.0, 100.0)
+        hal_pwm_set_duty(TIMER1, CHANNEL_1, duty)
+        
+        hal_delay_ms(100)  // 10 Hz kontrol döngüsü
+    end
+end
+</code></pre>
+
+<h3 id="düşük-güç-sensör-düğümü-nrf52"><a class="header" href="#düşük-güç-sensör-düğümü-nrf52">저전력 센서 노드(nRF52)</a></h3>
+<pre><code class="language-berk">// BLE beacon + sensör - Ultra-low power
+import hal_ble, hal_adc, hal_power
+
+function ble_sensör_beacon() do
+    // BLE başlat
+    hal_ble_init("BERK_Sensör")
+    hal_ble_set_advertising(100)  // 100ms interval
+    
+    // ADC başlat (sıcaklık sensörü)
+    hal_adc_init(ADC1, CHANNEL_0, ADC_WIDTH_12BIT, ADC_GAIN_1_6)
+    
+    while true do
+        // Sensör input
+        let sıcaklık = hal_adc_read_temp()  // Internal temp
+        let batarya = hal_adc_read_vbat()   // Battery voltage
+        
+        // BLE advertising paketine push
+        hal_ble_update_data("temp", sıcaklık)
+        hal_ble_update_data("vbat", batarya)
+        
+        // Deep sleep (1 dakika)
+        hal_power_deep_sleep(60000)  // 60sn uyku, ~3µA
+        // Wake-up sonrası buradan devam eder
+    end
+end
+</code></pre>
+
+<h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 구현 현황</a></h2>
+
+<div class="table-wrapper"><table><thead><tr><th>범주</th><th>상황</th><th>모듈 수</th><th>완성</th></tr></thead><tbody>
+<tr><td>기본 주변기기</td><td>✅</td><td>7</td><td>%100</td></tr>
+<tr><td>타이머</td><td>✅</td><td>4</td><td>%100</td></tr>
+<tr><td>DMA 및 메모리</td><td>✅</td><td>4</td><td>%95</td></tr>
+<tr><td>네트워크 및 무선</td><td>✅</td><td>5</td><td>%90</td></tr>
+<tr><td>전원 관리</td><td>✅</td><td>4</td><td>%100</td></tr>
+<tr><td>디스플레이 인터페이스</td><td>✅</td><td>5</td><td>%85</td></tr>
+<tr><td>센서 인터페이스</td><td>⏳</td><td>4</td><td>%70</td></tr>
+</tbody></table>
+</div>
+
+<p><strong>일반 상태: 95% 완료</strong></p>
+
+<h2 id="-roadmap"><a class="header" href="#-roadmap">🎯로드맵</a></h2>
+
+<h3 id="v10-ocak-2026"><a class="header" href="#v10-ocak-2026">v1.0(2026년 1월)</a></h3>
+<ul>
+<li>✅ 7개 플랫폼 완벽 지원</li>
+<li>✅ 33개의 HAL 모듈</li>
+<li>⏳ RTOS 통합(FreeRTOS)</li>
+<li>⏳ USB HID/CDC 수업</li>
+<li>⏳ CAN-FD 프로토콜</li>
+</ul>
+
+<h3 id="v15-gelecek"><a class="header" href="#v15-gelecek">v1.5+(미래)</a></h3>
+<ul>
+<li>그래픽 라이브러리(LVGL, TouchGFX)</li>
+<li>LoRa/LoRaWAN 지원</li>
+<li>산업용 프로토콜(Modbus, Profinet)</li>
+<li>안전에 중요한 기능(MISRA-C 준수)</li>
+<li>새로운 플랫폼(ESP32-C6, STM32H7)</li>
+</ul>
+
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 추가 정보</a></h2>
+<ul>
+<li><a href="../stdlib/ko_overview.html">표준 라이브러리 개요</a></li>
+<li><a href="https://github.com/ArslantasM/berk">GitHub 저장소</a></li>
+<li><a href="../reference/ko_std-library.html">API 참조</a></li>
+<li><a href="../contributing/ko_code.html">기여 가이드</a></li>
+</ul>
+
+<hr>
+<p><strong>준비됐나요?</strong>HAL 모듈을 사용하여 임베디드 시스템 프로젝트를 시작하세요!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/ko_overview.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../ko_index.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/ko_overview.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../ko_index.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

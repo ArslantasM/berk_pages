@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::crc - CRC32 계산기 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 상태::crc</h1>
+<p>하드웨어 CRC32 계산기 - 빠른 데이터 무결성 검사</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360줄</span>
+<span class="stat-badge">~12가지 기능</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>CRC 모듈은 하드웨어 가속 CRC32 계산을 제공합니다. 다항식 0x04C11DB7(이더넷 표준)을 사용합니다. 펌웨어 무결성 검사, 플래시 검증, 통신 프로토콜 및 데이터 손상 감지가 중요합니다. 소프트웨어 CRC보다 10~100배 빠릅니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li><strong>하드웨어 CRC32:</strong>단일 주기 32비트 CRC 계산</li>
+<li><strong>표준 다항식:</strong>0x04C11DB7(이더넷, ZIP, PNG)</li>
+<li><strong>빠른 성능:</strong>32비트 워드당 1클럭 사이클</li>
+<li><strong>초기값:</strong>구성 가능(기본값 0xFFFFFFFF)</li>
+<li><strong>DMA 호환:</strong>DMA 전송과 함께 사용할 수 있습니다.</li>
+<li><strong>축적:</strong>순차적 CRC 계산 지원</li>
+<li><strong>재설정 기능:</strong>초기값으로의 빠른 재설정</li>
+<li><strong>저전력:</strong>최소 전력 소비</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::crc, hal::rcc
+
+// Enable CRC clock
+rcc.periph_clock_enable(rcc.PERIPH_CRC)
+
+// Initialize CRC
+crc.init()
+
+// Calculate CRC32 of data
+let data: Array&lt;int&gt; = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+let checksum = crc.calculate(data)
+
+io.yazdir_satır("CRC32: 0x" + checksum.onaltılıya())
+
+// Verify data
+if crc.verify(data, checksum) do
+    io.yazdir_satır("Data integrity OK")
+end</code></pre>
+
+<h2>📦 유형 및 열거형</h2>
+<pre><code>// CRC Configuration
+struct CRCConfig do
+    polynomial: int = 0x04C11DB7,  // Default Ethernet polynomial
+    initial_value: int = 0xFFFFFFFF,
+    input_reverse: bool = false,
+    output_reverse: bool = false
+end
+
+// CRC Result
+struct CRCResult do
+    value: int,
+    valid: bool
+end</code></pre>
+
+<h2>💡 예 1: 펌웨어 무결성 검사</h2>
+<div class="example-box">
+<h3>문제: 플래시의 펌웨어가 손상되지 않았는지 확인</h3>
+<pre><code>import hal::crc, hal::flash
+
+const FIRMWARE_START: int = 0x0800_8000  // Application start
+const FIRMWARE_SIZE: int = 128 * 1024     // 128 KB
+const CRC_STORAGE: int = 0x0807_FFFC      // Last 4 bytes of app region
+
+function firmware_calculate_crc() -&gt; int do
+    crc.reset()
+    
+    // Calculate CRC of firmware (32-bit words)
+    let word_count = FIRMWARE_SIZE / 4
+    let addr = FIRMWARE_START
+    
+    for i forde 0..word_count do
+        let word = *(addr cast *int)
+        crc.accumulate(word)
+        addr = addr + 4
+    end
+    
+    return crc.get_value()
+end
+
+function firmware_store_crc(checksum: int) do
+    // Unlock flash
+    flash.unlock()
+    
+    // Erase last page
+    flash.erase_page(CRC_STORAGE)
+    
+    // Write CRC
+    flash.program_word(CRC_STORAGE, checksum)
+    
+    flash.lock()
+    
+    io.yazdir_satır("CRC stored: 0x" + checksum.onaltılıya())
+end
+
+function firmware_verify() -&gt; bool do
+    // Read stored CRC
+    let stored_crc = *(CRC_STORAGE cast *int)
+    
+    // Calculate current CRC
+    let calculated_crc = firmware_calculate_crc()
+    
+    io.yazdir_satır("Stored CRC:     0x" + stored_crc.onaltılıya())
+    io.yazdir_satır("Calculated CRC: 0x" + calculated_crc.onaltılıya())
+    
+    if stored_crc == calculated_crc do
+        io.yazdir_satır("✅ Firmware integrity OK")
+        return true
+    else do
+        io.yazdir_satır("❌ Firmware corrupted!")
+        return false
+    end
+end
+
+function main() do
+    crc.init()
+    
+    // On firmware update: store CRC
+    // firmware_store_crc(firmware_calculate_crc())
+    
+    // On boot: verify firmware
+    if not firmware_verify() do
+        io.yazdir_satır("ERROR: Cannot start corrupted firmware")
+        // Enter safe mode or bootloader
+        loop do end  // Halt
+    end
+    
+    io.yazdir_satır("Starting application...")
+end</code></pre>
+<p><strong>결과:</strong>부팅 중에 펌웨어 손상이 감지되었습니다. 안전한 시동이 보장됩니다.</p>
+</div>
+
+<h2>💡 예 2: UART 패킷 확인</h2>
+<div class="example-box">
+<h3>문제: 직렬 통신에서 패킷 무결성 검사</h3>
+<pre><code>import hal::crc, hal::usart
+
+struct Packet do
+    header: int8 = 0xAA,
+    length: int8,
+    data: Array&lt;int8&gt;,
+    crc32: int
+end
+
+function packet_calculate_crc(pkt: Packet) -&gt; int do
+    crc.reset()
+    
+    // CRC over header + length + data
+    crc.accumulate_byte(pkt.header)
+    crc.accumulate_byte(pkt.length)
+    
+    for byte forde pkt.data do
+        crc.accumulate_byte(byte)
+    end
+    
+    return crc.get_value()
+end
+
+function packet_send(pkt: Packet) do
+    // Calculate CRC
+    pkt.crc32 = packet_calculate_crc(pkt)
+    
+    // Send packet
+    usart.write_byte(usart.USART1, pkt.header)
+    usart.write_byte(usart.USART1, pkt.length)
+    
+    for byte forde pkt.data do
+        usart.write_byte(usart.USART1, byte)
+    end
+    
+    // Send CRC (big-endian)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 24) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 16) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 8) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, pkt.crc32 &amp; 0xFF cast int8)
+end
+
+function packet_receive() -&gt; Option&lt;Packet&gt; do
+    // Read header
+    let header = usart.read_byte(usart.USART1)
+    if header != 0xAA do
+        return Option.Hiçbiri
+    end
+    
+    // Read length
+    let length = usart.read_byte(usart.USART1)
+    
+    // Read data
+    let data = Array.new(length)
+    for i forde 0..length do
+        data[i] = usart.read_byte(usart.USART1)
+    end
+    
+    // Read CRC
+    let crc_recv = 0 cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    
+    // Create packet
+    let pkt = Packet do
+        header: header,
+        length: length,
+        data: data,
+        crc32: crc_recv
+    end
+    
+    // Verify CRC
+    let crc_calc = packet_calculate_crc(pkt)
+    
+    if crc_calc == crc_recv do
+        io.yazdir_satır("✅ Packet CRC OK")
+        return Option.Some(pkt)
+    else do
+        io.yazdir_satır("❌ Packet CRC mismatch!")
+        return Option.Hiçbiri
+    end
+end</code></pre>
+<p><strong>결과:</strong>UART를 통해 들어오는 손상된 패킷은 거부됩니다. 데이터 무결성이 보장됩니다.</p>
+</div>
+
+<h2>💡 예 3: SD 카드 파일 확인</h2>
+<div class="example-box">
+<h3>문제: SD 카드에서 읽은 파일이 손상되지 않았는지 확인</h3>
+<pre><code>import hal::crc, hal::sdio
+
+function file_calculate_crc(filename: String) -&gt; int do
+    // Open file
+    let file = sdio.file_open(filename, sdio.MODE_READ)
+    
+    if not file.is_valid() do
+        io.yazdir_satır("ERROR: Cannot open file")
+        return 0
+    end
+    
+    crc.reset()
+    
+    // Read file in 512-byte blocks
+    let buffer: Array&lt;int8&gt; = Array.new(512)
+    
+    loop do
+        let bytes_read = sdio.file_read(file, buffer)
+        
+        if bytes_read == 0 do
+            break  // EOF
+        end
+        
+        // Process full 32-bit words
+        for i forde 0..(bytes_read/4) do
+            let word = (buffer[i*4] cast int) |
+                           ((buffer[i*4+1] cast int) &lt;&lt; 8) |
+                           ((buffer[i*4+2] cast int) &lt;&lt; 16) |
+                           ((buffer[i*4+3] cast int) &lt;&lt; 24)
+            crc.accumulate(word)
+        end
+        
+        // Handle remaining bytes
+        let remainder = bytes_read % 4
+        if remainder &gt; 0 do
+            for i forde (bytes_read - remainder)..bytes_read do
+                crc.accumulate_byte(buffer[i])
+            end
+        end
+    end
+    
+    sdio.file_close(file)
+    
+    return crc.get_value()
+end
+
+function file_verify(filename: String, expected_crc: int) -&gt; bool do
+    io.yazdir_satır("Verifying " + filename + "...")
+    
+    let calculated = file_calculate_crc(filename)
+    
+    io.yazdir_satır("Expected:   0x" + expected_crc.onaltılıya())
+    io.yazdir_satır("Calculated: 0x" + calculated.onaltılıya())
+    
+    return calculated == expected_crc
+end</code></pre>
+<p><strong>사용:</strong>SD 카드에서 읽는 동안 펌웨어 업데이트 파일이 손상되지 않도록 보장합니다.</p>
+</div>
+
+<h2>📚 API 참조</h2>
+<h3>핵심 기능</h3>
+<pre><code>// CRC initialization
+function init()
+function deinit()
+function reset()  // Reset to initial value
+
+// CRC calculation
+function calculate(data: Array&lt;int&gt;) -&gt; int
+function accumulate(word: int)  // Add 32-bit word
+function accumulate_byte(byte: int8)  // Add 8-bit byte
+
+// Get result
+function get_value() -&gt; int
+
+// Verification
+function verify(data: Array&lt;int&gt;, expected: int) -&gt; bool</code></pre>
+
+<div class="warning">
+<strong>⚠️ 중요 사항:</strong>
+<ul>
+<li><strong>단어 정렬:</strong>CRC 하드웨어는 32비트 워드 정렬로 작동합니다.</li>
+<li><strong>바이트 순서:</strong>바이트 순서에 대한 리틀 엔디안 프로세서를 고려해야 합니다.</li>
+<li><strong>초기값:</strong>endra 0xFFFFFFFF 재설정(0x00000000 참고)</li>
+<li><strong>최종 XOR:</strong>일부 프로토콜에는 최종 XOR 0xFFFFFFFF가 필요합니다.</li>
+</ul>
+</div>
+
+<h2>🖥️ 플랫폼 지원</h2>
+<table>
+<tbody><tr>
+<th>플랫폼</th>
+<th>CRC 지원</th>
+<th>다항식</th>
+<th>속도</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ 예</td>
+<td>0x04C11DB7</td>
+<td>1사이클/워드</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ 예</td>
+<td>0x04C11DB7</td>
+<td>1사이클/워드</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ 예</td>
+<td>구성 가능</td>
+<td>1사이클/워드</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ 예</td>
+<td>구성 가능</td>
+<td>1사이클/워드</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>✅ 예</td>
+<td>0x04C11DB7</td>
+<td>1사이클/워드</td>
+</tr>
+</tbody></table>
+
+<h2>✅ 모범 사례</h2>
+<ul>
+<li>✅ <strong>펌웨어 확인:</strong>부팅 중 펌웨어 CRC 확인</li>
+<li>✅ <strong>의사소통:</strong>패키지에서 CRC 사용(특히 무선)</li>
+<li>✅ <strong>저장:</strong>CRC용 플래시/SD 카드에서 데이터 읽기</li>
+<li>✅ <strong>사용 전 재설정:</strong>각 계산 전에 crc.reset()을 호출하세요.</li>
+<li>❌ <strong>암호화폐용 아님:</strong>CRC는 보안을 위한 것이 아니라 오류 감지를 위한 것입니다.</li>
+<li>❌ <strong>바이트 정렬:</strong>정렬되지 않은 액세스로 인해 성능 손실이 발생함</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><a href="ko_hal-flash-en.html">상태::플래시</a>- 펌웨어 무결성 검증</li>
+<li><a href="ko_hal-usart-en.html">상태::usart</a>- UART 패킷 CRC</li>
+<li><a href="ko_hal-sdio-en.html">상태::sdio</a>- SD 카드 파일 확인</li>
+<li><a href="ko_hal-dma-en.html">상태::dma</a>- CRC 계산 기능이 있는 DMA</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-en.html">🔙 HAL 모듈</a> | 
+<a href="ko_hal-crc-en.html">🌐터키어</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

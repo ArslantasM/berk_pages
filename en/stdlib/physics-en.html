@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>physics - Physics Simulation | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚛️ physics</h1>
+<p>Physics Simulation Engine</p>
+<div style="margin-top:15px">
+<span class="stat-badge">103 functions</span>
+<span class="stat-badge">748 lines</span>
+<span class="stat-badge">Classical Mechanics</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Physics simulation: kinematics, dynamics, collision detection, forces, energy calculations.</p>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import physics
+
+let world = physics.World.new()
+world.set_gravity(0.0, -9.81, 0.0)
+
+let body = world.create_body()
+body.set_position(0.0, 10.0, 0.0)
+body.set_mass(1.0)
+
+world.step(0.016)  // 60 FPS</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← All Modules</a> | <a href="en_physics-tr.html">🇹🇷 Turkish</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

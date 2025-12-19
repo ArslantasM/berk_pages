@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>ग्राफ़िक्स - ग्राफ़िक्स और रेंडरिंग | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎨 ग्राफ़िक्स - ग्राफ़िक्स और रेंडरिंग</h1>
+<p>ओपनजीएल, वल्कन, 2डी/3डी ग्राफिक्स, शेडर्स, टेक्सचर</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">163</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,624</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">53KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import graphics
+
+// Window oluştur
+let pencere = graphics.window_create("BERK Graphics", 800, 600)
+
+// OpenGL context
+let gl = graphics.gl_context_create(pencere)
+graphics.gl_make_current(gl)
+
+// Shader program
+let vertex_shader = graphics.shader_compile(VERTEX_SHADER, vertex_code)
+let fragment_shader = graphics.shader_compile(FRAGMENT_SHADER, fragment_code)
+let program = graphics.program_link(vertex_shader, fragment_shader)
+
+// Vertex data
+let vertices = [
+    -0.5, -0.5, 0.0,  // sol alt
+     0.5, -0.5, 0.0,  // sağ alt
+     0.0,  0.5, 0.0   // üst
+]
+
+let vbo = graphics.buffer_create()
+graphics.buffer_data(vbo, vertices)
+
+// Render loop
+for do
+    graphics.clear(0.2, 0.3, 0.3, 1.0)
+    
+    graphics.program_use(program)
+    graphics.draw_arrays(TRIANGLES, 0, 3)
+    
+    graphics.window_swap_buffers(pencere)
+    graphics.poll_events()
+    
+    if graphics.window_should_close(pencere) then do
+        kır
+    end
+end</code></pre>
+<h2>📚विशेषताएं</h2>
+<ul>
+<li><strong>ओपनजीएल 3.3+:</strong>आधुनिक ओपनजीएल एपीआई</li>
+<li><strong>वालकैन:</strong>निम्न-स्तरीय ग्राफ़िक्स एपीआई (प्रायोगिक)</li>
+<li><strong>शेडर्स:</strong>जीएलएसएल वर्टेक्स/फ्रैगमेंट/ज्यामिति/कंप्यूट शेडर्स</li>
+<li><strong>बनावट:</strong>2डी/3डी बनावट, मिपमैप्स, फ़िल्टरिंग</li>
+<li><strong>फ़्रेमबफ़र्स:</strong>रेंडर-टू-टेक्सचर, पोस्ट-प्रोसेसिंग</li>
+<li><strong>3डी गणित:</strong>आव्यूह, सदिश, चतुर्भुज</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>कैमरे के साथ बनावट वाला घन</h3>
+<pre><code>import graphics, math, image
+
+// Cube vertices with texture coordinates
+let cube_vertices = [
+    // position        // texcoord
+    -0.5, -0.5, -0.5,  0.0, 0.0,
+     0.5, -0.5, -0.5,  1.0, 0.0,
+     0.5,  0.5, -0.5,  1.0, 1.0,
+    // ... (diğer yüzler)
+]
+
+// Load texture
+let texture = graphics.texture_create()
+let img = image.load("crate.png")
+graphics.texture_data(texture, img.genişlik, img.yükseklik, img.veri)
+graphics.texture_set_filter(texture, LINEAR, LINEAR_MIPMAP_LINEAR)
+graphics.texture_generate_mipmap(texture)
+
+// Camera
+let kamera = do
+    pozisyon: [0.0, 0.0, 3.0],
+    hedef: [0.0, 0.0, 0.0],
+    yukarı: [0.0, 1.0, 0.0]
+end
+
+// Transformation matrices
+let model = math.mat4_rotate_y(graphics.time() * 50.0)
+let view = math.mat4_look_at(kamera.pozisyon, kamera.hedef, kamera.yukarı)
+let projection = math.mat4_perspective(45.0, 800.0/600.0, 0.1, 100.0)
+
+// Render
+graphics.program_use(program)
+graphics.program_set_mat4(program, "model", model)
+graphics.program_set_mat4(program, "view", view)
+graphics.program_set_mat4(program, "projection", projection)
+graphics.texture_bind(texture, 0)
+graphics.draw_arrays(TRIANGLES, 0, 36)</code></pre>
+</div>
+<div class="example-box">
+<h3>प्रसंस्करण के बाद का प्रभाव</h3>
+<pre><code>import graphics
+
+// Framebuffer oluştur
+let fbo = graphics.framebuffer_create()
+let color_texture = graphics.texture_create()
+graphics.texture_data(color_texture, 800, 600, yok)
+graphics.framebuffer_attach_texture(fbo, color_texture)
+
+// Post-processing shader (grayscale)
+let post_shader = graphics.program_create("
+    #version 330
+    in vec2 TexCoord;
+    out vec4 FragColor;
+    uniform sampler2D screenTexture;
+    
+    void main() {
+        vec3 color = texture(screenTexture, TexCoord).rgb;
+        float gray = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
+        FragColor = vec4(gray, gray, gray, 1.0);
+    }
+")
+
+// Render loop
+for do
+    // 1. Render sahneyi framebuffer'a
+    graphics.framebuffer_bind(fbo)
+    graphics.clear(0.1, 0.1, 0.1, 1.0)
+    render_scene()
+    
+    // 2. Post-processing uygula
+    graphics.framebuffer_bind_default()
+    graphics.clear(0.0, 0.0, 0.0, 1.0)
+    graphics.program_use(post_shader)
+    graphics.texture_bind(color_texture, 0)
+    graphics.draw_fullscreen_quad()
+    
+    graphics.window_swap_buffers(pencere)
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

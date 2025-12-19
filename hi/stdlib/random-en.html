@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>यादृच्छिक - यादृच्छिक पूर्णांक पीढ़ी | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎲 यादृच्छिक - यादृच्छिक पूर्णांक पीढ़ी</h1>
+<p>आरएनजी, वितरण, नमूनाकरण, फेरबदल</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">44</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">598</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">19KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import random
+
+// Random integer [0, 100)
+let x = random.range(0, 100)
+
+// Random float [0.0, 1.0)
+let f = random.float()
+
+// Random boolean
+let b = random.bool()
+
+// Random choice
+let renkler = ["kırmızı", "yeşil", "mavi"]
+let seçilen = random.match(renkler)
+
+// Shuffle
+let deste = [1, 2, 3, 4, 5]
+random.shuffle(deste)
+
+// Seed (reproducible)
+random.seed(42)
+print(random.range(0, 100))  // each zaman aynı Result
+
+// Distributions
+let normal = random.normal(0.0, 1.0)  // μ=0, σ=1
+let uniform = random.uniform(10.0, 20.0)
+let exponential = random.exponential(1.5)</code></pre>
+<h2>📚 आरएनजी एल्गोरिदम</h2>
+<ul>
+<li><strong>पीसीजी:</strong>डिफ़ॉल्ट आरएनजी (तेज़, अच्छी गुणवत्ता)</li>
+<li><strong>ज़ोरशिफ्ट:</strong>बहुत तेज</li>
+<li><strong>मेरसेन ट्विस्टर:</strong>उच्च गुणवत्ता</li>
+<li><strong>चाचा:</strong>क्रिप्टोग्राफ़िक रूप से सुरक्षित</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>मोंटे कार्लो सिमुलेशन (पाई अनुमान)</h3>
+<pre><code>import random, math
+
+function pi_tahmini(numune_sayısı: int) -&gt; float do
+    let daire_içi = 0
+    
+    each i in range(0, numune_sayısı) for do
+        let x = random.float()
+        let y = random.float()
+        
+        // Nokta birim daire in mi?
+        if (x*x + y*y) &lt; 1.0  do
+            daire_içi = daire_içi + 1
+        end
+    end
+    
+    // Pi ≈ 4 * (daire içi nokta sayısı / sum nokta sayısı)
+    return 4.0 * daire_içi.float() / numune_sayısı.float()
+end
+
+let tahmin = pi_tahmini(1000000)
+print("Pi tahmini: " + tahmin.yazıya())
+print("Gerçek Pi: " + math.PI.yazıya())
+print("Error: " + math.abs(tahmin - math.PI).yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>भारित यादृच्छिक चयन</h3>
+<pre><code>import random
+
+function weighted_choice(items: Dizi, weights: Dizi) -&gt; herhangi do
+    // Kümülatif ağırlıklar
+    let total = 0.0
+    let cumulative = []
+    
+    each w in weights for do
+        total = total + w
+        cumulative.push(total)
+    end
+    
+    // Random seçim
+    let r = random.float() * total
+    
+    each i in range(0, cumulative.len()) for do
+        if r &lt; cumulative[i]  do
+            return items[i]
+        end
+    end
+    
+    return items[items.len() - 1]
+end
+
+// Example: Loot sistemi (oyun)
+let loot = ["Common", "Uncommon", "Rare", "Epic", "Legendary"]
+let chances = [50.0, 30.0, 15.0, 4.0, 1.0]  // %
+
+let bulunan = do end
+each i in range(0, 100) for do
+    let item = weighted_choice(loot, chances)
+    
+    if bulunan.içerir_mi(item)  do
+        bulunan[item] = bulunan[item] + 1
+    end else do
+        bulunan[item] = 1
+    end
+end
+
+each (item, count) in bulunan for do
+    print(item + ": " + count.yazıya() + " (" + (count.float()).yazıya() + "%)")
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

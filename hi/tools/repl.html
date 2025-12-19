@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>आरईपीएल - इंटरएक्टिव शेल - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/tools/repl.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="repl---etkileşimli-kabuk"><a class="header" href="#repl---etkileşimli-kabuk">आरईपीएल - इंटरैक्टिव शैल</a></h1>
+<p>बर्क आरईपीएल (रीड-एवल-प्रिंट लूप),<strong>तीव्र प्रोटोटाइपिंग</strong>और<strong>सीखना</strong>यह पायथन के लिए एक इंटरैक्टिव प्रोग्रामिंग वातावरण है जो REPL की तरह त्वरित कोड निष्पादन प्रदान करता है।</p>
+<h2 id="repl-başlatma"><a class="header" href="#repl-başlatma">आरईपीएल आरंभीकरण</a></h2>
+<pre><code class="language-bash"># Basit başlatma
+berk-lang repl
+
+# Veya
+berk-lang
+</code></pre>
+<p>आपको निम्न स्क्रीन दिखाई देगी:</p>
+<pre><code>BERK v0.9.4 - Interactive Shell
+Type ':help' for help, ':quit' to exit
+
+berk&gt;
+</code></pre>
+<h2 id="temel-kullanım"><a class="header" href="#temel-kullanım">बुनियादी उपयोग</a></h2>
+<h3 id="basit-ifadeler"><a class="header" href="#basit-ifadeler">सरल अभिव्यक्तियाँ</a></h3>
+<pre><code class="language-berk">berk&gt; 2 + 2
+4
+
+berk&gt; "Merhaba" + " Dünya"
+"Merhaba Dünya"
+
+berk&gt; [1, 2, 3].uzunluk()
+3
+</code></pre>
+<h3 id="değişken-tanımlama"><a class="header" href="#değişken-tanımlama">परिवर्तनीय परिभाषा</a></h3>
+<pre><code class="language-berk">berk&gt; let x = 42
+berk&gt; let isim = "Ali"
+berk&gt; print(isim + " - " + x)
+Ali - 42
+</code></pre>
+<h3 id="fonksiyon-tanımlama"><a class="header" href="#fonksiyon-tanımlama">कार्य परिभाषा</a></h3>
+<pre><code class="language-berk">berk&gt; function topla(a: sayı, b: sayı) -&gt; sayı do
+  ...     return a + b
+  ... end
+berk&gt; topla(5, 3)
+8
+</code></pre>
+<h2 id="özel-komutlar"><a class="header" href="#özel-komutlar">विशेष आदेश</a></h2>
+<table><thead><tr><th>आज्ञा</th><th>स्पष्टीकरण</th></tr></thead><tbody>
+<tr><td><code data-no-translate="true">:help</code></td><td>सहायता मेनू</td></tr>
+<tr><td><code data-no-translate="true">:quit</code> / <code data-no-translate="true">:q</code></td><td>आरईपीएल से बाहर निकलें</td></tr>
+<tr><td><code data-no-translate="true">:clear</code></td><td>साफ़ स्क्रीन</td></tr>
+<tr><td><code data-no-translate="true">:reset</code></td><td>सभी परिभाषाएँ रीसेट करें</td></tr>
+<tr><td><code data-no-translate="true">:vars</code></td><td>परिभाषित चरों की सूची बनाएं</td></tr>
+<tr><td><code data-no-translate="true">:funcs</code></td><td>परिभाषित कार्यों की सूची बनाएं</td></tr>
+<tr><td><code data-no-translate="true">:type <expr></expr></code></td><td>अभिव्यक्ति का प्रकार दिखाएँ</td></tr>
+<tr><td><code data-no-translate="true">:load <file></file></code></td><td>फ़ाइल अपलोड करें</td></tr>
+<tr><td><code data-no-translate="true">:save <file></file></code></td><td>फ़ाइल में इतिहास सहेजें</td></tr>
+</tbody></table>
+<h3 id="kullanım-örnekleri"><a class="header" href="#kullanım-örnekleri">उपयोग के उदाहरण</a></h3>
+<pre><code class="language-berk">berk&gt; :type 42
+sayı
+
+berk&gt; :type "merhaba"
+String
+
+berk&gt; :vars
+x: sayı = 42
+isim: String = "Ali"
+
+berk&gt; :load hesap.berk
+✓ hesap.berk yüklendi
+
+berk&gt; :quit
+Hoşça kalın!
+</code></pre>
+<h2 id="çok-satırlı-ifadeler"><a class="header" href="#çok-satırlı-ifadeler">बहु-पंक्ति अभिव्यक्तियाँ</a></h2>
+<pre><code class="language-berk">berk&gt; function fibonacci(n: sayı) -&gt; sayı do
+  ...     if n &lt;= 1 do
+  ...         return n
+  ...     end
+  ...     return fibonacci(n-1) + fibonacci(n-2)
+  ... end
+berk&gt; fibonacci(10)
+55
+</code></pre>
+<h2 id="otomatik-tamamlama"><a class="header" href="#otomatik-tamamlama">स्वत: पूर्ण</a></h2>
+<p>टैब कुंजी के साथ स्वत: पूर्ण:</p>
+<pre><code class="language-berk">berk&gt; let List = [1, 2, 3]
+berk&gt; List.uz<tab>
+    len()
+berk&gt; List.len()
+3
+</tab></code></pre>
+<h2 id="geçmiş-navigation"><a class="header" href="#geçmiş-navigation">इतिहास (नेविगेशन)</a></h2>
+<ul>
+<li><strong>↑/↓</strong>: पिछले आदेशों को नेविगेट करें</li>
+<li><strong>Ctrl+R</strong>: अतीत में खोजें</li>
+<li><strong>Ctrl+C</strong>: वर्तमान लाइन रद्द करें</li>
+<li><strong>Ctrl+D</strong>: आरईपीएल से बाहर निकलें</li>
+</ul>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">मॉड्यूल उपयोग</a></h2>
+<pre><code class="language-berk">berk&gt; kullan math;
+berk&gt; math::sqrt(16.0)
+4.0
+
+berk&gt; kullan string;
+berk&gt; string::büyüt("merhaba")
+"MERHABA"
+</code></pre>
+<h2 id="performans-ölçümü"><a class="header" href="#performans-ölçümü">परफॉरमेंस नापना</a></h2>
+<pre><code class="language-berk">berk&gt; :time fibonacci(30)
+Sonuç: 832040
+Süre: 234 ms
+</code></pre>
+<h2 id="hata-ayıklama"><a class="header" href="#hata-ayıklama">डिबगिंग</a></h2>
+<pre><code class="language-berk">berk&gt; let x: sayı = "merhaba"
+Error[E0308]: type uyuşmazlığı
+  beklenen `sayı`, bulundu `String`
+
+berk&gt; :last-error
+Detaylı hata bilgisi...
+</code></pre>
+<h2 id="konfigürasyon"><a class="header" href="#konfigürasyon">विन्यास</a></h2>
+<p><code data-no-translate="true">~/.berk/repl.toml</code>फ़ाइल के साथ अनुकूलन:</p>
+<pre><code class="language-toml">[prompt]
+style = "colorful"  # minimal, colorful, classic
+show_type = true    # Tip bilgisi göster
+
+[history]
+max_size = 1000
+save_path = "~/.berk/repl_history"
+
+[keybindings]
+clear = "Ctrl+L"
+quit = "Ctrl+D"
+</code></pre>
+<h2 id="repl-ile-öğrenme"><a class="header" href="#repl-ile-öğrenme">आरईपीएल के साथ सीखना</a></h2>
+<h3 id="örnek-1-fibonacci"><a class="header" href="#örnek-1-fibonacci">उदाहरण 1: फाइबोनैचि</a></h3>
+<pre><code class="language-berk">berk&gt; :load stdlib/examples/fibonacci.berk
+berk&gt; for i in 0..10 do
+  ...     print(fibonacci(i))
+  ... end
+0 1 1 2 3 5 8 13 21 34
+</code></pre>
+<h3 id="örnek-2-string-manipülasyonu"><a class="header" href="#örnek-2-string-manipülasyonu">उदाहरण 2: स्ट्रिंग हेरफेर</a></h3>
+<pre><code class="language-berk">berk&gt; let String = "Merhaba Dünya"
+berk&gt; string::split(String, " ")
+["Merhaba", "Dünya"]
+berk&gt; string::tersine_çevir(String)
+"aynüD abahreM"
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">सारांश</a></h2>
+<ul>
+<li>✅ रैपिड प्रोटोटाइपिंग</li>
+<li>✅ स्वतः पूर्ण</li>
+<li>✅ इतिहास नेविगेशन</li>
+<li>✅ बहु-पंक्ति अभिव्यक्तियाँ</li>
+<li>✅ मॉड्यूल समर्थन</li>
+<li>✅ प्रदर्शन माप</li>
+<li>✅ सीखने के लिए आदर्श</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../compiler/hi_cross-compile.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../tools/hi_vscode-extension.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../compiler/hi_cross-compile.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../tools/hi_vscode-extension.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

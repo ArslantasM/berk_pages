@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>हैल-कैन - कैन बस - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-can.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🚗राज्य::कर सकते हैं</h1>
+<p>नियंत्रक क्षेत्र नेटवर्क - ऑटोमोटिव संचार</p>
+<div style="margin-top:15px">
+<span class="stat-badge">383 पंक्तियाँ</span>
+<span class="stat-badge">~14 कार्य</span>
+<span class="stat-badge">ऑटोमोटिव</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>CAN (कंट्रोलर एरिया नेटवर्क) ऑटोमोटिव और औद्योगिक अनुप्रयोगों में उपयोग किया जाने वाला एक विश्वसनीय संचार प्रोटोकॉल है। ECU (इंजन कंट्रोल यूनिट) सेंसर और एक्चुएटर्स के बीच संचार प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>CAN 2.0A (11-बिट आईडी) / 2.0B (29-बिट आईडी)</li>
+<li>1 एमबीपीएस बिटरेट तक</li>
+<li>त्रुटि का पता लगाना/सुधार करना</li>
+<li>संदेश फ़िल्टरिंग (28 फ़िल्टर)</li>
+<li>3TX मेलबॉक्स</li>
+<li>2 आरएक्स फीफो</li>
+<li>प्राथमिकता-आधारित मध्यस्थता</li>
+<li>स्वचालित पुन:संचरण</li>
+</ul>
+
+<h2>🚀 तेजी से शुरुआत करना</h2>
+<pre><code>import hal::can, hal::gpio
+
+// CAN pins: PB8=RX, PB9=TX
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 8, do mode: gpio.MODE_AF, af: 9 end)
+gpio.pin_init(gpio.PORT_B, 9, do mode: gpio.MODE_AF, af: 9 end)
+
+// Initialize CAN (500 kbps)
+variable can1 = can.init(can.CAN1, do
+    bitrate: 500_000,
+    mode: can.MODE_NORMAL
+end)
+
+// Send message
+can.send(can1, do
+    id: 0x123,
+    data: [0x01, 0x02, 0x03],
+    extended_id: false
+end)
+
+// Receive message
+if msg = can.receive(can1, 100) ise do
+    io.println("Received ID: 0x{:X}".formatla(msg.id))
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: ईसीयू सिम्युलेटर</h3>
+<pre><code>import hal::can, hal::core
+
+constant ENGINE_RPM = 0x100
+constant VEHICLE_SPEED = 0x101
+constant COOLANT_TEMP = 0x102
+constant THROTTLE_POS = 0x103
+
+function send_rpm(can1: can.Handle, rpm: sayı) do
+    variable data = [
+        (rpm &gt;&gt; 8) &amp; 0xFF,
+        rpm &amp; 0xFF
+    ]
+    
+    can.send(can1, do
+        id: ENGINE_RPM,
+        data: data,
+        extended_id: false
+    end)
+end
+
+function send_speed(can1: can.Handle, speed: sayı) do
+    can.send(can1, do
+        id: VEHICLE_SPEED,
+        data: [speed &amp; 0xFF],
+        extended_id: false
+    end)
+end
+
+function send_temp(can1: can.Handle, temp: sayı) do
+    // Temperature in Celsius + 40
+    variable temp_byte = (temp + 40) &amp; 0xFF
+    
+    can.send(can1, do
+        id: COOLANT_TEMP,
+        data: [temp_byte],
+        extended_id: false
+    end)
+end
+
+function main() do
+    core.system_init()
+    
+    // Setup CAN
+    variable can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Configure filter (accept all)
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,  // Accept all IDs
+        fifo: can.FIFO0
+    end)
+    
+    // Simulate ECU data
+    variable rpm = 800  // Idle RPM
+    variable speed = 0
+    variable temp = 20
+    
+    loop do
+        // Send telemetry at 10Hz
+        send_rpm(can1, rpm)
+        send_speed(can1, speed)
+        send_temp(can1, temp)
+        
+        // Simulate acceleration
+        if rpm &lt; 6000 then do
+            rpm += 100
+            speed = (rpm / 100)  // Simplified
+            temp += 1  // Engine heats up
+        else do
+            rpm = 800  // Back to idle
+            speed = 0
+            temp = 20
+        end
+        
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: कैन बस मॉनिटर</h3>
+<pre><code>import hal::can
+
+function message_name(id: u32) -&gt; string do
+    return eşle id do
+        0x100 =&gt; "Engine RPM",
+        0x101 =&gt; "Vehicle Speed",
+        0x102 =&gt; "Coolant Temp",
+        0x103 =&gt; "Throttle Pos",
+        0x200 =&gt; "Brake Status",
+        0x300 =&gt; "Door Status",
+        _ =&gt; "Unknown"
+    end
+end
+
+function parse_data(msg: can.Message) do
+    io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
+    
+    // Print data bytes
+    her byte in msg.data[0..msg.dlc] for do
+        io.print("{:02X} ".formatla(byte))
+    end
+    
+    // Interpret known messages
+    variable name = message_name(msg.id)
+    io.print(" // {}", name)
+    
+    eşle msg.id do
+        0x100 =&gt; do  // RPM
+            variable rpm = (msg.data[0] &lt;&lt; 8) | msg.data[1]
+            io.print(" = {} RPM", rpm)
+        end,
+        0x101 =&gt; do  // Speed
+            io.print(" = {} km/h", msg.data[0])
+        end,
+        0x102 =&gt; do  // Temp
+            variable temp = msg.data[0].sayı() - 40
+            io.print(" = {}°C", temp)
+        end,
+        _ =&gt; do end
+    end
+    
+    io.println()
+end
+
+function main() do
+    variable can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Accept all messages
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,
+        fifo: can.FIFO0
+    end)
+    
+    io.println("CAN Bus Monitor Started (500 kbps)")
+    io.println("Press Ctrl+C to exit\n")
+    
+    loop do
+        // Check for messages (non-blocking)
+        if msg = can.receive(can1, 10) then do
+            parse_data(msg)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: OBD-II डायग्नोस्टिक्स</h3>
+<pre><code>import hal::can
+
+constant OBD_REQUEST = 0x7DF
+constant OBD_RESPONSE = 0x7E8
+constant PID_ENGINE_RPM = 0x0C
+constant PID_VEHICLE_SPEED = 0x0D
+
+function obd_request(can1: can.Handle, pid: u8) -&gt; Sonuç[sayı, Err] do
+    can.send(can1, do
+        id: OBD_REQUEST,
+        data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
+        dlc: 8
+    end)?
+    
+    if response = can.receive(can1, 100) then do
+        if response.id == OBD_RESPONSE then do
+            return Ok(eşle pid do
+                PID_ENGINE_RPM =&gt; ((response.data[3] &lt;&lt; 8) | response.data[4]) / 4,
+                PID_VEHICLE_SPEED =&gt; response.data[3].sayı(),
+                _ =&gt; 0
+            end)
+        end
+    end
+    
+    return Err("Timeout")
+end
+
+function main() do
+    variable can1 = can.init(can.CAN1, do bitrate: 500_000 end)
+    
+    loop do
+        if rpm = obd_request(can1, PID_ENGINE_RPM)? then do
+            io.println("RPM: {}", rpm)
+        end
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 प्रकार</h2>
+<pre><code>struct Message do
+    id: u32,
+    data: [u8; 8],
+    dlc: u8,
+    extended_id: boolean
+end
+
+struct Config do
+    bitrate: sayı,
+    mode: Mode
+end</code></pre>
+
+<h2>⚙️ कार्य</h2>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+function send(handle: Handle, msg: Message) -&gt; Sonuç[None, Err]
+function receive(handle: Handle, timeout_ms: sayı) -&gt; İsteğe_Bağlı[Message]
+function filter_config(handle: Handle, config: FilterConfig)</code></pre>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>CAN ट्रांसीवर (TJA1050, MCP2551) की आवश्यकता है</li>
+<li>120Ω समाप्ति प्रतिरोधों की आवश्यकता है (बस के दोनों सिरों पर)</li>
+<li>अधिकतम बस लंबाई: 40 मीटर (1 एमबीपीएस), 500 मीटर (125 केबीपीएस)</li>
+<li>ट्विस्टेड-पेयर केबल का उपयोग करें (CAN_H, CAN_L)</li>
+<li>फ़िल्टर कॉन्फ़िगरेशन महत्वपूर्ण (उच्च ट्रैफ़िक में)</li>
+<li>ISO 11898 मानक का उपयोग किया जाता है</li>
+</ul>
+
+<h2>🎯आवेदन परिदृश्य</h2>
+<ul>
+<li>ऑटोमोटिव ईसीयू संचार</li>
+<li>OBD-II डायग्नोस्टिक्स</li>
+<li>औद्योगिक स्वचालन (कैनओपन)</li>
+<li>समुद्री (एनएमईए 2000)</li>
+</ul>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32 एफ1/एफ4:</strong>बीएक्सकैन (2एक्स कैन)</li>
+<li><strong>एसटीएम32 एच7:</strong>CAN-एफडी</li>
+<li><strong>ईएसपी32:</strong>TWAI</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- TX/RX पिन कर सकते हैं</li>
+<li><code data-no-translate="true">hal::int</code>- व्यवधान उत्पन्न कर सकता है</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_hal-i2c.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_hal-usb.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_hal-i2c.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_hal-usb.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

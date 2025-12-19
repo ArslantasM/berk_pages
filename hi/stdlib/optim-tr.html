@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>अनुकूलन - अनुकूलन | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📈 अनुकूलन - अनुकूलन एल्गोरिदम</h1>
+<p>ग्रेडिएंट डिसेंट, बीएफजीएस, जेनेटिक, सिम्युलेटेड एनीलिंग</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">49</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">723</div><div>रेखा</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">23KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import optim, math
+
+// Minimize f(x) = (x-3)²
+function objective(x: kesir) -&gt; kesir do
+    return (x - 3.0) * (x - 3.0)
+end
+
+// Gradient descent
+let sonuç = optim.minimize(objective, 0.0, do
+    yöntem: optim.GRADIENT_DESCENT,
+    öğrenme_oranı: 0.1,
+    max_iter: 100
+end)
+
+print("Minimum: x = " + sonuç.x.yazıya())  // x ≈ 3.0
+print("f(x) = " + sonuç.f_min.yazıya())  // f(x) ≈ 0.0</code></pre>
+<h2>📚 एल्गोरिदम</h2>
+<ul>
+<li><strong>क्रमिक अवतरण:</strong>जीडी, एसजीडी, मैन, आरएमएसप्रॉप</li>
+<li><strong>अर्ध-न्यूटन:</strong>बीएफजीएस, एल-बीएफजीएस</li>
+<li><strong>मेटाह्यूरिस्टिक्स:</strong>जेनेटिक, पीएसओ, सिम्युलेटेड एनीलिंग</li>
+<li><strong>विवश:</strong>लैग्रेंज मल्टीप्लायर, दंड विधि</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>रैखिक प्रतिगमन (क्रमिक अवतरण)</h3>
+<pre><code>import optim, linalg
+
+// Training data
+let X = [[1.0], [2.0], [3.0], [4.0], [5.0]]
+let y = [2.0, 4.0, 6.0, 8.0, 10.0]
+
+// Loss function (MSE)
+function loss(params: Dizi) -&gt; kesir do
+    let w = params[0]
+    let b = params[1]
+    
+    let total_loss = 0.0
+    her i in range(0, X.len()) for do
+        let prediction = w * X[i][0] + b
+        let error = prediction - y[i]
+        total_loss = total_loss + error * error
+    end
+    
+    return total_loss / X.len().kesir()
+end
+
+// Optimize
+let sonuç = optim.minimize(loss, [0.0, 0.0], do
+    yöntem: optim.ADAM,
+    öğrenme_oranı: 0.1,
+    max_iter: 1000
+end)
+
+let w = sonuç.x[0]
+let b = sonuç.x[1]
+print("y = " + w.yazıya() + "x + " + b.yazıya())  // y ≈ 2x + 0</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

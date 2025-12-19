@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HAL-GPIO - GPIO नियंत्रण - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-gpio.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🔌 राज्य::gpio</h1>
+<p>सामान्य प्रयोजन इनपुट/आउटपुट नियंत्रण - GPIO पिन प्रबंधन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">381 पंक्तियाँ</span>
+<span class="stat-badge">~30 कार्य</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>GPIO (सामान्य प्रयोजन इनपुट/आउटपुट) मॉड्यूल डिजिटल इनपुट/आउटपुट के रूप में माइक्रोकंट्रोलर पिन का नियंत्रण प्रदान करता है। इसका उपयोग एलईडी नियंत्रण, बटन रीडिंग, सेंसर इंटरफेस और डिजिटल सिग्नल के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>डिजिटल इनपुट/आउटपुट मोड</li>
+<li>पुश-पुल/ओपन-ड्रेन आउटपुट</li>
+<li>पुल-अप/पुल-डाउन प्रतिरोधक</li>
+<li>पिन गति विन्यास</li>
+<li>व्यवधान समर्थन (EXTI)</li>
+<li>वैकल्पिक फ़ंक्शन मैपिंग</li>
+<li>परमाणु बिट संचालन</li>
+<li>पोर्ट लॉकिंग</li>
+</ul>
+
+<h2>🚀 तेजी से शुरुआत करना</h2>
+<pre><code>import hal::gpio
+
+// GPIO clock enable
+gpio.clock_enable(gpio.PORT_C)
+
+// LED pin setup (output)
+variable led = gpio.pin_init(gpio.PORT_C, 13, do
+    mode: gpio.MODE_OUTPUT,
+    speed: gpio.SPEED_LOW,
+    pull: gpio.PULL_NONE
+end)
+
+// LED control
+gpio.pin_write(led, gpio.HIGH)  // Turn on
+gpio.pin_toggle(led)  // Toggle
+gpio.pin_write(led, gpio.LOW)  // Turn off</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// GPIO Portları
+enum Port {
+    A, B, C, D, E, F, G, H, I
+}
+
+// Pin Modları
+enum Mode {
+    INPUT,        // Digital input
+    OUTPUT,       // Push-pull output
+    OUTPUT_OD,    // Open-drain output
+    AF,           // Alternate function push-pull
+    AF_OD,        // Alternate function open-drain
+    ANALOG        // Analog mode
+}
+
+// Hız Seviyesi
+enum Speed {
+    LOW,       // Low speed (2 MHz)
+    MEDIUM,    // Medium speed (25 MHz)
+    HIGH,      // High speed (50 MHz)
+    VERY_HIGH  // Very high speed (100 MHz)
+}
+
+// Pull Direnci
+enum Pull {
+    NONE,  // No pull resistor
+    UP,    // Pull-up
+    DOWN   // Pull-down
+}
+
+// Logic Level
+enum Level {
+    LOW,   // Logic 0 (0V)
+    HIGH   // Logic 1 (3.3V/5V)
+}
+
+// Interrupt Tetikleme
+enum Trigger {
+    RISING,   // Rising edge
+    FALLING,  // Falling edge
+    BOTH      // Both edges
+}</code></pre>
+
+<h2>⚙️ कार्य</h2>
+
+<h3>घड़ी प्रबंधन</h3>
+<pre><code>function clock_enable(port: Port) -&gt; Sonuç[None, Err]
+// Enable GPIO port clock
+
+function clock_disable(port: Port) -&gt; Sonuç[None, Err]
+// Disable GPIO port clock</code></pre>
+
+<h3>पिन आरंभीकरण</h3>
+<pre><code>function pin_init(port: Port, pin: sayı, config: PinConfig) -&gt; Pin
+// Initialize GPIO pin with configuration
+
+// PinConfig structure
+struct PinConfig do
+    mode: Mode,      // Pin mode
+    speed: Speed,    // Output speed
+    pull: Pull,      // Pull resistor
+    af: İsteğe_Bağlı[sayı]  // Alternate function number
+end</code></pre>
+
+<h3>डिजिटल I/O</h3>
+<pre><code>function pin_write(pin: Pin, level: Level)
+// Write digital output
+
+function pin_read(pin: Pin) -&gt; Level
+// Read digital input
+
+function pin_toggle(pin: Pin)
+// Toggle output pin
+
+function port_write(port: Port, value: u16)
+// Write entire port (16 pins)
+
+function port_read(port: Port) -&gt; u16
+// Read entire port</code></pre>
+
+<h3>व्यवधान प्रबंधन</h3>
+<pre><code>function interrupt_enable(pin: Pin, trigger: Trigger, callback: İşlev)
+// Enable pin interrupt
+
+function interrupt_disable(pin: Pin)
+// Disable pin interrupt</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण 1: एलईडी ब्लिंक</h3>
+<pre><code>import hal::gpio, hal::core
+
+function ana() do
+    // System init
+    core.system_init()
+    core.clock_config(72_000_000)  // 72MHz
+    
+    // LED setup (PC13 on STM32 Blue Pill)
+    gpio.clock_enable(gpio.PORT_C)
+    variable led = gpio.pin_init(gpio.PORT_C, 13, do
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Blink loop
+    loop do
+        gpio.pin_toggle(led)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: इंटरप्ट के साथ बटन इनपुट</h3>
+<pre><code>import hal::gpio, hal::int
+
+variable button_pressed = false
+
+function button_handler() do
+    button_pressed = true
+    io.println("Button pressed!")
+end
+
+function ana() do
+    // LED setup (output)
+    gpio.clock_enable(gpio.PORT_C)
+    variable led = gpio.pin_init(gpio.PORT_C, 13, do
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Button setup (input with pull-up)
+    gpio.clock_enable(gpio.PORT_A)
+    variable button = gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP,
+        speed: gpio.SPEED_LOW
+    end)
+    
+    // Enable button interrupt
+    gpio.interrupt_enable(button, gpio.TRIGGER_FALLING, button_handler)
+    
+    // Main loop
+    loop do
+        if button_pressed ise do
+            button_pressed = false
+            gpio.pin_toggle(led)
+        end
+        core.delay_ms(10)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: मल्टी-एलईडी नियंत्रण (पोर्ट संचालन)</h3>
+<pre><code>import hal::gpio, hal::core
+
+function main() do
+    core.system_init()
+    
+    // Setup 8 LEDs on Port B (PB0-PB7)
+    gpio.clock_enable(gpio.PORT_B)
+    
+    // Initialize all 8 pins
+    her i in 0..8 for do
+        gpio.pin_init(gpio.PORT_B, i, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_MEDIUM,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    // LED patterns
+    variable patterns = [
+        0b00000001,  // Single LED
+        0b00000011,  // 2 LEDs
+        0b00000111,  // 3 LEDs
+        0b00001111,  // 4 LEDs
+        0b00011111,  // 5 LEDs
+        0b00111111,  // 6 LEDs
+        0b01111111,  // 7 LEDs
+        0b11111111   // All LEDs
+    ]
+    
+    loop do
+        her pattern in patterns for do
+            gpio.port_write(gpio.PORT_B, pattern)
+            core.delay_ms(200)
+        end
+        
+        // Reverse
+        her pattern in patterns.reverse() for do
+            gpio.port_write(gpio.PORT_B, pattern)
+            core.delay_ms(200)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 4: ट्रैफिक लाइट नियंत्रक</h3>
+<pre><code>import hal::gpio, hal::core
+
+struct TrafficLight do
+    red: gpio.Pin,
+    yellow: gpio.Pin,
+    green: gpio.Pin
+end
+
+function traffic_light_init() -&gt; TrafficLight do
+    gpio.clock_enable(gpio.PORT_A)
+    
+    variable tl = TrafficLight do
+        red: gpio.pin_init(gpio.PORT_A, 0, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end),
+        yellow: gpio.pin_init(gpio.PORT_A, 1, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end),
+        green: gpio.pin_init(gpio.PORT_A, 2, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    return tl
+end
+
+function set_state(tl: TrafficLight, red: boolean, yellow: boolean, green: boolean) do
+    gpio.pin_write(tl.red, if red ise gpio.HIGH elseif gpio.LOW)
+    gpio.pin_write(tl.yellow, if yellow ise gpio.HIGH elseif gpio.LOW)
+    gpio.pin_write(tl.green, if green ise gpio.HIGH elseif gpio.LOW)
+end
+
+function ana() do
+    core.system_init()
+    variable tl = traffic_light_init()
+    
+    loop do
+        // Green light
+        set_state(tl, false, false, true)
+        core.delay_ms(5000)
+        
+        // Yellow light
+        set_state(tl, false, true, false)
+        core.delay_ms(2000)
+        
+        // Red light
+        set_state(tl, true, false, false)
+        core.delay_ms(5000)
+    end
+end</code></pre>
+</div>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>पिन का उपयोग करने से पहले आपको पोर्ट क्लॉक को सक्षम करना होगा।</li>
+<li>ओपन-ड्रेन आउटलेट्स को बाहरी पुल-अप की आवश्यकता होती है</li>
+<li>5V सहिष्णु पिन के लिए डेटाशीट की जाँच करें</li>
+<li>इंटरप्ट का उपयोग करते समय एनवीआईसी कॉन्फ़िगरेशन की आवश्यकता होती है</li>
+<li>अधिकतम पिन वर्तमान सीमा पर ध्यान दें (~25mA)</li>
+<li>एनालॉग मोड का उपयोग करते समय डिजिटल बफ़र अक्षम हो जाते हैं</li>
+</ul>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32:</strong>सभी एफ/एल/एच/जी श्रृंखला</li>
+<li><strong>जीडी32:</strong>GD32VF103 (RISC-V)</li>
+<li><strong>ईएसपी32:</strong>जीपीआईओ 0-39</li>
+<li><strong>नॉर्डिक:</strong>एनआरएफ52/53 जीपीआईओ</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::int</code>- व्यवधान नियंत्रक</li>
+<li><code data-no-translate="true">hal::core</code>-सिस्टम आरंभीकरण</li>
+<li><code data-no-translate="true">hal::timer</code>- पीडब्लूएम पीढ़ी</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_hal-core.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_hal-adc.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_hal-core.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_hal-adc.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

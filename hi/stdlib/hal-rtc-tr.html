@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::rtc - रीयल-टाइम क्लॉक | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#27ae60 0%,#2ecc71 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#27ae60;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🕐 राज्य::rtc</h1>
+<p>वास्तविक समय घड़ी - दिनांक/समय प्रबंधन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">379 पंक्तियाँ</span>
+<span class="stat-badge">~12 कार्य</span>
+<span class="stat-badge">कम बिजली</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>आरटीसी (रियल-टाइम क्लॉक) मॉड्यूल कम बिजली की खपत के साथ दिनांक और समय रखने का कार्य प्रदान करता है। यह बैटरी चालित संचालन, अलार्म और कैलेंडर सुविधाएँ प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>दिनांक/समय रखना</li>
+<li>लीप वर्ष वाला कैलेंडर</li>
+<li>2 प्रोग्रामयोग्य अलार्म</li>
+<li>जागने का टाइमर</li>
+<li>बैकअप रजिस्टर (80 बाइट्स)</li>
+<li>बैटरी समर्थित ऑपरेशन</li>
+<li>टाइमस्टैम्प घटना</li>
+<li>उप-सेकंड परिशुद्धता</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::rtc
+
+// Initialize RTC
+let rtc_handle = rtc.init(do
+    hour_format: rtc.FORMAT_24H,
+    async_prediv: 127,
+    sync_prediv: 255
+end)
+
+// Set time
+rtc.set_time(rtc_handle, do
+    hours: 14,
+    minutes: 30,
+    seconds: 0
+end)
+
+// Set date
+rtc.set_date(rtc_handle, do
+    year: 2024,
+    month: 12,
+    day: 25,
+    weekday: rtc.WEDNESDAY
+end)
+
+// Read time
+let time = rtc.get_time(rtc_handle)
+io.println("{:02}:{:02}:{:02}".formatla(time.hours, time.minutes, time.seconds))</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: डिजिटल क्लॉक डिस्प्ले</h3>
+<pre><code>import hal::rtc, hal::core
+
+struct DateTime do
+    year: sayı,
+    month: sayı,
+    day: sayı,
+    hours: sayı,
+    minutes: sayı,
+    seconds: sayı,
+    weekday: sayı
+end
+
+function weekday_name(day: sayı) -&gt; yazı do
+    return eşle day do
+        1 =&gt; "Pazartesi",
+        2 =&gt; "Salı",
+        3 =&gt; "Çarşamba",
+        4 =&gt; "Perşembe",
+        5 =&gt; "Cuma",
+        6 =&gt; "Cumartesi",
+        7 =&gt; "Pazar",
+        _ =&gt; "Bilinmeyen"
+    end
+end
+
+function main() do
+    core.system_init()
+    
+    // Initialize RTC
+    let rtc_handle = rtc.init(do
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Set initial time (2024-12-25 14:30:00 Wednesday)
+    rtc.set_date(rtc_handle, do
+        year: 2024,
+        month: 12,
+        day: 25,
+        weekday: rtc.WEDNESDAY
+    end)
+    
+    rtc.set_time(rtc_handle, do
+        hours: 14,
+        minutes: 30,
+        seconds: 0
+    end)
+    
+    for do
+        // Read current time
+        let time = rtc.get_time(rtc_handle)
+        let date = rtc.get_date(rtc_handle)
+        
+        // Display
+        io.print("\r")  // Carriage return
+        io.print("{:02}/{:02}/{} {} {:02}:{:02}:{:02}".formatla(
+            date.day,
+            date.month,
+            date.year,
+            weekday_name(date.weekday),
+            time.hours,
+            time.minutes,
+            time.seconds
+        ))
+        
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: अलार्म घड़ी</h3>
+<pre><code>import hal::rtc
+
+let alarm_triggered = false
+
+function alarm_callback() do
+    alarm_triggered = true
+    io.println("\n🔔 ALARM! Wake up!")
+end
+
+function set_alarm(rtc_handle: rtc.Handle, hours: sayı, minutes: sayı) do
+    rtc.set_alarm(rtc_handle, rtc.ALARM_A, do
+        hours: hours,
+        minutes: minutes,
+        seconds: 0,
+        alarm_mask: rtc.MASK_SECONDS,  // Ignore seconds
+        callback: alarm_callback
+    end)
+    
+    io.println("Alarm set for {:02}:{:02}".formatla(hours, minutes))
+end
+
+function main() do
+    let rtc_handle = rtc.init(do
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Set current time: 07:58:00
+    rtc.set_time(rtc_handle, do
+        hours: 7,
+        minutes: 58,
+        seconds: 0
+    end)
+    
+    // Set alarm for 08:00
+    set_alarm(rtc_handle, 8, 0)
+    
+    for do
+        let time = rtc.get_time(rtc_handle)
+        io.print("\r{:02}:{:02}:{:02}".formatla(
+            time.hours, time.minutes, time.seconds
+        ))
+        
+        if alarm_triggered then do
+            alarm_triggered = false
+            // Snooze for 5 minutes
+            set_alarm(rtc_handle, time.hours, time.minutes + 5)
+        end
+        
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: वेकअप टाइमर (स्टैंडबाय से ऑटो-वेकअप)</h3>
+<pre><code>import hal::rtc, hal::core
+
+function periodic_wakeup() do
+    let rtc_handle = rtc.init(do
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Configure wakeup every 10 seconds
+    rtc.set_wakeup(rtc_handle, do
+        prescaler: rtc.WAKEUP_DIV_16,  // 16Hz clock
+        counter: 160  // 160 / 16Hz = 10 seconds
+    end)
+    
+    io.println("Entering standby, wakeup in 10s...")
+    core.delay_ms(100)  // Flush UART
+    
+    // Enter standby mode (lowest power)
+    core.standby()
+    
+    // After wakeup, system resets
+    io.println("Woke up from standby!")
+    
+    // Check wakeup flag
+    if rtc.was_wakeup_flag_set() then do
+        io.println("Wakeup timer triggered")
+        rtc.clear_wakeup_flag()
+    end
+end
+
+function main() do
+    // Count wakeups using backup register
+    let wakeup_count = rtc.read_backup(rtc_handle, 0)
+    wakeup_count += 1
+    rtc.write_backup(rtc_handle, 0, wakeup_count)
+    
+    io.println("Wakeup count: {}", wakeup_count)
+    
+    periodic_wakeup()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: बैटरी-समर्थित डेटा लॉगर</h3>
+<pre><code>import hal::rtc
+
+// Store sensor readings in backup registers (survives power loss)
+struct LogEntry do
+    timestamp: sayı,  // Unix timestamp
+    temp: u16,        // Temperature x100
+    humidity: u16     // Humidity x100
+end
+
+const MAX_ENTRIES = 20  // 80 bytes / 4 = 20 entries
+
+function log_data(temp: kesir, humidity: kesir) do
+    let rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
+    
+    // Get current index
+    let index = rtc.read_backup(rtc_handle, 0)
+    if index &gt;= MAX_ENTRIES then index = 0
+    
+    // Get timestamp
+    let time = rtc.get_time(rtc_handle)
+    let date = rtc.get_date(rtc_handle)
+    let timestamp = date_to_unix(date, time)
+    
+    // Store in backup registers (4 bytes per entry)
+    let base = 1 + (index * 2)
+    rtc.write_backup(rtc_handle, base, timestamp)
+    rtc.write_backup(rtc_handle, base + 1, 
+        ((temp * 100.0).sayı() &lt;&lt; 16) | (humidity * 100.0).sayı()
+    )
+    
+    // Update index
+    rtc.write_backup(rtc_handle, 0, index + 1)
+    
+    io.println("Logged: {}°C, {}%RH", temp, humidity)
+end
+
+function print_log() do
+    let rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
+    let count = rtc.read_backup(rtc_handle, 0).min(MAX_ENTRIES)
+    
+    io.println("\n=== Data Log ({} entries) ===", count)
+    
+    her i in 0..count for do
+        let base = 1 + (i * 2)
+        let timestamp = rtc.read_backup(rtc_handle, base)
+        let data = rtc.read_backup(rtc_handle, base + 1)
+        
+        let temp = ((data &gt;&gt; 16) &amp; 0xFFFF).kesir() / 100.0
+        let hum = (data &amp; 0xFFFF).kesir() / 100.0
+        
+        io.println("{}: {:.1f}°C, {:.1f}%", 
+            unix_to_string(timestamp), temp, hum)
+    end
+end
+
+function date_to_unix(date: rtc.Date, time: rtc.Time) -&gt; sayı do
+    // Simplified unix timestamp calculation
+    return (date.year - 1970) * 31536000 + 
+           date.month * 2592000 + 
+           date.day * 86400 + 
+           time.hours * 3600 + 
+           time.minutes * 60 + 
+           time.seconds
+end
+
+function main() do
+    // Simulate sensor readings
+    log_data(23.5, 65.2)
+    core.delay_ms(5000)
+    
+    log_data(24.1, 63.8)
+    core.delay_ms(5000)
+    
+    // Print all logged data
+    print_log()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: टाइमस्टैम्प इवेंट (इनपुट कैप्चर)</h3>
+<pre><code>import hal::rtc, hal::gpio
+
+let event_count = 0
+
+function timestamp_callback() do
+    let rtc_handle = rtc.init(do hour_format: rtc.FORMAT_24H end)
+    
+    // Get timestamp
+    let time = rtc.get_timestamp_time(rtc_handle)
+    let date = rtc.get_timestamp_date(rtc_handle)
+    
+    event_count += 1
+    
+    io.println("Event #{}: {:02}:{:02}:{:02}.{:03}", 
+        event_count,
+        time.hours, 
+        time.minutes, 
+        time.seconds,
+        time.subseconds
+    )
+end
+
+function timestamp_input_capture() do
+    // Configure PA0 (WKUP pin) as timestamp trigger
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN
+    end)
+    
+    let rtc_handle = rtc.init(do
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Enable timestamp on rising edge
+    rtc.enable_timestamp(rtc_handle, do
+        edge: rtc.TIMESTAMP_RISING_EDGE,
+        pin: rtc.TIMESTAMP_PIN_0,
+        callback: timestamp_callback
+    end)
+    
+    io.println("Press button on PA0 to timestamp events...")
+    
+    for do
+        core.delay_ms(100)
+    end
+end
+
+function main() do
+    timestamp_input_capture()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: मल्टी-अलार्म शेड्यूलर</h3>
+<pre><code>import hal::rtc
+
+struct Task do
+    name: yazı,
+    alarm: rtc.Alarm,
+    callback: fn()
+end
+
+let tasks = []
+
+function task_morning() do
+    io.println("🌅 Good morning! Time to wake up!")
+end
+
+function task_lunch() do
+    io.println("🍽️ Lunch break!")
+end
+
+function task_evening() do
+    io.println("🌙 Evening reminder: Review tasks")
+end
+
+function schedule_daily_tasks() do
+    let rtc_handle = rtc.init(do
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Set current time (for testing: 06:58)
+    rtc.set_time(rtc_handle, do
+        hours: 6,
+        minutes: 58,
+        seconds: 0
+    end)
+    
+    // Alarm A: Morning wakeup (07:00)
+    rtc.set_alarm(rtc_handle, rtc.ALARM_A, do
+        hours: 7,
+        minutes: 0,
+        seconds: 0,
+        alarm_mask: rtc.MASK_DATEWEEKDAY,  // Daily
+        callback: task_morning
+    end)
+    
+    // Alarm B: Lunch (12:00)
+    rtc.set_alarm(rtc_handle, rtc.ALARM_B, do
+        hours: 12,
+        minutes: 0,
+        seconds: 0,
+        alarm_mask: rtc.MASK_DATEWEEKDAY,
+        callback: task_lunch
+    end)
+    
+    io.println("Scheduler started. Waiting for alarms...")
+    
+    for do
+        let time = rtc.get_time(rtc_handle)
+        io.print("\r{:02}:{:02}:{:02}", 
+            time.hours, time.minutes, time.seconds)
+        
+        core.delay_ms(1000)
+    end
+end
+
+function main() do
+    schedule_daily_tasks()
+end</code></pre>
+</div>
+
+<h2>⚙️ आरटीसी कॉन्फ़िगरेशन</h2>
+<pre><code>// RTC Configuration
+struct RTCConfig do
+    hour_format: HourFormat,    // 12H or 24H
+    async_prediv: sayı,         // Asynchronous prescaler (7-bit)
+    sync_prediv: sayı,          // Synchronous prescaler (15-bit)
+    clock_source: ClockSource   // LSE, LSI, HSE
+end
+
+// Hour Format
+enum HourFormat {
+    FORMAT_12H,  // AM/PM
+    FORMAT_24H   // 00:00-23:59
+}
+
+// Clock Source
+enum ClockSource {
+    LSE,  // 32.768kHz external crystal (most accurate)
+    LSI,  // 32kHz internal RC (less accurate, ±5%)
+    HSE   // High-speed external (rarely used for RTC)
+}
+
+// Alarm Configuration
+struct AlarmConfig do
+    hours: sayı,
+    minutes: sayı,
+    seconds: sayı,
+    alarm_mask: AlarmMask,      // What to match
+    callback: fn()              // Interrupt callback
+end
+
+// Alarm Mask (what to ignore)
+enum AlarmMask {
+    MASK_NONE,           // Match all (specific time)
+    MASK_DATEWEEKDAY,    // Ignore date (daily alarm)
+    MASK_HOURS,          // Every hour
+    MASK_MINUTES,        // Every minute
+    MASK_SECONDS         // Every second
+}
+
+// Wakeup Configuration
+struct WakeupConfig do
+    prescaler: WakeupPrescaler,
+    counter: u16  // 0-65535
+end
+
+enum WakeupPrescaler {
+    WAKEUP_DIV_16,    // RTC/16 (~2048Hz for 32kHz LSE)
+    WAKEUP_DIV_8,     // RTC/8
+    WAKEUP_DIV_4,     // RTC/4
+    WAKEUP_DIV_2      // RTC/2
+}</code></pre>
+
+<h2>📚 आरटीसी फ़ंक्शंस</h2>
+<pre><code>// Initialization
+function init(config: RTCConfig) -&gt; Handle
+function deinit(handle: Handle)
+
+// Time/Date
+function set_time(handle: Handle, time: Time)
+function get_time(handle: Handle) -&gt; Time
+function set_date(handle: Handle, date: Date)
+function get_date(handle: Handle) -&gt; Date
+
+// Alarms
+function set_alarm(handle: Handle, alarm: Alarm, config: AlarmConfig)
+function disable_alarm(handle: Handle, alarm: Alarm)
+function get_alarm_flag(handle: Handle, alarm: Alarm) -&gt; bool
+function clear_alarm_flag(handle: Handle, alarm: Alarm)
+
+// Wakeup timer
+function set_wakeup(handle: Handle, config: WakeupConfig)
+function disable_wakeup(handle: Handle)
+function was_wakeup_flag_set() -&gt; bool
+function clear_wakeup_flag()
+
+// Timestamp
+function enable_timestamp(handle: Handle, config: TimestampConfig)
+function get_timestamp_time(handle: Handle) -&gt; Time
+function get_timestamp_date(handle: Handle) -&gt; Date
+
+// Backup registers
+function write_backup(handle: Handle, register: sayı, value: u32)
+function read_backup(handle: Handle, register: sayı) -&gt; u32
+
+// Calibration
+function calibrate(handle: Handle, ppm: kesir)  // Fine-tune frequency</code></pre>
+
+<h2>⚙️ आरटीसी बैकअप रजिस्टर</h2>
+<pre><code>// Store data that survives reset/power-down
+rtc.write_backup(rtc_handle, 0, 0x12345678)
+let value = rtc.read_backup(rtc_handle, 0)
+
+// Common use cases:
+// - Boot counter
+// - Configuration persistence
+// - Crash/reset reason
+// - Sensor calibration data
+// - Short-term data logging (80 bytes total)
+
+// Example: Boot counter
+let boot_count = rtc.read_backup(rtc_handle, 0)
+boot_count += 1
+rtc.write_backup(rtc_handle, 0, boot_count)
+io.println("Boot count: {}", boot_count)</code></pre>
+
+<h2>📊 आरटीसी उपयोग परिदृश्य</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">परिदृश्य</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">विशेषता</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">बिजली की खपत</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">स्पष्टीकरण</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डिजिटल घड़ी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">समय/दिनांक</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सक्रिय</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">वास्तविक समय प्रदर्शन</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">अलार्म घड़ी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">अलार्म ए/बी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">नींद + व्यवधान</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">जागने का अलार्म</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">आवधिक जागरण</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">जागने का टाइमर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">स्टैंडबाय (~1μA)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">अल्ट्रा-लो-पावर सेंसर रीडिंग</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">इवेंट टाइमस्टैम्प</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">TIMESTAMP</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सक्रिय</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सटीक ईवेंट लॉगिंग</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डेटा लॉकर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">बैकअप रेग्ज़</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">वीबीएटी (~1μA)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">बिजली हानि से बचे</td>
+</tr>
+</tbody></table>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>एलएसई क्रिस्टल</strong>: उच्चतम सटीकता के लिए उपयोग करें (±20ppm)</li>
+<li><strong>वीबीएटी</strong>: CR2032 कॉइन सेल (~1μA) के साथ वर्षों तक RTC चला सकते हैं</li>
+<li><strong>जागने का टाइमर</strong>: आवधिक सेंसर रीडिंग के लिए आदर्श (स्टैंडबाय मोड)</li>
+<li><strong>बैकअप रजिस्टर</strong>: कॉन्फ़िगरेशन डेटा के लिए उपयोग करें (80 बाइट्स)</li>
+<li><strong>अंशांकन</strong>: तापमान क्षतिपूर्ति के लिए सुचारू अंशांकन</li>
+</ul>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>STM32F1</strong>: बेसिक आरटीसी (1 अलार्म, बैकअप रेज)</li>
+<li><strong>STM32F4/L4</strong>: उन्नत आरटीसी (2 अलार्म, वेकअप, टाइमस्टैम्प, 80 बैकअप बाइट्स)</li>
+<li><strong>STM32H7</strong>: उप-सेकंड रिज़ॉल्यूशन के साथ उच्च परिशुद्धता आरटीसी</li>
+<li><strong>ईएसपी32</strong>: यूएलपी कोप्रोसेसर समर्थन के साथ आरटीसी</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>घड़ी स्रोत</strong>: LSE (32.768kHz क्रिस्टल, ±20ppm) सबसे सटीक, LSI (32kHz RC, ±5%) बैकअप</li>
+<li><strong>वीबीएटी पिन</strong>: RTC CR2032 बैटरी (3V) के साथ पावर-डाउन में काम करना जारी रखता है</li>
+<li><strong>सुरक्षा लिखें</strong>: आरटीसी रजिस्टर राइट-प्रोटेक्टेड हैं, अनलॉक आवश्यक है</li>
+<li><strong>अलार्म बीच में आता है</strong>: EXTI लाइन 17 (अलार्म ए), 18 (अलार्म बी) का उपयोग करता है</li>
+<li><strong>स्टैंडबाय से जागो</strong>: वेकअप टाइमर के साथ अल्ट्रा-लो-पावर आवधिक संचालन</li>
+<li><strong>बैकअप डोमेन</strong>: आरटीसी + बैकअप रेग अलग पावर डोमेन (वीबीएटी)</li>
+<li><strong>कैलेंडर</strong>: लीप वर्ष की गणना स्वचालित रूप से की जाती है, 2000-2099 रेंज</li>
+<li><strong>उप-दूसरे</strong>: सिंक्रोनस प्रीस्केलर के साथ एमएस रिज़ॉल्यूशन संभव</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::int</code>- आरटीसी अलार्म इंटरप्ट (एनवीआईसी)</li>
+<li><code data-no-translate="true">hal::core</code>- स्टैंडबाय से सिस्टम वेकअप</li>
+<li><code data-no-translate="true">hal::gpio</code>- टाइमस्टैम्प इनपुट पिन</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00025071.pdf">एएन3371: एसटीएम32 आरटीसी का उपयोग करना</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00226187.pdf">AN4759: STM32 RTC वेकअप टाइमर का उपयोग करना</a></li>
+<li>संदर्भ मैनुअल: रीयल-टाइम क्लॉक (आरटीसी) अध्याय</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

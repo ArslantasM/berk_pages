@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Library Overview - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/overview.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="standart-kütüphane-v094"><a class="header" href="#standart-kütüphane-v094">Standard Library v0.9.4</a></h1>
+<p>BERK Standard Library provides all the basic functions required for modern software development.<strong>v0.9.4</strong>with version<strong>75 modules</strong>(42 stdlib + 33 HAL) and<strong>4100+ functions</strong>It provides a comprehensive ecosystem.</p>
+<blockquote>
+<p><strong>🎯 Embedded-First Approach:</strong>BERK stdlib is optimized for embedded systems and AI/ML edge deployment. Bare-metal programming, RTOS integration and real-time AI inference are possible with 33 HAL modules that support 7 different MCU platforms.</p>
+</blockquote>
+<h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊 Statistics</a></h2>
+<ul>
+<li><strong>75 modules</strong>- 42 stdlib + 33 HAL (embedded systems)</li>
+<li><strong>1140KB</strong>- Stdlib code size (minimal runtime: 2-5 KB)</li>
+<li><strong>4100+ functions</strong>- Comprehensive API (NumPy/SciPy/Julia level)</li>
+<li><strong>7 embedded platforms</strong>- ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
+<li><strong>AI/ML Ready</strong>- ONNX Runtime integration, TinyML support</li>
+<li><strong>Zero dependency</strong>- Written only in BERK, portable</li>
+</ul>
+<h2 id="-modül-kategorileri"><a class="header" href="#-modül-kategorileri">🎯 Module Categories</a></h2>
+<h3 id="1-temel-modüller-core"><a class="header" href="#1-temel-modüller-core">1. Core Modules (Core)</a></h3>
+<p>Meets the basic needs of all BERK programs:</p>
+<div class="table-wrapper"><table><thead><tr><th>Module</th><th>Dimension</th><th>Explanation</th></tr></thead><tbody>
+<tr><td><strong>io</strong></td><td>3.9KB</td><td>Check-in/check-out procedures</td></tr>
+<tr><td><strong>string</strong></td><td>7.5KB</td><td>String manipulation</td></tr>
+<tr><td><strong>collections</strong></td><td>7.5KB</td><td>Data structures (list, map, set)</td></tr>
+<tr><td><strong>result</strong></td><td>7.4KB</td><td>Error handling (Option, Result)</td></tr>
+<tr><td><strong>time</strong></td><td>6.6KB</td><td>date and time</td></tr>
+</tbody></table>
+</div>
+<h3 id="2-sistem-programlama-system"><a class="header" href="#2-sistem-programlama-system">2. System Programming (System)</a></h3>
+<p>Low level system interaction:</p>
+<div class="table-wrapper"><table><thead><tr><th>Module</th><th>Dimension</th><th>Explanation</th></tr></thead><tbody>
+<tr><td><strong>fs</strong></td><td>7.8KB</td><td>File system operations</td></tr>
+<tr><td><strong>thread</strong></td><td>13.8KB</td><td>Multi-threading, mutex, atomics</td></tr>
+<tr><td><strong>sys</strong></td><td>17.5KB</td><td>System information (CPU, RAM, OS)</td></tr>
+<tr><td><strong>terminal</strong></td><td>15.6KB</td><td>ANSI terminal control</td></tr>
+</tbody></table>
+</div>
+<h3 id="3-fonksiyonel-programlama-functional"><a class="header" href="#3-fonksiyonel-programlama-functional">3. Functional Programming</a></h3>
+<p>Julia and Rust style functional programming:</p>
+<div class="table-wrapper"><table><thead><tr><th>Module</th><th>Dimension</th><th>Explanation</th></tr></thead><tbody>
+<tr><td><strong>pushes</strong></td><td>19.7KB</td><td>Iterators, map, filter, reduce, accumulate</td></tr>
+<tr><td><strong>fmt</strong></td><td>17.9KB</td><td>Printf-style formatting, progress bars</td></tr>
+</tbody></table>
+</div>
+<h3 id="4-bilimsel-hesaplama-scientific-computing-"><a class="header" href="#4-bilimsel-hesaplama-scientific-computing-">4. Scientific Computing 🔬</a></h3>
+<p><strong>The star of v1.4!</strong>Mathematics at university and research level:</p>
+<div class="table-wrapper"><table><thead><tr><th>Module</th><th>Dimension</th><th>Explanation</th><th>inspiration</th></tr></thead><tbody>
+<tr><td><strong>mathematics</strong></td><td>27.5KB</td><td>150+ math functions</td><td>Julia Math, NumPy, GSL</td></tr>
+<tr><td><strong>physics</strong></td><td>25.5KB</td><td>Classic physics simulation</td><td>MATLAB, SciPy</td></tr>
+<tr><td><strong>complex</strong></td><td>15.9KB</td><td>Complex number arithmetic</td><td>Julia complex.jl</td></tr>
+<tr><td><strong>random</strong></td><td>15.1KB</td><td>Xoshiro256++, 20+ distribution</td><td>Julia Random</td></tr>
+<tr><td><strong>linalg</strong></td><td>25.4KB</td><td>Matrix operations, decompositions</td><td>Julia LinearAlgebra, nalgebra</td></tr>
+<tr><td><strong>stats</strong></td><td>29.8KB</td><td>Statistics and machine learning</td><td>Julia Statistics, SciPy.stats</td></tr>
+<tr><td><strong>plot</strong></td><td>56.3KB</td><td>data visualization</td><td>matplotlib, plotly</td></tr>
+<tr><td><strong>optimum</strong></td><td>26.6KB</td><td>Optimization algorithms</td><td>SciPy.optimize, Optim.jl</td></tr>
+</tbody></table>
+</div>
+<h3 id="5-yapay-zeka-ve-makine-öğrenmesi-aiml"><a class="header" href="#5-yapay-zeka-ve-makine-öğrenmesi-aiml">5. Artificial Intelligence and Machine Learning (AI/ML) 🤖</a></h3>
+<p><strong>Edge AI and embedded ML</strong>Libraries optimized for:</p>
+<div class="table-wrapper"><table><thead><tr><th>Module</th><th>Dimension</th><th>Explanation</th><th>Platform Support</th></tr></thead><tbody>
+<tr><td><strong>ai_rl</strong></td><td>28.7KB</td><td>Reinforcement Learning (Q-learning, SARSA, DQN)</td><td>All platforms</td></tr>
+<tr><td><strong>ml</strong></td><td>35.2KB</td><td>Classical ML (Linear/Logistic Regression, KNN, Decision Trees)</td><td>Desktop + Edge</td></tr>
+<tr><td><strong>nn</strong></td><td>42.6KB</td><td>Neural Networks (MLP, CNN layers, backprop)</td><td>Desktop + ARM Cortex-M7</td></tr>
+<tr><td><strong>onnx</strong></td><td>18.3KB</td><td>ONNX Runtime integration (model inference)</td><td>Desktop + ESP32/STM32F4</td></tr>
+<tr><td><strong>tinyml</strong></td><td>12.8KB</td><td>TinyML (quantization, pruning, model compression)</td><td>All embedded</td></tr>
+</tbody></table>
+</div>
+<p><strong>AI/ML Features:</strong></p>
+<ul>
+<li><strong>Model Training</strong>: Training with Python/PyTorch, ONNX export</li>
+<li><strong>Edge Inference</strong>: &lt;10ms latency on ARM Cortex-M, ESP32, RISC-V</li>
+<li><strong>quantization</strong>: INT8/INT16 model optimization</li>
+<li><strong>Hardware Acceleration</strong>: NPU, DSP offloading support</li>
+<li><strong>real time</strong>: Deterministic inference, RTOS compatible</li>
+</ul>
+<h3 id="6-gömülü-sistemler-hal-hardware-abstraction-layer"><a class="header" href="#6-gömülü-sistemler-hal-hardware-abstraction-layer">6. Embedded Systems - HAL (Hardware Abstraction Layer) ⚡</a></h3>
+<p><strong>33 HAL modules</strong>It supports 7 different platforms with:</p>
+<div class="table-wrapper"><table><thead><tr><th>Category</th><th>Modules</th><th>Supported Platforms</th></tr></thead><tbody>
+<tr><td><strong>Basic Peripherals</strong></td><td>GPIO, UART, SPI, I2C, ADC, DAC, PWM</td><td>All platforms</td></tr>
+<tr><td><strong>Timers</strong></td><td>Timer, WDT, RTC</td><td>All platforms</td></tr>
+<tr><td><strong>DMA &amp; Memory</strong></td><td>DMA, Flash, EEPROM</td><td>STM32F4, ESP32, nRF52</td></tr>
+<tr><td><strong>Network</strong></td><td>WiFi, Bluetooth, Ethernet, CAN</td><td>ESP32, STM32F4 (Ethernet)</td></tr>
+<tr><td><strong>Power Management</strong></td><td>Power, Sleep modes</td><td>All platforms</td></tr>
+<tr><td><strong>Screen</strong></td><td>LCD, OLED, TFT</td><td>via SPI/I2C</td></tr>
+</tbody></table>
+</div>
+<p><strong>Supported Platforms:</strong></p>
+<ul>
+<li>✅ <strong>ESP32</strong>- WiFi/BT, 240 MHz dual-core</li>
+<li>✅ <strong>STM32F4</strong>- 168MHz ARM Cortex-M4, FPU</li>
+<li>✅ <strong>RP2040</strong>- Raspberry Pi Pico, 133 MHz dual-core</li>
+<li>✅ <strong>nRF52</strong>- Nordic BLE, ultra-low power</li>
+<li>✅ <strong>GD32</strong>- Gigadevice ARM Cortex-M</li>
+<li>✅ <strong>nuvoton</strong>- Industrial MCUs</li>
+<li>✅ <strong>Arduino</strong>- AVR/ARM compatible</li>
+</ul>
+<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🚀 Quick Start</a></h2>
+<h3 id="basit-kullanım"><a class="header" href="#basit-kullanım">Simple Operation</a></h3>
+<pre><code class="language-berk">// Matematik
+use math
+
+let sonuç = math_sin(math_PI / 2.0)  // 1.0
+let faktöriyel = math_factorial(5)     // 120
+</code></pre>
+<h3 id="İteratörler"><a class="header" href="#İteratörler">Iterators</a></h3>
+<pre><code class="language-berk">use iter
+
+let sayılar = [1, 2, 3, 4, 5]
+let kareler = iter_map(sayılar, function(x) do return x * x end)
+let sum = iter_sum(kareler)  // 55
+</code></pre>
+<h3 id="doğrusal-cebir"><a class="header" href="#doğrusal-cebir">Linear Algebra</a></h3>
+<pre><code class="language-berk">use linalg
+
+// 3×3 birim matris
+let I = linalg_birim_mat(3)
+
+// Matris çarpımı
+let A = [1.0, 2.0, 3.0, 4.0]  // 2×2
+let B = [5.0, 6.0, 7.0, 8.0]
+let C = linalg_mat_çarp(A, B, 2, 2, 2)
+</code></pre>
+<h3 id="İstatistik"><a class="header" href="#İstatistik">Statistics</a></h3>
+<pre><code class="language-berk">use stats
+
+let data = [1.5, 2.3, 3.1, 4.8, 5.2]
+let avg = stats_ortalama(data, 5)       // 3.38
+let std_dev = stats_standart_sapma(data, 5)  // 1.52
+let medyan = stats_medyan(data, 5)           // 3.1
+</code></pre>
+<h3 id="optimizasyon"><a class="header" href="#optimizasyon">optimization</a></h3>
+<pre><code class="language-berk">use optim
+
+// f(x) = x² - 4x + 4 fonksiyonunun minimumunu bul
+function f(x: float): float do
+    return x * x - 4.0 * x + 4.0
+end
+
+let minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
+// minimum ≈ 2.0
+</code></pre>
+<h2 id="-detaylı-dokümantasyon"><a class="header" href="#-detaylı-dokümantasyon">📚 Detailed Documentation</a></h2>
+<p>Detailed documentation for each module is available on separate pages:</p>
+<h3 id="temel-modüller"><a class="header" href="#temel-modüller">Basic Modules</a></h3>
+<ul>
+<li><a href="./en_io.html">io - Input/Output</a></li>
+<li><a href="./en_string.html">string - String Operations</a></li>
+<li><a href="./en_collections.html">collections</a></li>
+<li><a href="./en_result.html">result - Error Management</a></li>
+<li><a href="./en_time.html">time - Time Operations</a></li>
+</ul>
+<h3 id="sistem-programlama"><a class="header" href="#sistem-programlama">System Programming</a></h3>
+<ul>
+<li><a href="./en_fs.html">fs - File System</a></li>
+<li><a href="./en_thread.html">thread - Multi-Threading</a></li>
+<li><a href="./en_sys.html">sys - System Information</a></li>
+<li><a href="./en_terminal.html">terminal - Terminal Control</a></li>
+</ul>
+<h3 id="fonksiyonel-programlama"><a class="header" href="#fonksiyonel-programlama">Functional Programming</a></h3>
+<ul>
+<li><a href="./en_iter.html">iter - Iterators</a></li>
+<li><a href="./en_fmt.html">fmt - Advanced Formatting</a></li>
+</ul>
+<h3 id="bilimsel-hesaplama"><a class="header" href="#bilimsel-hesaplama">Scientific Calculation</a></h3>
+<ul>
+<li><a href="./en_math.html">math - Mathematics</a></li>
+<li><a href="./en_physics.html">physics - Physics</a></li>
+<li><a href="./en_complex.html">complex - Complex Numbers</a></li>
+<li><a href="./en_random.html">random - Random Numbers</a></li>
+<li><a href="./en_linalg.html">linalg - Linear Algebra</a></li>
+<li><a href="./en_stats.html">stats - Statistics</a></li>
+<li><a href="./en_optim.html">optim - Optimization</a></li>
+</ul>
+<h3 id="web-ve-veri"><a class="header" href="#web-ve-veri">Web and Data</a></h3>
+<ul>
+<li><a href="./en_http.html">http - HTTP Client/Server</a></li>
+<li><a href="./en_json.html">json - JSON Processing</a></li>
+<li><a href="./en_regex.html">regex - Regular Expressions</a></li>
+<li><a href="./en_testing.html">testing - Test Framework</a></li>
+<li><a href="./en_logging.html">logging - Logging</a></li>
+<li><a href="./en_network.html">network - Network Operations</a></li>
+<li><a href="./en_async.html">async - Asynchronous Programming</a></li>
+<li><a href="./en_xml.html">xml - XML ​​Operations</a></li>
+<li><a href="./en_yaml.html">yaml - YAML Operations</a></li>
+<li><a href="./en_csv.html">csv - CSV File Operations</a></li>
+<li><a href="./en_encoding.html">encoding - Encoding Conversions</a></li>
+<li><a href="./en_compression.html">compression - Data Compression</a></li>
+<li><a href="./en_crypto.html">crypto - Cryptography</a></li>
+<li><a href="./en_sqlite.html">sqlite - SQLite Database</a></li>
+</ul>
+<h3 id="grafik-ve-oyun"><a class="header" href="#grafik-ve-oyun">Graphics and Gameplay</a></h3>
+<ul>
+<li><a href="./en_gui.html">gui - Graphical User Interface</a></li>
+<li><a href="./en_graphics.html">graphics - 2D Graphics</a></li>
+<li><a href="./en_audio.html">audio - Sound Processing</a></li>
+<li><a href="./en_image.html">image - Image Processing</a></li>
+<li><a href="./en_physics2d.html">physics2d - 2D Physics Engine</a></li>
+<li><a href="./en_cad3d.html">cad3d - 3D CAD Modeling</a></li>
+<li><a href="./en_mesh.html">mesh - 3D Mesh Processes</a></li>
+<li><a href="./en_math_3d.html">math_3d - 3D Mathematics</a></li>
+<li><a href="./en_color.html">color - Color Operations</a></li>
+</ul>
+<h3 id="ileri-seviye"><a class="header" href="#ileri-seviye">Advanced</a></h3>
+<ul>
+<li><a href="./en_rules.html">rules - Rule Based Systems</a></li>
+</ul>
+<h2 id="-kullanım-senaryoları"><a class="header" href="#-kullanım-senaryoları">🎓 Usage Scenarios</a></h2>
+<h3 id="bilimsel-araştırma"><a class="header" href="#bilimsel-araştırma">Scientific Research</a></h3>
+<pre><code class="language-berk">// İstatistiksel analiz
+let veriler = veri_oku("deney.csv")
+let avg = stats_ortalama(veriler)
+let t_skoru = stats_t_score(veriler, 0.0)
+
+// Hipotez testi
+if math_mutlak(t_skoru) &gt; 2.0 then do
+    print("İstatistiksel as anlamlı!")
+end
+</code></pre>
+<h3 id="makine-Öğrenmesi-temelleri"><a class="header" href="#makine-Öğrenmesi-temelleri">Machine Learning Fundamentals</a></h3>
+<pre><code class="language-berk">// Doğrusal regresyon
+let X = [1.0, 2.0, 3.0, 4.0, 5.0]
+let y = [2.1, 3.9, 6.2, 8.1, 9.8]
+
+let (a, b, r2) = stats_linear_regression(X, y, 5)
+print("y = " + a + " + " + b + "x")
+print("R² = " + r2)
+</code></pre>
+<h3 id="nümerik-simülasyon"><a class="header" href="#nümerik-simülasyon">Numerical Simulation</a></h3>
+<pre><code class="language-berk">// Monte Carlo π tahmini
+use random
+
+let içerde = 0
+let sum = 1000000
+
+let rng = random_xoshiro_seed(12345)
+
+let i = 0
+while (i &lt; sum) do
+    let x = random_xoshiro_next_float(rng)
+    let y = random_xoshiro_next_float(rng)
+    
+    if (x*x + y*y &lt; 1.0) then do
+        içerde = içerde + 1
+    end
+    
+    i = i + 1
+end
+
+let pi_tahmini = 4.0 * içerde / sum
+print("π ≈ " + pi_tahmini)  // ~3.14159
+</code></pre>
+<h3 id="optimizasyon-problemleri"><a class="header" href="#optimizasyon-problemleri">Optimization Problems</a></h3>
+<pre><code class="language-berk">// Gradyan inişi ile function minimizasyonu
+use optim
+use linalg
+
+// f(x, y) = x² + y² - 2x - 4y + 5
+function gradyan(pos: [float], n: tam_sayı): [float] do
+    let grad = [2.0 * pos[0] - 2.0, 2.0 * pos[1] - 4.0]
+    return grad
+end
+
+let başlangıç = [0.0, 0.0]
+let minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 0.001)
+
+print("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
+// Beklenen: (1.0, 2.0)
+</code></pre>
+<h3 id="yapay-zeka-ve-makine-öğrenmesi"><a class="header" href="#yapay-zeka-ve-makine-öğrenmesi">Artificial Intelligence and Machine Learning</a></h3>
+<pre><code class="language-berk">// Reinforcement Learning - Q-Learning
+use ai_rl
+
+// Labirent problemi for Q-learning
+let ortam = ai_rl_ortam_oluştur(durum_sayısı: 16, eylem_sayısı: 4)
+let ajan = ai_rl_q_learning_ajan(
+    öğrenme_oranı: 0.1,
+    keşif_oranı: 0.2,
+    indirim: 0.95
+)
+
+// Eğitim
+let bölüm = 0
+while (bölüm &lt; 1000) do
+    let case = ortam_sıfırla(ortam)
+    let toplam_ödül = 0.0
+    
+    while (durum_terminal_mi(case) yok then) do
+        let eylem = ajan_eylem_seç(ajan, case)
+        let (yeni_durum, ödül) = ortam_adım(ortam, eylem)
+        ajan_güncelle(ajan, case, eylem, ödül, yeni_durum)
+        
+        case = yeni_durum
+        toplam_ödül = toplam_ödül + ödül
+    end
+    
+    bölüm = bölüm + 1
+end
+
+print("Eğitim tamamlandı! Ortalama ödül: " + toplam_ödül / 1000.0)
+</code></pre>
+<pre><code class="language-berk">// Neural Network - MLP Classification
+use nn
+use linalg
+
+// 2-katmanlı sinir ağı (784 → 128 → 10)
+let model = nn_mlp_oluştur([784, 128, 10])
+
+// MNIST veri seti yükleme
+let (X_train, y_train) = veri_yükle("mnist_train.csv")
+let (X_test, y_test) = veri_yükle("mnist_test.csv")
+
+// Eğitim
+let dönem = 0
+while (dönem &lt; 10) do
+    let kayıp = nn_mlp_eğit(
+        model, 
+        X_train, 
+        y_train,
+        öğrenme_oranı: 0.01,
+        batch_boyutu: 32
+    )
+    
+    // Test doğruluğu
+    let doğruluk = nn_mlp_değerlendir(model, X_test, y_test)
+    print("Dönem " + dönem + ": Kayıp=" + kayıp + ", Doğruluk=" + doğruluk)
+    
+    dönem = dönem + 1
+end
+</code></pre>
+<pre><code class="language-berk">// Edge AI - ONNX Model Inference (ESP32/STM32)
+use onnx
+use hal_gpio
+
+// ONNX modelini yükle (quantized INT8)
+let model = onnx_model_yükle("mobilenet_v2_int8.onnx")
+
+// Kamera görüntüsü receive (ESP32-CAM)
+let görüntü = kamera_çek()  // 224x224 RGB
+
+// Ön işleme
+let giriş = görüntü_normalize(görüntü, avg: 0.5, std: 0.5)
+
+// Inference (tipik: 5-8ms ESP32 üzerinde)
+let çıktı = onnx_inference(model, giriş)
+
+// Sonucu işle
+let sınıf = argmax(çıktı)
+let güven = çıktı[sınıf]
+
+print("Tespit edilen: " + sınıf_isimleri[sınıf])
+print("Güven: " + (güven * 100.0) + "%")
+
+// LED ile görsel geri bildirim
+if güven &gt; 0.8 then do
+    hal_gpio_yaz(LED_PIN, YÜKSEK)  // Yeşil LED
+end
+</code></pre>
+<h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 Implementation Status (v0.9.4)</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Category</th><th>Module</th><th>Situation</th><th>Backend/Notes</th></tr></thead><tbody>
+<tr><td rowspan="5"><strong>Basis</strong></td><td>io</td><td>✅</td><td>LLVM intrinsics</td></tr>
+<tr><td>string</td><td>✅</td><td>UTF-8 support</td></tr>
+<tr><td>collections</td><td>✅</td><td>Heap allocation</td></tr>
+<tr><td>result</td><td>✅</td><td>enum support</td></tr>
+<tr><td>time</td><td>✅</td><td>OS time APIs</td></tr>
+<tr><td rowspan="4"><strong>System</strong></td><td>fs</td><td>🟡</td><td>POSIX/Win32 APIs</td></tr>
+<tr><td>thread</td><td>🟡</td><td>pthread/WinThreads</td></tr>
+<tr><td>sys</td><td>🟡</td><td>Platform-specific</td></tr>
+<tr><td>terminal</td><td>🟡</td><td>ANSI/VT100</td></tr>
+<tr><td rowspan="2"><strong>Functional</strong></td><td>pushes</td><td>✅</td><td>list operations</td></tr>
+<tr><td>fmt</td><td>✅</td><td>printf-style</td></tr>
+<tr><td rowspan="8"><strong>Scientific</strong></td><td>mathematics</td><td>🟡</td><td>libm + LLVM intrinsics</td></tr>
+<tr><td>physics</td><td>🟡</td><td>ODE solvers</td></tr>
+<tr><td>complex</td><td>🟡</td><td>Structural support</td></tr>
+<tr><td>random</td><td>🟡</td><td>Xoshiro256++</td></tr>
+<tr><td>linalg</td><td>🟡</td><td>BLAS/LAPACK (optional)</td></tr>
+<tr><td>stats</td><td>🟡</td><td>Distributions + regression</td></tr>
+<tr><td>optimum</td><td>🟡</td><td>Numerical optimization</td></tr>
+<tr><td>plot</td><td>🟡</td><td>terminal graphics</td></tr>
+<tr><td rowspan="5"><strong>AI/ML</strong></td><td>ai_rl</td><td>🟡</td><td>Q-learning, DQN</td></tr>
+<tr><td>ml</td><td>🟡</td><td>Classical algorithms</td></tr>
+<tr><td>nn</td><td>🟡</td><td>Backprop + autodiff</td></tr>
+<tr><td>onnx</td><td>🔴</td><td>ONNX Runtime C API</td></tr>
+<tr><td>tinyml</td><td>🔴</td><td>model compression</td></tr>
+<tr><td rowspan="7"><strong>Web/Data</strong></td><td>http</td><td>🟡</td><td>TCP socket + parser</td></tr>
+<tr><td>json</td><td>🟡</td><td>Parser + serializer</td></tr>
+<tr><td>xml</td><td>🟡</td><td>SAX/DOM parser</td></tr>
+<tr><td>yaml</td><td>🔴</td><td>libyaml binding</td></tr>
+<tr><td>csv</td><td>✅</td><td>Pure BERK</td></tr>
+<tr><td>regex</td><td>🟡</td><td>NFA/DFA engine</td></tr>
+<tr><td>sqlite</td><td>🔴</td><td>libsqlite3 FFI</td></tr>
+<tr><td rowspan="7"><strong>HAL (Embedded)</strong></td><td>GPIO</td><td>✅</td><td>7 platforms</td></tr>
+<tr><td>UART/SPI/I2C</td><td>✅</td><td>7 platforms</td></tr>
+<tr><td>Timer/PWM</td><td>✅</td><td>Hardware timers</td></tr>
+<tr><td>ADC/DAC</td><td>✅</td><td>Analogue I/O</td></tr>
+<tr><td>WiFi/BT</td><td>✅</td><td>ESP32, nRF52</td></tr>
+<tr><td>DMA</td><td>🟡</td><td>STM32, ESP32</td></tr>
+<tr><td>Flash/EEPROM</td><td>🟡</td><td>Non-volatile storage</td></tr>
+</tbody></table>
+</div>
+<p><strong>Status Description:</strong></p>
+<ul>
+<li>✅ <strong>Stable</strong>- API finalized, production-ready</li>
+<li>🟡 <strong>Beta</strong>- API stable, implementation in progress</li>
+<li>🔴 <strong>Alpha</strong>- Experimental, API may change</li>
+<li>⏳ <strong>scheduled</strong>- Design phase</li>
+</ul>
+<h2 id="-v10-roadmap"><a class="header" href="#-v10-roadmap">🎯 v1.0 Roadmap (January 2026)</a></h2>
+<p>Remaining improvements for v1.0:</p>
+<ol>
+<li><strong>MacroSystem</strong>- Compile-time code generation</li>
+<li><strong>data frame</strong>- Pandas-like columnar data structures</li>
+<li><strong>Public Registry</strong>- berk.dev package registry launch</li>
+<li><strong>Package Verification</strong>- Digital signatures for security</li>
+<li><strong>Linux &amp; macOS</strong>- Cross-platform support</li>
+</ol>
+<h3 id="gelecek-sürümler-v15-v20"><a class="header" href="#gelecek-sürümler-v15-v20">Future Releases (v1.5, v2.0+)</a></h3>
+<ul>
+<li><strong>signal</strong>- Signal processing (FFT, filtering, spectral analysis)</li>
+<li><strong>sparse</strong>- Sparse matrices (COO, CSR, CSC formats)</li>
+<li><strong>ode</strong>- Differential equations (RK4, BDF, adaptive)</li>
+<li><strong>FPGA synthesis</strong>- Hardware description, Verilog/VHDL generation</li>
+<li><strong>Formal verification</strong>- Proof assistants integration</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 More Information</a></h2>
+<ul>
+<li><a href="https://github.com/ArslantasM/berk">GitHub Repository</a></li>
+<li><a href="../reference/en_std-library.html">API Reference</a></li>
+<li><a href="../contributing/en_code.html">Contributing Guide</a></li>
+<li><a href="../en_changelog.html">changelog</a></li>
+</ul>
+<hr>
+<p><strong>Are you ready?</strong>Let's examine the modules in detail in the next section!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../examples/en_web-server.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/en_io.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../examples/en_web-server.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/en_io.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

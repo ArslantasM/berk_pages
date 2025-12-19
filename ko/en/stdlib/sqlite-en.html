@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>sqlite - SQLite 데이터베이스 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🗄️ sqlite - SQLite 데이터베이스</h1>
+<p>Embedded SQL 데이터베이스, 트랜잭션, 준비된 문</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">42</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,167</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36KB</div><div>너</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import sqlite
+
+// Open database
+let db = sqlite.open("app.db")
+
+// Create table
+sqlite.exec(db, "CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    age INTEGER
+)")
+
+// Insert
+sqlite.exec(db, "INSERT INTO users (name, email, age) VALUES ('Ali', 'ali@test.com', 25)")
+
+// Prepared statement (SQL injection protection)
+let stmt = sqlite.prepare(db, "INSERT INTO users (name, email, age) VALUES (?, ?, ?)")
+sqlite.bind(stmt, ["Ayşe", "ayse@test.com", 30])
+sqlite.step(stmt)
+sqlite.finalize(stmt)
+
+// Query
+let sonuçlar = sqlite.query(db, "SELECT * FROM users WHERE age &gt; 20")
+her satır in sonuçlar for do
+    print(satır["name"] + " - " + satır["email"])
+end
+
+// Transaction
+sqlite.begin(db)
+try do
+    sqlite.exec(db, "UPDATE users SET age = age + 1")
+    sqlite.commit(db)
+end catch hata do
+    sqlite.rollback(db)
+    print("Err: " + hata.mesaj())
+end
+
+sqlite.close(db)</code></pre>
+<h2>📚특징</h2>
+<ul>
+<li>SQLite 3.x 임베디드 데이터베이스</li>
+<li>전체 SQL 지원(SELECT, INSERT, UPDATE, DELETE, JOIN 등)</li>
+<li>준비된문(SQL 주입방지)</li>
+<li>트랜잭션(ACID 속성)</li>
+<li>유형 안전</li>
+<li>연결 풀링</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>사용자 관리 시스템</h3>
+<pre><code>import sqlite
+
+sınıf UserDB do
+    let db: Database
+    
+    function new(dosya_yolu: yazı) do
+        self.db = sqlite.open(dosya_yolu)
+        self.init_schema()
+    end
+    
+    function init_schema() do
+        sqlite.exec(self.db, "
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        ")
+    end
+    
+    function kullanıcı_ekle(username: yazı, email: yazı, password_hash: yazı) -&gt; Sonuç do
+        let stmt = sqlite.prepare(self.db,
+            "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)")
+        
+        sqlite.bind(stmt, [username, email, password_hash])
+        
+        if sqlite.step(stmt) then do
+            let id = sqlite.last_insert_id(self.db)
+            sqlite.finalize(stmt)
+            return Ok(id)
+        end else do
+            sqlite.finalize(stmt)
+            return Err("Kullanıcı eklenemedi")
+        end
+    end
+    
+    function kullanıcı_bul(username: yazı) -&gt; Seçenek do
+        let stmt = sqlite.prepare(self.db,
+            "SELECT * FROM users WHERE username = ?")
+        sqlite.bind(stmt, [username])
+        
+        if sqlite.step(stmt) then do
+            let user = do
+                "id": sqlite.column_int(stmt, 0),
+                "username": sqlite.column_text(stmt, 1),
+                "email": sqlite.column_text(stmt, 2),
+                "password_hash": sqlite.column_text(stmt, 3),
+                "created_at": sqlite.column_int(stmt, 4)
+            end
+            sqlite.finalize(stmt)
+            return Some(user)
+        end else do
+            sqlite.finalize(stmt)
+            return Hiç
+        end
+    end
+    
+    function tüm_kullanıcılar() -&gt; Dizi do
+        return sqlite.query(self.db, "SELECT id, username, email FROM users")
+    end
+    
+    function kullanıcı_sil(id: int) -&gt; bool do
+        let stmt = sqlite.prepare(self.db, "DELETE FROM users WHERE id = ?")
+        sqlite.bind(stmt, [id])
+        let başarılı = sqlite.step(stmt)
+        sqlite.finalize(stmt)
+        return başarılı
+    end
+end
+
+// Usage
+let user_db = UserDB.new("users.db")
+user_db.kullanıcı_ekle("berk_dev", "berk@example.com", "hash_buraya")
+
+let kullanıcı = user_db.kullanıcı_bul("berk_dev")
+if kullanıcı then do
+    print("Kullanıcı bulundu: " + kullanıcı.değer()["email"])
+end</code></pre>
+</div>
+<div class="example-box">
+<h3>트랜잭션과 함께 일괄 삽입</h3>
+<pre><code>import sqlite, csv
+
+function csv_import(db: Database, csv_dosya: yazı, tablo: yazı) do
+    let satırlar = csv.input(csv_dosya)
+    
+    sqlite.begin(db)
+    
+    try do
+        let stmt = sqlite.prepare(db,
+            "INSERT INTO " + tablo + " VALUES (?, ?, ?)")
+        
+        her satır in satırlar for do
+            sqlite.bind(stmt, satır)
+            sqlite.step(stmt)
+            sqlite.reset(stmt)
+        end
+        
+        sqlite.finalize(stmt)
+        sqlite.commit(db)
+        print("Import başarılı: " + satırlar.len().yazıya() + " satır")
+    end catch hata do
+        sqlite.rollback(db)
+        print("Import başarısız: " + hata.mesaj())
+    end
+end
+
+let db = sqlite.open("data.db")
+csv_import(db, "users.csv", "users")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::host - 호스트 통신 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖥️ 상태::호스트</h1>
+<p>호스트 통신 및 디버그 인터페이스</p>
+<div style="margin-top:15px">
+<span class="stat-badge">367라인</span>
+<span class="stat-badge">USB/디버그</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>호스트 통신: USB, 디버그 인터페이스, 세미호스팅.</p>
+
+<h2>🚀 사용법</h2>
+<pre><code>import hal::host
+
+// Debug print (ITM/SWO)
+host.debug_print("Hello from MCU\n")
+
+// Semihosting (debug only)
+host.semihost_write("Debug message")
+
+// USB CDC
+let usb = host.usb_cdc_init()
+host.usb_write(usb, "USB message")
+
+// Get host status
+if host.is_debugger_connected() then do
+    host.debug_print("Debugger active")
+end</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

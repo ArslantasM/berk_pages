@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>एलएलएम - बड़े भाषा मॉडल - बर्क प्रोग्रामिंग भाषा</title>
+        
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 20px;
+                margin: -20px -20px 30px -20px;
+                border-radius: 8px;
+            }
+            .module-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .stat-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .function-group {
+                margin: 30px 0;
+                padding: 20px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 4px solid var(--links);
+            }
+            .example-box {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .provider-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .provider-card {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                border: 2px solid var(--links);
+            }
+            .provider-card h3 {
+                margin-top: 0;
+                color: var(--links);
+            }
+        </style>
+
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>एलएलएम - बड़े भाषा मॉडल</h1>
+                        <p>ओपनएआई, एंथ्रोपिक, गूगल और ओलामा एपीआई क्लाइंट</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">4</div><div>प्रदाता</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">async</div><div>का समर्थन किया</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">धारा</div><div>तरीका</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">15+</div><div>नमूना</div></div>
+                        </div>
+                    </div>
+
+                    <h2>सिंहावलोकन</h2>
+                    <p>एलएलएम मॉड्यूल लोकप्रिय एलएलएम एपीआई प्रदाताओं तक पहुंचने के लिए एक एकीकृत इंटरफ़ेस प्रदान करता है। आप सभी प्रदाताओं के लिए एक सुसंगत एपीआई के साथ चैट पूर्णता, स्ट्रीमिंग और अतुल्यकालिक संचालन कर सकते हैं।</p>
+
+                    <div class="provider-grid">
+                        <div class="provider-card">
+                            <h3>ओपनएआई</h3>
+                            <p>जीपीटी-4, जीपीटी-3.5-टर्बो</p>
+                            <ul>
+                                <li>चैट पूरा होना</li>
+                                <li>फ़ंक्शन कॉलिंग</li>
+                                <li>विज़न (GPT-4V)</li>
+                            </ul>
+                        </div>
+                        <div class="provider-card">
+                            <h3>anthropic</h3>
+                            <p>क्लाउड 3 (ओपस, सॉनेट, हाइकू)</p>
+                            <ul>
+                                <li>100K प्रसंग</li>
+                                <li>विस्तारित सोच</li>
+                                <li>दस्तावेज़ विश्लेषण</li>
+                            </ul>
+                        </div>
+                        <div class="provider-card">
+                            <h3>गूगल</h3>
+                            <p>जेमिनी प्रो, जेमिनी अल्ट्रा</p>
+                            <ul>
+                                <li>मल्टीमॉडल इनपुट</li>
+                                <li>कोड जनरेशन</li>
+                                <li>लंबा प्रसंग</li>
+                            </ul>
+                        </div>
+                        <div class="provider-card">
+                            <h3>मत बनो</h3>
+                            <p>लामा 2, मिस्ट्रल, मिक्सट्रल</p>
+                            <ul>
+                                <li>स्थानीय हस्तक्षेप</li>
+                                <li>गोपनीयता पहले</li>
+                                <li>कोई एपीआई कुंजी नहीं</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>ओपनएआई क्लाइंट</h2>
+
+                    <div class="example-box">
+                        <h3>चैट समापन</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let client = OpenAI::new(
+    api_key: env::var("OPENAI_API_KEY")?
+);
+
+let response = client.chat(
+    model: "gpt-4",
+    messages: [
+        Message { role: "system", content: "Sen yardımcı bir asistansın." },
+        Message { role: "user", content: "Rust ile Berk arasındaki farklar neler?" }
+    ],
+    temperature: 0.7,
+    max_tokens: 1000
+).await?;
+
+print("{}", response.content);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>स्ट्रीमिंग प्रतिक्रिया</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let stream = client.chat_stream(
+    model: "gpt-4",
+    messages: messages
+).await?;
+
+her chunk in stream for do
+    print!("{}", chunk.content); // Anında print
+end
+print!();  // Yeni satır
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>फ़ंक्शन कॉलिंग</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let functions = [
+    Function {
+        name: "get_weather",
+        description: "Hava durumu bilgisini receive",
+        parameters: json!({
+            "type": "object",
+            "properties": {
+                "location": { "type": "string" },
+                "unit": { "type": "string", "enum": ["celsius", "fahrenheit"] }
+            }
+        })
+    }
+];
+
+let response = client.chat(
+    model: "gpt-4",
+    messages: messages,
+    functions: functions,
+    function_call: "auto"
+).await?;
+
+if response.function_call.is_some() then do
+    let func = response.function_call.unwrap();
+    print("Fonksiyon çağrısı: {}({})", func.name, func.arguments);
+end
+</code></pre>
+                    </div>
+
+                    <h2>मानवशास्त्रीय ग्राहक</h2>
+
+                    <div class="example-box">
+                        <h3>क्लाउड चैट</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let client = Anthropic::new(
+    api_key: env::var("ANTHROPIC_API_KEY")?
+);
+
+let response = client.chat(
+    model: "claude-3-opus-20240229",
+    messages: [
+        Message { role: "user", content: "BERK dilinde bir web server yazmak istiyorum." }
+    ],
+    max_tokens: 4096,
+    temperature: 1.0
+).await?;
+
+print!("{}", response.content[0].text);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>विस्तारित सोच</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+// Uzun düşünme süresi for
+let response = client.chat(
+    model: "claude-3-opus-20240229",
+    messages: messages,
+    thinking_time: 30.0,  // 30 saniye düşünme
+    stream: true
+).await?;
+</code></pre>
+                    </div>
+
+                    <h2>गूगल जेमिनी</h2>
+
+                    <div class="example-box">
+                        <h3>जेमिनी प्रो</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let client = Gemini::new(
+    api_key: env::var("GOOGLE_API_KEY")?
+);
+
+let response = client.generate(
+    model: "gemini-pro",
+    prompt: "BERK'in temel özelliklerini açıkla",
+    temperature: 0.9,
+    top_p: 1.0,
+    top_k: 40
+).await?;
+
+print("{}", response.text);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>मल्टीमॉडल (विज़न)</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let image_data = fs::read("diagram.png")?;
+
+let response = client.generate_multimodal(
+    model: "gemini-pro-vision",
+    prompt: "Bu diyagramı açıkla",
+    images: [image_data],
+    temperature: 0.4
+).await?;
+
+print("{}", response.text);
+</code></pre>
+                    </div>
+
+                    <h2>ओलामा (स्थानीय)</h2>
+
+                    <div class="example-box">
+                        <h3>स्थानीय लामा 2</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let client = Ollama::new(
+    host: "http://localhost:11434"
+);
+
+// Önce modeli indir (first kullanım)
+client.pull("llama2:13b").await?;
+
+let response = client.generate(
+    model: "llama2:13b",
+    prompt: "BERK programlama dili nedir?",
+    stream: false
+).await?;
+
+print("{}", response.response);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>स्ट्रीमिंग स्थानीय अनुमान</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let stream = client.generate_stream(
+    model: "mistral:7b",
+    prompt: "Berk ile bir örnek do"
+).await?;
+
+her chunk in stream for do
+    print!("{}", chunk.response);
+end
+</code></pre>
+                    </div>
+
+                    <h2>एकीकृत एपीआई</h2>
+
+                    <div class="example-box">
+                        <h3>प्रदाता-अज्ञेयवादी कोड</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+// Tüm provider'lar for aynı arayüz
+function chat(provider: LLMProvider, prompt: dizgi) -&gt; dizgi do
+    let response = provider.chat(
+        messages: [Message::user(prompt)],
+        temperature: 0.7
+    ).await?;
+    
+    return response.content;
+end
+
+// Kullanım
+let openai = OpenAI::new(openai_key);
+let claude = Anthropic::new(anthropic_key);
+
+let r1 = chat(openai, "Merhaba")?;
+let r2 = chat(claude, "Merhaba")?;
+</code></pre>
+                    </div>
+
+                    <h2>उन्नत विशेषताएँ</h2>
+
+                    <div class="function-group">
+                        <h3>बातचीत का इतिहास</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let conversation = Conversation::new();
+
+conversation.add_system("Sen bir BERK uzmanısın.");
+conversation.add_user("BERK'te vektör nasıl tanımlanır?");
+
+let response = client.chat(
+    messages: conversation.messages(),
+    temperature: 0.7
+).await?;
+
+conversation.add_assistant(response.content);
+
+// Devam eden konuşma
+conversation.add_user("Peki matris nasıl?");
+let response2 = client.chat(
+    messages: conversation.messages()
+).await?;
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>टोकन गिनती</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let tokens = client.count_tokens(
+    model: "gpt-4",
+    messages: messages
+)?;
+
+print("Token sayısı: {}", tokens);
+print("Tahmini maliyet: ${:.4}", tokens as float * 0.00003);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>पुनः प्रयास करें और त्रुटि प्रबंधन</h3>
+                        <pre><code class="language-berk">use ai/llm;
+
+let client = OpenAI::new(api_key)
+    .with_retry(max_attempts: 3, backoff: 2.0)
+    .with_timeout(30.0);
+
+deneme do
+    let response = client.chat(messages).await?;
+    print("{}", response.content);
+catch hata for do
+    match hata {
+        LLMError::RateLimit =&gt; print!("Rate limit aşıldı, bekleyin..."),
+        LLMError::InvalidKey =&gt; print!("API key geçersiz"),
+        LLMError::Timeout =&gt; print!("Zaman aşımı"),
+        _ =&gt; print!("Err: {}", hata)
+    }
+end
+</code></pre>
+                    </div>
+
+                    <h2>मॉडल तुलना</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>नमूना</th><th>प्रसंग</th><th>रफ़्तार</th><th>गुणवत्ता</th><th>लागत</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>जीपीटी-4</td><td>8K</td><td>मध्य</td><td>बहुत ऊँचा</td><td>उच्च</td></tr>
+                            <tr><td>जीपीटी-3.5-टर्बो</td><td>4K</td><td>तेज़</td><td>उच्च</td><td>कम</td></tr>
+                            <tr><td>क्लाउड 3 ओपस</td><td>100K</td><td>मध्य</td><td>बहुत ऊँचा</td><td>उच्च</td></tr>
+                            <tr><td>क्लाउड 3 सॉनेट</td><td>100K</td><td>तेज़</td><td>उच्च</td><td>मध्य</td></tr>
+                            <tr><td>जेमिनी प्रो</td><td>32K</td><td>तेज़</td><td>उच्च</td><td>मध्य</td></tr>
+                            <tr><td>लामा 2 13बी</td><td>4K</td><td>तेज़</td><td>मध्य</td><td>मुक्त</td></tr>
+                            <tr><td>मिस्ट्रल 7बी</td><td>8K</td><td>बहुत तेज</td><td>मध्य</td><td>मुक्त</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>एपीआई संदर्भ</h2>
+
+                    <div class="function-group">
+                        <h3>प्रदाता विशेषता</h3>
+                        <ul>
+                            <li><code data-no-translate="true">chat(messages, options) -&gt; Response</code>- चैट पूरा होना</li>
+                            <li><code data-no-translate="true">chat_stream(messages) -&gt; Stream</code>- स्ट्रीमिंग चैट</li>
+                            <li><code data-no-translate="true">count_tokens(messages) -&gt; usize</code>- टोकन की संख्या</li>
+                            <li><code data-no-translate="true">list_models() -&gt; Vec&lt;String&gt;</code>- उपलब्ध मॉडल</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>संदेश संरचना</h3>
+                        <ul>
+                            <li><code data-no-translate="true">role: "system" | "user" | "assistant"</code></li>
+                            <li><code data-no-translate="true">content: dizgi</code>- संदेश की सामग्री</li>
+                            <li><code data-no-translate="true">name: Option&lt;dizgi&gt;</code>- वैकल्पिक नाम</li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/hi_ai-model.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/hi_ai-metrics.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/hi_ai-model.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/hi_ai-metrics.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

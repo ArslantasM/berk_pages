@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>image - Image Processing - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/image.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                                            <main>
+                                                <div class="module-header">
+            <h1>🖼️ image - Image Processing</h1>
+            <p>Image loading, saving, conversion and filtering operations</p>
+            <div class="module-stats">
+                <span class="stat-badge">📦 77 functions</span>
+                <span class="stat-badge">📝 1770 Lines</span>
+                <span class="stat-badge">💾 61.7 KB</span>
+            </div>
+        </div>
+
+        <h2>📋Overview</h2>
+        <p><code data-no-translate="true">image</code>The module provides comprehensive tools for loading, saving, resizing, filtering and converting image files. It supports PNG, JPEG, GIF, BMP and WebP formats.</p>
+
+        <div class="function-group">
+            <h3>📂 Upload and Save Images</h3>
+            <ul>
+                <li><strong>image.load()</strong>- Upload image file</li>
+                <li><strong>image.png_save()</strong>- Save as PNG</li>
+                <li><strong>image.jpeg_save()</strong>- Save as JPEG</li>
+                <li><strong>image.webp_save()</strong>- Save as WebP</li>
+                <li><strong>image.new()</strong>- null image creation</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔧 Basic Transformations</h3>
+            <ul>
+                <li><strong>image.resize()</strong>- Change size</li>
+                <li><strong>image.crop()</strong>- Crop image</li>
+                <li><strong>image.rotate()</strong>- Rotation (90°, 180°, 270°)</li>
+                <li><strong>image.translate()</strong>- Horizontal/vertical flip</li>
+                <li><strong>image.thumbnail()</strong>- Creating thumbnails</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🎨 Color Processes</h3>
+            <ul>
+                <li><strong>image.brightness()</strong>- Brightness adjustment</li>
+                <li><strong>image.contrast()</strong>- Contrast adjustment</li>
+                <li><strong>image.saturation()</strong>- Color saturation</li>
+                <li><strong>image.greyscale()</strong>- Grayscale conversion</li>
+                <li><strong>image.invert()</strong>- Color inversion</li>
+                <li><strong>image.sepia()</strong>- Sepia effect</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🔍 Filters and Effects</h3>
+            <ul>
+                <li><strong>image.blur()</strong>- Blur effect</li>
+                <li><strong>image.sharpen()</strong>- Sharpen filter</li>
+                <li><strong>image.detect_edge()</strong>- Edge detection</li>
+                <li><strong>image.add_noise()</strong>- Add noise</li>
+                <li><strong>image.noise_reduce()</strong>- Denoising</li>
+                <li><strong>image.mosaic()</strong>- Pixelate effect</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>🖌️ Drawing and Text</h3>
+            <ul>
+                <li><strong>image.pixel_adjust()</strong>- Adjust pixel color</li>
+                <li><strong>image.pixel_get()</strong>- Pixel color reading</li>
+                <li><strong>image.draw_rectangle()</strong>- Drawing a rectangle</li>
+                <li><strong>image.metin_yaz()</strong>- Add text</li>
+            </ul>
+        </div>
+
+        <div class="function-group">
+            <h3>📊 Image Information</h3>
+            <ul>
+                <li><strong>image.width()</strong>- Width information</li>
+                <li><strong>image.height()</strong>- Altitude information</li>
+                <li><strong>image.format()</strong>- File format</li>
+                <li><strong>image.histpgram()</strong>- Color histogram</li>
+            </ul>
+        </div>
+
+        <h2>💡 Usage Examples</h2>
+
+        <div class="example-box">
+            <h3>Image Resizing and Thumbnail</h3>
+            <pre><code class="language-berk">use image
+use fs
+
+// Görüntü yükleme
+değer resim = image.yükle("fotoğraf.jpg")
+
+print(f"Orijinal len: {resim.genişlik()}x{resim.yükseklik()}")
+
+// Yüksek kaliteli yeniden boyutlandırma
+değer orta_boy = resim.yeniden_boyutlandır(
+    genişlik: 1024,
+    yükseklik: 768,
+    kalite: image.Kalite.YÜKSEK
+)
+
+orta_boy.jpeg_kaydet("fotoğraf_orta.jpg", kalite: 90)
+print("✓ Orta boy kaydedildi")
+
+// Thumbnail oluştur (oran korunur)
+değer thumbnail = resim.küçük_resim(200, 200)
+thumbnail.png_kaydet("fotoğraf_thumb.png")
+print("✓ Thumbnail oluşturuldu")
+
+// Kare kırpma (profil fotoğrafı for)
+değer merkez_x = resim.genişlik() / 2
+değer merkez_y = resim.yükseklik() / 2
+değer kare_boyut = 500
+
+değer profil = resim.trim(
+    x: merkez_x - kare_boyut / 2,
+    y: merkez_y - kare_boyut / 2,
+    genişlik: kare_boyut,
+    yükseklik: kare_boyut
+)
+
+profil.png_kaydet("profil.png")
+print("✓ Profil fotoğrafı oluşturuldu")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Image Filtering and Effects</h3>
+            <pre><code class="language-berk">use image
+
+değer resim = image.yükle("manzara.jpg")
+
+// Gri tonlama
+değer gri = resim.gri_tonlama()
+gri.jpeg_kaydet("manzara_gri.jpg")
+print("✓ Gri tonlama uygulandı")
+
+// Sepia efekti (nostaljik görünüm)
+değer sepia = resim.sepia()
+sepia.jpeg_kaydet("manzara_sepia.jpg")
+print("✓ Sepia efekti uygulandı")
+
+// Parlaklık and kontrast ayarlama
+değer parlak = resim
+    .parlaklık(1.2)      // %20 daha parlak
+    .kontrast(1.3)       // %30 daha fazla kontrast
+    .doygunluk(1.1)      // %10 daha doygun renkler
+
+parlak.jpeg_kaydet("manzara_parlak.jpg")
+print("✓ Renk ayarlaması yapıldı")
+
+// Bulanıklaştırma
+değer bulanık = resim.bulanıklaştır(yarıçap: 5.0)
+bulanık.jpeg_kaydet("manzara_bulanık.jpg")
+print("✓ Blur efekti uygulandı")
+
+// Keskinleştirme
+değer keskin = resim.keskinleştir(miktar: 1.5)
+keskin.jpeg_kaydet("manzara_keskin.jpg")
+print("✓ Keskinleştirme uygulandı")
+
+// Kenar algılama (edge detection)
+değer kenarlar = resim.kenar_algıla(eşik: 100)
+kenarlar.png_kaydet("manzara_kenarlar.png")
+print("✓ Kenar algılama yapıldı")
+
+// Mozaik efekti
+değer mozaik = resim.mozaik(piksel_boyutu: 10)
+mozaik.jpeg_kaydet("manzara_mozaik.jpg")
+print("✓ Mozaik efekti uygulandı")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>Batch Image Processing</h3>
+            <pre><code class="language-berk">use image
+use fs
+
+class Görüntüİşlemci {
+    function toplu_yeniden_boyutlandır(
+        kaynak_klasör: Dize,
+        hedef_klasör: Dize,
+        max_genişlik: Tam,
+        max_yükseklik: Tam
+    ) -&gt; Sonuç&lt;Tam, Err&gt; {
+        // Hedef klasörü oluştur
+        fs.klasör_oluştur(hedef_klasör)?
+        
+        // Tüm görüntü dosyalarını bul
+        değer dosyalar = fs.dosyalar_listele(kaynak_klasör)?
+        değer görüntü_uzantıları = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
+        
+        değer işlenen = 0
+        
+        for dosya in dosyalar {
+            değer uzantı = fs.uzantı(dosya).küçük_harfe()
+            
+            if uzantı in görüntü_uzantıları {
+                değer kaynak_yol = fs.join(kaynak_klasör, dosya)
+                değer hedef_yol = fs.join(hedef_klasör, dosya)
+                
+                try {
+                    değer resim = image.yükle(kaynak_yol)
+                    
+                    // Boyutu kontrol et
+                    if resim.genişlik() &gt; max_genişlik or resim.yükseklik() &gt; max_yükseklik {
+                        // Orantılı boyutlandırma
+                        değer oran = (max_genişlik.gerçek() / resim.genişlik().gerçek())
+                            .min(max_yükseklik.gerçek() / resim.yükseklik().gerçek())
+                        
+                        değer yeni_genişlik = (resim.genişlik().gerçek() * oran).tam()
+                        değer yeni_yükseklik = (resim.yükseklik().gerçek() * oran).tam()
+                        
+                        değer yeni_resim = resim.yeniden_boyutlandır(
+                            yeni_genişlik,
+                            yeni_yükseklik,
+                            kalite: image.Kalite.YÜKSEK
+                        )
+                        
+                        yeni_resim.jpeg_kaydet(hedef_yol, kalite: 85)
+                        print(f"✓ İşlendi: {dosya} ({resim.genişlik()}x{resim.yükseklik()} -&gt; {yeni_genişlik}x{yeni_yükseklik})")
+                        işlenen += 1
+                    } elseif {
+                        // Boyut zaten uygun, sadece kopyala
+                        fs.dosya_kopyala(kaynak_yol, hedef_yol)?
+                        print(f"→ Kopyalandı: {dosya}")
+                        işlenen += 1
+                    }
+                } catch hata {
+                    print(f"❌ Err ({dosya}): {hata}")
+                }
+            }
+        }
+        
+        return Ok(işlenen)
+    }
+    
+    function watermark_ekle(
+        kaynak: Dize,
+        hedef: Dize,
+        watermark_metin: Dize,
+        index_of: Dize = "sağ_alt"
+    ) -&gt; Sonuç&lt;null, Err&gt; {
+        değer resim = image.yükle(kaynak)?
+        
+        // Watermark konumunu hesapla
+        değer (x, y) = eşleştir index_of {
+            "sol_üst" =&gt; (10, 10),
+            "sağ_üst" =&gt; (resim.genişlik() - 200, 10),
+            "sol_alt" =&gt; (10, resim.yükseklik() - 40),
+            "sağ_alt" =&gt; (resim.genişlik() - 200, resim.yükseklik() - 40),
+            _ =&gt; (10, resim.yükseklik() - 40)
+        }
+        
+        // Yarı şeffaf String push
+        resim.metin_yaz(
+            watermark_metin,
+            x: x,
+            y: y,
+            font: "Arial",
+            len: 24,
+            renk: image.rgba(255, 255, 255, 180),  // Beyaz, %70 opaklık
+            gölge: true
+        )
+        
+        resim.jpeg_kaydet(hedef, kalite: 90)?
+        return Ok(null)
+    }
+}
+
+// Usage
+değer işlemci = Görüntüİşlemci {}
+
+// Toplu yeniden boyutlandırma
+print("Görüntüler yeniden boyutlandırılıyor...")
+değer sonuç = işlemci.toplu_yeniden_boyutlandır(
+    "orijinal_resimler",
+    "küçük_resimler",
+    1920,
+    1080
+).aç()
+
+print(f"\n✓ Toplam {sonuç} görüntü işlendi")
+
+// Watermark push
+işlemci.watermark_ekle(
+    "fotoğraf.jpg",
+    "fotoğraf_watermark.jpg",
+    "© 2024 Benim Fotoğraflarım",
+    index_of: "sağ_alt"
+).aç()
+
+print("✓ Watermark eklendi")</code></pre>
+        </div>
+
+        <h2>🎯 Good Practices</h2>
+        <ul>
+            <li>Use high quality filters when resizing</li>
+            <li>Quality value between 85-95 is optimal for JPEG recording</li>
+            <li>Consider the WebP format to reduce file size</li>
+            <li>Use streaming processing on large images</li>
+            <li>Maintain thumbnails for aspect ratio</li>
+            <li>Use transparent PNG for Watermark</li>
+            <li>Combine filters rather than applying them repeatedly</li>
+        </ul>
+
+        <h2>🔗 Related Modules</h2>
+        <ul>
+            <li><a href="en_graphics.html">graphics</a>- 2D drawing and graphics</li>
+            <li><a href="en_color.html">color</a>- Color processes</li>
+            <li><a href="en_fs.html">fs</a>- File system</li>
+            <li><a href="en_encoding.html">encoding</a>- Base64 encoding</li>
+        </ul>
+    </main></div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/en_audio.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/en_physics2d.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/en_audio.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/en_physics2d.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

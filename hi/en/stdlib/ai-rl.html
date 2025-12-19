@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>आरएल - सुदृढीकरण सीखना - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .algo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+            .algo-card { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; border: 2px solid var(--links); }
+            .algo-card h3 { margin-top: 0; color: var(--links); }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>आरएल - सुदृढीकरण सीखना</h1>
+                        <p>डीक्यूएन, पीपीओ, एसएसी और आरएल एल्गोरिदम</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">6</div><div>एल्गोरिदम</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">जिम</div><div>अनुकूल</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">REPLAY</div><div>बफर</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">बहु-पर्यावरण</div><div>सहायता</div></div>
+                        </div>
+                    </div>
+
+                    <h2>सिंहावलोकन</h2>
+                    <p>आरएल मॉड्यूल सुदृढीकरण सीखने के लिए लोकप्रिय एल्गोरिदम (डीक्यूएन, पीपीओ, एसएसी) और जिम-संगत वातावरण प्रदान करता है।</p>
+
+                    <div class="algo-grid">
+                        <div class="algo-card">
+                            <h3>डीक्यूएन</h3>
+                            <p>डीप क्यू-नेटवर्क</p>
+                            <ul>
+                                <li>मूल्य आधारित</li>
+                                <li>पृथक् क्रियाएँ</li>
+                                <li>दोबारा खेलने का अनुभव लें</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>पीपीओ</h3>
+                            <p>समीपस्थ नीति अनुकूलन</p>
+                            <ul>
+                                <li>नीति ढाल</li>
+                                <li>सरोगेट को काट दिया गया</li>
+                                <li>ऑन-पॉलिसी</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>बाल</h3>
+                            <p>सौम्य अभिनेता-आलोचक</p>
+                            <ul>
+                                <li>ऑफ नीति</li>
+                                <li>सतत क्रियाएँ</li>
+                                <li>अधिकतम एन्ट्रापी</li>
+                            </ul>
+                        </div>
+                        <div class="algo-card">
+                            <h3>A2C/A3C</h3>
+                            <p>अभिनेता-आलोचक</p>
+                            <ul>
+                                <li>लाभ का अनुमान</li>
+                                <li>अतुल्यकालिक प्रशिक्षण</li>
+                                <li>तेजी से सीखना</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>डीक्यूएन - डीप क्यू-नेटवर्क</h2>
+
+                    <div class="example-box">
+                        <h3>कार्टपोल-v1 प्रशिक्षण</h3>
+                        <pre><code class="language-berk">use ai/rl;
+use ai/nn;
+
+// Q-Network tanımla
+let q_network = Sequential::new([
+    Linear::new(4, 128),   // State dimension
+    ReLU::new(),
+    Linear::new(128, 128),
+    ReLU::new(),
+    Linear::new(128, 2)    // Action dimension
+]);
+
+// DQN agent
+let agent = DQN::new(
+    q_network: q_network,
+    learning_rate: 0.001,
+    gamma: 0.99,
+    epsilon_start: 1.0,
+    epsilon_end: 0.01,
+    epsilon_decay: 0.995,
+    buffer_size: 10000,
+    batch_size: 64
+);
+
+// Ortam
+let env = gym::make("CartPole-v1")?;
+
+// Training loop
+her episode in range(500) for do
+    let state = env.reset()?;
+    let total_reward = 0.0;
+    
+    çevrim do
+        // Action match (epsilon-greedy)
+        let action = agent.act(state);
+        
+        // Step
+        let (next_state, reward, done, _) = env.step(action)?;
+        
+        // Deneyimi kaydet
+        agent.remember(state, action, reward, next_state, done);
+        
+        // Replay and öğren
+        if agent.buffer.len() &gt; batch_size then do
+            agent.replay()?;
+        end
+        
+        state = next_state;
+        total_reward += reward;
+        
+        if done then do kır; end
+    end
+    
+    print("Episode {}: Reward = {:.2f}, Epsilon = {:.3f}", 
+           episode, total_reward, agent.epsilon);
+end
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>डबल डीक्यूएन</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+// Double DQN (overestimation önleme)
+let agent = DoubleDQN::new(
+    q_network: q_network,
+    target_update_freq: 100,  // Her 100 step'te target network güncelle
+    learning_rate: 0.001
+);
+
+// Target network periyodik güncelleme
+if step % agent.target_update_freq == 0 then do
+    agent.update_target_network();
+end
+</code></pre>
+                    </div>
+
+                    <h2>पीपीओ - ​​समीपस्थ नीति अनुकूलन</h2>
+
+                    <div class="example-box">
+                        <h3>सतत नियंत्रण</h3>
+                        <pre><code class="language-berk">use ai/rl;
+use ai/nn;
+
+// Actor-Critic network
+sınıf ActorCritic {
+    let shared: Sequential;
+    let actor: Linear;
+    let critic: Linear;
+    
+    function new(state_dim: int, action_dim: int) -&gt; ActorCritic do
+        ActorCritic {
+            shared: Sequential::new([
+                Linear::new(state_dim, 256),
+                ReLU::new(),
+                Linear::new(256, 256),
+                ReLU::new()
+            ]),
+            actor: Linear::new(256, action_dim),
+            critic: Linear::new(256, 1)
+        }
+    end
+    
+    function ileri(let kendi, state: Tensor) -&gt; (Tensor, Tensor) do
+        let features = kendi.shared.ileri(state);
+        let action_mean = kendi.actor.ileri(features);
+        let value = kendi.critic.ileri(features);
+        return (action_mean, value);
+    end
+}
+
+// PPO agent
+let agent = PPO::new(
+    policy: ActorCritic::new(state_dim: 24, action_dim: 4),
+    learning_rate: 3e-4,
+    gamma: 0.99,
+    gae_lambda: 0.95,
+    clip_epsilon: 0.2,
+    epochs: 10,
+    batch_size: 64
+);
+
+// Training
+let env = gym::make("BipedalWalker-v3")?;
+
+her iteration in range(1000) for do
+    // Rollout topla
+    let trajectories = agent.collect_rollouts(env, steps: 2048)?;
+    
+    // PPO update
+    let loss = agent.update(trajectories)?;
+    
+    // Değerlendirme
+    let eval_reward = agent.evaluate(env, episodes: 5)?;
+    print("Iteration {}: Loss = {:.4f}, Reward = {:.2f}", 
+           iteration, loss, eval_reward);
+end
+</code></pre>
+                    </div>
+
+                    <h2>एसएसी - नरम अभिनेता-आलोचक</h2>
+
+                    <div class="example-box">
+                        <h3>ऑफ-पॉलिसी लर्निंग</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+// SAC agent (continuous actions for ideal)
+let agent = SAC::new(
+    state_dim: 11,
+    action_dim: 3,
+    hidden_dims: [256, 256],
+    learning_rate: 3e-4,
+    gamma: 0.99,
+    tau: 0.005,          // Soft target update
+    alpha: 0.2,          // Entropy coefficient
+    auto_tune_alpha: true
+);
+
+let env = gym::make("Pendulum-v1")?;
+
+her step in range(100000) for do
+    let state = env.reset()?;
+    
+    çevrim do
+        // Action sample (stochastic policy)
+        let action = agent.select_action(state, evaluate: false);
+        
+        let (next_state, reward, done, _) = env.step(action)?;
+        
+        // Replay buffer'a push
+        agent.buffer.push(state, action, reward, next_state, done);
+        
+        // Update
+        if step &gt; 1000 then do  // Warm-up
+            agent.update(batch_size: 256)?;
+        end
+        
+        state = next_state;
+        if done then do kır; end
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>रीप्ले बफ़र</h2>
+
+                    <div class="function-group">
+                        <h3>दोबारा खेलने का अनुभव लें</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+// Standart replay buffer
+let buffer = ReplayBuffer::new(
+    capacity: 100000,
+    state_dim: 4,
+    action_dim: 2
+);
+
+// Deneyim push
+buffer.push(state, action, reward, next_state, done);
+
+// Batch sample
+let batch = buffer.sample(batch_size: 64)?;
+
+// Prioritized Experience Replay
+let per_buffer = PrioritizedReplayBuffer::new(
+    capacity: 100000,
+    alpha: 0.6,      // Prioritization derecesi
+    beta_start: 0.4,  // Importance sampling
+    beta_frames: 100000
+);
+
+// TD error ile priority güncelle
+per_buffer.update_priorities(indices, td_errors);
+</code></pre>
+                    </div>
+
+                    <h2>कस्टम वातावरण</h2>
+
+                    <div class="example-box">
+                        <h3>अपना खुद का वातावरण बनाएं</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+trait Environment {
+    function reset(let kendi) -&gt; Tensor;
+    function step(let kendi, action: Tensor) -&gt; (Tensor, float, bool, Metadata);
+    function render(let kendi);
+    function close(let kendi);
+}
+
+sınıf GridWorld {
+    let grid_size: int;
+    let agent_pos: (int, int);
+    let goal_pos: (int, int);
+}
+
+uygula Environment for GridWorld do
+    function reset(let kendi) -&gt; Tensor do
+        kendi.agent_pos = (0, 0);
+        return kendi.get_state();
+    end
+    
+    function step(let kendi, action: Tensor) -&gt; (Tensor, float, bool, Metadata) do
+        // Action: 0=up, 1=right, 2=down, 3=left
+        let (x, y) = kendi.agent_pos;
+        
+        match action.item() do
+            0 =&gt; y -= 1,  // Up
+            1 =&gt; x += 1,  // Right
+            2 =&gt; y += 1,  // Down
+            3 =&gt; x -= 1,  // Left
+            _ =&gt; {}
+        end
+        
+        // Sınırları kontrol et
+        x = x.clamp(0, kendi.grid_size - 1);
+        y = y.clamp(0, kendi.grid_size - 1);
+        kendi.agent_pos = (x, y);
+        
+        // Reward hesapla
+        let reward = if kendi.agent_pos == kendi.goal_pos then do
+            1.0
+        end yoksa do
+            -0.01  // Small penalty for each step
+        end;
+        
+        let done = kendi.agent_pos == kendi.goal_pos;
+        
+        return (kendi.get_state(), reward, done, Metadata::new());
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>बहु-पर्यावरण प्रशिक्षण</h2>
+
+                    <div class="function-group">
+                        <h3>समानांतर वातावरण</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+// Vectorized environment (paralel)
+let vec_env = VecEnv::new(
+    env_name: "CartPole-v1",
+    num_envs: 8,
+    parallel: true
+)?;
+
+// Tüm env'ler aynı anda step
+let states = vec_env.reset();
+let actions = agent.act_batch(states);
+let (next_states, rewards, dones, _) = vec_env.step(actions)?;
+
+// Her env for ayrı işlem
+her i in range(num_envs) for do
+    if dones[i] then do
+        vec_env.reset_env(i);
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>नीति मूल्यांकन</h2>
+
+                    <div class="example-box">
+                        <h3>एजेंट मूल्यांकन</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+function evaluate_policy(
+    agent: Agent,
+    env: Environment,
+    num_episodes: int
+) -&gt; float do
+    let total_rewards = [];
+    
+    her episode in range(num_episodes) for do
+        let state = env.reset();
+        let episode_reward = 0.0;
+        
+        çevrim do
+            // Deterministic action (no exploration)
+            let action = agent.select_action(state, evaluate: true);
+            let (next_state, reward, done, _) = env.step(action)?;
+            
+            episode_reward += reward;
+            state = next_state;
+            
+            if done then do kır; end
+        end
+        
+        total_rewards.push(episode_reward);
+    end
+    
+    return total_rewards.iter().sum::<float>() / num_episodes as float;
+end
+
+// Kullanım
+let mean_reward = evaluate_policy(agent, env, num_episodes: 10);
+print("Ortalama reward: {:.2f}", mean_reward);
+</float></code></pre>
+                    </div>
+
+                    <h2>हाइपरपैरामीटर ट्यूनिंग</h2>
+
+                    <div class="function-group">
+                        <h3>ग्रिड खोज</h3>
+                        <pre><code class="language-berk">use ai/rl;
+
+let learning_rates = [1e-4, 3e-4, 1e-3];
+let gammas = [0.95, 0.99, 0.999];
+
+let best_reward = -∞;
+let best_params = yok;
+
+her lr in learning_rates for do
+    her gamma in gammas for do
+        let agent = PPO::new(
+            policy: policy,
+            learning_rate: lr,
+            gamma: gamma
+        );
+        
+        let reward = train_and_evaluate(agent, env, iterations: 100)?;
+        
+        if reward &gt; best_reward then do
+            best_reward = reward;
+            best_params = bazı((lr, gamma));
+        end
+        
+        print("LR={}, Gamma={}: Reward={:.2f}", lr, gamma, reward);
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>एल्गोरिथम तुलना</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>एल्गोरिदम</th><th>दवा</th><th>एक्शनस्पेस</th><th>नमूना दक्षता</th><th>उपयोग</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>डीक्यूएन</td><td>मूल्य आधारित</td><td>अलग</td><td>मध्य</td><td>आर्केड खेल</td></tr>
+                            <tr><td>डबल डीक्यूएन</td><td>मूल्य आधारित</td><td>अलग</td><td>मध्य</td><td>अधिक आकलन की रोकथाम</td></tr>
+                            <tr><td>पीपीओ</td><td>नीति ढाल</td><td>दोनों</td><td>कम</td><td>सामान्य प्रयोजन</td></tr>
+                            <tr><td>A2C</td><td>अभिनेता-आलोचक</td><td>दोनों</td><td>कम</td><td>तीव्र प्रोटोटाइपिंग</td></tr>
+                            <tr><td>बाल</td><td>अभिनेता-आलोचक</td><td>निरंतर</td><td>उच्च</td><td>रोबोटिक नियंत्रण</td></tr>
+                            <tr><td>टीडी3</td><td>अभिनेता-आलोचक</td><td>निरंतर</td><td>उच्च</td><td>निरंतर नियंत्रण</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>एपीआई संदर्भ</h2>
+
+                    <div class="function-group">
+                        <h3>डीक्यूएन क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yeni(q_network: Network, ...) -&gt; DQN</code></li>
+                            <li><code data-no-translate="true">act(kendi, state: Tensor) -&gt; Tensor</code>- कार्रवाई चुनें</li>
+                            <li><code data-no-translate="true">remember(kendi, ...) </code>- अनुभव सहेजें</li>
+                            <li><code data-no-translate="true">replay(kendi) -&gt; Sonuç</code>- बैच अद्यतन</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>पीपीओ क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yeni(policy: ActorCritic, ...) -&gt; PPO</code></li>
+                            <li><code data-no-translate="true">collect_rollouts(kendi, env: Environment, ...) -&gt; Trajectories</code></li>
+                            <li><code data-no-translate="true">update(kendi, trajectories: Trajectories) -&gt; ondalık</code></li>
+                            <li><code data-no-translate="true">evaluate(kendi, env: Environment, ...) -&gt; ondalık</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>रिप्लेबफ़र क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">new(capacity: int, ...) -&gt; ReplayBuffer</code></li>
+                            <li><code data-no-translate="true">push(kendi, state, action, reward, next_state, done)</code></li>
+                            <li><code data-no-translate="true">sample(kendi, batch_size: int) -&gt; Batch</code></li>
+                            <li><code data-no-translate="true">len(kendi) -&gt; int</code></li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/hi_en_ai-nlp.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/hi_en_hal-index.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/hi_en_ai-nlp.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/hi_en_hal-index.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+
+    <!-- Custom JS scripts -->
+
+
+
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

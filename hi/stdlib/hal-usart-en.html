@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::usart - सीरियल कम्युनिकेशन | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📡 राज्य::usart</h1>
+<p>यूनिवर्सल सिंक्रोनस/एसिंक्रोनस रिसीवर/ट्रांसमीटर</p>
+<div style="margin-top:15px">
+<span class="stat-badge">407 पंक्तियाँ</span>
+<span class="stat-badge">~20 कार्य</span>
+<span class="stat-badge">यूएआरटी/यूएसएआरटी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>USART/UART मॉड्यूल एक सीरियल संचार प्रोटोकॉल है। इसका उपयोग जीपीएस, जीएसएम मॉड्यूल, सेंसर और पीसी के साथ संचार के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>एसिंक्रोनस (यूएआरटी) मोड</li>
+<li>सिंक्रोनस (यूएसएआरटी) मोड</li>
+<li>विन्यास योग्य बॉड दरें (1200-12Mbps)</li>
+<li>7/8/9 बिट डेटा</li>
+<li>समता: कोई नहीं/सम/विषम</li>
+<li>1/2 स्टॉप बिट्स</li>
+<li>हार्डवेयर प्रवाह नियंत्रण (आरटीएस/सीटीएस)</li>
+<li>डीएमए समर्थन</li>
+<li>व्यवधान-संचालित TX/RX</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::usart, hal::gpio
+
+// GPIO setup for USART1
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 9, do   // TX
+    mode: gpio.MODE_AF,
+    af: 7  // AF7 = USART1
+end)
+gpio.pin_init(gpio.PORT_A, 10, do  // RX
+    mode: gpio.MODE_AF,
+    pull: gpio.PULL_UP,
+    af: 7
+end)
+
+// USART init
+let uart = usart.init(usart.USART1, do
+    baud_rate: 115200,
+    data_bits: usart.DATA_8BIT,
+    parity: usart.PARITY_NONE,
+    stop_bits: usart.STOP_1BIT
+end)
+
+// Send data
+usart.write(uart, "Hello World!\n")
+
+// Receive data
+let data = usart.read(uart, 100)  // Read up to 100 bytes</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण 1: सीरियल कंसोल</h3>
+<pre><code>import hal::usart, hal::gpio, hal::core
+
+function uart_print(uart: usart.Handle, msg: str) do
+    usart.write(uart, msg)
+end
+
+function uart_println(uart: usart.Handle, msg: str) do
+    usart.write(uart, msg + "\r\n")
+end
+
+function main() do
+    core.system_init()
+    core.clock_config(72_000_000)
+    
+    // Setup USART1 GPIO (PA9=TX, PA10=RX)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 9, do
+        mode: gpio.MODE_AF,
+        speed: gpio.SPEED_HIGH,
+        af: 7
+    end)
+    gpio.pin_init(gpio.PORT_A, 10, do
+        mode: gpio.MODE_AF,
+        pull: gpio.PULL_UP,
+        af: 7
+    end)
+    
+    // Initialize USART
+    usart.clock_enable(usart.USART1)
+    let uart = usart.init(usart.USART1, do
+        baud_rate: 115200,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT,
+        flow_control: usart.FLOW_NONE
+    end)
+    
+    uart_println(uart, "BERK v1.0.0 Console")
+    uart_println(uart, "Type 'help' for commands")
+    
+    let buffer = ""
+    
+    loop do
+        // Check if data available
+        if usart.available(uart) &gt; 0 then do
+            let ch = usart.read_byte(uart)
+            
+            if ch == '\r' or ch == '\n' then do
+                if buffer.len() &gt; 0 then do
+                    uart_println(uart, "")
+                    process_command(uart, buffer)
+                    buffer = ""
+                    uart_print(uart, "&gt; ")
+                end
+            else if ch == '\b' then do  // Backspace
+                if buffer.len() &gt; 0 then do
+                    buffer = buffer[0..buffer.len()-1]
+                    uart_print(uart, "\b \b")  // Erase character
+                end
+            else do
+                buffer += ch
+                usart.write_byte(uart, ch)  // Echo
+            end
+        end
+    end
+end
+
+function process_command(uart: usart.Handle, cmd: str) do
+    if cmd == "help" then do
+        uart_println(uart, "Available commands:")
+        uart_println(uart, "  help    - Show this message")
+        uart_println(uart, "  status  - System status")
+        uart_println(uart, "  reset   - Reset system")
+        uart_println(uart, "  info    - System info")
+    else if cmd == "status" then do
+        let uptime = core.uptime_ms() / 1000
+        uart_println(uart, "System Status:")
+        uart_println(uart, "  Uptime: " + uptime.yazıya() + "s")
+        uart_println(uart, "  Clock: 72 MHz")
+        uart_println(uart, "  Free RAM: 64 KB")
+    else if cmd == "reset" then do
+        uart_println(uart, "Resetting...")
+        core.delay_ms(100)
+        core.system_reset()
+    else if cmd == "info" then do
+        uart_println(uart, "BERK Embedded System")
+        uart_println(uart, "Version: 1.0.0")
+        uart_println(uart, "Platform: STM32F103")
+    else do
+        uart_println(uart, "Unknown command: " + cmd)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: जीपीएस पार्सर (एनएमईए)</h3>
+<pre><code>import hal::usart, string
+
+struct GPSData do
+    latitude: float,
+    longitude: float,
+    altitude: float,
+    speed: float,
+    satellites: int,
+    valid: bool
+end
+
+function parse_nmea(sentence: str) -&gt; Optional[GPSData] do
+    // Parse GPGGA sentence: $GPGGA,time,lat,N,lon,E,quality,sats,hdop,alt,M,...
+    if sentence.starts_with("$GPGGA") değilse do
+        return None
+    end
+    
+    let parts = sentence.split(",")
+    if parts.uzunluk() &lt; 15 ise do
+        return None
+    end
+    
+    let quality = parts[6].parse_int()?
+    if quality == 0 ise do  // Invalid fix
+        return None
+    end
+    
+    // Parse latitude (DDMM.MMMM format)
+    let lat_str = parts[2]
+    let lat_deg = lat_str[0..2].parse_int()?
+    let lat_min = lat_str[2..].parse_float()?
+    let latitude = lat_deg.float() + lat_min / 60.0
+    if parts[3] == "S" ise do
+        latitude = -latitude
+    end
+    
+    // Parse longitude (DDDMM.MMMM format)
+    let lon_str = parts[4]
+    let lon_deg = lon_str[0..3].parse_int()?
+    let lon_min = lon_str[3..].parse_float()?
+    let longitude = lon_deg.float() + lon_min / 60.0
+    if parts[5] == "W" ise do
+        longitude = -longitude
+    end
+    
+    return Some(GPSData do
+        latitude: latitude,
+        longitude: longitude,
+        altitude: parts[9].parse_float()?,
+        speed: 0.0,
+        satellites: parts[7].parse_int()?,
+        valid: true
+    end)
+end
+
+function ana() do
+    // Setup USART for GPS (9600 baud, typical for GPS)
+    let gps_uart = usart.init(usart.USART2, do
+        baud_rate: 9600,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT
+    end)
+    
+    let buffer = ""
+    
+    loop do
+        if usart.available(gps_uart) &gt; 0 ise do
+            let ch = usart.read_byte(gps_uart)
+            
+            if ch == '\n' ise do
+                // Process complete sentence
+                if gps_data = parse_nmea(buffer) ise do
+                    io.println("GPS Fix:")
+                    io.println("  Lat: {:.6f}".formatla(gps_data.latitude))
+                    io.println("  Lon: {:.6f}".formatla(gps_data.longitude))
+                    io.println("  Alt: {:.1f}m".formatla(gps_data.altitude))
+                    io.println("  Sats: {}".formatla(gps_data.satellites))
+                end
+                buffer = ""
+            değilse if ch != '\r' ise do
+                buffer += ch
+            end
+        end
+        
+        core.delay_ms(10)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: एटी कमांड इंटरफ़ेस (जीएसएम)</h3>
+<pre><code>import hal::usart, hal::core
+
+struct GSMModem do
+    uart: usart.Handle
+end
+
+function send_at_command(modem: GSMModem, cmd: str, timeout_ms: int) -&gt; Result[str, Error] do
+    // Send command
+    usart.write(modem.uart, cmd + "\r\n")
+    
+    // Wait for response
+    let response = ""
+    let start_time = core.millis()
+    
+    loop do
+        if usart.available(modem.uart) &gt; 0 ise do
+            let ch = usart.read_byte(modem.uart)
+            response += ch
+            
+            // Check for termination
+            if response.ends_with("OK\r\n") veya response.ends_with("ERROR\r\n") ise do
+                return Ok(response)
+            end
+        end
+        
+        // Timeout check
+        if core.millis() - start_time &gt; timeout_ms ise do
+            return Error("AT command timeout")
+        end
+        
+        core.delay_ms(10)
+    end
+end
+
+function gsm_init() -&gt; Result[GSMModem, Error] do
+    let uart = usart.init(usart.USART3, do
+        baud_rate: 115200,
+        data_bits: usart.DATA_8BIT,
+        parity: usart.PARITY_NONE,
+        stop_bits: usart.STOP_1BIT
+    end)
+    
+    let modem = GSMModem do uart: uart end
+    
+    // Test communication
+    send_at_command(modem, "AT", 1000)?
+    
+    // Disable echo
+    send_at_command(modem, "ATE0", 1000)?
+    
+    // Check SIM card
+    let sim_status = send_at_command(modem, "AT+CPIN?", 1000)?
+    if sim_status.contains("READY") değilse do
+        return Error("SIM card not ready")
+    end
+    
+    return Ok(modem)
+end
+
+function send_sms(modem: GSMModem, phone: str, message: str) -&gt; Result[None, Error] do
+    // Set text mode
+    send_at_command(modem, "AT+CMGF=1", 1000)?
+    
+    // Set phone number
+    send_at_command(modem, "AT+CMGS=\"" + phone + "\"", 1000)?
+    
+    // Send message
+    usart.write(modem.uart, message)
+    usart.write_byte(modem.uart, 0x1A)  // Ctrl+Z
+    
+    let response = send_at_command(modem, "", 10000)?
+    if response.contains("OK") değilse do
+        return Error("Failed to send SMS")
+    end
+    
+    return Ok(None)
+end
+
+function ana() do
+    let modem = gsm_init()?
+    
+    io.println("GSM Modem ready!")
+    
+    // Send alert SMS
+    send_sms(modem, "+905551234567", "BERK System Alert: Temperature exceeded 50°C")?
+    
+    io.println("SMS sent successfully!")
+end</code></pre>
+</div>
+
+<h2>⚙️ बॉड दरें</h2>
+<pre><code>const BAUD_1200 = 1200
+const BAUD_2400 = 2400
+const BAUD_4800 = 4800
+const BAUD_9600 = 9600      // GPS, simple devices
+const BAUD_19200 = 19200
+const BAUD_38400 = 38400
+const BAUD_57600 = 57600
+const BAUD_115200 = 115200  // PC communication, GSM
+const BAUD_230400 = 230400
+const BAUD_460800 = 460800
+const BAUD_921600 = 921600</code></pre>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>TX/RX पिन को वास्तविक वैकल्पिक फ़ंक्शन पर सेट करें</li>
+<li>बॉड दर की गणना घड़ी की आवृत्ति पर निर्भर करती है</li>
+<li>लंबी केबलों पर कम बॉड दर का उपयोग करें</li>
+<li>आरएक्स बफर ओवरफ़्लो से बचें (इंटरप्ट/डीएमए का उपयोग करें)</li>
+<li>3.3V-5V लेवल शिफ्टिंग की आवश्यकता हो सकती है</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- TX/RX पिन कॉन्फ़िगरेशन</li>
+<li><code data-no-translate="true">hal::dma</code>- डीएमए स्थानान्तरण</li>
+<li><code data-no-translate="true">hal::int</code>- यूएसएआरटी बीच में आता है</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_index-tr.html">सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

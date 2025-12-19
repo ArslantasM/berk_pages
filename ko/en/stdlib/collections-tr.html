@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>컬렉션 - 데이터 구조 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 컬렉션 - 데이터 구조</h1>
+<p>Vec, HashMap, HashSet, LinkedList, BTreeMap, BinaryHeap</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">89</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,126</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">34KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import collections
+
+// Vec (dinamik Array)
+let v = collections.vec_new()
+collections.vec_push(v, 10)
+collections.vec_push(v, 20)
+let eleman = collections.vec_get(v, 0)
+
+// HashMap
+let map = collections.hashmap_new()
+collections.hashmap_insert(map, "name", "BERK")
+collections.hashmap_insert(map, "version", "1.0")
+let isim = collections.hashmap_get(map, "name")
+
+// HashSet
+let set = collections.hashset_new()
+collections.hashset_insert(set, "apple")
+collections.hashset_insert(set, "banana")
+let var_mı = collections.hashset_contains(set, "apple")
+
+// LinkedList
+let list = collections.linkedlist_new()
+collections.linkedlist_push_back(list, 1)
+collections.linkedlist_push_front(list, 0)
+
+// BinaryHeap (priority kuyruğu)
+let heap = collections.heap_new()
+collections.heap_push(heap, 5)
+collections.heap_push(heap, 3)
+let en_büyük = collections.heap_pop(heap)  // 5</code></pre>
+<h2>📚 데이터 구조</h2>
+<ul>
+<li><strong>Vec:</strong>동적 배열, O(1) 액세스, O(1) 분할 푸시</li>
+<li><strong>해시맵:</strong>해시 테이블, O(1) 평균 삽입/가져오기/삭제</li>
+<li><strong>해시세트:</strong>고유 요소에는 O(1) 평균이 포함됩니다.</li>
+<li><strong>링크드리스트:</strong>이중 연결 목록, O(1) 푸시/팝 시작/끝</li>
+<li><strong>BTreeMap:</strong>순차 맵, O(log n) 연산</li>
+<li><strong>바이너리힙:</strong>최대 힙, O(log n) 푸시/팝, O(1) 픽</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>단어 빈도 카운터</h3>
+<pre><code>import collections, string, io
+
+function word_frequency(text: yazı) -&gt; HashMap do
+    let freq = collections.hashmap_new()
+    let kelimeler = string.split(text, " ")
+    
+    her kelime in kelimeler for do
+        let küçük = string.to_lowercase(kelime)
+        
+        if collections.hashmap_contains(freq, küçük) then do
+            let count = collections.hashmap_get(freq, küçük)
+            collections.hashmap_insert(freq, küçük, count + 1)
+        end else do
+            collections.hashmap_insert(freq, küçük, 1)
+        end
+    end
+    
+    return freq
+end
+
+let String = io.fs::read("document.txt")
+let frekans = word_frequency(String)
+
+// En çok elapsed 10 kelimeyi göster
+let kelimeler = collections.hashmap_keys(frekans)
+collections.vec_sort_by(kelimeler, function(a, b) do
+    return collections.hashmap_get(frekans, b) - collections.hashmap_get(frekans, a)
+end)
+
+her i in range(0, 10) for do
+    let k = collections.vec_get(kelimeler, i)
+    print(k + ": " + collections.hashmap_get(frekans, k).yazıya())
+end</code></pre>
+</div>
+<div class="example-box">
+<h3>LRU 캐시 구현</h3>
+<pre><code>import collections
+
+sınıf LRUCache do
+    let kapasite: int
+    let cache: HashMap
+    let sıra: LinkedList
+    
+    function new(kap: int) do
+        self.kapasite = kap
+        self.cache = collections.hashmap_new()
+        self.sıra = collections.linkedlist_new()
+    end
+    
+    function get(anahtar: yazı) -&gt; herhangi do
+        if collections.hashmap_contains(self.cache, anahtar) else do
+            return yok
+        end
+        
+        // Sıraya taşı (LRU güncelle)
+        collections.linkedlist_remove(self.sıra, anahtar)
+        collections.linkedlist_push_back(self.sıra, anahtar)
+        
+        return collections.hashmap_get(self.cache, anahtar)
+    end
+    
+    function put(anahtar: yazı, değer: herhangi) do
+        if collections.hashmap_contains(self.cache, anahtar) then do
+            collections.linkedlist_remove(self.sıra, anahtar)
+        end
+        
+        collections.hashmap_insert(self.cache, anahtar, değer)
+        collections.linkedlist_push_back(self.sıra, anahtar)
+        
+        if collections.hashmap_size(self.cache) &gt; self.kapasite then do
+            // En eski elemanı pop
+            let eski = collections.linkedlist_pop_front(self.sıra)
+            collections.hashmap_remove(self.cache, eski)
+        end
+    end
+end
+
+let cache = LRUCache.new(3)
+cache.put("a", 1)
+cache.put("b", 2)
+cache.put("c", 3)
+print(cache.get("a"))  // 1
+cache.put("d", 4)  // "b" çıkarılır
+print(cache.get("b"))  // yok</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

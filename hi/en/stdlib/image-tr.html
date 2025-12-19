@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>छवि - छवि प्रसंस्करण | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖼️ छवि - छवि प्रसंस्करण</h1>
+<p>लोड करें, सहेजें, आकार बदलें, फ़िल्टर करें, रूपांतरित करें</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">72</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">934</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">29KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import image
+
+// Load image
+let img = image.load("photo.jpg")
+
+// Resize
+let thumbnail = image.resize(img, 200, 200)
+
+// Filters
+let blurred = image.gaussian_blur(img, 5.0)
+let edges = image.sobel_edge_detect(img)
+let grayscale = image.to_grayscale(img)
+
+// Save
+image.save(thumbnail, "thumbnail.jpg")</code></pre>
+<h2>📚 प्रारूप</h2>
+<ul>
+<li>पीएनजी, जेपीईजी, जीआईएफ, बीएमपी, टीआईएफएफ, वेबपी</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>बैच इमेज प्रोसेसर</h3>
+<pre><code>import image, fs
+
+function batch_resize(dizin: yazı, genişlik: int, yükseklik: int) do
+    let dosyalar = fs.dizin_listele(dizin)
+    
+    her dosya in dosyalar for do
+        if dosya.bitiyor_mu(".jpg") or dosya.bitiyor_mu(".png") then do
+            let tam_yol = fs.path_join(dizin, dosya)
+            let img = image.load(tam_yol)
+            let resized = image.resize(img, genişlik, yükseklik)
+            
+            let yeni_dosya = "resized_" + dosya
+            let yeni_yol = fs.path_join(dizin, yeni_dosya)
+            image.save(resized, yeni_yol)
+            
+            print("İşlendi: " + dosya)
+        end
+    end
+end
+
+batch_resize("./photos", 800, 600)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

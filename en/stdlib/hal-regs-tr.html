@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::regs - Register Access | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#8e44ad 0%,#9b59b6 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎛️ state::regs</h1>
+<p>Direct Register Access &amp; Bit Manipulation</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 lines</span>
+<span class="stat-badge">Memory-mapped I/O</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The Register module provides direct access to hardware registers and bit manipulation functions.</p>
+
+<h2>🚀 Usage</h2>
+<pre><code>import hal::regs
+
+// Read/Write registers
+let value = regs.read(0x40020000)  // Read GPIOA base
+regs.write(0x40020014, 0x2000)  // Write to GPIOA_ODR
+
+// Bit operations
+regs.set_bit(0x40020000, 13)    // Set bit 13
+regs.clear_bit(0x40020000, 13)  // Clear bit 13
+regs.toggle_bit(0x40020000, 13) // Toggle bit 13
+
+// Bit field operations
+regs.modify(0x40020000, 0x0F, 0x05, 4)  // Modify bits [7:4]</code></pre>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>Direct register access can be dangerous</li>
+<li>Prefer HAL functions</li>
+<li>Use critical section for atomic operations</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

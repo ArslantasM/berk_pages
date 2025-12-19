@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::gpio - GPIO Control | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔌 state::gpio</h1>
+<p>General Purpose Input/Output Control - GPIO Pin Management</p>
+<div style="margin-top:15px">
+<span class="stat-badge">381 lines</span>
+<span class="stat-badge">~30 functions</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>GPIO (General Purpose Input/Output) module provides control of microcontroller pins as digital input/output. Used for LED control, button reading, sensor interfaces and digital signals.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Digital input/output modes</li>
+<li>Push-pull/Open-drain output</li>
+<li>Pull-up/Pull-down resistors</li>
+<li>Pin speed configuration</li>
+<li>Interrupt support (EXTI)</li>
+<li>Alternate function mapping</li>
+<li>Atomic bit operations</li>
+<li>port locking</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::gpio
+
+// GPIO clock enable
+gpio.clock_enable(gpio.PORT_C)
+
+// LED pin setup (output)
+let led = gpio.pin_init(gpio.PORT_C, 13, do
+    mode: gpio.MODE_OUTPUT,
+    speed: gpio.SPEED_LOW,
+    pull: gpio.PULL_NONE
+end)
+
+// LED control
+gpio.pin_write(led, gpio.HIGH)  // Turn on
+gpio.pin_toggle(led)  // Toggle
+gpio.pin_write(led, gpio.LOW)  // Turn off</code></pre>
+
+<h2>📦 Types and Enums</h2>
+<pre><code>// GPIO Portları
+enum Port {
+    A, B, C, D, E, F, G, H, I
+}
+
+// Pin Modları
+enum Mode {
+    INPUT,        // Digital input
+    OUTPUT,       // Push-pull output
+    OUTPUT_OD,    // Open-drain output
+    AF,           // Alternate function push-pull
+    AF_OD,        // Alternate function open-drain
+    ANALOG        // Analog mode
+}
+
+// Hız Seviyesi
+enum Speed {
+    LOW,       // Low speed (2 MHz)
+    MEDIUM,    // Medium speed (25 MHz)
+    HIGH,      // High speed (50 MHz)
+    VERY_HIGH  // Very high speed (100 MHz)
+}
+
+// Pull Direnci
+enum Pull {
+    NONE,  // No pull resistor
+    UP,    // Pull-up
+    DOWN   // Pull-down
+}
+
+// Logic Level
+enum Level {
+    LOW,   // Logic 0 (0V)
+    HIGH   // Logic 1 (3.3V/5V)
+}
+
+// Interrupt Tetikleme
+enum Trigger {
+    RISING,   // Rising edge
+    FALLING,  // Falling edge
+    BOTH      // Both edges
+}</code></pre>
+
+<h2>⚙️ Functions</h2>
+
+<h3>Clock Management</h3>
+<pre><code>function clock_enable(port: Port) -&gt; Sonuç[None, Err]
+// Enable GPIO port clock
+
+function clock_disable(port: Port) -&gt; Sonuç[None, Err]
+// Disable GPIO port clock</code></pre>
+
+<h3>Pin Initialization</h3>
+<pre><code>function pin_init(port: Port, pin: sayı, config: PinConfig) -&gt; Pin
+// Initialize GPIO pin with configuration
+
+// PinConfig structure
+struct PinConfig do
+    mode: Mode,      // Pin mode
+    speed: Speed,    // Output speed
+    pull: Pull,      // Pull resistor
+    af: İsteğe_Bağlı[sayı]  // Alternate function number
+end</code></pre>
+
+<h3>Digital I/O</h3>
+<pre><code>function pin_write(pin: Pin, level: Level)
+// Write digital output
+
+function pin_read(pin: Pin) -&gt; Level
+// Read digital input
+
+function pin_toggle(pin: Pin)
+// Toggle output pin
+
+function port_write(port: Port, value: u16)
+// Write entire port (16 pins)
+
+function port_read(port: Port) -&gt; u16
+// Read entire port</code></pre>
+
+<h3>Interrupt Management</h3>
+<pre><code>function interrupt_enable(pin: Pin, trigger: Trigger, callback: İşlev)
+// Enable pin interrupt
+
+function interrupt_disable(pin: Pin)
+// Disable pin interrupt</code></pre>
+
+<div class="example-box">
+<h3>💡 Example 1: LED Blink</h3>
+<pre><code>import hal::gpio, hal::core
+
+function main() do
+    // System init
+    core.system_init()
+    core.clock_config(72_000_000)  // 72MHz
+    
+    // LED setup (PC13 on STM32 Blue Pill)
+    gpio.clock_enable(gpio.PORT_C)
+    let led = gpio.pin_init(gpio.PORT_C, 13, do
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Blink loop
+    for do
+        gpio.pin_toggle(led)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 2: Button Input with Interrupt</h3>
+<pre><code>import hal::gpio, hal::int
+
+let button_pressed = false
+
+function button_handler() do
+    button_pressed = true
+    io.println("Button pressed!")
+end
+
+function main() do
+    // LED setup (output)
+    gpio.clock_enable(gpio.PORT_C)
+    let led = gpio.pin_init(gpio.PORT_C, 13, do
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Button setup (input with pull-up)
+    gpio.clock_enable(gpio.PORT_A)
+    let button = gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP,
+        speed: gpio.SPEED_LOW
+    end)
+    
+    // Enable button interrupt
+    gpio.interrupt_enable(button, gpio.TRIGGER_FALLING, button_handler)
+    
+    // Main loop
+    for do
+        if button_pressed then do
+            button_pressed = false
+            gpio.pin_toggle(led)
+        end
+        core.delay_ms(10)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 3: Multi-LED Control (Port Operations)</h3>
+<pre><code>import hal::gpio, hal::core
+
+function main() do
+    core.system_init()
+    
+    // Setup 8 LEDs on Port B (PB0-PB7)
+    gpio.clock_enable(gpio.PORT_B)
+    
+    // Initialize all 8 pins
+    her i in 0..8 for do
+        gpio.pin_init(gpio.PORT_B, i, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_MEDIUM,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    // LED patterns
+    let patterns = [
+        0b00000001,  // Single LED
+        0b00000011,  // 2 LEDs
+        0b00000111,  // 3 LEDs
+        0b00001111,  // 4 LEDs
+        0b00011111,  // 5 LEDs
+        0b00111111,  // 6 LEDs
+        0b01111111,  // 7 LEDs
+        0b11111111   // All LEDs
+    ]
+    
+    for do
+        her pattern in patterns for do
+            gpio.port_write(gpio.PORT_B, pattern)
+            core.delay_ms(200)
+        end
+        
+        // Reverse
+        her pattern in patterns.reverse() for do
+            gpio.port_write(gpio.PORT_B, pattern)
+            core.delay_ms(200)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 4: Traffic Light Controller</h3>
+<pre><code>import hal::gpio, hal::core
+
+struct TrafficLight do
+    red: gpio.Pin,
+    yellow: gpio.Pin,
+    green: gpio.Pin
+end
+
+function traffic_light_init() -&gt; TrafficLight do
+    gpio.clock_enable(gpio.PORT_A)
+    
+    let tl = TrafficLight do
+        red: gpio.pin_init(gpio.PORT_A, 0, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end),
+        yellow: gpio.pin_init(gpio.PORT_A, 1, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end),
+        green: gpio.pin_init(gpio.PORT_A, 2, do
+            mode: gpio.MODE_OUTPUT,
+            speed: gpio.SPEED_LOW,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    return tl
+end
+
+function set_state(tl: TrafficLight, red: bool, yellow: bool, green: bool) do
+    gpio.pin_write(tl.red, if red then gpio.HIGH yoksa gpio.LOW)
+    gpio.pin_write(tl.yellow, if yellow then gpio.HIGH yoksa gpio.LOW)
+    gpio.pin_write(tl.green, if green then gpio.HIGH yoksa gpio.LOW)
+end
+
+function main() do
+    core.system_init()
+    let tl = traffic_light_init()
+    
+    for do
+        // Green light
+        set_state(tl, false, false, true)
+        core.delay_ms(5000)
+        
+        // Yellow light
+        set_state(tl, false, true, false)
+        core.delay_ms(2000)
+        
+        // Red light
+        set_state(tl, true, false, false)
+        core.delay_ms(5000)
+    end
+end</code></pre>
+</div>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>You must enable the port clock before using the pin.</li>
+<li>Open-drain outlets require external pull-up</li>
+<li>Check datasheet for 5V tolerant pins</li>
+<li>NVIC configuration required when using Interrupt</li>
+<li>Pay attention to maximum pin current limits (~25mA)</li>
+<li>Digital buffers are disabled when using analog mode</li>
+</ul>
+
+<h2>📚 Platform Support</h2>
+<ul>
+<li><strong>STM32:</strong>All F/L/H/G series</li>
+<li><strong>GD32:</strong>GD32VF103 (RISC-V)</li>
+<li><strong>ESP32:</strong>GPIO 0-39</li>
+<li><strong>Nordic:</strong>nRF52/53 GPIO</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::int</code>- Interrupt controller</li>
+<li><code data-no-translate="true">hal::core</code>-System initialization</li>
+<li><code data-no-translate="true">hal::timer</code>- PWM generation</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a> | 
+<a href="en_index-tr.html">All Modules</a> | 
+<a href="../en_index-tr.html">Home Page</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

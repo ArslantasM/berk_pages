@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>आँकड़े - सांख्यिकी | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 आँकड़े - सांख्यिकी और संभाव्यता</h1>
+<p>वर्णनात्मक आँकड़े, संभाव्यता, प्रतिगमन, परिकल्पना परीक्षण</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">56</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">820</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">25KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import stats
+
+// Temel istatistikler
+let veri = [1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8]
+
+let ort = stats.avg(veri)           // 4.5
+let med = stats.medyan(veri)             // 4.5
+let std = stats.standart_sapma(veri)    // 2.28
+let var = stats.varyans(veri)           // 5.2
+
+// Dağılımlar
+let z_değeri = stats.z_skoru(5.0, ort, std)
+let normal = stats.normal_dağılım(0, 1)
+let prob = stats.normal_pdf(1.96)       // ~0.06
+
+// Korelasyon and regresyon
+let x = [1, 2, 3, 4, 5]
+let y = [2, 4, 5, 4, 5]
+let (r, p) = stats.korelasyon(x, y)    // r~0.83, p&lt;0.05
+let (a, b) = stats.lineer_regresyon(x, y)  // y = a + bx
+
+// Hipotez testleri
+let t = stats.t_test(grup1, grup2)
+if t.p_değeri &lt; 0.05  do
+    print("İstatistiksel as anlamlı fark var")
+end</code></pre>
+<h2>📚फ़ंक्शन श्रेणियाँ</h2>
+<ul>
+<li><strong>केंद्रीय प्रवृत्ति:</strong>माध्य, माध्यिका, बहुलक, ज्यामितीय_माध्य</li>
+<li><strong>फैलाना:</strong>विचरण, मानक विचलन, IQR, सीमा</li>
+<li><strong>वितरण:</strong>सामान्य, एकसमान, पॉइसन, द्विपद, घातांकीय</li>
+<li><strong>सह - संबंध:</strong>पियर्सन, स्पीयरमैन, केंडल</li>
+<li><strong>प्रतिगमन:</strong>रैखिक, बहुपद, तार्किक</li>
+<li><strong>परीक्षण:</strong>टी-टेस्ट, ची-स्क्वायर, एनोवा, कोलमोगोरोव-स्मिरनोव</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>डेटा विश्लेषण पाइपलाइन</h3>
+<pre><code>import stats, io, csv
+
+// CSV'from veri yükle
+let veri = csv.input("sales_data.csv")
+let satışlar = veri["sales"]
+
+// Descriptive statistics
+print("Ortalama: " + stats.avg(satışlar).yazıya())
+print("Medyan: " + stats.medyan(satışlar).yazıya())
+print("Std Sapma: " + stats.standart_sapma(satışlar).yazıya())
+print("Q1: " + stats.çeyreklik(satışlar, 0.25).yazıya())
+print("Q3: " + stats.çeyreklik(satışlar, 0.75).yazıya())
+
+// Outlier detection
+let Q1 = stats.çeyreklik(satışlar, 0.25)
+let Q3 = stats.çeyreklik(satışlar, 0.75)
+let IQR = Q3 - Q1
+let alt_sınır = Q1 - 1.5 * IQR
+let üst_sınır = Q3 + 1.5 * IQR
+
+let outliers = stats.filtrele(satışlar, function(x) do
+    return x &lt; alt_sınır or x &gt; üst_sınır
+end)
+
+print("Outliers: " + outliers.len().yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>ए/बी परीक्षण</h3>
+<pre><code>import stats
+
+// Grup A and B'nin conversion rates
+let grup_A = [1,0,1,1,0,1,1,1,0,1]  // 7/10 = 70%
+let grup_B = [1,1,0,1,1,1,0,1,1,1]  // 8/10 = 80%
+
+// İki oran karşılaştırması (z-test)
+let p_A = stats.avg(grup_A)
+let p_B = stats.avg(grup_B)
+
+print("Grup A: " + (p_A * 100).yazıya() + "%")
+print("Grup B: " + (p_B * 100).yazıya() + "%")
+
+// Hipotez testi
+let Result = stats.oran_testi(grup_A, grup_B)
+
+if Result.p_değeri &lt; 0.05  do
+    print("Anlamlı fark var (p=" + Result.p_değeri.yazıya() + ")")
+end else do
+    print("Anlamlı fark yok (p=" + Result.p_değeri.yazıya() + ")")
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

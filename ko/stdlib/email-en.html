@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>이메일 - 이메일 클라이언트 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📧 이메일</h1>
+<p>SMTP/IMAP 이메일 클라이언트 - 이메일 보내기 및 받기</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~450줄</span>
+<span class="stat-badge">~30가지 기능</span>
+<span class="stat-badge">SMTP/IMAP</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>이메일 모듈은 SMTP 및 IMAP 프로토콜을 통해 이메일을 보내고 받는 기능을 제공합니다. HTML 콘텐츠, 파일 첨부, SSL/TLS 보안 및 다중 수신자 지원을 제공합니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>SMTP 클라이언트(이메일 전송)</li>
+<li>IMAP 클라이언트(이메일 읽기)</li>
+<li>HTML 및 일반 텍스트 이메일</li>
+<li>파일 첨부</li>
+<li>SSL/TLS 및 STARTTLS 지원</li>
+<li>여러 수신자</li>
+<li>CC 및 BCC 지원</li>
+<li>MIME 인코딩</li>
+<li>Base64 첨부 인코딩</li>
+<li>입증</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import email
+
+// Basit e-posta gönder
+email.quick_send(
+    smtp_server: "smtp.gmail.com",
+    port: 587,
+    username: "your-email@gmail.com",
+    password: "your-password",
+    from: "sender@example.com",
+    to: "recipient@example.com",
+    subject: "Test Email",
+    body: "Hello, this is a test email!"
+)?
+
+io.println("E-posta gönderildi!")</code></pre>
+
+<h2>📦 이메일 생성</h2>
+<pre><code>// Email objesi create
+let mail = email.new()
+
+// Başlık bilgileri
+mail.set_from("sender@example.com")
+mail.add_to("recipient1@example.com")
+mail.add_to("recipient2@example.com")
+mail.add_cc("cc@example.com")
+mail.add_bcc("bcc@example.com")
+mail.set_subject("İş Toplantısı")
+
+// İçerik
+mail.set_text_body("Merhaba,\n\nToplantı 14:00'te başlayacak.")
+
+// Dosya eki
+mail.add_attachment("document.pdf", "path/to/document.pdf")?</code></pre>
+
+<div class="example-box">
+<h3>💡 예 1: HTML 이메일 보내기</h3>
+<pre><code>import email
+
+function send_welcome_email(user_email: str, user_name: str) -&gt; Result[None, Error] do
+    // HTML içerik
+    let html_body = "
+        &lt;html&gt;
+        &lt;head&gt;
+            &lt;style&gt;
+                body { font-family: Arial, sans-serif; }
+                .header { background: #4CAF50; color: white; padding: 20px; }
+                .content { padding: 20px; }
+                .button { background: #008CBA; color: white; padding: 10px 20px;
+                         text-decoration: none; border-radius: 5px; }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;div class='header'&gt;
+                &lt;h1&gt;Hoş Geldiniz, {}!&lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;div class='content'&gt;
+                &lt;p&gt;BERK platformuna katıldığınız for teşekkürler.&lt;/p&gt;
+                &lt;p&gt;Hesabınızı aktive etmek for aşağıdaki butona tıklayın:&lt;/p&gt;
+                &lt;p&gt;
+                    &lt;a href='https://example.com/activate' class='button'&gt;
+                        Hesabı Aktive Et
+                    &lt;/a&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    ".formatla(user_name)
+    
+    // SMTP setup
+    let smtp = email.smtp_new(do
+        server: "smtp.gmail.com",
+        port: 587,
+        username: "noreply@example.com",
+        password: "app-password",
+        use_tls: true
+    end)
+    
+    // Email create
+    let mail = email.new()
+    mail.set_from("noreply@example.com")
+    mail.add_to(user_email)
+    mail.set_subject("Hoş Geldiniz - Hesabınızı Aktive Edin")
+    mail.set_html_body(html_body)
+    
+    // Alternative plain text
+    mail.set_text_body("Hoş geldiniz! Hesabınızı aktive etmek for: https://example.com/activate")
+    
+    // Gönder
+    smtp.send(mail)?
+    smtp.disconnect()
+    
+    return Ok(None)
+end
+
+function main() do
+    send_welcome_email("user@example.com", "Ahmet Yılmaz")?
+    io.println("Hoş geldin e-postası gönderildi!")
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 2: 대량 이메일 보내기(뉴스레터)</h3>
+<pre><code>import email, fs, csv
+
+function send_newsletter(subscribers_file: str, template_file: str) -&gt; Result[int, Error] do
+    // Email template oku
+    let template = fs.read_to_string(template_file)?
+    
+    // SMTP bağlantısı
+    let smtp = email.smtp_new(do
+        server: "smtp.mailgun.org",
+        port: 587,
+        username: "postmaster@example.com",
+        password: "mailgun-api-key",
+        use_tls: true
+    end)
+    
+    smtp.connect()?
+    
+    // Abone listesi oku
+    let subscribers = csv.read_file(subscribers_file)?
+    let sent_count = 0
+    
+    each subscriber in subscribers for do
+        let email_addr = subscriber["email"]
+        let name = subscriber["name"]
+        
+        // Template'i kişiselleştir
+        let body = template
+            .replace("{name}", name)
+            .replace("{email}", email_addr)
+        
+        // Email gönder
+        let mail = email.new()
+        mail.set_from("newsletter@example.com")
+        mail.add_to(email_addr)
+        mail.set_subject("BERK v1.0.0 Yayınlandı! 🎉")
+        mail.set_html_body(body)
+        
+        dene do
+            smtp.send(mail)?
+            sent_count += 1
+            io.println("✓ Gönderildi: {}", email_addr)
+        yakala e do
+            io.eprintln("✗ Başarısız: {} - {}", email_addr, e)
+        end
+        
+        // Rate limiting (saniyede 5 email)
+        thread.sleep_ms(200)
+    end
+    
+    smtp.disconnect()
+    return Ok(sent_count)
+end
+
+function main() do
+    match send_newsletter("subscribers.csv", "newsletter_template.html") do
+        Ok(count) =&gt; io.println("Newsletter gönderildi: {} abone", count),
+        Error(e) =&gt; io.eprintln("Error: {}", e)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 3: IMAP 이메일 읽기</h3>
+<pre><code>import email
+
+function check_new_orders() -&gt; Result[Vector[Order], Error] do
+    // IMAP bağlantısı
+    let imap = email.imap_new(do
+        server: "imap.gmail.com",
+        port: 993,
+        username: "orders@example.com",
+        password: "app-password",
+        use_ssl: true
+    end)
+    
+    imap.connect()?
+    
+    // INBOX seç
+    imap.select_folder("INBOX")?
+    
+    // Okunmamış mesajları getir
+    let messages = imap.search("UNSEEN")?
+    
+    let orders = []
+    
+    each msg_id in messages for do
+        let msg = imap.fetch_message(msg_id)?
+        
+        // Subject'te "Order #" var mı kontrol et
+        if msg.subject.contains("Order #")  do
+            // Email body'den sipariş detaylarını parse et
+            let order = parse_order_email(msg)?
+            orders.ekle(order)
+            
+            // Mesajı okundu işaretle
+            imap.mark_read(msg_id)?
+            
+            // Siparişler klasörüne taşı
+            imap.move_message(msg_id, "Orders")?
+            
+            io.println("Yeni sipariş: #{}", order.order_id)
+        end
+    end
+    
+    imap.disconnect()
+    return Ok(orders)
+end
+
+struct Order do
+    order_id: str,
+    customer_email: str,
+    total_amount: float,
+    items: Vector[str]
+end
+
+function parse_order_email(msg: email.Message) -&gt; Result[Order, Error] do
+    // Email body'den sipariş bilgilerini parse et
+    let body = msg.text_body
+    
+    // Basitleştirilmiş parsing örneği
+    let order_id = regex.find(body, r"Order #(\d+)")?.group(1)
+    let amount_str = regex.find(body, r"Total: \$([0-9.]+)")?.group(1)
+    
+    return Ok(Order do
+        order_id: order_id,
+        customer_email: msg.from,
+        total_amount: amount_str.parse_float()?,
+        items: []
+    end)
+end
+
+function main() do
+    // each 5 dakikada yeni siparişleri kontrol et
+    loop do
+        match check_new_orders() do
+            Ok(orders) =&gt; do
+                if orders.uzunluk() &gt; 0  do
+                    io.println("✓ {} yeni sipariş bulundu", orders.uzunluk())
+                    // Process orders...
+                end
+            end,
+            Error(e) =&gt; io.eprintln("Email kontrolü başarısız: {}", e)
+        end
+        
+        thread.sleep(300_000)  // 5 dakika
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 4: 자동 신고 이메일(첨부 파일 포함)</h3>
+<pre><code>import email, time, fs
+
+function generate_daily_report() -&gt; Result[str, Error] do
+    // Rapor create
+    let report = "
+        Günlük Sistem Raporu - {}
+        ========================
+        
+        Sistem Durumu: ✓ Normal
+        İşlem Sayısı: 1,234
+        useıcı Sayısı: 567
+        Error Sayısı: 3
+        
+        Detaylar for ek dosyaya bakınız.
+    ".formatla(time.now().format("%Y-%m-%d"))
+    
+    // Raporu dosyaya kaydet
+    let filename = "report_{}.txt".formatla(time.now().format("%Y%m%d"))
+    fs.write(filename, report)?
+    
+    return Ok(filename)
+end
+
+function send_daily_report() -&gt; Result[None, Error] do
+    // Rapor create
+    let report_file = generate_daily_report()?
+    
+    // Email hazırla
+    let mail = email.new()
+    mail.set_from("system@example.com")
+    mail.add_to("admin@example.com")
+    mail.add_to("manager@example.com")
+    mail.set_subject("Günlük Sistem Raporu - {}", time.now().format("%Y-%m-%d"))
+    
+    let body = "
+        Merhaba,
+        
+        Günlük sistem raporunu ekte bulabilirsiniz.
+        
+        Herhangi bir sorun for lütfen sistem ekibiyle iletişime geçiniz.
+        
+        İyi çalışmalar,
+        Otomatik Rapor Sistemi
+    "
+    mail.set_text_body(body)
+    
+    // Raporu ek as push
+    mail.add_attachment("daily_report.txt", report_file)?
+    
+    // CSV formatında detaylı log push
+    mail.add_attachment("transaction_log.csv", "logs/transactions.csv")?
+    
+    // SMTP ile gönder
+    email.quick_send_with_attachments(
+        smtp_server: "smtp.office365.com",
+        port: 587,
+        username: "system@example.com",
+        password: "system-password",
+        mail: mail
+    )?
+    
+    io.println("Günlük rapor emaili gönderildi")
+    return Ok(None)
+end
+
+function main() do
+    // each gün saat 09:00'da rapor gönder
+    loop do
+        let now = time.now()
+        
+        if now.hour() == 9 and now.minute() == 0  do
+            send_daily_report()?
+            thread.sleep(60_000)  // 1 dakika sleep (tekrar gönderme)
+        end
+        
+        thread.sleep(30_000)  // 30 saniye
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ SMTP 구성</h2>
+<pre><code>// Gmail
+smtp_server: "smtp.gmail.com"
+port: 587  // TLS
+username: "your-email@gmail.com"
+password: "app-specific-password"  // 2FA enabled accounts
+
+// Outlook/Office365
+smtp_server: "smtp.office365.com"
+port: 587
+
+// Yahoo
+smtp_server: "smtp.mail.yahoo.com"
+port: 587
+
+// Custom SMTP
+smtp_server: "mail.example.com"
+port: 25   // Plain
+port: 465  // SSL
+port: 587  // TLS/STARTTLS</code></pre>
+
+<h2>📬 IMAP 구성</h2>
+<pre><code>// Gmail IMAP
+imap_server: "imap.gmail.com"
+port: 993  // SSL
+use_ssl: true
+
+// Outlook IMAP
+imap_server: "outlook.office365.com"
+port: 993
+
+// Common IMAP Folders
+"INBOX"      // Gelen kutusu
+"Sent"       // Gönderilmiş
+"Drafts"     // Taslaklar
+"Trash"      // Çöp kutusu
+"Spam"       // Spam</code></pre>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li><strong>지메일:</strong>2FA가 활성화된 경우 "앱 비밀번호"를 사용하세요.</li>
+<li><strong>속도 제한:</strong>대량 이메일 대기 시간 추가</li>
+<li><strong>첨부 파일:</strong>대용량 파일의 크기 제한에 주의하세요</li>
+<li><strong>HTML 이메일:</strong>인라인 CSS 사용, 외부 CSS는 지원되지 않습니다.</li>
+<li><strong>SMTP 포트:</strong>25(일반), 465(SSL), 587(TLS)</li>
+<li><strong>오류 처리:</strong>네트워크 오류를 포착하고 다시 시도하세요.</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">http</code>- HTTP 클라이언트</li>
+<li><code data-no-translate="true">network</code>-소켓 작업</li>
+<li><code data-no-translate="true">crypto</code>- SSL/TLS 암호화</li>
+<li><code data-no-translate="true">encoding</code>- Base64 인코딩</li>
+<li><code data-no-translate="true">template</code>- 이메일 템플릿 엔진</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a> | 
+<a href="../ko_index-tr.html">홈 페이지</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

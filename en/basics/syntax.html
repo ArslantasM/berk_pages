@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Syntax and Structure - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/basics/syntax.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sözdizimi-ve-yapı"><a class="header" href="#sözdizimi-ve-yapı">Syntax and Structure</a></h1>
+<p>Basic syntax rules and code structure of BERK programming language.</p>
+<h2 id="temel-yapı"><a class="header" href="#temel-yapı">Basic Structure</a></h2>
+<p>Every BERK program is a<code data-no-translate="true">ana()</code>(or<code data-no-translate="true">main()</code>) starts from the function:</p>
+<pre><code class="language-berk">function main() {
+    print("Merhaba Dünya!")
+}
+</code></pre>
+<p>English syntax:</p>
+<pre><code class="language-berk">function main() {
+    print("Hello World!")
+}
+</code></pre>
+<h2 id="İfade-sonlandırıcılar"><a class="header" href="#İfade-sonlandırıcılar">Expression Terminators</a></h2>
+<p>Statements in BERK<strong>does not require a semicolon</strong>. Each line evaluates to an expression:</p>
+<pre><code class="language-berk">let x = 10
+let y = 20
+let sum = x + y
+print(sum)
+</code></pre>
+<p>In multi-line expressions<strong>backslash</strong>you can use:</p>
+<pre><code class="language-berk">let uzunMetin = "Bu çok uzun bir yazı \
+                      birden fazla satıra yayılıyor"
+</code></pre>
+<h2 id="blok-yapıları"><a class="header" href="#blok-yapıları">Block Structures</a></h2>
+<p>blocks<strong>curly brackets</strong>It is defined by:</p>
+<pre><code class="language-berk">function hesapla() {
+    let a = 5
+    let b = 3
+    
+    if a &gt; b {
+        print("a büyük")
+    } else {
+        print("b büyük or eşit")
+    }
+}
+</code></pre>
+<h2 id="İsimlendirme-kuralları"><a class="header" href="#İsimlendirme-kuralları">Naming Rules</a></h2>
+<h3 id="değişkenler-ve-fonksiyonlar"><a class="header" href="#değişkenler-ve-fonksiyonlar">Variables and Functions</a></h3>
+<ul>
+<li><strong>snake_case</strong>(recommended):<code data-no-translate="true">let kullanıcı_adı = "Ahmet"</code></li>
+<li><strong>camelCase</strong>(alternative):<code data-no-translate="true">let kullanıcıAdı = "Ahmet"</code></li>
+</ul>
+<h3 id="sabitler"><a class="header" href="#sabitler">constants</a></h3>
+<ul>
+<li><strong>SCREAMING_SNAKE_CASE</strong>: <code data-no-translate="true">const MAX_DEĞER = 100</code></li>
+</ul>
+<h3 id="türler"><a class="header" href="#türler">genres</a></h3>
+<ul>
+<li><strong>PascalCase</strong>: <code data-no-translate="true">tür KullanıcıBilgisi = struct { ... }</code></li>
+</ul>
+<pre><code class="language-berk">// İyi örnekler
+let count_occurrences = 0
+let toplam_fiyat = 99.99
+const PI_DEĞERI = 3.14159
+
+function hesapla_alan(yarıçap: number) -&gt; number {
+    return PI_DEĞERI * yarıçap * yarıçap
+}
+
+// Kaçınılması gerekenler
+let s = 0              // Çok kısa, anlaşılmaz
+let ÖzelSayı123 = 5    // Karışık format
+</code></pre>
+<h2 id="girinti-indentation"><a class="header" href="#girinti-indentation">Indentation</a></h2>
+<p>Although BERK is flexible regarding indentation,<strong>4 spaces</strong>Recommended use:</p>
+<pre><code class="language-berk">function kontrol_et(x: number) {
+    if x &gt; 0 {
+        print("Pozitif")
+        if x &gt; 100 {
+            print("Çok büyük!")
+        }
+    } else if x &lt; 0 {
+        print("Negatif")
+    } else {
+        print("Sıfır")
+    }
+}
+</code></pre>
+<h2 id="boşluklar-whitespace"><a class="header" href="#boşluklar-whitespace">Whitespace</a></h2>
+<p>Using spaces around operators improves readability:</p>
+<pre><code class="language-berk">// Tercih edilen
+let sonuç = a + b * c
+
+// Geçerli ama okunabilir not
+let sonuç=a+b*c
+</code></pre>
+<h2 id="satır-uzunluğu"><a class="header" href="#satır-uzunluğu">Line Length</a></h2>
+<p><strong>80-100 characters</strong>limit is recommended. You can split long lines like this:</p>
+<pre><code class="language-berk">let çokUzunDeğişken = birinciFonksiyon(parametere1, parametre2)
+                            + ikinciFonksiyon(parametre3)
+                            + üçüncüFonksiyon(parametre4)
+</code></pre>
+<h2 id="İki-dilli-syntax"><a class="header" href="#İki-dilli-syntax">Bilingual Syntax</a></h2>
+<p>The most important feature of BERK<strong>bilingual syntax</strong>is the support. You can mix Turkish and English keywords:</p>
+<pre><code class="language-berk">// Tamamen Türkçe
+function hesapla(x: number) -&gt; number {
+    if x &lt; 0 {
+        return Err "Negatif sayı!"
+    }
+    return x * x
+}
+
+// Tamamen İngilizce
+function calculate(x: Number) -&gt; Number {
+    if x &lt; 0 {
+        error return "Negative number!"
+    }
+    return x * x
+}
+
+// Karışık (geçerli ama önerilmez)
+function hesapla(x: number) -&gt; Number {
+    if x &lt; 0 {
+        return Err "Negative!"
+    }
+    return x * x
+}
+</code></pre>
+<p><strong>Best Practice</strong>: Choose a single language in your project (Turkish OR English).</p>
+<h2 id="modüller"><a class="header" href="#modüller">Modules</a></h2>
+<p>Each file is considered a module:</p>
+<pre><code class="language-berk">// matematik.berk
+export function topla(a: number, b: number) -&gt; number {
+    return a + b
+}
+
+export const PI = 3.14159
+</code></pre>
+<pre><code class="language-berk">// main.berk
+import matematik
+
+function main() {
+    print(matematik.topla(5, 3))
+    print(matematik.PI)
+}
+</code></pre>
+<h2 id="Örnek-tam-program"><a class="header" href="#Örnek-tam-program">Example: Full Program</a></h2>
+<pre><code class="language-berk">// Fibonacci sayı dizisi hesaplama
+
+import math
+
+// Recursive versiyonu
+function fib_recursive(n: number) -&gt; number {
+    if n &lt;= 1 {
+        return n
+    }
+    return fib_recursive(n - 1) + fib_recursive(n - 2)
+}
+
+// Iterative versiyonu (daha verimli)
+function fib_iterative(n: number) -&gt; number {
+    if n &lt;= 1 {
+        return n
+    }
+    
+    let a = 0
+    let b = 1
+    
+    for i 2'from n+1'e to {
+        let temp = a + b
+        a = b
+        b = temp
+    }
+    
+    return b
+}
+
+function main() {
+    const N = 10
+    
+    print("İlk ", N, " Fibonacci sayısı:")
+    
+    for i 0'from N'ye to {
+        print("fib(", i, ") = ", fib_iterative(i))
+    }
+}
+</code></pre>
+<h2 id="stil-rehberi-Özeti"><a class="header" href="#stil-rehberi-Özeti">Style Guide Summary</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Element</th><th>Style</th><th>Example</th></tr></thead><tbody>
+<tr><td>Variable</td><td>snake_case</td><td><code data-no-translate="true">kullanıcı_adı</code></td></tr>
+<tr><td>Function</td><td>snake_case</td><td><code data-no-translate="true">hesapla_toplam()</code></td></tr>
+<tr><td>Still</td><td>SCREAMING_SNAKE_CASE</td><td><code data-no-translate="true">MAX_DEĞER</code></td></tr>
+<tr><td>Type</td><td>PascalCase</td><td><code data-no-translate="true">KullanıcıTipi</code></td></tr>
+<tr><td>Recess</td><td>4 spaces</td><td><code data-no-translate="true">    kod</code></td></tr>
+<tr><td>line length</td><td>80-100 characters</td><td>-</td></tr>
+<tr><td>Operator gaps</td><td>Yes</td><td><code data-no-translate="true">a + b</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">Next</a></h2>
+<ul>
+<li><a href="./en_variables.html">Variables and Constants</a></li>
+<li><a href="./en_data-types.html">Data Types</a></li>
+<li><a href="./en_operators.html">operators</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../en_first-program.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../basics/en_variables.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../en_first-program.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../basics/en_variables.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

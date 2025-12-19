@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>메쉬 - 3D 메쉬 처리 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔺 메쉬</h1>
+<p>3D 메시 처리 및 조작</p>
+<div style="margin-top:15px">
+<span class="stat-badge">22가지 기능</span>
+<span class="stat-badge">614라인</span>
+<span class="stat-badge">OBJ/STL</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>3D 메시 처리: OBJ/STL 로드/저장, 삼각측량, 법선 계산, 세분화, 스무딩.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import mesh
+
+// Load mesh
+let m = mesh.load_obj("model.obj")?
+
+// Calculate normals
+mesh.calculate_normals(m)
+
+// Subdivide
+let subdivided = mesh.subdivide(m, iterations: 2)
+
+// Save
+mesh.save_obj(subdivided, "output.obj")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← 모든 모듈</a> | <a href="en_mesh-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::core - सिस्टम कोर फ़ंक्शंस | बर्क</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🧠 राज्य::कोर</h1>
+<p>सिस्टम कोर - घड़ी, रीसेट, पावर प्रबंधन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">367 पंक्तियाँ</span>
+<span class="stat-badge">~15 कार्य</span>
+<span class="stat-badge">आरसीसी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>कोर मॉड्यूल सिस्टम इनिशियलाइज़ेशन, क्लॉक कॉन्फ़िगरेशन, रीसेट और पावर प्रबंधन फ़ंक्शन प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>सिस्टम आरंभीकरण</li>
+<li>घड़ी विन्यास (168 मेगाहर्ट्ज तक)</li>
+<li>विलंब कार्य (एमएस/यूएस)</li>
+<li>सिस्टम रीसेट</li>
+<li>पावर मोड (स्लीप/स्टॉप/स्टैंडबाय)</li>
+<li>अपटाइम काउंटर</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::core
+
+function main() do
+    // System initialization
+    core.system_init()
+    
+    // Configure system clock to 72MHz
+    core.clock_config(72_000_000)
+    
+    // Delays
+    core.delay_ms(1000)  // 1 second
+    core.delay_us(500)   // 500 microseconds
+    
+    // Get uptime
+    let uptime = core.uptime_ms()
+    io.println("Uptime: {}ms", uptime)
+    
+    // System reset
+    core.system_reset()
+end</code></pre>
+
+<h2>⚙️ घड़ी विन्यास</h2>
+<pre><code>// Common frequencies
+core.clock_config(8_000_000)    // 8MHz (HSI)
+core.clock_config(72_000_000)   // 72MHz (STM32F1)
+core.clock_config(84_000_000)   // 84MHz (STM32F4)
+core.clock_config(168_000_000)  // 168MHz (STM32F4)</code></pre>
+
+<h2>💤 पावर मोड</h2>
+<pre><code>// Sleep mode (CPU stopped, peripherals running)
+core.sleep()
+
+// Stop mode (all clocks stopped, RAM retained)
+core.stop()
+
+// Standby mode (lowest power, only wakeup pins active)
+core.standby()</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: सिस्टम क्लॉक कॉन्फ़िगरेशन (STM32F4 168MHz)</h3>
+<pre><code>import hal::core
+
+function configure_168mhz() do
+    // Configure PLL for 168MHz from 8MHz HSE
+    core.pll_config(do
+        source: core.PLL_HSE,        // External crystal
+        pllm: 8,                     // VCO input: 8MHz / 8 = 1MHz
+        plln: 336,                   // VCO output: 1MHz * 336 = 336MHz
+        pllp: core.PLLP_DIV2,        // System clock: 336MHz / 2 = 168MHz
+        pllq: 7                      // USB clock: 336MHz / 7 = 48MHz
+    end)
+    
+    // Configure bus clocks
+    core.bus_config(do
+        ahb_prescaler: core.AHB_DIV1,    // AHB = 168MHz
+        apb1_prescaler: core.APB_DIV4,   // APB1 = 42MHz (max 42MHz)
+        apb2_prescaler: core.APB_DIV2    // APB2 = 84MHz (max 84MHz)
+    end)
+    
+    // Flash latency for 168MHz @ 3.3V
+    core.flash_latency(5)  // 5 wait states
+    
+    // Switch to PLL
+    core.system_clock_source(core.SYSCLK_PLL)
+    
+    // Wait for PLL ready
+    for core.get_clock_source() != core.SYSCLK_PLL else do
+        // Wait
+    end
+    
+    io.println("System clock: {}MHz", core.get_sysclk_freq() / 1_000_000)
+end
+
+function main() do
+    configure_168mhz()
+    
+    // Verify clocks
+    io.println("SYSCLK: {}MHz", core.get_sysclk_freq() / 1_000_000)
+    io.println("AHB: {}MHz", core.get_hclk_freq() / 1_000_000)
+    io.println("APB1: {}MHz", core.get_pclk1_freq() / 1_000_000)
+    io.println("APB2: {}MHz", core.get_pclk2_freq() / 1_000_000)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: लो-पावर स्लीप मोड</h3>
+<pre><code>import hal::core, hal::int, hal::gpio
+
+let wakeup_flag = false
+
+function button_interrupt() do
+    wakeup_flag = true
+end
+
+function sleep_until_button() do
+    // Configure button interrupt (PA0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_A, 0, button_interrupt)
+    
+    io.println("Going to sleep... (press button to wake)")
+    core.delay_ms(100)  // Flush UART
+    
+    // Enter sleep mode
+    core.sleep()
+    
+    // Wakeup on any interrupt
+    io.println("Woke up from sleep!")
+end
+
+function main() do
+    for do
+        sleep_until_button()
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: वॉचडॉग टाइमर (IWDG)</h3>
+<pre><code>import hal::core
+
+function watchdog_test() do
+    // Initialize Independent Watchdog (4 second timeout)
+    core.iwdg_init(do
+        prescaler: core.IWDG_PRESCALER_64,  // LSI/64
+        reload: 2000  // (32kHz/64) * 2000 = 4 seconds
+    end)
+    
+    io.println("Watchdog started (4s timeout)")
+    
+    // Normal operation: feed watchdog regularly
+    her i in 0..10 for do
+        io.println("Working... {}", i)
+        core.delay_ms(500)
+        
+        core.iwdg_refresh()  // "Feed" watchdog
+    end
+    
+    // Simulate hang (return't feed watchdog)
+    io.println("Simulating hang...")
+    for do
+        core.delay_ms(1000)
+        // Watchdog will reset system after 4s
+    end
+end
+
+function main() do
+    // Check if last reset was watchdog
+    if core.get_reset_reason() == core.RESET_IWDG then do
+        io.println("⚠️ System reset by watchdog!")
+        core.clear_reset_flags()
+    end
+    
+    watchdog_test()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: ब्राउनआउट डिटेक्शन और रीसेट हैंडलिंग</h3>
+<pre><code>import hal::core
+
+enum ResetReason {
+    POWER_ON,
+    RESET_PIN,
+    IWDG,
+    WWDG,
+    SOFTWARE,
+    BROWNOUT,
+    UNKNOWN
+}
+
+function get_reset_reason_detailed() -&gt; ResetReason do
+    let flags = core.get_reset_flags()
+    
+    let reason = eşle flags do
+        _ if (flags &amp; core.FLAG_LPWR) != 0 =&gt; ResetReason::BROWNOUT,
+        _ if (flags &amp; core.FLAG_WWDG) != 0 =&gt; ResetReason::WWDG,
+        _ if (flags &amp; core.FLAG_IWDG) != 0 =&gt; ResetReason::IWDG,
+        _ if (flags &amp; core.FLAG_SFT) != 0 =&gt; ResetReason::SOFTWARE,
+        _ if (flags &amp; core.FLAG_PIN) != 0 =&gt; ResetReason::RESET_PIN,
+        _ if (flags &amp; core.FLAG_POR) != 0 =&gt; ResetReason::POWER_ON,
+        _ =&gt; ResetReason::UNKNOWN
+    end
+    
+    core.clear_reset_flags()
+    return reason
+end
+
+function reset_handler() do
+    let reason = get_reset_reason_detailed()
+    
+    io.println("\n=== System Boot ===")
+    io.println("Reset reason: {}", reason)
+    
+    eşle reason do
+        ResetReason::POWER_ON =&gt; do
+            io.println("Fresh power-on, initializing...")
+            // First boot initialization
+        end,
+        
+        ResetReason::BROWNOUT =&gt; do
+            io.println("⚠️ Brownout detected! Check power supply.")
+            // Save diagnostics
+        end,
+        
+        ResetReason::IWDG =&gt; do
+            io.println("⚠️ Watchdog reset! System hang detected.")
+            // Crash recovery
+        end,
+        
+        ResetReason::SOFTWARE =&gt; do
+            io.println("Software reset (firmware update?)")
+        end,
+        
+        _ =&gt; do
+            io.println("Unexpected reset")
+        end
+    end
+end
+
+function main() do
+    reset_handler()
+    
+    // Normal program
+    for do
+        io.println("Running...")
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: सीपीयू लोड मॉनिटरिंग</h3>
+<pre><code>import hal::core
+
+let idle_counter = 0
+let total_counter = 0
+
+function calculate_cpu_load() -&gt; kesir do
+    let idle = idle_counter
+    let total = total_counter
+    
+    // Reset counters
+    idle_counter = 0
+    total_counter = 0
+    
+    let cpu_load = 100.0 - (idle.kesir() / total.kesir() * 100.0)
+    return cpu_load
+end
+
+function idle_task() do
+    // Count idle cycles
+    idle_counter += 1
+    total_counter += 1
+end
+
+function work_task() do
+    // Simulate work
+    let sum = 0
+    her i in 0..1000 for do
+        sum += i
+    end
+    total_counter += 1000
+end
+
+function main() do
+    for do
+        // Do some work
+        work_task()
+        
+        // Idle time
+        idle_task()
+        
+        // Report every second
+        if core.uptime_ms() % 1000 == 0 then do
+            let cpu_load = calculate_cpu_load()
+            io.println("CPU load: {:.1f}%", cpu_load)
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ मुख्य कार्य</h2>
+<pre><code>// System initialization
+function system_init()
+function deinit()
+
+// Clock configuration
+function clock_config(freq: sayı)  // Simple config
+function pll_config(config: PLLConfig)  // Advanced
+function bus_config(config: BusConfig)
+function flash_latency(wait_states: sayı)
+
+// Clock queries
+function get_sysclk_freq() -&gt; sayı
+function get_hclk_freq() -&gt; sayı
+function get_pclk1_freq() -&gt; sayı
+function get_pclk2_freq() -&gt; sayı
+
+// Delays
+function delay_ms(ms: sayı)
+function delay_us(pow: sayı)
+function delay_cycles(cycles: sayı)
+
+// Uptime
+function uptime_ms() -&gt; sayı
+function uptime_us() -&gt; sayı
+function tick() -&gt; sayı  // SysTick counter
+
+// Power modes
+function sleep()  // Sleep mode
+function stop()   // Stop mode
+function standby()  // Standby mode (lowest power)
+
+// Reset
+function system_reset()
+function software_reset()
+function get_reset_reason() -&gt; ResetReason
+function get_reset_flags() -&gt; sayı
+function clear_reset_flags()
+
+// Watchdog
+function iwdg_init(config: IWDGConfig)  // Independent watchdog
+function iwdg_refresh()  // "Feed" watchdog
+function wwdg_init(config: WWDGConfig)  // Window watchdog
+
+// CPU info
+function get_cpu_id() -&gt; sayı
+function get_flash_size() -&gt; sayı  // KB
+function get_ram_size() -&gt; sayı    // KB</code></pre>
+
+<h2>📊 पावर मोड तुलना</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">तरीका</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">शक्ति</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">जागने का समय</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">वेकअप स्रोत</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">दौड़ना</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~30एमए</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">-</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">-</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">नींद</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~15एमए</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">तुरंत</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">कोई रुकावट</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">रुकना</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~10μA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~5μs</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">EXTI, RTC, वॉचडॉग</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">समर्थन करना</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~1μA</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">~50μs</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">WKUP पिन, RTC अलार्म</td>
+</tr>
+</tbody></table>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>फ़्लैश विलंबता</strong>: उच्च आवृत्ति के लिए प्रतीक्षा स्थिति जोड़ें (168 मेगाहर्ट्ज = 5 डब्ल्यूएस)</li>
+<li><strong>पीएलएल कॉन्फिग</strong>: VCO को 192-432MHz रेंज में रखें (इष्टतम)</li>
+<li><strong>एपीबी1</strong>: अधिकतम 42 मेगाहर्ट्ज (STM32F4), टाइमर घड़ी x2</li>
+<li><strong>स्लीप मोड</strong>: त्वरित बिजली बचत, तुरंत वेकअप</li>
+<li><strong>देखो कुत्ता</strong>: सिस्टम विश्वसनीयता के लिए उपयोग करें (हैंग रिकवरी)</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>फ़्लैश विलंबता</strong>: उच्च आवृत्ति के लिए स्वचालित रूप से समायोजित (168 मेगाहर्ट्ज @ 3.3V = 5 WS)</li>
+<li><strong>पीएलएल लॉक टाइम</strong>: PLL स्थिरीकरण के लिए ~200μs प्रतीक्षा करें</li>
+<li><strong>आधार रीति</strong>: बाहर निकलने पर सिस्टम रीसेट होता है, बैकअप डोमेन संरक्षित रहता है</li>
+<li><strong>वॉचडॉग प्रारंभ</strong>: IWDG को एक बार शुरू करने के बाद रोका नहीं जा सकता</li>
+<li><strong>एलएसई स्टार्टअप</strong>: बाहरी 32kHz क्रिस्टल के लिए ~1s स्टार्टअप समय</li>
+<li><strong>एचएसई बाईपास</strong>: बाहरी घड़ी स्रोत के लिए क्रिस्टल के बजाय</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::rtc</code>- आरटीसी घड़ी विन्यास, वेकअप टाइमर</li>
+<li><code data-no-translate="true">hal::int</code>- प्राथमिकताओं में बाधा, स्लीप मोड वेकअप</li>
+<li><code data-no-translate="true">hal::gpio</code>- WKUP पिन कॉन्फ़िगरेशन</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00129215.pdf">AN4621: STM32 घड़ी विन्यास</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00083249.pdf">AN4365: STM32 पावर मोड का उपयोग करना</a></li>
+<li>संदर्भ मैनुअल: रीसेट और क्लॉक कंट्रोल (आरसीसी) अध्याय</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

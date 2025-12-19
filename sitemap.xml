@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- ============================================ -->
+  <!-- MAIN PAGES (Turkish - Default) -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/</loc>
+    <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/intro.html</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/installation.html</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/first-program.html</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hello-world.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- BASICS -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/basics/syntax.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/basics/variables.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/basics/data-types.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/basics/operators.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/basics/comments.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- CONTROL FLOW -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/control-flow/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/control-flow/if-else.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/control-flow/loops.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/control-flow/pattern-matching.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- FUNCTIONS -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/functions/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/functions/defining.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/functions/parameters.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/functions/scope.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- DATA STRUCTURES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/data-structures/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/data-structures/lists.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/data-structures/tuples.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/data-structures/structs.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- ERROR HANDLING -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/error-handling/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/error-handling/error-types.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/error-handling/try-catch.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- MODULES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/modules/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/modules/import-export.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/modules/system.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- FEATURES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/features/bilingual.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/features/type-system.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/features/memory-safety.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/features/strings.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- STANDARD LIBRARY - CORE -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/overview.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/io.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/fs.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/string.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/collections.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/result.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/iter.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/fmt.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- SYSTEM & RUNTIME -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/sys.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/thread.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/async.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/time.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/terminal.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- MATH & SCIENCE -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/math.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/complex.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/random.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/linalg.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/stats.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/optim.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/physics.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/physics2d.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- DATA FORMATS -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/json.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/xml.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/yaml.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/csv.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/regex.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/encoding.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/compression.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- NETWORKING -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/http.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/network.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/crypto.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- DATABASE -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/sqlite.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- GRAPHICS & MEDIA -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/gui.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/graphics.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/image.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/audio.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/color.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- 3D & CAD -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/cad3d.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/mesh.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/math_3d.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- UTILITIES -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/testing.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/logging.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/rules.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- AI/ML MODULES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-overview.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-tensor.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-nn.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-optim.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-train.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-model.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-llm.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-metrics.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-vision.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-nlp.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/ai-rl.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- HAL - HARDWARE ABSTRACTION LAYER -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-core.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-gpio.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-adc.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-dac.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-pwm.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-timer.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-usart.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-spi.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-i2c.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-can.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-usb.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-dma.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-clock.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-rtc.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-systick.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-watchdog.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-nvic.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-exti.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-int.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-power.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-flash.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-crc.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-rng.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-dev.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-enum.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-host.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-hw.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-ie.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-pipe.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-regs.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-std.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/stdlib/hal-transc.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- COMPILER -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/compiler/overview.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/compiler/compilation.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/compiler/optimizations.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/compiler/cross-compile.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- TOOLS -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/tools/repl.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/tools/vscode-extension.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/tools/debugging.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- EXAMPLES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/examples/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/examples/calculations.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/examples/string-ops.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/examples/file-ops.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/examples/web-server.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- REFERENCE -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/reference/keywords.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/reference/operator-precedence.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/reference/std-library.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/reference/error-messages.html</loc>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- CONTRIBUTING -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/contributing/setup.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/contributing/code.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/contributing/docs.html</loc>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- OTHER PAGES -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/faq.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/roadmap.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/changelog.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/llms.txt</loc>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- ENGLISH DOCUMENTATION -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/intro.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/installation.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/first-program.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/hello-world.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/basics/syntax.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/basics/variables.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/basics/data-types.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/stdlib/overview.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/en/faq.html</loc>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- KOREAN DOCUMENTATION -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/intro.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/installation.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/first-program.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/hello-world.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/basics/syntax.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/basics/variables.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/basics/data-types.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/stdlib/overview.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/ko/faq.html</loc>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- ============================================ -->
+  <!-- HINDI DOCUMENTATION -->
+  <!-- ============================================ -->
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/intro.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/installation.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/first-program.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/hello-world.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/basics/syntax.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/basics/variables.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/basics/data-types.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/stdlib/overview.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://arslantasm.github.io/berk_pages/hi/faq.html</loc>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>

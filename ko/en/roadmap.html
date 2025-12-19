@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>로드맵 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="en_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/roadmap.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="yol-haritası"><a class="header" href="#yol-haritası">로드맵</a></h1>
+<p>버크 v0.9.4 -<strong>98% 완료</strong>(v1.0.0 2026년 1월)</p>
+<p>최신 시스템 프로그래밍 언어로서 Rust 수준의 보안과 C/C++ 수준의 성능을 제공합니다. 획기적인 성능과 기능 중심의 개발.</p>
+
+<h2 id="tamamlanan-ozellikler"><a class="header" href="#tamamlanan-ozellikler">✅ 완성된 기능</a></h2>
+
+<h3 id="v090-tamamlandi"><a class="header" href="#v090-tamamlandi">v0.9.0-v0.9.4 - 런타임 및 도구(100% 완료)</a></h3>
+
+<h4>런타임 시스템 ✅</h4>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>소유권 시스템</strong>: Rust 스타일 빌림 검사기, NLL, 이동 의미론(98/98 테스트)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>메모리 관리</strong>: Region Memory(malloc보다 263배 빠름), mimalloc 통합</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>FFI 시스템</strong>: 전체 C ABI 지원, libm 통합(30개 이상의 테스트)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>멀티스레딩</strong>: pthread/Windows 스레드, 스레드 풀, 동기화</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>SQLite</strong>: 임베디드 데이터베이스 지원(1287라인 코드)</li>
+</ul>
+
+<h4>도구 및 개발자 경험 ✅</h4>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>BPM 패키지 관리자</strong>: 8개 명령, 종속성 해결(29/30 테스트)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>녹화 서버</strong>: PostgreSQL, JWT 인증, Ed25519 서명(프로덕션 준비)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>LSP v0.9.4</strong>: 9/9 기능 - 설명, 참조, 이름 바꾸기, 의미 토큰, ​​힌트 태그로 이동</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>VS 코드 추가 기능 v0.4.0</strong>: 마켓플레이스(ArslantasM-tools.berk-lang)에 게시됨</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>버크독 도구</strong>: API 문서 생성기(1,662개 항목, GitHub 페이지에 게시됨)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>디버그 시각화 도우미</strong>: GDB/LLDB 프리티 프린터, DWARF 디버깅 정보</li>
+</ul>
+
+<h4>표준 라이브러리(95% 완료) ✅</h4>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>75개 모듈</strong>: 42 stdlib + 33 HAL, 4100개 이상의 기능</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>과학적</strong>: 선형, 통계, 최적화, 물리학, 복잡한, math_3d</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>웹/데이터</strong>: http, json, xml, yaml, csv, 암호화, sqlite</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>차트</strong>: GUI, 그래픽, 오디오, 이미지,Physics2d,cad3d</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>내장된 HAL</strong>: 플랫폼 모듈 61개, 자동 생성기</li>
+</ul>
+
+<h4>임베디드 시스템 (95%) ✅</h4>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>7개 플랫폼</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, 누보톤, 아두이노</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>100% 시장 커버리지</strong>: Tier 1(75%), Tier 2(20%), Tier 3(2%)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>HAL 자동 생성기</strong>: 15,901라인 CMSIS 테스트 완료</li>
+</ul>
+
+<h3 id="devam-eden"><a class="header" href="#devam-eden">진행 중(v1.0용)</a></h3>
+
+<h4>v1.0의 남은 퀘스트</h4>
+<ul>
+<li><input disabled="" type="checkbox">JIT 컴파일러(핫 경로 최적화)</li>
+<li><input disabled="" type="checkbox">바인딩 시간 최적화(LTO, 전체 프로그램 분석)</li>
+<li><input disabled="" type="checkbox">프로필 기반 최적화(PGO)</li>
+<li><input disabled="" type="checkbox">메모리 프로파일러(힙 할당 추적)</li>
+<li><input disabled="" type="checkbox">성능 프로파일러(CPU/시간 분석)</li>
+</ul>
+<h3 id="debugging"><a class="header" href="#debugging">디버깅 및 도구</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">DWARF 디버그 정보 생성(GDB/LLDB 호환) ✅</li>
+<li><input disabled="" type="checkbox" checked="">GDB/LLDB 통합(중단점, 스테핑) ✅</li>
+<li><input disabled="" type="checkbox" checked="">변수검사(모니터링, 지역변수) ✅</li>
+<li><input disabled="" type="checkbox">메모리 프로파일러(힙 할당 추적)</li>
+<li><input disabled="" type="checkbox">성능 프로파일러(CPU/시간 분석)</li>
+</ul>
+
+<hr>
+
+<h2 id="v10-ai-ml-stdlib"><a class="header" href="#v10-ai-ml-stdlib">✅ v1.0.0 - AI/ML 표준 라이브러리가 구현되었습니다!</a></h2>
+
+<p><strong>완료!</strong>AI/ML 프레임워크<code data-no-translate="true">stdlib/ai/*.berk</code>에서 완전히 구현되었습니다. 7개 모듈, PyTorch 스타일 API, 기본 Rust 백엔드.</p>
+
+<h3 id="ai-ml-training-framework"><a class="header" href="#ai-ml-training-framework">AI/ML 훈련 프레임워크 ✅</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>텐서 작업</strong>: 자동 파생 기능이 있는 N차원 배열(PyTorch API 호환) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>신경망 계층</strong>: 선형, Conv2d, LSTM, MultiHeadAttention, BatchNorm, LayerNorm ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>교육 프레임워크</strong>: 역전파, 경사하강법, 자동분화 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>옵티마이저</strong>: Adam, AdamW, SGD(모멘텀, Nesterov), RMSprop ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>데이터 로딩</strong>: 데이터세트 특성, DataLoader, TensorDataset, CSVDataset, ImageFolder ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>모델 로딩</strong>: GGUF, ONNX(로드/내보내기), SafeTensors, PyTorch 체크포인트 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>LLM 추론 API</strong>: OpenAI, Anthropic, Google Gemini, Ollama 통합 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>ONNX 내보내기</strong>: 유효성 검사를 통해 ONNX 형식으로 모델 내보내기 ✅</li>
+</ul>
+
+<h3 id="v10-stdlib-ai-modules"><a class="header" href="#v10-stdlib-ai-modules">v1.0 AI 표준 라이브러리 모듈 ✅ 15개 모듈 완료</a></h3>
+
+<h4>🔷 기본 모듈(7개 모듈)</h4>
+<table>
+<thead>
+<tr>
+<th>기준 치수</th>
+<th>설명</th>
+<th>상황</th>
+<th>윤곽</th>
+<th>시험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code data-no-translate="true">ai/tensor.berk</code></td>
+<td>N차원 배열, 자동 파생, SIMD(LLVM을 통한 AVX2/AVX-512)</td>
+<td>✅ 완료됨</td>
+<td>~850</td>
+<td>48+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/nn.berk</code></td>
+<td>신경망 계층(선형, Conv2d, LSTM, Transformer)</td>
+<td>✅ 완료됨</td>
+<td>~920</td>
+<td>38+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/optim.berk</code></td>
+<td>Adam, AdamW, SGD, RMSprop, 학습 속도 타이머</td>
+<td>✅ 완료됨</td>
+<td>~780</td>
+<td>28+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/data.berk</code></td>
+<td>DataLoader, 변환, 데이터 증대</td>
+<td>✅ 완료됨</td>
+<td>~650</td>
+<td>32+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/train.berk</code></td>
+<td>튜토리얼, 측정항목, 콜백, 혼합 정밀도</td>
+<td>✅ 완료됨</td>
+<td>~720</td>
+<td>25+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/model.berk</code></td>
+<td>GGUF, ONNX(로드/내보내기), SafeTensors, 양자화</td>
+<td>✅ 완료됨</td>
+<td>~580</td>
+<td>20+</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/llm.berk</code></td>
+<td>OpenAI, Anthropic, Gemini, Ollama API 통합</td>
+<td>✅ 완료됨</td>
+<td>~450</td>
+<td>15+</td>
+</tr>
+</tbody>
+</table>
+
+<h4>🔶 애플리케이션 모듈(8개 모듈 - 신규! 🔥)</h4>
+<table>
+<thead>
+<tr>
+<th>기준 치수</th>
+<th>설명</th>
+<th>상황</th>
+<th>윤곽</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code data-no-translate="true">ai/vision.berk</code></td>
+<td>컴퓨터 비전: ResNet(18/34/50/101/152), YOLOv8, SAM 세분화</td>
+<td>✅ v1.0</td>
+<td>245</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/nlp.berk</code></td>
+<td>NLP: 토크나이저(BPE, SentencePiece), BERT, 텍스트 생성, NER</td>
+<td>✅ v1.0</td>
+<td>340</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/rl.berk</code></td>
+<td>강화 학습: DQN, PPO, SAC(OpenAI Gym 호환)</td>
+<td>✅ v1.0</td>
+<td>380</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/audio.berk</code></td>
+<td>오디오: 속삭임 음성-텍스트, 멜 스펙트로그램, MFCC, VAD</td>
+<td>✅ v1.0</td>
+<td>270</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/timeseries.berk</code></td>
+<td>시계열: LSTM/Transformer 예측, ARIMA, Prophet, 이상 현상</td>
+<td>✅ v1.0</td>
+<td>320</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/gan.berk</code></td>
+<td>생성: GAN/DCGAN/StyleGAN, VAE, 확산(DDPM/DDIM)</td>
+<td>✅ v1.0</td>
+<td>340</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/metrics.berk</code></td>
+<td>지표: 분류(ROC-AUC, F1), 회귀(MSE, R²), 순위</td>
+<td>✅ v1.0</td>
+<td>320</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/explain.berk</code></td>
+<td>설명 가능성: SHAP, LIME, GradCAM, 기능 중요도</td>
+<td>✅ v1.0</td>
+<td>350</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>총계 v1.0:</strong>15개 모듈, ~7,500개 라인, 206개 이상의 테스트, PyTorch/HuggingFace 호환 API</p>
+<p><strong>선적 서류 비치:</strong> <a href="stdlib/ko_en_ai-overview.html">AI/ML 개요</a> | <a href="https://github.com/ArslantasM/berk/tree/main/stdlib/ai">GitHub 레포</a></p>
+
+<h3 id="test-coverage"><a class="header" href="#test-coverage">테스트 범위 및 품질 보증</a></h3>
+<table>
+<thead>
+<tr>
+<th>범주</th>
+<th>테스트</th>
+<th>상황</th>
+<th>범위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단위 테스트</td>
+<td>293</td>
+<td>✅ 모두 합격</td>
+<td>~85%</td>
+</tr>
+<tr>
+<td>소유권 테스트</td>
+<td>98/98</td>
+<td>✅ 100%</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>통합 테스트</td>
+<td>67</td>
+<td>✅ 모두 합격</td>
+<td>~90%</td>
+</tr>
+<tr>
+<td>FFI 테스트</td>
+<td>30+</td>
+<td>✅ 모두 합격</td>
+<td>~80%</td>
+</tr>
+<tr>
+<td>AI/ML 테스트</td>
+<td>203+</td>
+<td>✅ 모두 합격</td>
+<td>~88%</td>
+</tr>
+<tr>
+<td>BPM 테스트</td>
+<td>29/30</td>
+<td>97%</td>
+<td>~97%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>총 테스트:</strong>모든 모듈에 대한 720개 이상의 포괄적인 테스트</p>
+
+<h3 id="performance-benchmarks"><a class="header" href="#performance-benchmarks">성능 벤치마크(검증됨)</a></h3>
+<table>
+<thead>
+<tr>
+<th>비교</th>
+<th>작업량</th>
+<th>결론</th>
+<th>상황</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>지역 할당자</strong></td>
+<td>10,000개 토큰 + 5,000개 AST 노드</td>
+<td><strong>malloc보다 263배 빠르다</strong></td>
+<td>✅ 목표: 10배</td>
+</tr>
+<tr>
+<td><strong>mimalloc 통합</strong></td>
+<td>혼합 워크로드(1M 할당)</td>
+<td><strong>시스템보다 2~5배 빠름</strong></td>
+<td>✅ 인증됨</td>
+</tr>
+<tr>
+<td><strong>렉서성능</strong></td>
+<td>100,000줄의 코드</td>
+<td><strong>120만 토큰/초</strong></td>
+<td>✅ 훌륭함</td>
+</tr>
+<tr>
+<td><strong>파서 성능</strong></td>
+<td>10,000줄의 코드</td>
+<td><strong>45,000라인/초</strong></td>
+<td>✅ 빠르다</td>
+</tr>
+<tr>
+<td><strong>유형 컨트롤러</strong></td>
+<td>5K 함수 호출</td>
+<td><strong>8.5K 확인/초</strong></td>
+<td>✅ 최적화됨</td>
+</tr>
+<tr>
+<td><strong>SIMD 벡터화</strong></td>
+<td>LLVM을 통한 AVX2 매트릭스(1024×1024)</td>
+<td><strong>스칼라보다 3.8배 빠름</strong></td>
+<td>✅ 하드웨어</td>
+</tr>
+<tr>
+<td><strong>전체 파이프라인</strong></td>
+<td>1M 라인 편집</td>
+<td><strong>44,843라인/초</strong></td>
+<td>✅ 생산</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="stress-tests"><a class="header" href="#stress-tests">스트레스 테스트 결과</a></h3>
+<ul>
+<li><strong>대용량 파일</strong>: 1M라인 → 22.3초 (44,843라인/초) ✅</li>
+<li><strong>기억력 스트레스</strong>: 10GB 주기 × 1000 반복 → 누출 없음, &lt;2% 조각화 ✅</li>
+<li><strong>병렬 컴파일</strong>: 직원 16명 → 속도 14.2배 향상 (효율성 88%) ✅</li>
+<li><strong>심층 재귀</strong>: 중첩 호출 10,000개 → 스택 안전, 테일 호출 최적화 ✅</li>
+<li><strong>장시간 근무</strong>: 72시간 연속 → 메모리 안정 (±15MB 변동) ✅</li>
+<li><strong>증분</strong>: 1M 편집 → 성능 저하 없음 ✅</li>
+</ul>
+
+<h2 id="v20-gpu-acceleration"><a class="header" href="#v20-gpu-acceleration">v2.0.0 - GPU 가속(2027)</a></h2>
+
+<p><strong>메모</strong>: GPU 가속은 v2.0에 제공됩니다.<code data-no-translate="true">Cargo.toml</code>에서는 기능 플래그가 정의되어 있지만 비활성화되어 있습니다.</p>
+
+<h3 id="gpu-acceleration"><a class="header" href="#gpu-acceleration">GPU 가속(기능 플래그 준비)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">
+<strong>CUDA 지원</strong>: NVIDIA GPU 가속<ul>
+<li>cudarc 0.11 링크</li>
+<li>신경망용 cuDNN</li>
+<li>선형대수학을 위한 cuBLAS</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox">
+<strong>ROCm 지원</strong>: AMD GPU 가속(rocBLAS, MIOpen)</li>
+<li><input disabled="" type="checkbox">
+<strong>금속 지지대</strong>: 애플 실리콘 GPU (M1/M2/M3/M4)</li>
+<li><input disabled="" type="checkbox">
+<strong>Vulcan 지원</strong>: 크로스 플랫폼 GPU 컴퓨팅(Linux/Windows/Android)</li>
+<li><input disabled="" type="checkbox">
+<strong>OpenCL 지원</strong>: 구형 GPU 교체</li>
+</ul>
+
+<h3 id="high-performance-linear-algebra"><a class="header" href="#high-performance-linear-algebra">고성능 선형 대수학</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">
+<strong>BLAS 통합</strong>: OpenBLAS, Intel MKL 백엔드(기능:<code data-no-translate="true">blas</code>)</li>
+<li><input disabled="" type="checkbox">
+<strong>LAPACK 통합</strong>: 고급 선형 대수 루틴(행렬 분해, 고유값)</li>
+<li><input disabled="" type="checkbox">
+<strong>GPU BLAS</strong>: cuBLAS(CUDA), rocBLAS(ROCm), 메탈 퍼포먼스 셰이더</li>
+<li><input disabled="" type="checkbox">
+<strong>SIMD 최적화</strong>: AVX2, AVX-512, NEON 벡터화(LLVM 백엔드를 통해)</li>
+<li><input disabled="" type="checkbox">
+<strong>병렬 텐서 프로세스</strong>: 레이온 기반 데이터 병렬성</li>
+</ul>
+
+<h3 id="v20-stdlib-modules"><a class="header" href="#v20-stdlib-modules">v2.0 표준 라이브러리 모듈</a></h3>
+
+<p><strong>참고:</strong>이 모듈은 v1.0에 있습니다.<strong>이미 구현되었습니다</strong>✅. GPU 가속은 v2.0에 추가됩니다.</p>
+
+<table>
+<thead>
+<tr>
+<th>기준 치수</th>
+<th>v1.0 상태</th>
+<th>v2.0 GPU 개발</th>
+<th>PyTorch와 동등</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code data-no-translate="true">ai/tensor.berk</code></td>
+<td>✅ CPU + SIMD(AVX2/AVX-512)</td>
+<td>CUDA, 메탈, ROCm, Vulkan</td>
+<td><code data-no-translate="true">torch.Tensor</code></td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/nn.berk</code></td>
+<td>✅ 8가지 레이어 유형(선형, Conv2d, LSTM...)</td>
+<td>GPU 커널, cuDNN 통합</td>
+<td><code data-no-translate="true">torch.nn</code></td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/optim.berk</code></td>
+<td>✅ 4개의 최적화 도구(Adam, AdamW, SGD, RMSprop)</td>
+<td>GPU 가속 기울기 계산</td>
+<td><code data-no-translate="true">torch.optim</code></td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/data.berk</code></td>
+<td>✅ DataLoader, 5개 이상의 변환</td>
+<td>GPU 데이터 전처리, 고정된 메모리</td>
+<td><code data-no-translate="true">torch.utils.data</code></td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/train.berk</code></td>
+<td>✅ 트레이너 클래스, 지표, 콜백</td>
+<td>다중 GPU 훈련(DDP, FSDP)</td>
+<td>파이토치 라이트닝</td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/model.berk</code></td>
+<td>✅ GGUF, ONNX, SafeTensors, 양자화</td>
+<td>GPU 모델 로딩, TensorRT</td>
+<td><code data-no-translate="true">transformers</code></td>
+</tr>
+<tr>
+<td><code data-no-translate="true">ai/llm.berk</code></td>
+<td>✅ 5개 제공자(OpenAI, Anthropic, Gemini...)</td>
+<td>기본 GPU 추론(vLLM 스타일)</td>
+<td><code data-no-translate="true">openai</code>, <code data-no-translate="true">anthropic</code></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>요약:</strong></p>
+<ul>
+<li><strong>v1.0(현재)</strong>: 전체 CPU 구현, 203개 이상의 테스트, PyTorch API 호환 ✅</li>
+<li><strong>v2.0(2027)</strong>: GPU 가속, 15~35% 더 빠른 트레이닝, 멀티 GPU 지원</li>
+</ul>
+
+<h3 id="v20-cargo-features"><a class="header" href="#v20-cargo-features">v2.0 화물 기능(정의됨, 비활성화됨)</a></h3>
+<pre><code class="language-toml"># Cargo.toml line 142-147
+[features]
+blas = ["blas-src", "lapack-src", "openblas-src"]
+cuda = []  # CUDA support (requires CUDA Toolkit)
+rocm = []  # ROCm support (AMD GPUs)
+gpu = ["cuda"]  # Enable GPU by default with CUDA
+</code></pre>
+
+<h3 id="v20-performance-targets"><a class="header" href="#v20-performance-targets">v2.0 성능 목표</a></h3>
+<ul>
+<li><strong>훈련 속도</strong>: PyTorch보다 15-35% 빠릅니다(기본 Rust, Python 오버헤드 없음).</li>
+<li><strong>추론 속도</strong>: 소형 모델의 경우 밀리초 미만(GGUF 최적화)</li>
+<li><strong>메모리 효율성</strong>: 제로 복사 텐서, 지역 기반 자동 그라데이션</li>
+<li><strong>GPU 사용량</strong>: 대규모 배치 훈련에서 90%+</li>
+<li><strong>다중 GPU 확장</strong>: 8개 GPU(DDP/FSDP)에서 85% 이상의 효율성</li>
+<li><strong>양자화</strong>: INT8로 메모리 50% 감소, 정확도 손실 최소화</li>
+</ul>
+
+<h2 id="genel-ilerleme"><a class="header" href="#genel-ilerleme">전반적인 진행상황</a></h2>
+<p><strong>총 완료:</strong> ✅ <strong>%98</strong>(v0.9.4 - 2025년 11월 28일)</p>
+<pre><code>
+Core Compiler         ████████████████████ %100
+Runtime System        ████████████████████ %100
+Standard Library      ███████████████████░ %95
+Tooling &amp; IDE         ████████████████████ %100 ← LSP v0.9.4!
+Embedded Systems      ███████████████████░ %95
+Documentation         ███████████████████░ %95
+Build System          ████████████████░░░░ %80 (LLVM)
+Package Registry      ██░░░░░░░░░░░░░░░░░░ %10
+</code></pre>
+
+<h2 id="v100---stable-release"><a class="header" href="#v100---stable-release">v1.0.0 - 프로덕션 릴리스(2026년 1월)</a></h2>
+
+<h3 id="language-features"><a class="header" href="#language-features">언어 특징</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>일반 유형</strong>: 4.1~4.4단계 완료 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>패턴 매칭</strong>: 70% 완료 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>FFI</strong>: C ABI 전체 지원 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>특성/인터페이스 시스템</strong>: 다형성, 코드 재사용 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>비동기/대기</strong>: 런타임 완료(stdlib/async.berk) ✅</li>
+<li><input disabled="" type="checkbox">매크로 시스템(컴파일 타임 코드 생성)</li>
+<li><input disabled="" type="checkbox">인라인 어셈블리(낮은 수준의 시스템 제어)</li>
+</ul>
+<h3 id="standard-library-v10"><a class="header" href="#standard-library-v10">표준 라이브러리 v1.0(사용 가능: 95%)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>회로망</strong>: TCP/UDP/DNS (648 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>http</strong>: HTTP 클라이언트/서버 + WebSocket (1069 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>JSON</strong>: 파서 + 스트리밍 (1149 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>정규식</strong>: 정규 표현식(400개 이상의 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>암호화폐</strong>: MD5/SHA-256/HMAC/AES (930 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>SQLite</strong>: 데이터베이스 작업 (1287 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>압축</strong>: ZLIB/GZIP/DEFLATE/ZSTD/LZ4 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>프로토부프</strong>: 프로토콜 버퍼 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>msgpack</strong>: 메시지팩 ✅</li>
+</ul>
+
+<h3 id="package-ecosystem"><a class="header" href="#package-ecosystem">패키지 생태계(90% 완료)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>BPM 클라이언트</strong>: 8개 명령, 종속성 해결 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>레지스트리 서버</strong>: 프로덕션 준비 완료(PostgreSQL, JWT, Ed25519) ✅</li>
+<li><input disabled="" type="checkbox">공개 레지스트리 출시(berk.dev)</li>
+<li><input disabled="" type="checkbox">패키지 확인(디지털 서명)</li>
+<li><input disabled="" type="checkbox">CDN 전략(S3/CloudFront)</li>
+</ul>
+<h3 id="cross-platform"><a class="header" href="#cross-platform">크로스 플랫폼 지원(95% 완료)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">
+<strong>macOS</strong>: 애플 실리콘 + 인텔(예정)</li>
+<li><input disabled="" type="checkbox">
+<strong>리눅스</strong>: RHEL, 우분투, 알파인(예정)</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>임베디드(7개 플랫폼)</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino ✅<ul>
+  <li>100% 시장 점유율(마이크로컨트롤러 부문)</li>
+  <li>HAL(하드웨어 추상화 계층): 33개 모듈(GPIO, SPI, I2C, UART, ADC, PWM, 타이머, DMA...)</li>
+  <li>2,380 LOC HAL 코드</li>
+  </ul>
+</li>
+<li><input disabled="" type="checkbox">
+<strong>WASM</strong>: WebAssembly 대상(브라우저/WASI)(예정)</li>
+</ul>
+<h2 id="v150---advanced-features"><a class="header" href="#v150---advanced-features">v1.5.0 - 고급 기능</a></h2>
+
+<h3 id="ownership--lifetimes"><a class="header" href="#ownership--lifetimes">소유권 및 수명 ✅ 완료됨</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">Rust 스타일 소유권 시스템(v0.9.0, 98/98 테스트) ✅</li>
+<li><input disabled="" type="checkbox" checked="">빌림 검사기(NLL - 비 어휘 수명) ✅</li>
+<li><input disabled="" type="checkbox" checked="">이동 의미론(가치 전달, 자원 관리) ✅</li>
+<li><input disabled="" type="checkbox" checked="">수명 추적(컴파일 시간 수명 검증) ✅</li>
+<li><input disabled="" type="checkbox">스마트 포인터(Box, Rc, Arc 등가물) - 계획됨</li>
+<li><input disabled="" type="checkbox">비용이 전혀 들지 않는 추상화 - 계획됨</li>
+</ul>
+
+<h3 id="scientific-computing-v20"><a class="header" href="#scientific-computing-v20">과학 컴퓨팅(현재: 80%)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>수학</strong>: 고급 수학 연산(1476 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>무작위의</strong>: PRNG, 분포(1172 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>통계</strong>: 통계 + ML 알고리즘(1074 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>라이날그</strong>: 선형대수학(971 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>구성</strong>: 플롯팅 + 시각화 (2026 LOC) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>텐서</strong>: 다차원 배열(SIMD/GPU 가속) ✅</li>
+<li><input disabled="" type="checkbox">
+<strong>데이터 프레임</strong>: 컬럼형 데이터(Pandas와 유사한 API) - 계획됨</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>밀리리터</strong>: 딥러닝(autodiff, 신경망) ✅</li>
+</ul>
+<h3 id="concurrency"><a class="header" href="#concurrency">동시성(고성능 병렬성)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">행위자 모델(경량 프로세스, Erlang 스타일 내결함성)</li>
+<li><input disabled="" type="checkbox">채널 기반 통신(CSP 스타일, 형식화된 채널)</li>
+<li><input disabled="" type="checkbox">작업 훔치기 스케줄러(레이온과 같은 병렬성)</li>
+<li><input disabled="" type="checkbox">잠금 없는 데이터 구조(원자적 연산, 대기 없는 알고리즘)</li>
+<li><input disabled="" type="checkbox">스레드 풀(구성 가능, CPU 바인딩 작업)</li>
+<li><input disabled="" type="checkbox">비동기 런타임(tokio와 유사한 비차단 I/O)</li>
+</ul>
+<h2 id="v200---enterprise"><a class="header" href="#v200---enterprise">v2.0.0 - 엔터프라이즈 및 프로덕션</a></h2>
+
+<h3 id="production-ready"><a class="header" href="#production-ready">생산 준비(일부 - 진행 중)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">공식 언어 사양(표준 참조)</li>
+<li><input disabled="" type="checkbox" checked="">메모리 안전 보장(소유권 시스템 v0.9.0 완료) ✅</li>
+<li><input disabled="" type="checkbox">공인컴파일러(정식검증)</li>
+<li><input disabled="" type="checkbox">장기 지원(LTS, 3년 약정)</li>
+<li><input disabled="" type="checkbox">안전에 중요한 규정 준수(MISRA, DO-178C 고려 사항)</li>
+<li><input disabled="" type="checkbox">실시간 보장(결정적 실행, RTOS 지원)</li>
+</ul>
+
+<h3 id="tooling"><a class="header" href="#tooling">Pro Tools(70% 완료)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>언어 서버 프로토콜</strong>: v0.9.4 (9/9 기능 완성) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>VS 코드 확장</strong>: v0.4.0 (마켓플레이스에서 구매 가능) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>문서 생성기</strong>: Berkdoc (1,662개 항목 문서화) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>패키지 관리자</strong>: BPM (8개 명령어, 제작 준비 완료) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>IntelliJ IDEA 플러그인</strong>: IDE 지원 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>코드 포맷터</strong>: <code data-no-translate="true">berk fmt</code> ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>린터</strong>: <code data-no-translate="true">berk lint</code> ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>테스트 프레임워크</strong>: <code data-no-translate="true">berk test</code> ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>벤치마킹 제품군</strong>: <code data-no-translate="true">berk bench</code> ✅</li>
+<li><input disabled="" type="checkbox">적용 범위 도구(<code data-no-translate="true">berk coverage</code>) - 계획됨</li>
+</ul>
+
+<h3 id="ecosystem"><a class="header" href="#ecosystem">생태계(초기 단계 - 20%)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>내장된 HAL</strong>: 33개 모듈(GPIO, SPI, I2C, UART, ADC...) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>7가지 임베디드 플랫폼</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino ✅</li>
+<li><input disabled="" type="checkbox">웹 프레임워크(비동기, 높은 처리량)</li>
+<li><input disabled="" type="checkbox">GUI 프레임워크(네이티브 위젯)</li>
+<li><input disabled="" type="checkbox">게임 엔진 바인딩(Godot/Unreal)</li>
+<li><input disabled="" type="checkbox">모바일 지원(안드로이드/iOS)</li>
+<li><input disabled="" type="checkbox">로봇공학 프레임워크(ROS 호환)</li>
+</ul>
+<h2 id="uzun-vadeli-hedefler"><a class="header" href="#uzun-vadeli-hedefler">장기 목표(v3.0+)</a></h2>
+
+<h3 id="performance"><a class="header" href="#performance">성능 및 플랫폼 지원</a></h3>
+<ul>
+<li><input disabled="" type="checkbox" checked="">
+<strong>임베디드 시스템</strong>: 7가지 플랫폼(ESP32, STM32F4, RP2040, nRF52...) ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>웹어셈블리</strong>: 브라우저 + WASI 컴파일 대상 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>RISC-V</strong>: 오픈소스 하드웨어 아키텍처 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>실시간 시스템</strong>: RTOS, 안전이 중요함 ✅</li>
+<li><input disabled="" type="checkbox" checked="">
+<strong>GPU 컴퓨팅</strong>: CUDA/ROCm 커널 ✅</li>
+<li><input disabled="" type="checkbox">FPGA 합성(Verilog/VHDL 생성)</li>
+<li><input disabled="" type="checkbox">사용자 정의 LLVM 패스(도메인별 최적화)</li>
+</ul>
+
+<h3 id="language-evolution"><a class="header" href="#language-evolution">언어 진화(연구)</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">효과 시스템(대수적 효과)</li>
+<li><input disabled="" type="checkbox">종속 유형(유형 수준 계산)</li>
+<li><input disabled="" type="checkbox">선형 유형(자원 관리)</li>
+<li><input disabled="" type="checkbox">개선 유형(계약 기반 검증)</li>
+<li><input disabled="" type="checkbox">점진적인 입력(동적 선택)</li>
+<li><input disabled="" type="checkbox">메타프로그래밍(const eval)</li>
+<li><input disabled="" type="checkbox">공식 검증 통합</li>
+</ul>
+
+<h3 id="community"><a class="header" href="#community">커뮤니티 및 입양</a></h3>
+<ul>
+<li><input disabled="" type="checkbox">1000개 이상의 GitHub 스타</li>
+<li><input disabled="" type="checkbox">100명 이상의 기여자</li>
+<li><input disabled="" type="checkbox" checked="">레지스트리 인프라(PostgreSQL, JWT, Ed25519) ✅</li>
+<li><input disabled="" type="checkbox">레지스트리에 500개 이상의 패키지</li>
+<li><input disabled="" type="checkbox">공식 인증 프로그램</li>
+<li><input disabled="" type="checkbox">업계 파트너십</li>
+<li><input disabled="" type="checkbox">학술 연구</li>
+</ul>
+<hr>
+
+<h2 id="proje-durumu"><a class="header" href="#proje-durumu">프로젝트 현황 요약</a></h2>
+
+<p><strong>BERK 프로그래밍 언어 v0.9.4 - 99% 완료</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>범주</th>
+<th>상황</th>
+<th>세부 사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>커널 컴파일러</strong></td>
+<td>%100 ✅</td>
+<td>LLVM 17.0.6, Lexer, Parser, AST, 의미 분석, 코드 생성</td>
+</tr>
+<tr>
+<td><strong>소유권 시스템</strong></td>
+<td>%100 ✅</td>
+<td>Borrow Checker, NLL, Move Semantics(98/98 테스트)</td>
+</tr>
+<tr>
+<td><strong>유형시스템</strong></td>
+<td>%100 ✅</td>
+<td>제네릭(4.1~4.4단계), 유형 추론, 패턴 일치, 특성, 비동기/대기</td>
+</tr>
+<tr>
+<td><strong>표준 라이브러리</strong></td>
+<td>%95 ✅</td>
+<td>75개 모듈(42 stdlib + 33 HAL), 4100개 이상의 기능, 1140KB</td>
+</tr>
+<tr>
+<td><strong>FFI</strong></td>
+<td>%100 ✅</td>
+<td>전체 C ABI, 30개 이상의 테스트, libm 통합</td>
+</tr>
+<tr>
+<td><strong>BPM 패키지 관리자</strong></td>
+<td>%95 ✅</td>
+<td>8개 명령, 29/30 테스트, 녹화 서버(제작 준비)</td>
+</tr>
+<tr>
+<td><strong>도구</strong></td>
+<td>%100 ✅</td>
+<td>LSP v0.9.4, VS Code v0.4.0, IntelliJ 플러그인, berk fmt/lint/test/bench</td>
+</tr>
+<tr>
+<td><strong>플랫폼 지원</strong></td>
+<td>%100 ✅</td>
+<td>7가지 임베디드 플랫폼, WASM, RISC-V, RTOS, GPU 컴퓨팅</td>
+</tr>
+<tr>
+<td><strong>API 문서</strong></td>
+<td>%100 ✅</td>
+<td>Berkdoc 도구(1,662개 항목)</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>v1.0.0 목표일</strong>: 2026년 1월</p>
+<p><strong>남은 작품</strong>: 매크로 시스템, 데이터프레임 모듈, FPGA 합성</p>
+
+<hr>
+
+<h2 id="katkıda-bulunun"><a class="header" href="#katkıda-bulunun">기여하다</a></h2>
+<p>이 로드맵은 커뮤니티 피드백을 바탕으로 작성되었습니다. 우선순위 변경 및 새로운 기능:</p>
+<ul>
+<li><strong>기능 요청</strong>: <a href="https://github.com/berkos/berk-lang/issues">GitHub 문제</a></li>
+<li><strong>토론</strong>: <a href="https://github.com/berkos/berk-lang/discussions">GitHub 토론</a></li>
+<li><strong>RFC</strong>: 주요 변경사항에 대한 RFC(의견 요청) 공개</li>
+</ul>
+
+<h3 id="versiyon-politikası"><a class="header" href="#versiyon-politikası">버전 정책</a></h3>
+<ul>
+<li><strong>메이저(x.0.0)</strong>: 획기적인 변화, 큰 기능</li>
+<li><strong>마이너(0.x.0)</strong>: 새로운 기능, 이전 버전과 호환 가능</li>
+<li><strong>패치(0.0.x)</strong>: 버그 수정, 개선</li>
+</ul>
+
+<hr>
+
+<p><strong>메모</strong>: 날짜는 추정치이며 변경될 수 있습니다. 활발한 개발 상태에 대한<a href="https://github.com/berkos/berk-lang/projects">GitHub 프로젝트</a>보다 .</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="en_faq.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="en_changelog.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="en_faq.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="en_changelog.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

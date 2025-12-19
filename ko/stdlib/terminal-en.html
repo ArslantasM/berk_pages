@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>터미널 - 터미널 제어 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#2c3e50 0%,#34495e 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💻 터미널</h1>
+<p>터미널 제어 및 색상</p>
+<div style="margin-top:15px">
+<span class="stat-badge">77가지 기능</span>
+<span class="stat-badge">703라인</span>
+<span class="stat-badge">안시</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>터미널 조작: 색상, 커서 제어, 화면 지우기, 원시 모드, 진행률 표시줄.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import terminal as term
+
+term.clear()
+term.move_cursor(5, 10)
+println(term.red("Error: File not found"))
+println(term.bold(term.green("Success!")))</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a> | <a href="ko_terminal-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

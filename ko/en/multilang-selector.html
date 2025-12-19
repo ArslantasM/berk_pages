@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BERK - Modern systems programming language. Select your preferred documentation language.">
+    <title>BERK 프로그래밍 언어 - 언어 선택</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="shortcut icon" href="favicon.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1d2e 50%, #0f1a2a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 30px rgba(0,217,255,0.3));
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d9ff 0%, #0099cc 100%);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #00d9ff;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            height: 1px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, #00d9ff, transparent);
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        .language-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,217,255,0.2);
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .language-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d9ff;
+            box-shadow: 0 10px 30px rgba(0,217,255,0.2);
+        }
+        
+        .language-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .language-card.primary {
+            border-color: #00ff88;
+            background: rgba(0,255,136,0.05);
+        }
+        
+        .language-card.primary .flag {
+            font-size: 3rem;
+        }
+        
+        .flag {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .language-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .language-native {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .language-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 10px;
+        }
+        
+        .status-primary {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+        
+        .status-available {
+            background: rgba(0,217,255,0.2);
+            color: #00d9ff;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0,217,255,0.2);
+            border-top-color: #00d9ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            background: rgba(0,217,255,0.1);
+            border: 1px solid rgba(0,217,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-3px);
+            background: rgba(0,217,255,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #00d9ff;
+            font-size: 0.95rem;
+        }
+        
+        .feature-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 3px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: #00d9ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: #00ff88;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .tagline { font-size: 1.1rem; }
+            .language-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 480px) {
+            .language-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="logo">
+                <img src="favicon.svg" alt="버크 로고">
+            </div>
+            <h1>BERK</h1>
+            <p class="tagline">Modern Systems Programming Language</p>
+            <p class="tagline" style="font-size: 1rem; opacity: 0.7;">
+                263x Faster Memory • Rust-Level Safety • 19 Platforms
+            </p>
+            <span class="version-badge">🎉 v1.0.0 Production-Ready</span>
+        </div>
+
+        <h2 class="section-title">🌍 Select Documentation Language</h2>
+        
+        <div id="languageContainer" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Detecting available languages...</p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">263x Speedup</div>
+                <div class="feature-desc">Region memory</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">Memory Safe</div>
+                <div class="feature-desc">Ownership system</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔌</div>
+                <div class="feature-title">19 Platforms</div>
+                <div class="feature-desc">ARM, RISC-V, WASM</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📚</div>
+                <div class="feature-title">730+ Functions</div>
+                <div class="feature-desc">Rich stdlib</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-title">AI/ML Ready</div>
+                <div class="feature-desc">ONNX, TinyML</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <div class="feature-title">Bilingual</div>
+                <div class="feature-desc">TR/EN Syntax</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                <a href="https://github.com/ArslantasM/berk" target="_blank">GitHub</a> • 
+                <a href="https://github.com/ArslantasM/berk/releases" target="_blank">Downloads</a> • 
+                <a href="https://marketplace.visualstudio.com/items?itemName=ArslantasM-tools.berk-lang" target="_blank">VS Code</a>
+            </p>
+            <p style="margin-top: 10px; opacity: 0.7;">
+                GPL-3.0 License • Made in Turkey 🇹🇷
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Dil bilgileri
+        const languageInfo = {
+            'tr': { name: 'Türkçe', native: 'Turkish', flag: '🇹🇷', primary: true },
+            'en': { name: 'English', native: 'İngilizce', flag: '🇬🇧', primary: true },
+            'de': { name: 'Deutsch', native: 'German', flag: '🇩🇪' },
+            'fr': { name: 'Français', native: 'French', flag: '🇫🇷' },
+            'es': { name: 'Español', native: 'Spanish', flag: '🇪🇸' },
+            'ru': { name: 'Русский', native: 'Russian', flag: '🇷🇺' },
+            'zh-CN': { name: '简体中文', native: 'Chinese Simplified', flag: '🇨🇳' },
+            'zh-TW': { name: '繁體中文', native: 'Chinese Traditional', flag: '🇹🇼' },
+            'ja': { name: '日本語', native: 'Japanese', flag: '🇯🇵' },
+            'ko': { name: '한국어', native: 'Korean', flag: '🇰🇷' },
+            'pt-BR': { name: 'Português', native: 'Portuguese (Brazil)', flag: '🇧🇷' },
+            'ar': { name: 'العربية', native: 'Arabic', flag: '🇸🇦' },
+            'it': { name: 'Italiano', native: 'Italian', flag: '🇮🇹' },
+            'nl': { name: 'Nederlands', native: 'Dutch', flag: '🇳🇱' },
+            'pl': { name: 'Polski', native: 'Polish', flag: '🇵🇱' },
+            'uk': { name: 'Українська', native: 'Ukrainian', flag: '🇺🇦' },
+            'hi': { name: 'हिन्दी', native: 'Hindi', flag: '🇮🇳' },
+            'az': { name: 'Azərbaycan', native: 'Azerbaijani', flag: '🇦🇿' },
+            'kk': { name: 'Қазақша', native: 'Kazakh', flag: '🇰🇿' },
+            'uz': { name: 'Oʻzbekcha', native: 'Uzbek', flag: '🇺🇿' }
+        };
+
+        // Mevcut dilleri tespit et
+        async function detectAvailableLanguages() {
+            const container = document.getElementById('languageContainer');
+            const availableLanguages = [];
+            
+            // Türkçe (ana dil - dosya prefix'siz)
+            try {
+                const response = await fetch('intro.html', { method: 'HEAD' });
+                if (response.ok) {
+                    availableLanguages.push({ code: 'tr', hasPrefix: false });
+                }
+            } catch (e) {}
+            
+            // Diğer dilleri kontrol et
+            const langCodes = Object.keys(languageInfo).filter(l => l !== 'tr');
+            
+            for (const lang of langCodes) {
+                try {
+                    const response = await fetch(`${lang}_intro.html`, { method: 'HEAD' });
+                    if (response.ok) {
+                        availableLanguages.push({ code: lang, hasPrefix: true });
+                    }
+                } catch (e) {}
+            }
+            
+            renderLanguages(availableLanguages);
+        }
+
+        function renderLanguages(languages) {
+            const container = document.getElementById('languageContainer');
+            
+            if (languages.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <p style="color: #ff6b6b;">❌ No documentation found</p>
+                        <p style="color: #888; margin-top: 10px;">Please check if HTML files exist.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.className = 'language-grid';
+            container.innerHTML = '';
+            
+            // Önce primary dilleri, sonra diğerlerini sırala
+            languages.sort((a, b) => {
+                const aPrimary = languageInfo[a.code]?.primary ? 0 : 1;
+                const bPrimary = languageInfo[b.code]?.primary ? 0 : 1;
+                return aPrimary - bPrimary;
+            });
+            
+            for (const lang of languages) {
+                const info = languageInfo[lang.code] || { 
+                    name: lang.code.toUpperCase(), 
+                    native: lang.code, 
+                    flag: '🌐' 
+                };
+                
+                const card = document.createElement('div');
+                card.className = 'language-card' + (info.primary ? ' primary' : '');
+                card.innerHTML = `
+                    <span class="flag">${info.flag}</span>
+                    <div class="language-name">${info.name}</div>
+                    <div class="language-native">${info.native}</div>
+                    <span class="language-status ${info.primary ? 'status-primary' : 'status-available'}">
+                        ${info.primary ? '⭐ Primary' : '✓ Available'}
+                    </span>
+                `;
+                
+                card.onclick = () => selectLanguage(lang.code, lang.hasPrefix);
+                container.appendChild(card);
+            }
+        }
+
+        function selectLanguage(langCode, hasPrefix) {
+            // Dil tercihini kaydet
+            localStorage.setItem('berk-language', langCode);
+            
+            // Yönlendir
+            if (hasPrefix) {
+                window.location.href = `${langCode}_intro.html`;
+            } else {
+                window.location.href = 'intro.html';
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            // Önceki dil tercihi varsa
+            const savedLang = localStorage.getItem('berk-language');
+            if (savedLang && savedLang !== 'tr') {
+                // Otomatik yönlendirme için kontrol
+                fetch(`${savedLang}_intro.html`, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            selectLanguage(savedLang, true);
+                        } else {
+                            detectAvailableLanguages();
+                        }
+                    })
+                    .catch(() => detectAvailableLanguages());
+            } else if (savedLang === 'tr') {
+                window.location.href = 'intro.html';
+            } else {
+                detectAvailableLanguages();
+            }
+        };
+    </script>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>cad3d - 3D CAD 모델링 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📏 cad3d - 3D CAD 모델링</h1>
+<p>CSG, 돌출, 회전, 로프트, 부울 연산</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">79</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,023</div><div>선</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">32KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import cad3d
+
+// CSG (Constructive Solid Geometry)
+let box = cad3d.box([0.0, 0.0, 0.0], [2.0, 2.0, 2.0])
+let sphere = cad3d.sphere([1.0, 1.0, 1.0], 1.5)
+
+// Boolean operations
+let union = cad3d.union(box, sphere)
+let intersection = cad3d.intersection(box, sphere)
+let difference = cad3d.difference(box, sphere)
+
+// Extrude (2D profile -&gt; 3D solid)
+let profile = cad3d.circle(1.0, 32)
+let cylinder = cad3d.extrude(profile, 5.0)
+
+// Revolve (rotate profile around axis)
+let vase = cad3d.revolve(profile, [0.0, 1.0, 0.0], 360.0)
+
+// Export
+cad3d.export_step(union, "part.step")</code></pre>
+<h2>📚 CAD 운영</h2>
+<ul>
+<li><strong>기본 요소:</strong>상자, 구, 원통, 원뿔, 토러스</li>
+<li><strong>부울:</strong>결합, 교차점, 차이</li>
+<li><strong>변환:</strong>변환, 회전, 축척, 대칭</li>
+<li><strong>모델링:</strong>돌출, 회전, 로프트, 스윕</li>
+<li><strong>내보내다:</strong>단계, IGES, STL</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>기계부품(볼트)</h3>
+<pre><code>import cad3d, math
+
+function bolt_create(len: kesir, çap: kesir) -&gt; Solid do
+    // Shaft
+    let shaft = cad3d.cylinder([0.0, 0.0, 0.0], çap/2.0, len)
+    
+    // Head (hexagon)
+    let head_profile = []
+    her i in range(0, 6) for do
+        let angle = i.kesir() * math.PI / 3.0
+        let x = math.cos(angle) * çap
+        let y = math.sin(angle) * çap
+        head_profile.push([x, y])
+    end
+    
+    let head = cad3d.extrude(head_profile, çap * 0.7)
+    cad3d.translate(head, [0.0, 0.0, len])
+    
+    // Thread (simplified)
+    let thread_depth = çap * 0.1
+    let helix = cad3d.helix([0.0, 0.0, 0.0], çap/2.0 - thread_depth, len, 2.0)
+    
+    // Combine
+    let bolt = cad3d.union(shaft, head)
+    bolt = cad3d.difference(bolt, helix)
+    
+    return bolt
+end
+
+let m8_bolt = bolt_create(50.0, 8.0)
+cad3d.export_step(m8_bolt, "m8_bolt.step")</code></pre>
+</div>
+<div class="example-box">
+<h3>파라메트릭 기어</h3>
+<pre><code>import cad3d, math
+
+function gear_create(teeth: int, module: kesir, thickness: kesir) -&gt; Solid do
+    let pitch_radius = module * teeth.kesir() / 2.0
+    let base_circle = cad3d.circle(pitch_radius, teeth * 4)
+    
+    // Tooth profile (involute curve - simplified)
+    let tooth_angle = 2.0 * math.PI / teeth.kesir()
+    
+    let gear_profile = []
+    her i in range(0, teeth) for do
+        let angle = i.kesir() * tooth_angle
+        
+        // Tooth type
+        let tip_r = pitch_radius * 1.1
+        let tip_x = math.cos(angle) * tip_r
+        let tip_y = math.sin(angle) * tip_r
+        
+        gear_profile.push([tip_x, tip_y])
+        
+        // Tooth root
+        let root_angle = angle + tooth_angle * 0.5
+        let root_r = pitch_radius * 0.9
+        let root_x = math.cos(root_angle) * root_r
+        let root_y = math.sin(root_angle) * root_r
+        
+        gear_profile.push([root_x, root_y])
+    end
+    
+    let gear = cad3d.extrude(gear_profile, thickness)
+    
+    // Center hole
+    let hole = cad3d.cylinder([0.0, 0.0, 0.0], pitch_radius * 0.3, thickness)
+    gear = cad3d.difference(gear, hole)
+    
+    return gear
+end
+
+let gear = gear_create(24, 2.0, 10.0)
+cad3d.export_step(gear, "gear.step")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

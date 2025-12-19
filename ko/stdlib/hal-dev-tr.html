@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::dev - 장치 관리 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#27ae60 0%,#2ecc71 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 상태::dev</h1>
+<p>장치 관리 및 리소스 할당</p>
+<div style="margin-top:15px">
+<span class="stat-badge">371라인</span>
+<span class="stat-badge">장치 트리</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>장치 관리, 자원 할당 및 장치 트리 기능.</p>
+
+<h2>🚀 사용법</h2>
+<pre><code>import hal::dev
+
+// Register device
+let led_dev = dev.register(do
+    name: "led0",
+    type: dev.TYPE_GPIO,
+    resource: gpio_handle
+end)
+
+// Get device by name
+let dev_handle = dev.get("led0")?
+
+// List all devices
+let devices = dev.list()
+her d in devices for do
+    io.println("Device: {}", d.name)
+end
+
+// Unregister
+dev.unregister(led_dev)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+    <meta charset="UTF-8">
+    <title>http - HTTP 클라이언트/서버 | 버크 표준립</title>
+    <meta name="description" content="BERK http module - 76 functions for HTTP client/server, REST API, routing">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>🌐 http - HTTP 클라이언트/서버</h1>
+            <p>HTTP/1.1 클라이언트, 서버, REST API, 라우팅</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">76</div><div>기능</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,549</div><div>윤곽</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">50KB</div><div>너</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 빠른 시작</h2>
+        <pre><code>import http
+
+// HTTP GET request
+let yanıt = http.get("https://api.github.com/users/arslantasm")
+print(yanıt.case.kod)  // 200
+print(yanıt.gövde)      // JSON response
+
+// HTTP POST request
+let veri = json.stringify({"name": "BERK", "version": "1.0"})
+let yanıt2 = http.post("https://api.example.com/data", veri)
+
+// Create HTTP Server
+let sunucu = http.sunucu_oluştur("127.0.0.1", 8080)
+
+sunucu.rotala("GET", "/", function(istek, yanıt) do
+    yanıt.json({"message": "Merhaba BERK!", "version": "1.0.0"})
+end)
+
+sunucu.rotala("GET", "/users/:id", function(istek, yanıt) do
+    let id = istek.params["id"]
+    yanıt.json({"user_id": id, "name": "Test User"})
+end)
+
+print("Sunucu http://127.0.0.1:8080 çalışıyor...")
+sunucu.başlat()</code></pre>
+
+        <h2>📚 기능 카테고리</h2>
+
+        <div class="function-group">
+            <h3>HTTP 클라이언트</h3>
+            <p><code data-no-translate="true">get()</code>, <code data-no-translate="true">post()</code>, <code data-no-translate="true">put()</code>, <code data-no-translate="true">delete()</code>, <code data-no-translate="true">patch()</code>, <code data-no-translate="true">head()</code>, <code data-no-translate="true">options()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>HTTP 서버</h3>
+            <p><code data-no-translate="true">sunucu_oluştur()</code>, <code data-no-translate="true">rotala()</code>, <code data-no-translate="true">başlat()</code>, <code data-no-translate="true">durdur()</code>, <code data-no-translate="true">middleware()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>요청/응답</h3>
+            <p><code data-no-translate="true">istek_oluştur()</code>, <code data-no-translate="true">yanıt_oluştur()</code>, <code data-no-translate="true">başlık_ekle()</code>, <code data-no-translate="true">çerez_ekle()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>도우미 기능</h3>
+            <p><code data-no-translate="true">query_parse()</code>, <code data-no-translate="true">form_parse()</code>, <code data-no-translate="true">json_parse()</code>, <code data-no-translate="true">url_encode()</code>, <code data-no-translate="true">url_decode()</code></p>
+        </div>
+
+        <h2>💡 예</h2>
+
+        <div class="example-box">
+            <h3>예 1: REST API 클라이언트</h3>
+            <pre><code>import http, json
+
+function kullanıcı_al(id: int) -&gt; Sonuç[yazı, yazı] do
+    let url = "https://api.example.com/users/" + id.yazıya()
+    let yanıt = http.get(url)
+    
+    if yanıt.case.kod == 200 then do
+        return Ok(yanıt.gövde)
+    end else do
+        return Err("Kullanıcı bulunamadı")
+    end
+end
+
+let sonuç = kullanıcı_al(123)
+eşleşme sonuç do
+    Ok[veri] =&gt; print("Kullanıcı: " + veri)
+    Err[mesaj] =&gt; print("Err: " + mesaj)
+end</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>예제 2: RESTful API 서버</h3>
+            <pre><code>import http, json
+
+let kullanıcılar = {
+    "1": {"id": 1, "isim": "Ali", "yaş": 25},
+    "2": {"id": 2, "isim": "Ayşe", "yaş": 30}
+}
+
+let sunucu = http.sunucu_oluştur("0.0.0.0", 3000)
+
+// All users
+sunucu.rotala("GET", "/api/users", function(istek, yanıt) do
+    yanıt.json(kullanıcılar)
+end)
+
+// Single user
+sunucu.rotala("GET", "/api/users/:id", function(istek, yanıt) do
+    let id = istek.params["id"]
+    
+    if kullanıcılar.contains(id) then do
+        yanıt.json(kullanıcılar[id])
+    end else do
+        yanıt.case(404).json({"hata": "Kullanıcı bulunamadı"})
+    end
+end)
+
+// Add new user
+sunucu.rotala("POST", "/api/users", function(istek, yanıt) do
+    let veri = json.parse(istek.gövde)
+    let id = (kullanıcılar.len() + 1).yazıya()
+    
+    kullanıcılar[id] = veri
+    yanıt.case(201).json(veri)
+end)
+
+// Update user
+sunucu.rotala("PUT", "/api/users/:id", function(istek, yanıt) do
+    let id = istek.params["id"]
+    let veri = json.parse(istek.gövde)
+    
+    if kullanıcılar.contains(id) then do
+        kullanıcılar[id] = veri
+        yanıt.json(veri)
+    end else do
+        yanıt.case(404).json({"hata": "Kullanıcı bulunamadı"})
+    end
+end)
+
+// Delete user
+sunucu.rotala("DELETE", "/api/users/:id", function(istek, yanıt) do
+    let id = istek.params["id"]
+    
+    if kullanıcılar.contains(id) then do
+        kullanıcılar.sil(id)
+        yanıt.case(204).gönder()
+    end else do
+        yanıt.case(404).json({"hata": "Kullanıcı bulunamadı"})
+    end
+end)
+
+print("RESTful API Server http://localhost:3000 çalışıyor...")
+sunucu.başlat()</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>예시 3: 미들웨어 및 CORS</h3>
+            <pre><code>import http
+
+let sunucu = http.sunucu_oluştur("0.0.0.0", 8080)
+
+// CORS middleware
+sunucu.middleware(function(istek, yanıt, ileri) do
+    yanıt.başlık_ekle("Access-Control-Allow-Origin", "*")
+    yanıt.başlık_ekle("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+    yanıt.başlık_ekle("Access-Control-Allow-Headers", "Content-Type")
+    
+    if istek.metod == "OPTIONS" then do
+        yanıt.case(204).gönder()
+    end else do
+        ileri()
+    end
+end)
+
+// Logging middleware
+sunucu.middleware(function(istek, yanıt, ileri) do
+    let başlangıç = time.now()
+    
+    ileri()
+    
+    let süre = time.now() - başlangıç
+    print(istek.metod + " " + istek.yol + " - " + süre.yazıya() + "ms")
+end)
+
+// Routes
+sunucu.rotala("GET", "/api/data", function(istek, yanıt) do
+    yanıt.json({"data": "BERK HTTP Server"})
+end)
+
+sunucu.başlat()</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="en_index-en.html">← 모든 모듈</a> | 
+            <a href="../ko_en_index-en.html">집</a>
+        </p>
+    </main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

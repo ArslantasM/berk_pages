@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>टेम्प्लेट - टेम्प्लेट इंजन | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎨 टेम्पलेट</h1>
+<p>टेम्प्लेट इंजन - जिंजा2/मूंछों से प्रेरित</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~300 पंक्तियाँ</span>
+<span class="stat-badge">~20 कार्य</span>
+<span class="stat-badge">वेरिएबल और फ़िल्टर</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>टेम्प्लेट इंजन मॉड्यूल Jinja2 और मूंछ से प्रेरित टेम्प्लेट रेंडरिंग प्रदान करता है। HTML, ईमेल और टेक्स्ट जेनरेशन के लिए आदर्श।</p>
+
+<h2>🚀 उपयोग</h2>
+<pre><code>import template
+
+let ctx = template.context()
+ctx.set("name", "Alice")
+ctx.set("age", 30)
+
+let result = template.render("Hello, {{name}}! Age: {{age}}", ctx)
+// Output: Hello, Alice! Age: 30</code></pre>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">markdown</code>- मार्कडाउन प्रतिपादन</li>
+<li><code data-no-translate="true">email</code>- ईमेल टेम्प्लेट</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

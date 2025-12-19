@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::regs - 등록 액세스 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#8e44ad 0%,#9b59b6 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎛️ 상태::regs</h1>
+<p>직접 레지스터 액세스 및 비트 조작</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366라인</span>
+<span class="stat-badge">메모리 매핑된 I/O</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>레지스터 모듈은 하드웨어 레지스터 및 비트 조작 기능에 대한 직접 액세스를 제공합니다.</p>
+
+<h2>🚀 사용법</h2>
+<pre><code>import hal::regs
+
+// Read/Write registers
+let value = regs.read(0x40020000)  // Read GPIOA base
+regs.write(0x40020014, 0x2000)  // Write to GPIOA_ODR
+
+// Bit operations
+regs.set_bit(0x40020000, 13)    // Set bit 13
+regs.clear_bit(0x40020000, 13)  // Clear bit 13
+regs.toggle_bit(0x40020000, 13) // Toggle bit 13
+
+// Bit field operations
+regs.modify(0x40020000, 0x0F, 0x05, 4)  // Modify bits [7:4]</code></pre>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li>직접 등록 액세스는 위험할 수 있습니다.</li>
+<li>HAL 함수 선호</li>
+<li>원자적 작업에 임계 섹션 사용</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

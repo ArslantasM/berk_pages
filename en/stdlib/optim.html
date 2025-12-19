@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>optim - Optimization - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/optim.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+            <h1>🎯 optim - Optimization Algorithms</h1>
+            <p>Root Finding, Gradient Descent, BFGS, Nelder-Mead</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">68</div><div>Function</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">897</div><div>Line</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26.6KB</div><div>Dimension</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 Quick Start</h2>
+        <pre><code>import optim
+
+// f(x) = x² - 4 = 0 denkleminin kökünü bul
+function f(x: float): float do
+    return x * x - 4.0
+end
+
+// Bisection metodu
+let kök = optim_bisection(f, 0.0, 3.0, 0.001, 100)
+print("Kök: " + kök)  // ≈ 2.0
+
+// Newton-Raphson (türev gerekli)
+function df(x: float): float do
+    return 2.0 * x
+end
+
+let kök2 = optim_newton_raphson(f, df, 1.0, 0.001, 100)
+</code></pre>
+<h3 id="tek-değişkenli-minimum"><a class="header" href="#tek-değişkenli-minimum">Single Variable Minimum</a></h3>
+<pre><code class="language-berk">// f(x) = x² - 4x + 4 fonksiyonunun minimumunu bul
+function parabola(x: float): float do
+    return x * x - 4.0 * x + 4.0
+end
+
+// Golden section search
+let min = optim_golden_section(parabola, 0.0, 5.0, 0.001)
+print("Minimum: x = " + min)  // ≈ 2.0
+</code></pre>
+<h3 id="gradient-descent"><a class="header" href="#gradient-descent">Gradient Descent</a></h3>
+<pre><code class="language-berk">use optim
+use linalg
+
+// f(x,y) = x² + y² fonksiyonunun minimumunu bul
+function gradyan(pos: [float], n: tam_sayı): [float] do
+    return [2.0 * pos[0], 2.0 * pos[1]]
+end
+
+let başlangıç = [5.0, 3.0]
+let minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 0.001)
+print("Minimum: (" + minimum[0] + ", " + minimum[1] + ")")  // ≈ (0, 0)
+</code></pre>
+<h2 id="-api-kategorileri"><a class="header" href="#-api-kategorileri">📚 API Categories</a></h2>
+<h3 id="1-kök-bulma-root-finding"><a class="header" href="#1-kök-bulma-root-finding">1. Root Finding</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_bisection</code>- Divide method</li>
+<li><code data-no-translate="true">optim_newton_raphson</code>- Newton-Raphson method</li>
+<li><code data-no-translate="true">optim_secant</code>- Secant method</li>
+<li><code data-no-translate="true">optim_fixed_point</code>- Fixed point iteration</li>
+</ul>
+<h3 id="2-line-search-tek-değişkenli"><a class="header" href="#2-line-search-tek-değişkenli">2. Line Search (Single Variable)</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_golden_section</code>- Golden ratio search</li>
+<li><code data-no-translate="true">optim_brent</code>- Brent method</li>
+<li><code data-no-translate="true">optim_armijo_line_search</code>- Armijo condition</li>
+</ul>
+<h3 id="3-gradient-based-optimization"><a class="header" href="#3-gradient-based-optimization">3. Gradient-Based Optimization</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_gradient_descent</code>- Basic gradient descent</li>
+<li><code data-no-translate="true">optim_gradient_descent_momentum</code>- GD with momentum</li>
+<li><code data-no-translate="true">optim_adam</code>- Adam optimizer</li>
+<li><code data-no-translate="true">optim_bfgs_simple</code>- BFGS quasi-Newton</li>
+</ul>
+<h3 id="4-gradient-free-optimization"><a class="header" href="#4-gradient-free-optimization">4. Gradient-Free Optimization</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_nelder_mead_2d</code>– Nelder-Mead simplex</li>
+<li><code data-no-translate="true">optim_coordinate_descent</code>- Coordinate descent</li>
+</ul>
+<h3 id="5-constrained-optimization"><a class="header" href="#5-constrained-optimization">5.Constrained Optimization</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_penalty_method</code>- Penalty method</li>
+<li><code data-no-translate="true">optim_augmented_lagrangian</code>-Augmented Lagrangian</li>
+<li><code data-no-translate="true">optim_gradient_projection</code>- Gradient projection</li>
+</ul>
+<h3 id="6-least-squares"><a class="header" href="#6-least-squares">6. Least Squares</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_least_squares</code>- Linear least squares</li>
+<li><code data-no-translate="true">optim_gauss_newton</code>- Gauss-Newton method</li>
+<li><code data-no-translate="true">optim_levenberg_marquardt</code>- LM algorithm</li>
+</ul>
+<h3 id="7-metaheuristics"><a class="header" href="#7-metaheuristics">7. Metaheuristics</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_simulated_annealing</code>- Simulated annealing</li>
+<li><code data-no-translate="true">optim_genetic_algorithm_1d</code>- Genetic algorithm</li>
+</ul>
+<h3 id="8-utilities"><a class="header" href="#8-utilities">8.Utilities</a></h3>
+<ul>
+<li><code data-no-translate="true">optim_numerical_gradient</code>- Numerical gradient</li>
+<li><code data-no-translate="true">optim_numerical_hessian</code>- Numerical Hessian</li>
+</ul>
+<h2 id="-detaylı-Örnekler"><a class="header" href="#-detaylı-Örnekler">🔬 Detailed Examples</a></h2>
+<h3 id="Örnek-1-makine-Öğrenmesi---logistic-regression"><a class="header" href="#Örnek-1-makine-Öğrenmesi---logistic-regression">Example 1: Machine Learning - Logistic Regression</a></h3>
+<pre><code class="language-berk">use optim
+
+// Logistic loss for gradient
+function logistic_gradient(w: [float], X: [float], y: [float], n: tam_sayı): [float] do
+    // Gradient hesaplama
+    // ∇L = X^T (σ(Xw) - y)
+    // Basitleştirilmiş implementasyon
+    return grad
+end
+
+// Adam optimizer ile optimize et
+let w_init = [0.0, 0.0]
+let w_opt = optim_adam(logistic_gradient, w_init, 2, 0.01, 0.9, 0.999, 1e-8, 1000)
+</code></pre>
+<h3 id="Örnek-2-mühendislik---yapısal-optimizasyon"><a class="header" href="#Örnek-2-mühendislik---yapısal-optimizasyon">Example 2: Engineering - Structural Optimization</a></h3>
+<pre><code class="language-berk">// Kiriş optimizasyonu: minimum ağırlık, maksimum dayanım
+function beam_cost(dimensions: [float], n: tam_sayı): float do
+    let width = dimensions[0]
+    let height = dimensions[1]
+    
+    // Maliyet = malzeme × domain
+    let cost = width * height
+    
+    // Kısıt: moment of inertia &gt; I_min
+    let I = (width * height * height * height) / 12.0
+    let penalty = 0.0
+    if (I &lt; 1000.0) then do
+        penalty = 1000.0 * (1000.0 - I)
+    end
+    
+    return cost + penalty
+end
+
+let initial = [10.0, 20.0]
+let optimal = optim_simulated_annealing(beam_cost, initial, 2, 100.0, 0.95, 1000, 42)
+</code></pre>
+<h3 id="Örnek-3-eğri-uydurma-curve-fitting"><a class="header" href="#Örnek-3-eğri-uydurma-curve-fitting">Example 3: Curve Fitting</a></h3>
+<pre><code class="language-berk">// y = a*exp(-b*x) + c modeline fit et
+function exponential_model(params: [float], x: float): float do
+    let a = params[0]
+    let b = params[1]
+    let c = params[2]
+    return a * math_exp(-b * x) + c
+end
+
+function residual(params: [float], X: [float], y: [float], n: tam_sayı): [float] do
+    let r = yeni_dizi(n)
+    let i = 0
+    while (i &lt; n) do
+        r[i] = y[i] - exponential_model(params, X[i])
+        i = i + 1
+    end
+    return r
+end
+
+// Levenberg-Marquardt ile optimize et
+let initial_guess = [1.0, 0.1, 0.0]
+let fitted = optim_levenberg_marquardt(residual, jacobian, initial_guess, 3, n_data, 0.01, 100)
+</code></pre>
+<h2 id="-algoritmalar-ve-kompleksiteler"><a class="header" href="#-algoritmalar-ve-kompleksiteler">⚡ Algorithms and Complexities</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>algorithm</th><th>complexity</th><th>Gradient Required</th><th>Use</th></tr></thead><tbody>
+<tr><td>bisection</td><td>O(log(1/ε))</td><td>No</td><td>finding root</td></tr>
+<tr><td>Newton-Raphson</td><td>Front)</td><td>Yes (1st and 2nd derivative)</td><td>Fast convergence</td></tr>
+<tr><td>golden section</td><td>O(log(1/ε))</td><td>No</td><td>1D minimum</td></tr>
+<tr><td>Gradient Descent</td><td>O(nk)</td><td>Yes</td><td>General optimization</td></tr>
+<tr><td>BFGS</td><td>O(n²k)</td><td>Yes</td><td>Quasi-Newton</td></tr>
+<tr><td>Nelder-Mead</td><td>O(n²k)</td><td>No</td><td>Derivative-free</td></tr>
+<tr><td>Simulated Annealing</td><td>GRASS)</td><td>No</td><td>Global optimum</td></tr>
+</tbody></table>
+</div>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>n: Size</li>
+<li>k: Number of iterations</li>
+<li>ε: Tolerance</li>
+<li>T: Temperature program</li>
+</ul>
+<h2 id="-optimizasyon-stratejileri"><a class="header" href="#-optimizasyon-stratejileri">🎓 Optimization Strategies</a></h2>
+<h3 id="problem-türüne-göre-algoritma-seçimi"><a class="header" href="#problem-türüne-göre-algoritma-seçimi">Algorithm Selection According to Problem Type</a></h3>
+<ol>
+<li>
+<p><strong>Smooth, Convex Problem:</strong></p>
+<ul>
+<li>Is there a gradient? → BFGS or Gradient Descent</li>
+<li>Are there Hessians? → Newton method</li>
+</ul>
+</li>
+<li>
+<p><strong>Non-smooth, Non-convex:</strong></p>
+<ul>
+<li>Simulated Annealing</li>
+<li>Genetic Algorithm</li>
+</ul>
+</li>
+<li>
+<p><strong>Limited Problem:</strong></p>
+<ul>
+<li>Penalty Method</li>
+<li>Augmented Lagrangian</li>
+</ul>
+</li>
+<li>
+<p><strong>Large Scale Problem:</strong></p>
+<ul>
+<li>Stochastic Gradient Descent</li>
+<li>Coordinate Descent</li>
+</ul>
+</li>
+<li>
+<p><strong>Least Squares:</strong></p>
+<ul>
+<li>Gauss-Newton</li>
+<li>Levenberg-Marquardt</li>
+</ul>
+</li>
+</ol>
+<h2 id="-İlgili-modüller"><a class="header" href="#-İlgili-modüller">🔗 Related Modules</a></h2>
+<ul>
+<li><a href="./en_linalg.html">linalg</a>- Matrix operations</li>
+<li><a href="./en_stats.html">stats</a>- Statistical optimization</li>
+<li><a href="./en_math.html">mathematics</a>- Math functions</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 More Information</a></h2>
+<ul>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/optimize.html">SciPy.optimize</a></li>
+<li><a href="https://julianlsolvers.github.io/Optim.jl/stable/">Julia Optim.jl</a></li>
+<li><a href="http://numerical.recipes/">Numerical Recipes</a></li>
+<li><a href="https://web.stanford.edu/~boyd/cvxbook/">Convex Optimization - Boyd &amp; Vandenberghe</a></li>
+</ul>
+<hr>
+<p><strong>Further reading:</strong> <a href="../examples/en_machine-learning.html">Machine Learning examples</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/en_stats.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../reference/en_keywords.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/en_stats.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../reference/en_keywords.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

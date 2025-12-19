@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::rng - रैंडम नंबर जेनरेटर | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎲 राज्य::आरएनजी</h1>
+<p>हार्डवेयर ट्रू रैंडम नंबर जेनरेटर</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~380 पंक्तियाँ</span>
+<span class="stat-badge">~14 कार्य</span>
+<span class="stat-badge">STM32F4/F7/H7</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>आरएनजी मॉड्यूल हार्डवेयर-आधारित वास्तविक यादृच्छिक संख्याएँ उत्पन्न करता है। यह एनालॉग शोर स्रोत का उपयोग करके क्रिप्टोग्राफ़िक गुणवत्ता वाले यादृच्छिक मान प्रदान करता है। यूयूआईडी पीढ़ी, क्रिप्टोग्राफ़िक कुंजी पीढ़ी और मोंटे कार्लो सिमुलेशन के लिए IoT सुरक्षा महत्वपूर्ण है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li><strong>सच्चा यादृच्छिक:</strong>एनालॉग शोर स्रोत, छद्म-यादृच्छिक नहीं</li>
+<li><strong>32-बिट आउटपुट:</strong>प्रत्येक रीड पर पूर्ण 32-बिट यादृच्छिक मान</li>
+<li><strong>FIPS 140-2 अनुपालक:</strong>क्रिप्टोग्राफ़िक मानकों के अनुरूप</li>
+<li><strong>एकल चक्र:</strong>40 सीपीयू चक्रों में नया यादृच्छिक मान</li>
+<li><strong>घड़ी त्रुटि का पता लगाना:</strong>घड़ी की समस्या का पता चला है</li>
+<li><strong>बीज त्रुटि का पता लगाना:</strong>एन्ट्रापी त्रुटि का पता चला है</li>
+<li><strong>व्यवधान समर्थन:</strong>डेटा तैयार व्यवधान</li>
+<li><strong>डीएमए संगत:</strong>निरंतर यादृच्छिक धारा</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::rng, hal::rcc
+
+// Enable RNG clock
+rcc.periph_clock_enable(rcc.PERIPH_RNG)
+
+// Initialize RNG
+rng.init()
+
+// Get random 32-bit value
+let random = rng.get_random()
+io.yazdir_satır("Random: 0x" + random.onaltılıya())
+
+// Random range [0, max)
+function random_range(max: sayı) -&gt; sayı do
+    return (rng.get_random() % max)
+end</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// RNG Flags
+enum Flag {
+    FLAG_DRDY,    // Data ready
+    FLAG_CECS,    // Clock error current status
+    FLAG_SECS     // Seed error current status
+}
+
+// RNG Interrupts
+enum Interrupt {
+    IT_CEI,       // Clock error interrupt
+    IT_SEI        // Seed error interrupt
+}
+
+struct RNGConfig do
+    clock_enable: mantık = true,
+    interrupt_enable: mantık = false,
+    error_callback: function(Flag) = null
+end</code></pre>
+
+<h2>💡 उदाहरण 1: यूयूआईडी जनरेशन (आरएफसी 4122)</h2>
+<div class="example-box">
+<h3>समस्या: विशिष्ट पहचानकर्ता बनाना (IoT डिवाइस आईडी)</h3>
+<pre><code>import hal::rng
+
+struct UUID do
+    data: Dizi&lt;sayı8&gt; = Dizi.new(16)
+end
+
+function uuid_v4_generate() -&gt; UUID do
+    let uuid = UUID do end
+    
+    // Generate 128 bits (16 bytes) of random data
+    for i in 0..4 do
+        let rand32 = rng.get_random()
+        
+        // Split into 4 bytes
+        uuid.data[i*4 + 0] = (rand32 &gt;&gt; 24) &amp; 0xFF kayıt sayı8
+        uuid.data[i*4 + 1] = (rand32 &gt;&gt; 16) &amp; 0xFF kayıt sayı8
+        uuid.data[i*4 + 2] = (rand32 &gt;&gt; 8) &amp; 0xFF kayıt sayı8
+        uuid.data[i*4 + 3] = rand32 &amp; 0xFF kayıt sayı8
+    end
+    
+    // Set version (4) and variant (RFC 4122)
+    uuid.data[6] = (uuid.data[6] &amp; 0x0F) | 0x40  // Version 4
+    uuid.data[8] = (uuid.data[8] &amp; 0x3F) | 0x80  // Variant RFC4122
+    
+    return uuid
+end
+
+function uuid_to_string(uuid: UUID) -&gt; Metin do
+    // Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+    let hex = ""
+    for i in 0..16 do
+        hex = hex + uuid.data[i].onaltılıya(2)
+        if (i == 3 or i == 5 or i == 7 or i == 9) do
+            hex = hex + "-"
+        end
+    end
+    return hex
+end
+
+function main() do
+    rng.init()
+    
+    for i in 0..5 do
+        let uuid = uuid_v4_generate()
+        io.yazdir_satır("UUID: " + uuid_to_string(uuid))
+    end
+end</code></pre>
+<p><strong>आउटपुट:</strong>UUID: 550e8400-e29b-41d4-a716-446655440000 (प्रति रन अद्वितीय)</p>
+</div>
+
+<h2>💡 उदाहरण 2: क्रिप्टोग्राफ़िक कुंजी जनरेशन</h2>
+<div class="example-box">
+<h3>समस्या: AES-256 के लिए 256-बिट यादृच्छिक कुंजी उत्पन्न करना</h3>
+<pre><code>import hal::rng, hal::crypto
+
+const AES256_KEY_SIZE: sayı = 32  // 256 bit = 32 bytes
+
+struct CryptoKey do
+    data: Dizi&lt;sayı8&gt;,
+    size: sayı
+end
+
+function generate_aes256_key() -&gt; CryptoKey do
+    let key = CryptoKey do
+        data: Dizi.new(AES256_KEY_SIZE),
+        size: AES256_KEY_SIZE
+    end
+    
+    // Generate 256 bits of cryptographic random data
+    for i in 0..8 do  // 8 * 32 bits = 256 bits
+        let rand = rng.get_random()
+        
+        if rng.get_flag(rng.FLAG_CECS) or rng.get_flag(rng.FLAG_SECS) do
+            io.yazdir_satır("RNG ERROR: Clock or seed error!")
+            return key  // Invalid key
+        end
+        
+        key.data[i*4 + 0] = (rand &gt;&gt; 24) &amp; 0xFF kayıt sayı8
+        key.data[i*4 + 1] = (rand &gt;&gt; 16) &amp; 0xFF kayıt sayı8
+        key.data[i*4 + 2] = (rand &gt;&gt; 8) &amp; 0xFF kayıt sayı8
+        key.data[i*4 + 3] = rand &amp; 0xFF kayıt sayı8
+    end
+    
+    return key
+end
+
+function key_to_hex(key: CryptoKey) -&gt; Metin do
+    let hex = ""
+    for byte in key.data do
+        hex = hex + byte.onaltılıya(2)
+    end
+    return hex
+end
+
+function main() do
+    rng.init()
+    
+    io.yazdir_satır("Generating AES-256 key...")
+    let key = generate_aes256_key()
+    io.yazdir_satır("Key: " + key_to_hex(key))
+    
+    // Use key for AES encryption
+    crypto.aes_init(crypto.AES256, key.data)
+end</code></pre>
+<p><strong>सुरक्षा:</strong>सॉफ्टवेयर पीआरएनजी की तुलना में हार्डवेयर आरएनजी का उपयोग करना अधिक सुरक्षित है।</p>
+</div>
+
+<h2>💡 उदाहरण 3: यादृच्छिक संख्या वितरण (पासा रोल)</h2>
+<div class="example-box">
+<h3>समस्या: समान वितरण के साथ पासा रोल सिमुलेशन</h3>
+<pre><code>import hal::rng
+
+// Random in range [min, max]
+function random_range(min: sayı, max: sayı) -&gt; sayı do
+    let range = max - min + 1
+    let rand = rng.get_random()
+    
+    // Avoid modulo bias using rejection sampling
+    let limit = 0xFFFF_FFFF - (0xFFFF_FFFF % range)
+    
+    for do
+        if rand &lt; limit do
+            return min + (rand % range)
+        end
+        rand = rng.get_random()
+    end
+end
+
+function dice_roll() -&gt; sayı do
+    return random_range(1, 6)
+end
+
+function test_distribution() do
+    let histogram: Dizi&lt;sayı&gt; = Dizi.new(6, 0)
+    const ROLLS: sayı = 10000
+    
+    for i in 0..ROLLS do
+        let roll = dice_roll()
+        histogram[roll - 1] = histogram[roll - 1] + 1
+    end
+    
+    io.yazdir_satır("Dice roll distribution (" + ROLLS.metne() + " rolls):")
+    for i in 0..6 do
+        let face = i + 1
+        let count = histogram[i]
+        let percent = (count kayıt kesir / ROLLS kayıt kesir) * 100.0
+        
+        io.yazdir_satır("  [" + face.metne() + "]: " + count.metne() +
+                        " (" + percent.metne() + "%)")
+    end
+end
+
+function main() do
+    rng.init()
+    test_distribution()
+end</code></pre>
+<p><strong>निष्कर्ष:</strong>समान वितरण ~16.67% प्रति चेहरा (आदर्श: 16.666...%)।</p>
+</div>
+
+<h2>📚एपीआई संदर्भ</h2>
+<h3>बुनियादी कार्यों</h3>
+<pre><code>// RNG initialization and control
+function init()
+function deinit()
+function enable()
+function disable()
+
+// Random number generation
+function get_random() -&gt; sayı              // Blocking read
+function get_random_async() -&gt; Seçenek&lt;sayı&gt;  // Non-blocking
+
+// Status and error checking
+function is_ready() -&gt; mantık
+function get_flag(flag: Flag) -&gt; mantık
+function clear_flag(flag: Flag)
+
+// Interrupt handling
+function interrupt_enable(it: Interrupt)
+function interrupt_disable(it: Interrupt)</code></pre>
+
+<div class="warning">
+<strong>⚠️ महत्वपूर्ण नोट्स:</strong>
+<ul>
+<li><strong>घड़ी आवश्यक:</strong>आरएनजी के लिए आवश्यक 48 मेगाहर्ट्ज घड़ी (पीएलएल से)</li>
+<li><strong>त्रुटि प्रबंधन:</strong>सीईसीएस/एसईसीएस झंडों की जांच की जानी चाहिए</li>
+<li><strong>सबसे पहले पढ़ें:</strong>~40 चक्र पहले यादृच्छिक मान की प्रतीक्षा कर रहा है</li>
+<li><strong>मोडुलो पूर्वाग्रह:</strong>रेंज ऑपरेशंस में रिजेक्शन सैंपलिंग का उपयोग करें</li>
+</ul>
+</div>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<table>
+<tbody><tr>
+<th>प्लैटफ़ॉर्म</th>
+<th>आरएनजी समर्थन</th>
+<th>घड़ी स्रोत</th>
+<th>प्रदर्शन</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>❌ कोई नहीं</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ हाँ</td>
+<td>पीएलएल 48 मेगाहर्ट्ज</td>
+<td>40 चक्र</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ हाँ</td>
+<td>पीएलएल 48 मेगाहर्ट्ज</td>
+<td>40 चक्र</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ हाँ</td>
+<td>पीएलएल 48 मेगाहर्ट्ज</td>
+<td>32 चक्र</td>
+</tr>
+<tr>
+<td>एसटीएम32एल4</td>
+<td>✅ हाँ</td>
+<td>एमएसआई/एचएसआई48</td>
+<td>40 चक्र</td>
+</tr>
+</tbody></table>
+
+<h2>✅ सर्वोत्तम प्रथाएँ</h2>
+<ul>
+<li>✅ <strong>त्रुटि जाँच:</strong>सीईसीएस/एसईसीएस झंडे जांचें</li>
+<li>✅ <strong>बीजारोपण:</strong>पीआरएनजी बीजों के लिए आरएनजी का प्रयोग करें</li>
+<li>✅ <strong>प्रमुख पीढ़ी:</strong>क्रिप्टो कुंजियों के लिए RNG आवश्यक है</li>
+<li>✅ <strong>अस्वीकृति नमूनाकरण:</strong>मॉड्यूलो पूर्वाग्रह से बचें</li>
+<li>❌ <strong>पूर्वानुमानित नहीं:</strong>डीबग में भी आरएनजी का पूर्वानुमान नहीं लगाया जा सकता</li>
+<li>❌ <strong>घड़ी पर निर्भरता:</strong>यह 48 मेगाहर्ट्ज घड़ी के बिना काम नहीं करेगा</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="en_hal-crypto-tr.html">राज्य::क्रिप्टो</a>- यादृच्छिक कुंजियों के साथ एईएस/डीईएस एन्क्रिप्शन</li>
+<li><a href="en_hal-clock-tr.html">राज्य::घड़ी</a>- 48 मेगाहर्ट्ज घड़ी विन्यास</li>
+<li><a href="stdlib/hi_en_math-tr.html">अंक शास्त्र</a>- सांख्यिकीय वितरण कार्य</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">🔙 एचएएल मॉड्यूल</a> | 
+<a href="en_hal-rng-en.html">🌐अंग्रेज़ी</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

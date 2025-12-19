@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>बर्क कंपाइलर - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/compiler/overview.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="berk-derleyicisi"><a class="header" href="#berk-derleyicisi">बर्क कंपाइलर</a></h1>
+<p>बर्क संकलक,<strong>एलएलवीएम बैकएंड</strong>यह एक आधुनिक कंपाइलर है जो नेटिव कोड तैयार करता है। यह जंग और में लिखा है<strong>C++ स्तर का प्रदर्शन</strong>प्रस्तुत करता है।</p>
+<h2 id="mimarisı"><a class="header" href="#mimarisı">संकलक वास्तुकला</a></h2>
+<pre><code>Kaynak Kod (.berk)
+       ↓
+    Lexer  (Token'lara ayırma)
+       ↓
+   Parser  (AST oluşturma)
+       ↓
+ Semantic Analysis  (Tip kontrolü, modül çözümleme)
+       ↓
+  LLVM IR Generation  (Ara dil)
+       ↓
+  LLVM Optimization  (O0-O3)
+       ↓
+  Code Generation
+       ↓
+Native Binary (.exe, .wasm, .elf)
+</code></pre>
+<h2 id="temel-kullanım"><a class="header" href="#temel-kullanım">बुनियादी उपयोग</a></h2>
+<h3 id="derleme-compilation"><a class="header" href="#derleme-compilation">संकलन</a></h3>
+<pre><code class="language-bash"># Basit derleme
+berk-lang build program.berk
+
+# Çıktı dosyası belirt
+berk-lang build program.berk -o program.exe
+
+# Release modu (optimizasyonlu)
+berk-lang build --release program.berk
+</code></pre>
+<h3 id="çalıştırma-run"><a class="header" href="#çalıştırma-run">दौड़ना</a></h3>
+<pre><code class="language-bash"># Derle ve çalıştır
+berk-lang run program.berk
+
+# Komut satırı argümanları ile
+berk-lang run program.berk -- arg1 arg2
+</code></pre>
+<h2 id="optimizasyon-seviyeleri"><a class="header" href="#optimizasyon-seviyeleri">अनुकूलन स्तर</a></h2>
+<table><thead><tr><th>स्तर</th><th>स्पष्टीकरण</th><th>संकलन का समय</th><th>प्रदर्शन</th></tr></thead><tbody>
+<tr><td><code data-no-translate="true">-O0</code></td><td>कोई अनुकूलन नहीं (डीबग)</td><td>तेज़</td><td>धीमा</td></tr>
+<tr><td><code data-no-translate="true">-O1</code></td><td>बुनियादी अनुकूलन</td><td>मध्य</td><td>मध्य</td></tr>
+<tr><td><code data-no-translate="true">-O2</code></td><td>पूर्ण अनुकूलन (डिफ़ॉल्ट)</td><td>धीमा</td><td>तेज़</td></tr>
+<tr><td><code data-no-translate="true">-O3</code></td><td>आक्रामक अनुकूलन</td><td>दक्षिण पश्चिम</td><td>सबसे तेजी से</td></tr>
+</tbody></table>
+<pre><code class="language-bash"># Debug build
+berk-lang build --opt=0 program.berk
+
+# Maksimum performans
+berk-lang build --opt=3 --release program.berk
+</code></pre>
+<h2 id="hedef-platformlar"><a class="header" href="#hedef-platformlar">लक्ष्य प्लेटफार्म</a></h2>
+<h3 id="native-compilation"><a class="header" href="#native-compilation">मूल संकलन</a></h3>
+<pre><code class="language-bash"># Windows x64
+berk-lang build --target=x86_64-pc-windows-msvc program.berk
+
+# Linux x64
+berk-lang build --target=x86_64-unknown-linux-gnu program.berk
+
+# macOS (ARM)
+berk-lang build --target=aarch64-apple-darwin program.berk
+</code></pre>
+<h3 id="wasm-compilation"><a class="header" href="#wasm-compilation">WASM संकलन</a></h3>
+<pre><code class="language-bash"># WebAssembly
+berk-lang build --target=wasm32-unknown-unknown program.berk -o program.wasm
+
+# WASI (WebAssembly System Interface)
+berk-lang build --target=wasm32-wasi program.berk
+</code></pre>
+<h3 id="embedded-systems"><a class="header" href="#embedded-systems">अंतः स्थापित प्रणालियाँ</a></h3>
+<pre><code class="language-bash"># ESP32 (Xtensa)
+berk-lang build --target=xtensa-esp32-none-elf program.berk
+
+# STM32 (ARM Cortex-M)
+berk-lang build --target=thumbv7em-none-eabihf program.berk
+
+# Arduino (AVR)
+berk-lang build --target=avr-unknown-gnu-atmega328 program.berk
+</code></pre>
+<h2 id="derleyici-bayrakları"><a class="header" href="#derleyici-bayrakları">संकलक झंडे</a></h2>
+<h3 id="temel-bayraklar"><a class="header" href="#temel-bayraklar">मूल झंडे</a></h3>
+<pre><code class="language-bash"># Verbose çıktı
+berk-lang build -v program.berk
+
+# Uyarıları göster
+berk-lang build --warnings program.berk
+
+# Tüm uyarıları hata say
+berk-lang build --warnings-as-errors program.berk
+
+# İstatistikleri göster
+berk-lang build --stats program.berk
+</code></pre>
+<h3 id="ara-çıktılar"><a class="header" href="#ara-çıktılar">मध्यवर्ती आउटपुट</a></h3>
+<pre><code class="language-bash"># LLVM IR çıktısı
+berk-lang build --emit-llvm program.berk -o program.ll
+
+# Assembly çıktısı
+berk-lang build --emit-asm program.berk -o program.s
+
+# AST print
+berk-lang build --print-ast program.berk
+
+# Tip bilgilerini print
+berk-lang build --print-types program.berk
+</code></pre>
+<h2 id="proje-yapılandırması"><a class="header" href="#proje-yapılandırması">प्रोजेक्ट कॉन्फ़िगरेशन</a></h2>
+<h3 id="berk-toml"><a class="header" href="#berk-toml">berk.toml</a></h3>
+<pre><code class="language-toml">[package]
+name = "my_project"
+version = "1.0.0"
+authors = ["Ali Yılmaz &lt;ali@example.com&gt;"]
+
+[dependencies]
+serde = "1.0"
+http = "0.2"
+
+[build]
+target = "x86_64-pc-windows-msvc"
+opt-level = 2
+lto = true  # Link Time Optimization
+
+[features]
+default = ["std", "alloc"]
+embedded = ["no-std"]
+</code></pre>
+<h3 id="build-komutları"><a class="header" href="#build-komutları">कमांड बनाएं</a></h3>
+<pre><code class="language-bash"># Proje dizininden build
+cd my_project
+berk-lang build
+
+# Temizle
+berk-lang clean
+
+# Kontrol et (derleme yapmadan)
+berk-lang check
+
+# Testleri çalıştır
+berk-lang test
+</code></pre>
+<h2 id="hata-mesajları"><a class="header" href="#hata-mesajları">त्रुटि संदेश</a></h2>
+<p>बर्क संकलक,<strong>स्पष्ट और उपयोगी त्रुटि संदेश</strong>ऑफर:</p>
+<pre><code>error[E0308]: type uyuşmazlığı
+  --&gt; program.berk:5:14
+   |
+ 5 |     let x: sayı = "merhaba";
+   |              ^^^^      ^^^^^^^^^ beklenen `sayı`, bulundu `String`
+   |
+   = yardım: string'i sayıya çevirmek for `sayıya_çevir()` kullanın
+   = not: type çıkarımı for type açıklamasını kaldırabilirsiniz
+</code></pre>
+<h2 id="performans-özellikleri"><a class="header" href="#performans-özellikleri">प्रदर्शन सुविधाएँ</a></h2>
+<h3 id="link-time-optimization-lto"><a class="header" href="#link-time-optimization-lto">लिंक समय अनुकूलन (एलटीओ)</a></h3>
+<pre><code class="language-bash">berk-lang build --lto program.berk
+# %10-30 performans artışı
+</code></pre>
+<h3 id="profile-guided-optimization-pgo"><a class="header" href="#profile-guided-optimization-pgo">प्रोफ़ाइल-निर्देशित अनुकूलन (पीजीओ)</a></h3>
+<pre><code class="language-bash"># Adım 1: Instrumented binary oluştur
+berk-lang build --pgo-gen program.berk
+
+# Adım 2: Programı çalıştır (profil topla)
+./program
+
+# Adım 3: Profil ile optimize et
+berk-lang build --pgo-use=program.profdata program.berk
+# %15-40 performans artışı
+</code></pre>
+<h3 id="region-memory-optimization"><a class="header" href="#region-memory-optimization">क्षेत्र स्मृति अनुकूलन</a></h3>
+<pre><code class="language-bash">berk-lang build --region-memory program.berk
+# 263x daha hızlı bellek tahsisi
+</code></pre>
+<h2 id="cross-compilation"><a class="header" href="#cross-compilation">पार संकलन</a></h2>
+<pre><code class="language-bash"># Linux'ta Windows for derle
+berk-lang build --target=x86_64-pc-windows-msvc \
+    --linker=lld \
+    program.berk
+
+# Windows'ta Linux for derle
+berk-lang build --target=x86_64-unknown-linux-gnu program.berk
+</code></pre>
+<h2 id="incremental-compilation"><a class="header" href="#incremental-compilation">वृद्धिशील संकलन</a></h2>
+<p>बीईआरके केवल उन मॉड्यूलों को पुन: संकलित करता है जो बदल गए हैं:</p>
+<pre><code class="language-bash"># İlk derleme: 10 saniye
+berk-lang build project.berk
+
+# Sadece bir dosya değişti
+# İkinci derleme: 0.5 saniye
+berk-lang build project.berk
+</code></pre>
+<h2 id="derleyici-eklentileri"><a class="header" href="#derleyici-eklentileri">कंपाइलर प्लगइन्स</a></h2>
+<h3 id="custom-lintler"><a class="header" href="#custom-lintler">कस्टम लिंट</a></h3>
+<pre><code class="language-berk">// lint.berk
+#[lint]
+function büyük_fonksiyon_uyarısı(ast: AST) do
+    if ast.satır_sayısı() &gt; 100 do
+        uyarı("Fonksiyon çok büyük: {} satır", ast.satır_sayısı())
+    end
+end
+</code></pre>
+<h3 id="makrolar"><a class="header" href="#makrolar">मैक्रो</a></h3>
+<pre><code class="language-berk">// Compile-time kod üretimi
+makro vec![$(x:expr),*] do
+    do
+        let temp = Vec::new()
+        $(temp.push(x);)*
+        temp
+    end
+end
+
+// Kullanım
+let v = vec![1, 2, 3, 4]
+</code></pre>
+<h2 id="debug-bilgileri"><a class="header" href="#debug-bilgileri">डिबग जानकारी</a></h2>
+<pre><code class="language-bash"># Debug sembolleri ile derle
+berk-lang build --debug program.berk
+
+# DWARF debug formatı
+berk-lang build --debug-format=dwarf program.berk
+
+# PDB debug formatı (Windows)
+berk-lang build --debug-format=pdb program.berk
+</code></pre>
+<h2 id="cache-yönetimi"><a class="header" href="#cache-yönetimi">कैश प्रबंधन</a></h2>
+<pre><code class="language-bash"># Cache'i temizle
+berk-lang cache clear
+
+# Cache boyutunu göster
+berk-lang cache size
+
+# Cache ayarları
+berk-lang cache config --max-size=5GB
+</code></pre>
+<h2 id="derleyici-performansı"><a class="header" href="#derleyici-performansı">संकलक प्रदर्शन</a></h2>
+<table><thead><tr><th>परियोजना का आकार</th><th>संकलन का समय</th><th>INCREMENTAL</th></tr></thead><tbody>
+<tr><td>10 केएलओसी</td><td>1 सेकंड</td><td>0.1 सेकंड</td></tr>
+<tr><td>100 केएलओसी</td><td>8 सेकंड</td><td>0.5 सेकंड</td></tr>
+<tr><td>1एम एलओसी</td><td>80 सेकंड</td><td>3 सेकंड</td></tr>
+</tbody></table>
+<h2 id="özet"><a class="header" href="#özet">सारांश</a></h2>
+<ul>
+<li>✅ एलएलवीएम बैकएंड - सी++ स्तर का प्रदर्शन</li>
+<li>✅ एकाधिक लक्ष्य - विंडोज़, लिनक्स, मैक, WASM, एंबेडेड</li>
+<li>✅ अनुकूलन स्तर - O0 से O3</li>
+<li>✅ एलटीओ और पीजीओ - अधिकतम प्रदर्शन</li>
+<li>✅ वृद्धिशील संकलन - तेजी से पुनर्निर्माण</li>
+<li>✅ त्रुटि संदेश साफ़ करें</li>
+<li>✅ क्रॉस-संकलन</li>
+<li>✅ क्षेत्र मेमोरी - 263x तेज</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../features/hi_en_strings.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../compiler/hi_en_compilation.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../features/hi_en_strings.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../compiler/hi_en_compilation.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

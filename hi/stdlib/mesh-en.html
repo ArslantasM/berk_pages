@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>जाल - 3डी जाल प्रसंस्करण | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔺जाल</h1>
+<p>3डी जाल प्रसंस्करण एवं हेरफेर</p>
+<div style="margin-top:15px">
+<span class="stat-badge">22 कार्य</span>
+<span class="stat-badge">614 पंक्तियाँ</span>
+<span class="stat-badge">ओबीजे/एसटीएल</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>3डी मेश प्रसंस्करण: ओबीजे/एसटीएल को लोड/सेव करना, त्रिकोणासन, सामान्य गणना, उपविभाजन, स्मूथिंग।</p>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import mesh
+
+// Load mesh
+let m = mesh.load_obj("model.obj")?
+
+// Calculate normals
+mesh.calculate_normals(m)
+
+// Subdivide
+let subdivided = mesh.subdivide(m, iterations: 2)
+
+// Save
+mesh.save_obj(subdivided, "output.obj")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-en.html">← सभी मॉड्यूल</a> | <a href="hi_mesh-tr.html">🇹🇷तुर्की</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

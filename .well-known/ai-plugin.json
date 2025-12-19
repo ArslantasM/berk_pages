@@ -1,0 +1,35 @@
+{
+  "name": "BERK Programming Language Documentation",
+  "description": "Complete documentation for BERK, a modern, safe, and bilingual (Turkish/English) systems programming language.",
+  "url": "https://arslantasm.github.io/berk_pages/",
+  "documentation_url": "https://arslantasm.github.io/berk_pages/llms.txt",
+  "sitemap_url": "https://arslantasm.github.io/berk_pages/sitemap.xml",
+  "version": "1.4",
+  "last_updated": "2024-12",
+  "languages": ["tr", "en", "ko", "hi"],
+  "default_language": "tr",
+  "features": [
+    "Bilingual keywords (Turkish/English)",
+    "Memory safety without garbage collection",
+    "Pattern matching",
+    "Static typing with inference",
+    "Module system",
+    "AI/ML standard library",
+    "Embedded systems HAL"
+  ],
+  "statistics": {
+    "total_pages": 2724,
+    "stdlib_modules": 61,
+    "ai_ml_modules": 11,
+    "hal_modules": 33
+  },
+  "ai_crawling": {
+    "allowed": true,
+    "llms_txt": "/llms.txt",
+    "preferred_format": "markdown"
+  },
+  "contact": {
+    "github": "https://github.com/ArslantasM/berk",
+    "documentation": "https://arslantasm.github.io/berk_pages/"
+  }
+}

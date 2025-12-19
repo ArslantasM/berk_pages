@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>인코딩 - 인코딩/디코딩 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔤 인코딩 - 인코딩/디코딩</h1>
+<p>Base64, 16진수, URL, UTF-8</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">532</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">17KB</div><div>너</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import encoding
+
+// Base64
+let encoded = encoding.base64_encode("Merhaba BERK")
+print(encoded)  // "TWVyaGFiYSBCRVJL"
+let decoded = encoding.base64_decode(encoded)
+print(decoded)  // "Merhaba BERK"
+
+// Hex
+let hex = encoding.hex_encode([0x42, 0x45, 0x52, 0x4B])
+print(hex)  // "4245524B"
+
+// URL encoding
+let url = encoding.url_encode("merhaba dünya?")
+print(url)  // "merhaba%20d%C3%BCnya%3F"</code></pre>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>데이터 전송 인코딩</h3>
+<pre><code>import encoding, json, crypto
+
+function güvenli_veri_gönder(veri: herhangi, anahtar: yazı) -&gt; yazı do
+    // 1. JSON serialize
+    let json_str = json.stringify(veri)
+    
+    // 2. Encrypt
+    let şifreli = crypto.aes_encrypt(json_str, anahtar)
+    
+    // 3. Base64 encode (binary -&gt; text)
+    let encoded = encoding.base64_encode(şifreli)
+    
+    return encoded
+end
+
+function güvenli_veri_al(encoded: yazı, anahtar: yazı) -&gt; herhangi do
+    // 1. Base64 decode
+    let şifreli = encoding.base64_decode(encoded)
+    
+    // 2. Decrypt
+    let json_str = crypto.aes_decrypt(şifreli, anahtar)
+    
+    // 3. JSON parse
+    return json.parse(json_str)
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>त्रुटि संदेश - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/reference/error-messages.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="hata-mesajları"><a class="header" href="#hata-mesajları">त्रुटि संदेश मार्गदर्शिका</a></h1>
+                        
+                        <p>BERK कंपाइलर और रनटाइम द्वारा उत्पादित त्रुटि संदेशों का विवरण और समाधान सुझाव।</p>
+
+                        <h2>⚠️ संकलन-समय त्रुटियाँ</h2>
+
+                        <h3>सिंटैक्स त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">E001: Beklenmeyen token</code></h4>
+                        <pre><code class="language-berk">// HATA
+function test() {
+    variable x = 5
+    // Noktalı virgül eksik
+}
+
+// ÇÖZÜM
+function test() {
+    variable x = 5;
+}</code></pre>
+                        <p><strong>विवरण:</strong>पार्सर को एक अप्रत्याशित टोकन का सामना करना पड़ा। यह आमतौर पर विराम चिह्न गायब होने या वर्तनी की त्रुटि के कारण होता है।</p>
+
+                        <h4><code data-no-translate="true">E002: Parantez eşleşmiyor</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable sonuç = (5 + 3 * 2
+
+// ÇÖZÜM
+variable sonuç = (5 + 3) * 2</code></pre>
+                        <p><strong>समाधान:</strong>सुनिश्चित करें कि सभी कोष्ठक, वर्गाकार कोष्ठक और घुंघराले कोष्ठक मेल खाते हों।</p>
+
+                        <h3>त्रुटियाँ टाइप करें</h3>
+
+                        <h4><code data-no-translate="true">E101: Tip uyumsuzluğu</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x: tam = "merhaba"  // string, tam'a atanamaz
+
+// ÇÖZÜM
+variable x: String = "merhaba"  // true type
+// or
+variable x: tam = 42  // true değer</code></pre>
+                        <p><strong>विवरण:</strong>चर का प्रकार और निर्दिष्ट मान का प्रकार मेल नहीं खाता।</p>
+
+                        <h4><code data-no-translate="true">E102: Tip çıkarımı başarısız</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x  // Tip and değer yok
+
+// ÇÖZÜM
+variable x: tam = 0  // Açık type
+// or
+variable x = 0  // Tip çıkarımı</code></pre>
+
+                        <h4><code data-no-translate="true">E103: Geçersiz operatör Usageı</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x = "hello" * 5  // String ile sayı çarpılamaz
+
+// ÇÖZÜM
+variable x = "hello" + " world"  // String concatenation
+// or
+variable x = 5 * 3  // Sayısal çarpma</code></pre>
+
+                        <h3>कार्यक्षेत्र त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">E201: Tanımlanmamış variable</code></h4>
+                        <pre><code class="language-berk">// HATA
+print(isim)  // 'isim' tanımlanmamış
+
+// ÇÖZÜM
+variable isim = "BERK"
+print(isim)</code></pre>
+
+                        <h4><code data-no-translate="true">E202: variable zaten tanımlı</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x = 5
+variable x = 10  // Tekrar tanımlama
+
+// ÇÖZÜM
+variable x = 5
+x = 10  // Yeniden atama (tanımlama not)</code></pre>
+
+                        <h4><code data-no-translate="true">E203: Sabite atama yapılamaz</code></h4>
+                        <pre><code class="language-berk">// HATA
+constant PI = 3.14
+PI = 3.14159  // Sabite atama
+
+// ÇÖZÜM
+variable pi = 3.14  // variable use
+pi = 3.14159  // Artık değiştirilebilir</code></pre>
+
+                        <h3>फ़ंक्शन त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">E301: function bulunamadı</code></h4>
+                        <pre><code class="language-berk">// HATA
+sonuç = hesapla(5, 10)  // 'hesapla' tanımlanmamış
+
+// ÇÖZÜM
+function hesapla(a: tam, b: tam) -&gt; tam {
+    döndür a + b
+}
+sonuç = hesapla(5, 10)</code></pre>
+
+                        <h4><code data-no-translate="true">E302: Parametre sayısı uyumsuz</code></h4>
+                        <pre><code class="language-berk">function topla(a: tam, b: tam) -&gt; tam {
+    döndür a + b
+}
+
+// HATA
+sonuç = topla(5)  // 2 parametre gerekli, 1 verildi
+
+// ÇÖZÜM
+sonuç = topla(5, 10)</code></pre>
+
+                        <h4><code data-no-translate="true">E303: Return Type uyumsuz</code></h4>
+                        <pre><code class="language-berk">// HATA
+function al_isim() -&gt; String {
+    döndür 42  // tam, String not
+}
+
+// ÇÖZÜM
+function al_isim() -&gt; String {
+    döndür "BERK"
+}</code></pre>
+
+                        <h2>🔥 रनटाइम त्रुटियाँ</h2>
+
+                        <h3>अंकगणितीय त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">R001: Sıfıra bölme</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x = 10 / 0
+
+// ÇÖZÜM
+if bölen != 0 {
+    variable x = 10 / bölen
+} else {
+    print("Sıfıra bölme hatası!")
+}</code></pre>
+
+                        <h4><code data-no-translate="true">R002: Sayısal overflow</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable x: tam8 = 200  // tam8 max: 127
+
+// ÇÖZÜM
+variable x: tam32 = 200  // Daha büyük type</code></pre>
+
+                        <h3>स्मृति त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">R101: Null pointer erişimi</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable ptr: *tam = boş_değer
+print(*ptr)  // Null dereference
+
+// ÇÖZÜM
+if ptr != boş_değer {
+    print(*ptr)
+}</code></pre>
+
+                        <h4><code data-no-translate="true">R102: Array sınır aşımı</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable Array = [1, 2, 3]
+print(Array[5])  // Index out of bounds
+
+// ÇÖZÜM
+if 5 &lt; Array.len {
+    print(Array[5])
+} else {
+    print("Geçersiz index")
+}</code></pre>
+
+                        <h3>I/O त्रुटियाँ</h3>
+
+                        <h4><code data-no-translate="true">R201: Dosya bulunamadı</code></h4>
+                        <pre><code class="language-berk">// HATA
+variable Content = fs.oku_dosya("yok.txt")
+
+// ÇÖZÜM
+if fs.var_mı("dosya.txt") {
+    variable Content = fs.oku_dosya("dosya.txt")
+} else {
+    print("Dosya bulunamadı")
+}
+
+// or try-catch use
+try {
+    variable Content = fs.oku_dosya("dosya.txt")
+} catch hata {
+    print("Err: " + hata.mesaj)
+}</code></pre>
+
+                        <h4><code data-no-translate="true">R202: Erişim izni yok</code></h4>
+                        <pre><code class="language-berk">// ÇÖZÜM
+try {
+    fs.yaz_dosya("/root/dosya.txt", veri)
+} catch hata {
+    print("İzin hatası: " + hata.mesaj)
+}</code></pre>
+
+                        <h2>🧪 परीक्षण त्रुटियाँ</h2>
+
+                        <h4><code data-no-translate="true">T001: Assert başarısız</code></h4>
+                        <pre><code class="language-berk">import testing
+
+test "toplama testi" {
+    variable sonuç = topla(2, 2)
+    testing.assert_eşit(sonuç, 5)  // HATA: 4 != 5
+}
+
+// ÇÖZÜM: Beklenen değeri düzelt
+testing.assert_eşit(sonuç, 4)  // OK</code></pre>
+
+                        <h2>💡 डिबगिंग युक्तियाँ</h2>
+
+                        <h3>कंपाइलर वर्बोज़ मोड</h3>
+                        <pre><code class="language-bash">BERK-lang compile --verbose program.berk
+# Detaylı compile bilgisi</code></pre>
+
+                        <h3>डिबग प्रिंट</h3>
+                        <pre><code class="language-berk">// variable değerlerini kontrol et
+variable x = hesapla()
+io.print("x değeri: " + x)
+
+// Type kontrolü
+io.print("Tip: " + type_of(x))</code></pre>
+
+                        <h3>स्टैक ट्रेस</h3>
+                        <pre><code class="language-berk">try {
+    tehlikeli_fonksiyon()
+} catch hata {
+    // Stack trace göster
+    io.print(hata.stack_trace)
+}</code></pre>
+
+                        <h2>🔧 सामान्य त्रुटियाँ और समाधान</h2>
+
+                        <table>
+                            <thead>
+                                <tr><th>गलती</th><th>कहां से</th><th>समाधान</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>विखंडन दोष</td>
+                                    <td>अमान्य मेमोरी एक्सेस</td>
+                                    <td>सूचक नियंत्रण, सीमा जाँच</td>
+                                </tr>
+                                <tr>
+                                    <td>स्टैक ओवरफ़्लो</td>
+                                    <td>अंतहीन पुनरावृत्ति</td>
+                                    <td>बेस केस जोड़ें, पुनरावृत्ति का उपयोग करें</td>
+                                </tr>
+                                <tr>
+                                    <td>गतिरोध</td>
+                                    <td>धागे एक दूसरे का इंतज़ार कर रहे हैं</td>
+                                    <td>लॉक ऑर्डर संपादित करें, टाइमआउट जोड़ें</td>
+                                </tr>
+                                <tr>
+                                    <td>स्मृति रिसाव</td>
+                                    <td>आवंटन निःशुल्क नहीं हैं</td>
+                                    <td>दायरे के अंत में सफाई, आरएआईआई पैटर्न</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="padding: 20px; background: var(--sidebar-bg); border-radius: 8px; margin: 20px 0;">
+                            <h3>🆘 सहायता प्राप्त करना</h3>
+                            <ul>
+                                <li><strong>गिटहब मुद्दे:</strong>बग रिपोर्ट सबमिट करें</li>
+                                <li><strong>कलह:</strong>समुदाय से सहायता मांगें</li>
+                                <li><strong>दस्तावेज़ीकरण:</strong>प्रासंगिक मॉड्यूल पेज देखें</li>
+                                <li><strong>उदाहरण:</strong>उदाहरण कोड जांचें</li>
+                            </ul>
+                        </div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/hi_std-library.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../contributing/hi_setup.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/hi_std-library.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../contributing/hi_setup.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

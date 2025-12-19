@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::systick - System Tick Timer | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #1abc9c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏱️ state::systick</h1>
+<p>System Tick Timer - Millisecond Timebase for RTOS and Delays</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~240 lines</span>
+<span class="stat-badge">~10 functions</span>
+<span class="stat-badge">ARM Cortex-M</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>SysTick is a 24-bit system timer available on ARM Cortex-M architectures. It is generally used to generate 1ms tick interrupts and forms the basis of RTOS (Real-Time Operating System) schedulers. Also used are ms-based delay functions and uptime counters.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>24-bit down counter (0xFFFFFF)</li>
+<li>Configurable tick rate (usually 1ms)</li>
+<li>Exception/interrupt generation</li>
+<li>Sourced from CPU clock or external clock</li>
+<li>Low overhead timing</li>
+<li>RTOS scheduler timebase</li>
+<li>Millisecond delay functions</li>
+<li>uptime counter</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::systick, hal::core
+
+let g_tick_count: u64 = 0
+
+// SysTick interrupt handler
+@interrupt
+function SysTick_Handler() do
+    g_tick_count += 1
+end
+
+function main() do
+    // 72 MHz CPU, 1ms tick
+    systick.init(72000000 / 1000)  // 1ms period
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Now delay_ms() works
+    loop do
+        io.println("Uptime: " + g_tick_count.yazıya() + " ms")
+        systick.delay_ms(1000)
+    end
+end</code></pre>
+
+<h2>📦 Types and Enums</h2>
+<pre><code>// Clock Source
+enum ClockSource {
+    EXTERNAL,  // External clock (HCLK/8)
+    PROCESSOR  // Processor clock (HCLK)
+}
+
+struct SysTickConfig do
+    reload_value: int,      // 24-bit (0 - 0xFFFFFF)
+    clock_source: ClockSource,
+    interrupt_enable: bool
+end</code></pre>
+
+<h2>💡 Example 1: Millisecond Delay Implementation</h2>
+<div class="example-box">
+<h3>Blocking delay and non-blocking timeout</h3>
+<pre><code>import hal::systick
+
+let g_ticks: sayacı64 = 0
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+// Blocking delay
+function delay_ms(ms: int) do
+    let start = g_ticks
+    loop (g_ticks - start) &lt; ms.to_u64() for do
+        // Wait
+    end
+end
+
+// Non-blocking timeout
+struct Timeout do
+    start: sayı64,
+    duration: sayı64
+end
+
+function timeout_start(ms: int) -&gt; Timeout do
+    return Timeout do
+        start: g_ticks,
+        duration: ms.to_u64()
+    end
+end
+
+function timeout_expired(timeout: Timeout) -&gt; bool do
+    return (g_ticks - timeout.start) &gt;= timeout.duration
+end
+
+// Kullanım örneği
+function main_loop() do
+    let timeout = timeout_start(5000)  // 5 saniye
+    
+    loop do
+        // Non-blocking işlemler
+        process_data()
+        
+        if timeout_expired(timeout)  do
+            io.println("5 saniye geçti!")
+            timeout = timeout_start(5000)  // Reset
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 Example 2: Simple RTOS Scheduler</h2>
+<div class="example-box">
+<h3>Cooperative multitasking with SysTick</h3>
+<pre><code>import hal::systick
+
+struct Task do
+    function: Fonksiyon(),
+    period_ms: int,
+    son_calistirma: sayı64
+end
+
+let g_ticks: sayı64 = 0
+let g_tasks: Dizi[Task] = []
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+function task_register(func: Fonksiyon(), period_ms: int) do
+    g_tasks.push(Task do
+        function: func,
+        period_ms: period_ms,
+        son_calistirma: 0
+    end)
+end
+
+function scheduler_run() do
+    loop do
+        her task in g_tasks for do
+            let elapsed = g_ticks - task.son_calistirma
+            
+            if elapsed &gt;= task.period_ms.to_u64()  do
+                // Task zamanı geldi
+                task.function()
+                task.son_calistirma = g_ticks
+            end
+        end
+    end
+end
+
+// Example tasklar
+function led_blink_task() do
+    gpio.pin_toggle(LED_PIN)
+end
+
+function sensor_read_task() do
+    let temp = sensor.read_temperature()
+    io.println("Sıcaklık: " + temp.yazıya())
+end
+
+function main() do
+    systick.init(72000000 / 1000)  // 1ms
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Register tasks
+    task_register(led_blink_task, 500)      // 500ms period
+    task_register(sensor_read_task, 1000)   // 1000ms period
+    
+    // Run scheduler
+    scheduler_run()
+end</code></pre>
+</div>
+
+<h2>💡 Example 3: Performance Profiling</h2>
+<div class="example-box">
+<h3>Function execution time measurement</h3>
+<pre><code>import hal::systick
+
+function micros() -&gt; sayı64 do
+    // SysTick counts down from reload value
+    let reload = systick.get_reload()
+    let current = systick.get_value()
+    
+    // Calculate microseconds
+    let ticks_elapsed = reload - current
+    let us_per_tick = 1000 / reload  // Assuming 1ms period
+    
+    return (g_ticks * 1000) + (ticks_elapsed * us_per_tick).to_u64()
+end
+
+function profile_start() -&gt; sayı64 do
+    return micros()
+end
+
+function profile_end(start: sayı64) -&gt; sayı64 do
+    return micros() - start
+end
+
+// Kullanım
+function slow_function() do
+    for i in 0..1000 for do
+        math.sqrt(i.float())
+    end
+end
+
+function main() do
+    systick.init(72000)  // 1ms
+    systick.enable()
+    
+    let start = profile_start()
+    slow_function()
+    let duration = profile_end(start)
+    
+    io.println("Süre: " + duration.yazıya() + " μs")
+end</code></pre>
+</div>
+
+<h2>📊 API Reference</h2>
+
+<h3>initialization</h3>
+<pre><code>function init(reload_value: int)  // 24-bit max
+function deinit()
+function enable()
+function disable()</code></pre>
+
+<h3>Configuration</h3>
+<pre><code>function enable_interrupt()
+function disable_interrupt()
+function set_clock_source(source: ClockSource)
+function get_reload() -&gt; int
+function set_reload(value: int)</code></pre>
+
+<h3>Status</h3>
+<pre><code>function get_value() -&gt; int  // Current counter value
+function get_calib() -&gt; int  // Calibration value
+function has_reference() -&gt; bool</code></pre>
+
+<h3>utility</h3>
+<pre><code>function delay_ms(ms: int)
+function delay_us(pow: int)
+function get_ticks() -&gt; sayı64</code></pre>
+
+<h2>⚙️ Platform Support</h2>
+<table>
+<tbody><tr><th>Platform</th><th>Clock Source</th><th>Max Reload</th><th>Precision</th></tr>
+<tr><td>Cortex-M0</td><td>HCLK, HCLK/8</td><td>0xFFFFFF (16.7M)</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M3</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M4</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+<tr><td>Cortex-M7</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1 cycle</td></tr>
+</tbody></table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Tick ​​rate:</strong>1ms industry standard for RTOS</li>
+<li><strong>Interrupt priority:</strong>SysTick is usually the lowest priority (15)</li>
+<li><strong>Handler duration:</strong>Interrupt handler should be kept minimal (&lt;10μs)</li>
+<li><strong>Overflow handling:</strong>Prevent overflow using 64-bit counter</li>
+<li><strong>Power optimization:</strong>Consider tickless idle mode (RTOS)</li>
+<li><strong>Debug freeze:</strong>You can stop SysTick during debug</li>
+</ul>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>24-bit counter: Maximum reload value 0xFFFFFF (16,777,215)</li>
+<li>1ms for reload = 72000 at 72 MHz</li>
+<li>Long processing in interrupt handler (context switch overhead)</li>
+<li>Atomic operations for interrupt may need to be disabled</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="en_hal-timer-en.html">state::timer</a>- Hardware timers for longer periods</li>
+<li><a href="en_hal-nvic-en.html">state::nvic</a>- Interrupt controller configuration</li>
+<li><a href="en_hal-power-en.html">state::power</a>- Tickless idle integration</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-en.html">← HAL Modules</a> | 
+<a href="en_hal-systick-en.html">🇬🇧 Turkish</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

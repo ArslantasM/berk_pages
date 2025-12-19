@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::can - 컨트롤러 영역 네트워크 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#d35400 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#d35400;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🚗 상태::할 수 있음</h1>
+<p>컨트롤러 영역 네트워크 - 자동차 통신</p>
+<div style="margin-top:15px">
+<span class="stat-badge">383라인</span>
+<span class="stat-badge">~14가지 기능</span>
+<span class="stat-badge">자동차</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>CAN(Controller Area Network)은 자동차 및 산업용 애플리케이션에 사용되는 안정적인 통신 프로토콜입니다. ECU(Engine Control Unit), 센서 및 액추에이터 간의 통신을 제공합니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>CAN 2.0A(11비트 ID) / 2.0B(29비트 ID)</li>
+<li>최대 1Mbps 비트 전송률</li>
+<li>오류 감지/수정</li>
+<li>메시지 필터링(28개 필터)</li>
+<li>3TX 사서함</li>
+<li>RX FIFO 2개</li>
+<li>우선순위 중재</li>
+<li>자동 재전송</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::can, hal::gpio
+
+// CAN pins: PB8=RX, PB9=TX
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 8, do mode: gpio.MODE_AF, af: 9 end)
+gpio.pin_init(gpio.PORT_B, 9, do mode: gpio.MODE_AF, af: 9 end)
+
+// Initialize CAN (500 kbps)
+let can1 = can.init(can.CAN1, do
+    bitrate: 500_000,
+    mode: can.MODE_NORMAL
+end)
+
+// Send message
+can.send(can1, do
+    id: 0x123,
+    data: [0x01, 0x02, 0x03],
+    extended_id: false
+end)
+
+// Receive message
+if msg = can.receive(can1, 100) ise do
+    io.println("Received ID: 0x{:X}".formatla(msg.id))
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 예: ECU 시뮬레이터</h3>
+<pre><code>import hal::can, hal::core
+
+const ENGINE_RPM = 0x100
+const VEHICLE_SPEED = 0x101
+const COOLANT_TEMP = 0x102
+const THROTTLE_POS = 0x103
+
+function send_rpm(can1: can.Handle, rpm: int) do
+    let data = [
+        (rpm &gt;&gt; 8) &amp; 0xFF,
+        rpm &amp; 0xFF
+    ]
+    
+    can.send(can1, do
+        id: ENGINE_RPM,
+        data: data,
+        extended_id: false
+    end)
+end
+
+function send_speed(can1: can.Handle, speed: int) do
+    can.send(can1, do
+        id: VEHICLE_SPEED,
+        data: [speed &amp; 0xFF],
+        extended_id: false
+    end)
+end
+
+function send_temp(can1: can.Handle, temp: int) do
+    // Temperature in Celsius + 40
+    let temp_byte = (temp + 40) &amp; 0xFF
+    
+    can.send(can1, do
+        id: COOLANT_TEMP,
+        data: [temp_byte],
+        extended_id: false
+    end)
+end
+
+function ana() do
+    core.system_init()
+    
+    // Setup CAN
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Configure filter (accept all)
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,  // Accept all IDs
+        fifo: can.FIFO0
+    end)
+    
+    // Simulate ECU data
+    let rpm = 800  // Idle RPM
+    let speed = 0
+    let temp = 20
+    
+    loop do
+        // Send telemetry at 10Hz
+        send_rpm(can1, rpm)
+        send_speed(can1, speed)
+        send_temp(can1, temp)
+        
+        // Simulate acceleration
+        if rpm &lt; 6000 ise do
+            rpm += 100
+            speed = (rpm / 100)  // Simplified
+            temp += 1  // Engine heats up
+        değilse do
+            rpm = 800  // Back to idle
+            speed = 0
+            temp = 20
+        end
+        
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: CAN 버스 모니터</h3>
+<pre><code>import hal::can
+
+function message_name(id: u32) -&gt; str do
+    return match id do
+        0x100 =&gt; "Engine RPM",
+        0x101 =&gt; "Vehicle Speed",
+        0x102 =&gt; "Coolant Temp",
+        0x103 =&gt; "Throttle Pos",
+        0x200 =&gt; "Brake Status",
+        0x300 =&gt; "Door Status",
+        _ =&gt; "Unknown"
+    end
+end
+
+function parse_data(msg: can.Message) do
+    io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
+    
+    // Print data bytes
+    each byte forde msg.data[0..msg.dlc] for do
+        io.print("{:02X} ".formatla(byte))
+    end
+    
+    // Interpret known messages
+    let name = message_name(msg.id)
+    io.print(" // {}", name)
+    
+    match msg.id do
+        0x100 =&gt; do  // RPM
+            let rpm = (msg.data[0] &lt;&lt; 8) | msg.data[1]
+            io.print(" = {} RPM", rpm)
+        end,
+        0x101 =&gt; do  // Speed
+            io.print(" = {} km/h", msg.data[0])
+        end,
+        0x102 =&gt; do  // Temp
+            let temp = msg.data[0].int() - 40
+            io.print(" = {}°C", temp)
+        end,
+        _ =&gt; do end
+    end
+    
+    io.println()
+end
+
+function ana() do
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Accept all messages
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,
+        fifo: can.FIFO0
+    end)
+    
+    io.println("CAN Bus Monitor Started (500 kbps)")
+    io.println("Press Ctrl+C to exit\n")
+    
+    loop do
+        // Check for messages (non-blocking)
+        if msg = can.receive(can1, 10) ise do
+            parse_data(msg)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 3: OBD-II 진단</h3>
+<pre><code>import hal::can
+
+const OBD_REQUEST = 0x7DF
+const OBD_RESPONSE = 0x7E8
+const PID_ENGINE_RPM = 0x0C
+const PID_VEHICLE_SPEED = 0x0D
+
+function obd_request(can1: can.Handle, pid: u8) -&gt; Result[int, Error] do
+    can.send(can1, do
+        id: OBD_REQUEST,
+        data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
+        dlc: 8
+    end)?
+    
+    if response = can.receive(can1, 100) ise do
+        if response.id == OBD_RESPONSE ise do
+            return Ok(match pid do
+                PID_ENGINE_RPM =&gt; ((response.data[3] &lt;&lt; 8) | response.data[4]) / 4,
+                PID_VEHICLE_SPEED =&gt; response.data[3].int(),
+                _ =&gt; 0
+            end)
+        end
+    end
+    
+    return Error("Timeout")
+end
+
+function ana() do
+    let can1 = can.init(can.CAN1, do bitrate: 500_000 end)
+    
+    loop do
+        if rpm = obd_request(can1, PID_ENGINE_RPM)? ise do
+            io.println("RPM: {}", rpm)
+        end
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 유형</h2>
+<pre><code>struct Message do
+    id: u32,
+    data: [u8; 8],
+    dlc: u8,
+    extended_id: bool
+end
+
+struct Config do
+    bitrate: int,
+    mode: Mode
+end</code></pre>
+
+<h2>⚙️ 기능</h2>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+function send(handle: Handle, msg: Message) -&gt; Result[None, Error]
+function receive(handle: Handle, timeout_ms: int) -&gt; Optional[Message]
+function filter_config(handle: Handle, config: FilterConfig)</code></pre>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li>CAN 트랜시버(TJA1050, MCP2551) 필요</li>
+<li>120Ω 종단 저항 필요(버스 양쪽 끝)</li>
+<li>최대 버스 길이: 40m(1Mbps), 500m(125kbps)</li>
+<li>연선 케이블(CAN_H, CAN_L)을 사용하세요.</li>
+<li>필터 구성이 중요합니다(트래픽이 많은 경우).</li>
+<li>ISO 11898 표준이 사용됩니다.</li>
+</ul>
+
+<h2>🎯 신청 시나리오</h2>
+<ul>
+<li>자동차 ECU 통신</li>
+<li>OBD-II 진단</li>
+<li>산업 자동화(CANopen)</li>
+<li>해양(NMEA 2000)</li>
+</ul>
+
+<h2>📚 플랫폼 지원</h2>
+<ul>
+<li><strong>STM32 F1/F4:</strong>bxCAN(2x CAN)</li>
+<li><strong>STM32 H7:</strong>CAN-FD</li>
+<li><strong>ESP32:</strong>트와이</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- CAN TX/RX 핀</li>
+<li><code data-no-translate="true">hal::int</code>- CAN 인터럽트</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL 모듈</a> | 
+<a href="ko_index-tr.html">모든 모듈</a> | 
+<a href="../ko_index-tr.html">홈 페이지</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

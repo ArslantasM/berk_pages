@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>एसक्लाइट - एसक्यूलाइट डेटाबेस | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🗄️ sqlite - SQLite डेटाबेस</h1>
+<p>एंबेडेड SQL डेटाबेस, लेनदेन, तैयार विवरण</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">42</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,167</div><div>रेखा</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import sqlite
+
+// Veritabanı aç
+let db = sqlite.open("app.db")
+
+// Tablo oluştur
+sqlite.exec(db, "CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    age INTEGER
+)")
+
+// Insert
+sqlite.exec(db, "INSERT INTO users (name, email, age) VALUES ('Ali', 'ali@test.com', 25)")
+
+// Prepared statement (SQL injection koruması)
+let stmt = sqlite.prepare(db, "INSERT INTO users (name, email, age) VALUES (?, ?, ?)")
+sqlite.bind(stmt, ["Ayşe", "ayse@test.com", 30])
+sqlite.step(stmt)
+sqlite.finalize(stmt)
+
+// Query
+let sonuçlar = sqlite.query(db, "SELECT * FROM users WHERE age &gt; 20")
+her satır in sonuçlar for do
+    print(satır["name"] + " - " + satır["email"])
+end
+
+// Transaction
+sqlite.begin(db)
+try do
+    sqlite.exec(db, "UPDATE users SET age = age + 1")
+    sqlite.commit(db)
+end catch hata do
+    sqlite.rollback(db)
+    print("Err: " + hata.mesaj())
+end
+
+sqlite.close(db)</code></pre>
+<h2>📚 विशेषताएँ</h2>
+<ul>
+<li>SQLite 3.x एम्बेडेड डेटाबेस</li>
+<li>पूर्ण SQL समर्थन (चयन, सम्मिलित करें, अद्यतन, हटाएँ, शामिल हों, आदि)</li>
+<li>तैयार कथन (एसक्यूएल इंजेक्शन रोकथाम)</li>
+<li>लेन-देन (ACID गुण)</li>
+<li>सुरक्षा टाइप करें</li>
+<li>कनेक्शन पूलिंग</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>उपयोगकर्ता प्रबंधन प्रणाली</h3>
+<pre><code>import sqlite
+
+sınıf UserDB do
+    let db: Database
+    
+    function new(dosya_yolu: yazı) do
+        self.db = sqlite.open(dosya_yolu)
+        self.init_schema()
+    end
+    
+    function init_schema() do
+        sqlite.exec(self.db, "
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at INTEGER DEFAULT (strftime('%s', 'now'))
+            )
+        ")
+    end
+    
+    function kullanıcı_ekle(username: yazı, email: yazı, password_hash: yazı) -&gt; Sonuç do
+        let stmt = sqlite.prepare(self.db,
+            "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)")
+        
+        sqlite.bind(stmt, [username, email, password_hash])
+        
+        if sqlite.step(stmt) then do
+            let id = sqlite.last_insert_id(self.db)
+            sqlite.finalize(stmt)
+            return Ok(id)
+        end else do
+            sqlite.finalize(stmt)
+            return Err("Kullanıcı eklenemedi")
+        end
+    end
+    
+    function kullanıcı_bul(username: yazı) -&gt; Seçenek do
+        let stmt = sqlite.prepare(self.db,
+            "SELECT * FROM users WHERE username = ?")
+        sqlite.bind(stmt, [username])
+        
+        if sqlite.step(stmt) then do
+            let user = do
+                "id": sqlite.column_int(stmt, 0),
+                "username": sqlite.column_text(stmt, 1),
+                "email": sqlite.column_text(stmt, 2),
+                "password_hash": sqlite.column_text(stmt, 3),
+                "created_at": sqlite.column_int(stmt, 4)
+            end
+            sqlite.finalize(stmt)
+            return Some(user)
+        end else do
+            sqlite.finalize(stmt)
+            return Hiç
+        end
+    end
+    
+    function tüm_kullanıcılar() -&gt; Dizi do
+        return sqlite.query(self.db, "SELECT id, username, email FROM users")
+    end
+    
+    function kullanıcı_sil(id: int) -&gt; bool do
+        let stmt = sqlite.prepare(self.db, "DELETE FROM users WHERE id = ?")
+        sqlite.bind(stmt, [id])
+        let başarılı = sqlite.step(stmt)
+        sqlite.finalize(stmt)
+        return başarılı
+    end
+end
+
+// Kullanım
+let user_db = UserDB.new("users.db")
+user_db.kullanıcı_ekle("berk_dev", "berk@example.com", "hash_buraya")
+
+let kullanıcı = user_db.kullanıcı_bul("berk_dev")
+if kullanıcı then do
+    print("Kullanıcı bulundu: " + kullanıcı.değer()["email"])
+end</code></pre>
+</div>
+<div class="example-box">
+<h3>लेनदेन के साथ बैच सम्मिलित करें</h3>
+<pre><code>import sqlite, csv
+
+function csv_import(db: Database, csv_dosya: yazı, tablo: yazı) do
+    let satırlar = csv.input(csv_dosya)
+    
+    sqlite.begin(db)
+    
+    try do
+        let stmt = sqlite.prepare(db,
+            "INSERT INTO " + tablo + " VALUES (?, ?, ?)")
+        
+        her satır in satırlar for do
+            sqlite.bind(stmt, satır)
+            sqlite.step(stmt)
+            sqlite.reset(stmt)
+        end
+        
+        sqlite.finalize(stmt)
+        sqlite.commit(db)
+        print("Import başarılı: " + satırlar.len().yazıya() + " satır")
+    end catch hata do
+        sqlite.rollback(db)
+        print("Import başarısız: " + hata.mesaj())
+    end
+end
+
+let db = sqlite.open("data.db")
+csv_import(db, "users.csv", "users")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

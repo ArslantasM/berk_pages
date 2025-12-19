@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::timer - Hardware Timers | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#8e44ad 0%,#9b59b6 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#8e44ad;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏱️ state::timer</h1>
+<p>Hardware Timers/Counters - PWM &amp; Timing Control</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 lines</span>
+<span class="stat-badge">~22 functions</span>
+<span class="stat-badge">PWM/IC/OC</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The Timer module provides hardware timers, PWM generation, input capture and output compare functions. Used for motor control, servo control, frequency measurement.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>PWM generation (4 channels)</li>
+<li>input capture</li>
+<li>Output compare</li>
+<li>Encoder mode</li>
+<li>One-pulse mode</li>
+<li>Periodic interruptions</li>
+<li>DMA burst mode</li>
+<li>16/32-bit counters</li>
+</ul>
+
+<h2>🚀 Quick Start - PWM</h2>
+<pre><code>import hal::timer, hal::gpio
+
+// PWM pin (PA0 = TIM2_CH1)
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 0, do
+    mode: gpio.MODE_AF,
+    af: 1  // TIM2
+end)
+
+// Initialize PWM
+let pwm = timer.pwm_init(timer.TIM2, timer.CH1, do
+    frequency: 1000,  // 1 kHz
+    duty_cycle: 50    // 50%
+end)
+
+timer.pwm_start(pwm)
+
+// Change duty cycle
+timer.pwm_set_duty(pwm, 75)  // 75%</code></pre>
+
+<div class="example-box">
+<h3>💡 Example 1: LED Breathing Effect</h3>
+<pre><code>import hal::timer, hal::gpio, hal::core
+
+function main() do
+    core.system_init()
+    
+    // Setup PWM for LED (PA0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_AF,
+        speed: gpio.SPEED_HIGH,
+        af: 1
+    end)
+    
+    // Initialize PWM (1kHz)
+    let pwm = timer.pwm_init(timer.TIM2, timer.CH1, do
+        frequency: 1000,
+        duty_cycle: 0
+    end)
+    
+    timer.pwm_start(pwm)
+    
+    // Breathing effect
+    for do
+        // Fade in
+        her duty in 0..101 for do
+            timer.pwm_set_duty(pwm, duty)
+            core.delay_ms(10)
+        end
+        
+        // Fade out
+        her duty in (0..101).reverse() for do
+            timer.pwm_set_duty(pwm, duty)
+            core.delay_ms(10)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 2: Servo Motor Control</h3>
+<pre><code>import hal::timer
+
+struct Servo do
+    pwm: timer.PWMHandle,
+    min_pulse: sayı,  // microseconds
+    max_pulse: sayı
+end
+
+function servo_init(tim: timer.Timer, channel: timer.Channel) -&gt; Servo do
+    // Servo PWM: 50Hz (20ms period), pulse: 1-2ms
+    let pwm = timer.pwm_init(tim, channel, do
+        frequency: 50,  // 50Hz
+        duty_cycle: 0
+    end)
+    
+    timer.pwm_start(pwm)
+    
+    return Servo do
+        pwm: pwm,
+        min_pulse: 1000,  // 1ms = 0°
+        max_pulse: 2000   // 2ms = 180°
+    end
+end
+
+function servo_set_angle(servo: Servo, angle: kesir) do
+    // Map angle (0-180°) to pulse width (1-2ms)
+    let pulse = servo.min_pulse.kesir() + 
+                     (servo.max_pulse - servo.min_pulse).kesir() * 
+                     (angle / 180.0)
+    
+    // Convert pulse width to duty cycle (20ms period)
+    let duty = (pulse / 20000.0) * 100.0
+    
+    timer.pwm_set_duty(servo.pwm, duty.sayı())
+end
+
+function main() do
+    // Setup servo on PA0 (TIM2_CH1)
+    let servo = servo_init(timer.TIM2, timer.CH1)
+    
+    for do
+        // Sweep 0° to 180°
+        her angle in 0..181 for do
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        end
+        
+        // Sweep 180° to 0°
+        her angle in (0..181).reverse() for do
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 3: DC Motor Speed ​​Control (L298N Driver)</h3>
+<pre><code>import hal::timer, hal::gpio
+
+struct DCMotor do
+    pwm: timer.PWMHandle,
+    dir1: gpio.Pin,
+    dir2: gpio.Pin
+end
+
+function motor_init(tim: timer.Timer, channel: timer.Channel) -&gt; DCMotor do
+    // PWM setup (10 kHz for motor control)
+    let pwm = timer.pwm_init(tim, channel, do
+        frequency: 10000,  // 10 kHz - reduces audible noise
+        duty_cycle: 0
+    end)
+    
+    // Direction pins
+    gpio.clock_enable(gpio.PORT_B)
+    let dir1 = gpio.pin_init(gpio.PORT_B, 0, do mode: gpio.MODE_OUTPUT end)
+    let dir2 = gpio.pin_init(gpio.PORT_B, 1, do mode: gpio.MODE_OUTPUT end)
+    
+    timer.pwm_start(pwm)
+    
+    return DCMotor do
+        pwm: pwm,
+        dir1: dir1,
+        dir2: dir2
+    end
+end
+
+function motor_set_speed(motor: DCMotor, speed: i32) do
+    // speed: -100 to +100 (negative = reverse)
+    
+    if speed &gt; 0 then do
+        // Forward
+        gpio.pin_write(motor.dir1, gpio.HIGH)
+        gpio.pin_write(motor.dir2, gpio.LOW)
+        timer.pwm_set_duty(motor.pwm, speed.abs())
+    end yoksa if speed &lt; 0 then do
+        // Reverse
+        gpio.pin_write(motor.dir1, gpio.LOW)
+        gpio.pin_write(motor.dir2, gpio.HIGH)
+        timer.pwm_set_duty(motor.pwm, speed.abs())
+    end yoksa do
+        // Brake
+        gpio.pin_write(motor.dir1, gpio.LOW)
+        gpio.pin_write(motor.dir2, gpio.LOW)
+        timer.pwm_set_duty(motor.pwm, 0)
+    end
+end
+
+function main() do
+    core.system_init()
+    
+    // Initialize motor on TIM3_CH1 (PA6)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 6, do mode: gpio.MODE_AF, af: 2 end)
+    
+    let motor = motor_init(timer.TIM3, timer.CH1)
+    
+    for do
+        // Accelerate forward
+        her speed in 0..101 for do
+            motor_set_speed(motor, speed)
+            core.delay_ms(20)
+        end
+        
+        core.delay_ms(1000)
+        
+        // Brake
+        motor_set_speed(motor, 0)
+        core.delay_ms(500)
+        
+        // Accelerate reverse
+        her speed in 0..101 for do
+            motor_set_speed(motor, -speed)
+            core.delay_ms(20)
+        end
+        
+        core.delay_ms(1000)
+        motor_set_speed(motor, 0)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 4: Rotary Encoder Reading (Quadrature Mode)</h3>
+<pre><code>import hal::timer, hal::gpio
+
+function encoder_init() -&gt; timer.Handle do
+    // Encoder pins: PA0=A, PA1=B (TIM2_CH1, TIM2_CH2)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_AF,
+        pull: gpio.PULL_UP,
+        af: 1
+    end)
+    gpio.pin_init(gpio.PORT_A, 1, do
+        mode: gpio.MODE_AF,
+        pull: gpio.PULL_UP,
+        af: 1
+    end)
+    
+    // Configure timer in encoder mode
+    let encoder = timer.encoder_init(timer.TIM2, do
+        mode: timer.ENCODER_MODE_TI12,  // Count on both edges
+        polarity_ch1: timer.POLARITY_RISING,
+        polarity_ch2: timer.POLARITY_RISING,
+        filter: 5  // Noise filter
+    end)
+    
+    // Set counter to mid-range (for bidirectional counting)
+    timer.set_counter(encoder, 32768)
+    
+    timer.encoder_start(encoder)
+    
+    return encoder
+end
+
+function encoder_get_position(encoder: timer.Handle) -&gt; i32 do
+    let count = timer.get_counter(encoder)
+    // Convert to relative position (from mid-range)
+    return (count as i32) - 32768
+end
+
+function encoder_get_speed(encoder: timer.Handle) -&gt; i32 do
+    // Get direction (up/down counting)
+    if timer.is_counting_up(encoder) then do
+        return 1
+    end yoksa do
+        return -1
+    end
+end
+
+function main() do
+    core.system_init()
+    let encoder = encoder_init()
+    
+    let son_pos = 0
+    
+    for do
+        let pos = encoder_get_position(encoder)
+        let diff = pos - son_pos
+        
+        if diff != 0 then do
+            let direction = if diff &gt; 0 then "CW" yoksa "CCW"
+            io.println("Position: {}  Delta: {}  Dir: {}".formatla(pos, diff, direction))
+            son_pos = pos
+        end
+        
+        core.delay_ms(50)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 5: Ultrasonic Sensor (HC-SR04)</h3>
+<pre><code>import hal::timer, hal::gpio
+
+let capture_start: u32 = 0
+let capture_done: bool = false
+let pulse_width: u32 = 0
+
+function hcsr04_capture_callback(value: u32, edge: timer.Edge) do
+    if edge == timer.EDGE_RISING then do
+        capture_start = value
+        capture_done = false
+    end yoksa do
+        pulse_width = value - capture_start
+        capture_done = true
+    end
+end
+
+function hcsr04_init() -&gt; (gpio.Pin, timer.ICHandle) do
+    // Trigger pin (PB0)
+    gpio.clock_enable(gpio.PORT_B)
+    let trigger = gpio.pin_init(gpio.PORT_B, 0, do
+        mode: gpio.MODE_OUTPUT
+    end)
+    gpio.pin_write(trigger, gpio.LOW)
+    
+    // Echo pin (PA0 = TIM2_CH1)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_AF,
+        af: 1
+    end)
+    
+    // Input capture for echo (both edges)
+    let ic = timer.input_capture_init(timer.TIM2, timer.CH1, do
+        edge: timer.EDGE_BOTH,  // Capture both rising and falling
+        prescaler: 0,
+        callback: hcsr04_capture_callback
+    end)
+    
+    timer.input_capture_start(ic)
+    
+    return (trigger, ic)
+end
+
+function hcsr04_read_distance(trigger: gpio.Pin) -&gt; İsteğe_Bağlı[kesir] do
+    // Send 10us trigger pulse
+    gpio.pin_write(trigger, gpio.HIGH)
+    core.delay_us(10)
+    gpio.pin_write(trigger, gpio.LOW)
+    
+    // Wait for measurement (max 38ms)
+    capture_done = false
+    her i in 0..380 for do
+        if capture_done then kır end
+        core.delay_us(100)
+    end
+    
+    if !capture_done then return None end
+    
+    // Calculate distance: time(pow) / 58 = distance(cm)
+    // pulse_width in timer ticks, assuming 1 MHz timer (1us per tick)
+    let distance = pulse_width.kesir() / 58.0
+    
+    if distance &gt; 2.0 and distance &lt; 400.0 then do
+        return Some(distance)
+    end yoksa do
+        return None
+    end
+end
+
+function main() do
+    core.system_init()
+    
+    let (trigger, _ic) = hcsr04_init()
+    
+    for do
+        eşle hcsr04_read_distance(trigger) do
+            Some(dist) =&gt; io.println("Distance: {:.1f} cm".formatla(dist)),
+            None =&gt; io.println("Out of range")
+        end
+        
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 6: WS2812 RGB LED Strip (DMA + PWM)</h3>
+<pre><code>import hal::timer, hal::dma, hal::gpio
+
+const LED_COUNT = 8
+const BIT_COUNT = LED_COUNT * 24  // 24 bits per LED (GRB)
+
+// PWM values for WS2812: 0 = 0.4us, 1 = 0.8us (1.25MHz PWM)
+const PWM_0 = 17   // ~0.4us high
+const PWM_1 = 35   // ~0.8us high
+const PWM_PERIOD = 50  // 1.25us total
+
+let pwm_buffer: [u8; BIT_COUNT] = [0; BIT_COUNT]
+
+function rgb_to_grb(r: u8, g: u8, b: u8) -&gt; [u8; 24] do
+    let bits = [0u8; 24]
+    
+    // Green (bits 0-7)
+    her i in 0..8 for do
+        bits[i] = if (g &amp; (1 &lt;&lt; (7-i))) != 0 then PWM_1 yoksa PWM_0
+    end
+    
+    // Red (bits 8-15)
+    her i in 0..8 for do
+        bits[8+i] = if (r &amp; (1 &lt;&lt; (7-i))) != 0 then PWM_1 yoksa PWM_0
+    end
+    
+    // Blue (bits 16-23)
+    her i in 0..8 for do
+        bits[16+i] = if (b &amp; (1 &lt;&lt; (7-i))) != 0 then PWM_1 yoksa PWM_0
+    end
+    
+    return bits
+end
+
+function ws2812_set_pixel(index: sayı, r: u8, g: u8, b: u8) do
+    let bits = rgb_to_grb(r, g, b)
+    let offset = index * 24
+    
+    her i in 0..24 for do
+        pwm_buffer[offset + i] = bits[i]
+    end
+end
+
+function ws2812_show(pwm: timer.PWMHandle, dma: dma.Handle) do
+    // Start DMA transfer
+    dma.start_memory_to_periph(dma, do
+        source: pwm_buffer.adres(),
+        dest: timer.get_ccr_address(pwm),
+        count: BIT_COUNT
+    end)
+    
+    // Wait for transfer complete
+    for do
+        if dma.is_complete(dma) then kır end
+    end
+    
+    // Reset time (&gt;50us)
+    core.delay_us(60)
+end
+
+function main() do
+    core.system_init()
+    
+    // PWM setup on PA0 (TIM2_CH1)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_AF,
+        af: 1,
+        speed: gpio.SPEED_VERY_HIGH
+    end)
+    
+    // 800kHz bit rate = 1.25us per bit
+    let pwm = timer.pwm_init(timer.TIM2, timer.CH1, do
+        frequency: 800000,
+        duty_cycle: 0
+    end)
+    
+    // DMA for automatic PWM duty cycle updates
+    let dma_ch = dma.init(dma.DMA1_CH5, do
+        direction: dma.MEMORY_TO_PERIPH,
+        circular: false,
+        memory_inc: true,
+        periph_inc: false
+    end)
+    
+    timer.pwm_start_dma(pwm, dma_ch)
+    
+    // Rainbow animation
+    let hue = 0
+    
+    for do
+        her i in 0..LED_COUNT for do
+            // HSV to RGB conversion (simplified)
+            let h = (hue + i * 30) % 360
+            let r = if h &lt; 120 then 255 yoksa if h &lt; 240 then 0 yoksa 255
+            let g = if h &lt; 60 or h &gt;= 300 then 0 yoksa 255
+            let b = if h &lt; 180 then 0 yoksa 255
+            
+            ws2812_set_pixel(i, r, g, b)
+        end
+        
+        ws2812_show(pwm, dma_ch)
+        
+        hue = (hue + 10) % 360
+        core.delay_ms(50)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 7: Stepper Motor Control (A4988 Driver)</h3>
+<pre><code>import hal::timer, hal::gpio
+
+struct StepperMotor do
+    pwm: timer.PWMHandle,  // Step pulses
+    dir: gpio.Pin,
+    enable: gpio.Pin,
+    steps_per_rev: sayı
+end
+
+function stepper_init(tim: timer.Timer, channel: timer.Channel) -&gt; StepperMotor do
+    // Step pin (PWM)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_AF,
+        af: 1
+    end)
+    
+    // Direction and enable pins
+    gpio.clock_enable(gpio.PORT_B)
+    let dir = gpio.pin_init(gpio.PORT_B, 0, do mode: gpio.MODE_OUTPUT end)
+    let enable = gpio.pin_init(gpio.PORT_B, 1, do mode: gpio.MODE_OUTPUT end)
+    
+    // Start with motor disabled
+    gpio.pin_write(enable, gpio.HIGH)  // Active low
+    
+    // PWM for step pulses (default 1kHz)
+    let pwm = timer.pwm_init(tim, channel, do
+        frequency: 1000,
+        duty_cycle: 50  // 50% duty cycle for step pulses
+    end)
+    
+    return StepperMotor do
+        pwm: pwm,
+        dir: dir,
+        enable: enable,
+        steps_per_rev: 200  // Typical NEMA17 (1.8° per step)
+    end
+end
+
+function stepper_move(motor: StepperMotor, steps: i32, speed_hz: sayı) do
+    // Set direction
+    if steps &gt;= 0 then do
+        gpio.pin_write(motor.dir, gpio.HIGH)
+    end yoksa do
+        gpio.pin_write(motor.dir, gpio.LOW)
+    end
+    
+    let abs_steps = steps.abs()
+    
+    // Set speed (frequency)
+    timer.pwm_set_frequency(motor.pwm, speed_hz)
+    
+    // Enable motor
+    gpio.pin_write(motor.enable, gpio.LOW)
+    
+    // Generate step pulses
+    timer.pwm_start(motor.pwm)
+    
+    // Wait for movement to complete
+    let delay_ms = (abs_steps.kesir() / speed_hz.kesir()) * 1000.0
+    core.delay_ms(delay_ms.sayı())
+    
+    // Stop
+    timer.pwm_stop(motor.pwm)
+    gpio.pin_write(motor.enable, gpio.HIGH)
+end
+
+function stepper_move_angle(motor: StepperMotor, degrees: kesir, speed_rpm: kesir) do
+    // Convert angle to steps
+    let steps = ((degrees / 360.0) * motor.steps_per_rev.kesir()).round().sayı()
+    
+    // Convert RPM to Hz
+    let speed_hz = ((speed_rpm * motor.steps_per_rev.kesir()) / 60.0).sayı()
+    
+    stepper_move(motor, steps, speed_hz)
+end
+
+function main() do
+    core.system_init()
+    
+    let motor = stepper_init(timer.TIM2, timer.CH1)
+    
+    for do
+        // Rotate 360° clockwise at 60 RPM
+        stepper_move_angle(motor, 360.0, 60.0)
+        core.delay_ms(500)
+        
+        // Rotate 360° counter-clockwise at 120 RPM
+        stepper_move_angle(motor, -360.0, 120.0)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 Types and Enums</h2>
+<pre><code>// Timer Instances
+enum Timer {
+    TIM1, TIM2, TIM3, TIM4, TIM5, TIM6, TIM7, TIM8,
+    TIM9, TIM10, TIM11, TIM12, TIM13, TIM14
+}
+
+// Timer Channels
+enum Channel {
+    CH1, CH2, CH3, CH4
+}
+
+// PWM Mode
+enum PWMMode {
+    MODE_1,  // Active when CNT &lt; CCR (standard)
+    MODE_2   // Active when CNT &gt; CCR (inverted)
+}
+
+// Input Capture Edge
+enum Edge {
+    EDGE_RISING,   // Rising edge
+    EDGE_FALLING,  // Falling edge
+    EDGE_BOTH      // Both edges
+}
+
+// Encoder Mode
+enum EncoderMode {
+    ENCODER_MODE_TI1,   // Count on TI1 edge only
+    ENCODER_MODE_TI2,   // Count on TI2 edge only
+    ENCODER_MODE_TI12   // Count on both TI1 and TI2 (x4 mode)
+}
+
+// Counter Direction
+enum CounterMode {
+    UP,    // Up-counting
+    DOWN,  // Down-counting
+    CENTER_ALIGNED_1,
+    CENTER_ALIGNED_2,
+    CENTER_ALIGNED_3
+}
+
+struct PWMConfig do
+    frequency: sayı,     // Frequency in Hz
+    duty_cycle: sayı,    // Duty cycle 0-100%
+    mode: PWMMode,
+    polarity: Polarity
+end
+
+struct InputCaptureConfig do
+    edge: Edge,
+    filter: sayı,        // Input filter (0-15)
+    prescaler: sayı,     // Capture prescaler
+    callback: İşlev
+end
+
+struct EncoderConfig do
+    mode: EncoderMode,
+    polarity_ch1: Edge,
+    polarity_ch2: Edge,
+    filter: sayı
+end</code></pre>
+
+<h2>⚙️ Functions</h2>
+
+<h3>PWM Control</h3>
+<pre><code>function pwm_init(timer: Timer, channel: Channel, config: PWMConfig) -&gt; PWMHandle
+// Initialize PWM on specified timer channel
+
+function pwm_start(handle: PWMHandle)
+// Start PWM generation
+
+function pwm_stop(handle: PWMHandle)
+// Stop PWM generation
+
+function pwm_set_duty(handle: PWMHandle, duty: sayı)
+// Set duty cycle (0-100%)
+
+function pwm_set_frequency(handle: PWMHandle, freq: sayı)
+// Change PWM frequency
+
+function pwm_start_dma(handle: PWMHandle, dma: dma.Handle)
+// Start PWM with DMA (for LED strips, audio, etc.)</code></pre>
+
+<h3>input capture</h3>
+<pre><code>function input_capture_init(timer: Timer, channel: Channel, config: InputCaptureConfig) -&gt; ICHandle
+// Initialize input capture
+
+function input_capture_start(handle: ICHandle)
+// Start input capture
+
+function input_capture_stop(handle: ICHandle)
+// Stop input capture
+
+function input_capture_read(handle: ICHandle) -&gt; u32
+// Read captured value</code></pre>
+
+<h3>Encoder Mode</h3>
+<pre><code>function encoder_init(timer: Timer, config: EncoderConfig) -&gt; Handle
+// Initialize encoder mode (quadrature decoder)
+
+function encoder_start(handle: Handle)
+// Start encoder counting
+
+function encoder_stop(handle: Handle)
+// Stop encoder counting
+
+function get_counter(handle: Handle) -&gt; u32
+// Get current counter value
+
+function set_counter(handle: Handle, value: u32)
+// Set counter value
+
+function is_counting_up(handle: Handle) -&gt; bool
+// Check if counting up (direction)</code></pre>
+
+<h3>Basic Timer Control</h3>
+<pre><code>function timer_init(timer: Timer, config: TimerConfig) -&gt; Handle
+// Initialize basic timer
+
+function timer_start(handle: Handle)
+// Start timer counting
+
+function timer_stop(handle: Handle)
+// Stop timer counting
+
+function timer_enable_interrupt(handle: Handle, interrupt: TimerInterrupt)
+// Enable timer interrupt
+
+enum TimerInterrupt {
+    UPDATE,     // Update event (overflow)
+    CC1,        // Capture/Compare 1
+    CC2,        // Capture/Compare 2
+    CC3,        // Capture/Compare 3
+    CC4,        // Capture/Compare 4
+    TRIGGER,    // Trigger event
+    BREAK       // Break input (advanced timers)
+}</code></pre>
+
+<h3>Advanced Control</h3>
+<pre><code>function set_prescaler(handle: Handle, prescaler: u16)
+// Set timer prescaler (clock divider)
+
+function set_period(handle: Handle, period: u32)
+// Set auto-reload value (period)
+
+function get_ccr_address(handle: Handle) -&gt; *mut u32
+// Get CCR register address (for DMA)
+
+function generate_update_event(handle: Handle)
+// Generate update event (reload registers)</code></pre>
+
+<h2>⚡ Performance Tips</h2>
+<ul>
+<li><strong>PWM Frequency:</strong>10-20 kHz for motor control, 50 Hz for servo, 500-1000 Hz for LED</li>
+<li><strong>Resolution vs Frequency:</strong>High frequency = low resolution (PWM steps)</li>
+<li><strong>DMA Usage:</strong>Use DMA for LED strip and audio (reduces CPU load by 90%)</li>
+<li><strong>Encoder Mode:</strong>x4 mode gives the highest sensitivity</li>
+<li><strong>Input Filter:</strong>Enable filter for noisy signals (between 5-15)</li>
+<li><strong>Dead Time:</strong>Use dead-time to prevent shoot-through on engine drivers</li>
+</ul>
+
+<h2>📐 PWM Calculations</h2>
+<pre><code>// PWM Frequency calculation:
+// f_PWM = f_Timer / ((Prescaler + 1) * (Period + 1))
+
+// Example: 1 kHz PWM on 72 MHz timer
+// Prescaler = 71 (72 MHz / 72 = 1 MHz)
+// Period = 999 (1 MHz / 1000 = 1 kHz)
+// Resolution = 1000 steps (0.1% duty cycle precision)
+
+// Duty Cycle:
+// Duty% = (CCR / Period) * 100
+// CCR = (Duty% * Period) / 100
+
+// Example: 75% duty @ 1kHz
+// CCR = (75 * 999) / 100 = 749</code></pre>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>every timer<strong>specific GPIO pins</strong>exists (see alternative function table)</li>
+<li>Calculated according to the formula PWM frequency = Timer_Clock / (Prescaler * Period)</li>
+<li>Servo motors are generally<strong>50Hz PWM</strong>requires (20ms period)</li>
+<li>For input capture<strong>interrupt enable</strong>should be</li>
+<li>CPU load can be greatly reduced by using DMA</li>
+<li>Advanced timers (TIM1, TIM8)<strong>break input</strong>And<strong>dead time</strong>offers features</li>
+<li>Encoder mode only<strong>TIM1-TIM5, TIM8</strong>Available in</li>
+<li>32-bit timers:<strong>TIM2, TIM5</strong>(STM32F4+)</li>
+<li>Timer clock usually<strong>APB clock x2</strong>is (check RCC config)</li>
+</ul>
+
+<h2>🎯 Application Scenarios</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#8e44ad;color:white">
+<th>APPLICATION</th><th>mode</th><th>Frequency</th><th>Notes</th>
+</tr>
+<tr><td>Servo-motor</td><td>PWM</td><td>50Hz</td><td>1-2ms pulse width</td></tr>
+<tr><td>DC Motor (L298N)</td><td>PWM</td><td>10-20kHz</td><td>Audible noise reduction</td></tr>
+<tr><td>LED Dimming</td><td>PWM</td><td>500-1000 Hz</td><td>Flicker-free</td></tr>
+<tr><td>WS2812 RGB LED</td><td>PWM+DMA</td><td>800kHz</td><td>Bit-banging via DMA</td></tr>
+<tr><td>Rotary Encoder</td><td>Encoder</td><td>-</td><td>x4 mode for precision</td></tr>
+<tr><td>Frequency Meter</td><td>input capture</td><td>-</td><td>Both edges for accuracy</td></tr>
+<tr><td>Ultrasonic (HC-SR04)</td><td>input capture</td><td>-</td><td>Pulse width measurement</td></tr>
+<tr><td>Stepper Motor</td><td>PWM</td><td>100-2000 Hz</td><td>Step frequency = speed</td></tr>
+<tr><td>BLDC Motor</td><td>PWM (3ch)</td><td>10-40kHz</td><td>3-phase complementary</td></tr>
+<tr><td>Piezo Buzzer</td><td>PWM</td><td>2-4kHz</td><td>Resonant frequency</td></tr>
+</tbody></table>
+
+<h2>🔧 Timer Pin Mapping (STM32F103)</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#8e44ad;color:white">
+<th>timer</th><th>Channel 1</th><th>Channel 2</th><th>Channel 3</th><th>Channel 4</th>
+</tr>
+<tr><td>TIM1</td><td>PA8</td><td>PA9</td><td>PA10</td><td>PA11</td></tr>
+<tr><td>TIM2</td><td>PA0</td><td>PA1</td><td>PA2</td><td>PA3</td></tr>
+<tr><td>TIM3</td><td>PA6</td><td>PA7</td><td>PB0</td><td>PB1</td></tr>
+<tr><td>TIM4</td><td>PB6</td><td>PB7</td><td>PB8</td><td>PB9</td></tr>
+</tbody></table>
+
+<h2>📚 Platform Support</h2>
+<ul>
+<li><strong>STM32 F1:</strong>TIM1-TIM8 (16-bit), TIM2/TIM5 (32-bit on F4+)</li>
+<li><strong>STM32F4:</strong>TIM1-TIM14, Advanced features on TIM1/TIM8</li>
+<li><strong>STM32F7:</strong>TIM1-TIM17, up to 216 MHz</li>
+<li><strong>STM32 H7:</strong>TIM1-TIM17, up to 400 MHz, HRTIM (high-resolution)</li>
+<li><strong>ESP32:</strong>LEDC (16 channels), MCPWM (6 channels)</li>
+<li><strong>GD32VF103:</strong>TIMER0-TIMER6 (RISC-V)</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- Timer pin configuration (alternate function)</li>
+<li><code data-no-translate="true">hal::int</code>- Timer interrupt handling</li>
+<li><code data-no-translate="true">hal::dma</code>- DMA burst mode for WS2812, audio, etc.</li>
+<li><code data-no-translate="true">hal::adc</code>- ADC triggered by timer (synchronized sampling)</li>
+</ul>
+
+<h2>📖 References</h2>
+<ul>
+<li>STM32 RM0008 - TIMx functional description</li>
+<li>AN4013 - General-purpose timer cookbook</li>
+<li>AN4776 - PWM for motor control</li>
+<li>AN3116 - STM32 ADC modes and applications (timer triggers)</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a> | 
+<a href="en_index-tr.html">All Modules</a> | 
+<a href="../en_index-tr.html">Home Page</a>
+</p>
+</main>
+</div>
+
+
+<parameter name="filePath">c:\Projects\berk\berk_pages\stdlib\hal-timer-tr.html</parameter>    <script src="lang-switcher.js"></script>
+</body></html>

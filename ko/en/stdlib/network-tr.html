@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>네트워크 - 네트워크 프로그래밍 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🌐 네트워크 - 네트워크 프로그래밍</h1>
+<p>TCP, UDP, 소켓, DNS, TLS/SSL</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">84</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,043</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">32KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import network
+
+// TCP Client
+let socket = network.tcp_connect("example.com", 80)
+network.send(socket, "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
+let yanıt = network.receive(socket, 1024)
+print(yanıt)
+network.close(socket)
+
+// TCP Server
+let sunucu = network.tcp_listen("127.0.0.1", 8080)
+print("Server listening on 127.0.0.1:8080")
+
+for do
+    let client = network.accept(sunucu)
+    let mesaj = network.receive(client, 1024)
+    network.send(client, "Echo: " + mesaj)
+    network.close(client)
+end
+
+// UDP
+let udp = network.udp_socket()
+network.udp_send_to(udp, "Merhaba", "127.0.0.1", 9000)
+let (data, addr, port) = network.udp_receive_from(udp, 1024)</code></pre>
+<h2>📚 프로토콜</h2>
+<ul>
+<li><strong>TCP:</strong>안정적인 연결 지향 스트리밍</li>
+<li><strong>UDP:</strong>신뢰할 수 없는 연결 없는 데이터그램</li>
+<li><strong>TLS/SSL:</strong>암호화된 TCP 연결</li>
+<li><strong>DNS:</strong>도메인 이름 확인</li>
+<li><strong>웹소켓:</strong>전이중 통신</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>다중 스레드 TCP 서버</h3>
+<pre><code>import network, thread
+
+function handle_client(client: Socket) do
+    try do
+        for do
+            let data = network.receive(client, 1024)
+            
+            if data.len() == 0 then do
+                kır  // Client disconnected
+            end
+            
+            print("Alındı: " + data)
+            network.send(client, "Echo: " + data)
+        end
+    end catch hata do
+        print("Client hatası: " + hata.mesaj())
+    end sonunda do
+        network.close(client)
+    end
+end
+
+function sunucu_başlat() do
+    let sunucu = network.tcp_listen("0.0.0.0", 8080)
+    print("Server running on port 8080")
+    
+    for do
+        let client = network.accept(sunucu)
+        let client_addr = network.peer_addr(client)
+        print("Yeni bağlantı: " + client_addr)
+        
+        // Her client for new thread
+        thread.spawn(function() do
+            handle_client(client)
+        end)
+    end
+end
+
+sunucu_başlat()</code></pre>
+</div>
+<div class="example-box">
+<h3>TLS를 사용하는 HTTP 클라이언트</h3>
+<pre><code>import network, crypto
+
+function https_get(host: yazı, path: yazı) -&gt; Sonuç do
+    // DNS çözümleme
+    let ip = network.dns_resolve(host)
+    
+    // TLS socket
+    let socket = network.tcp_connect(ip, 443)
+    let tls = network.tls_wrap(socket, host)
+    
+    // HTTP request
+    let request = "GET " + path + " HTTP/1.1\r\n" +
+                      "Host: " + host + "\r\n" +
+                      "Connection: close\r\n\r\n"
+    
+    network.tls_send(tls, request)
+    
+    // Response okuma
+    let yanıt = ""
+    for do
+        let chunk = network.tls_receive(tls, 4096)
+        if chunk.len() == 0 then do
+            kır
+        end
+        yanıt = yanıt + chunk
+    end
+    
+    network.tls_close(tls)
+    return Ok(yanıt)
+end
+
+let sonuç = https_get("api.github.com", "/users/arslantasm")
+if sonuç.tamam_mı() then do
+    print(sonuç.pop())
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

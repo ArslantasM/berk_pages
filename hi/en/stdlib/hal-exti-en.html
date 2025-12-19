@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::exti - बाहरी व्यवधान | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ राज्य::exti</h1>
+<p>बाहरी व्यवधान - GPIO पिन इवेंट डिटेक्शन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360 पंक्तियाँ</span>
+<span class="stat-badge">~15 कार्य</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>EXTI मॉड्यूल GPIO पिन पर होने वाले परिवर्तनों (बढ़ते किनारे, गिरते किनारे) को कैप्चर करके व्यवधान उत्पन्न करता है। बटन दबाना, बाहरी सेंसर सिग्नल और अतुल्यकालिक घटनाएँ महत्वपूर्ण हैं। यह मतदान की आवश्यकता के बिना कम बिजली की खपत और उच्च प्रतिक्रिया समय प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li><strong>16 EXTI लाइनें:</strong>EXTI0-EXTI15 (GPIO पिन के लिए)</li>
+<li><strong>ट्रिगर मोड:</strong>उठती हुई धार, गिरती हुई धार या दोनों</li>
+<li><strong>मास्किंग:</strong>सक्षम/अक्षम समर्थन को बाधित करें</li>
+<li><strong>सॉफ़्टवेयर व्यवधान:</strong>सॉफ़्टवेयर से ट्रिगरिंग को बाधित करें</li>
+<li><strong>इवेंट मोड:</strong>डीएमए बिना किसी रुकावट के ट्रिगर हो रहा है</li>
+<li><strong>वेक-अप स्रोत:</strong>स्टॉप/स्टैंडबाय मोड से बाहर निकलना</li>
+<li><strong>डिबाउंस समर्थन:</strong>सॉफ्टवेयर आधारित शोर फ़िल्टरिंग</li>
+<li><strong>प्राथमिकता नियंत्रण:</strong>एनवीआईसी के साथ प्राथमिकता प्रबंधन</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+// Button pin setup (PA0 - User Button)
+gpio.pin_init(gpio.PORT_A, 0, do
+    mode: gpio.MODE_INPUT,
+    pull: gpio.PULL_DOWN,
+    speed: gpio.SPEED_LOW
+end)
+
+// EXTI configuration (falling edge for button press)
+let exti_cfg = exti.init(0, do  // EXTI line 0 -&gt; PA0
+    trigger: exti.TRIGGER_FALLING,
+    mode: exti.MODE_INTERRUPT,
+    callback: buton_callback
+end)
+
+// Enable interrupt in NVIC
+nvic.enable_irq(nvic.EXTI0_IRQn, do
+    priority: 5
+end)
+
+// Callback function
+function buton_callback() do
+    // Button pressed!
+    led_toggle()
+end</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// EXTI Lines (0-15 for GPIO pins)
+enum Line {
+    LINE_0, LINE_1, LINE_2, LINE_3, LINE_4,
+    LINE_5, LINE_6, LINE_7, LINE_8, LINE_9,
+    LINE_10, LINE_11, LINE_12, LINE_13, LINE_14, LINE_15,
+    LINE_PVD = 16,    // PVD output
+    LINE_RTC = 17,    // RTC alarm
+    LINE_USB = 18,    // USB wakeup
+    LINE_ETH = 19     // Ethernet wakeup
+}
+
+// Trigger Mode
+enum Trigger {
+    TRIGGER_RISING,   // 0-&gt;1 transition
+    TRIGGER_FALLING,  // 1-&gt;0 transition
+    TRIGGER_BOTH      // Any edge
+}
+
+// EXTI Mode
+enum Mode {
+    MODE_INTERRUPT,   // Generate interrupt
+    MODE_EVENT        // Generate event (for DMA)
+}
+
+struct EXTIConfig do
+    trigger: Trigger,
+    mode: Mode,
+    callback: function(),
+    debounce_ms: int = 0  // Software debounce
+end</code></pre>
+
+<h2>💡 उदाहरण 1: डिबाउंस वाला बटन</h2>
+<div class="example-box">
+<h3>समस्या: यांत्रिक बटनों के उछलने की समस्या</h3>
+<pre><code>import hal::exti, hal::gpio, hal::systick
+
+let end_basin_zamani: int64 = 0
+const DEBOUNCE_SURESI: int = 50  // 50 ms
+
+function buton_init() do
+    // PA0 -&gt; User Button (Active Low)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI0 -&gt; Falling edge (button press)
+    exti.init(0, do
+        trigger: exti.TRIGGER_FALLING,
+        mode: exti.MODE_INTERRUPT,
+        callback: buton_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI0_IRQn, 5)
+end
+
+function buton_handler() do
+    let simdiki_zaman = systick.get_ms()
+    
+    // Debounce check
+    if (simdiki_zaman - end_basin_zamani &lt; DEBOUNCE_SURESI) do
+        return  // Ignore bouncing
+    end
+    
+    end_basin_zamani = simdiki_zaman
+    
+    // Real button press detected
+    buton_basildi()
+end
+
+function buton_basildi() do
+    io.yazdir_satır("Button pressed!")
+    led_toggle()
+end</code></pre>
+<p><strong>आउटपुट:</strong>बाउंसिंग की समस्या के बिना साफ बटन का पता लगाना। 50 एमएस फोर्ड फिल्टर रिट्रिगर्स।</p>
+</div>
+
+<h2>💡 उदाहरण 2: रोटरी एनकोडर (क्वाड्रेचर डिकोडर)</h2>
+<div class="example-box">
+<h3>समस्या: यांत्रिक एनकोडर के साथ पढ़ने की स्थिति</h3>
+<pre><code>import hal::exti, hal::gpio
+
+let encoder_konum: int = 0
+let end_A: bool = false
+let end_B: bool = false
+
+function encoder_init() do
+    // PA1 -&gt; Encoder A channel
+    gpio.pin_init(gpio.PORT_A, 1, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // PA2 -&gt; Encoder B channel
+    gpio.pin_init(gpio.PORT_A, 2, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI on both channels (both edges)
+    exti.init(1, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_A_handler
+    end)
+    
+    exti.init(2, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_B_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 5)
+    
+    // Read initial state
+    end_A = gpio.pin_read(gpio.PORT_A, 1)
+    end_B = gpio.pin_read(gpio.PORT_A, 2)
+end
+
+function encoder_A_handler() do
+    let A = gpio.pin_read(gpio.PORT_A, 1)
+    let B = end_B
+    
+    // Quadrature decoding logic
+    if (A != end_A) do
+        if (A == B) do
+            encoder_konum = encoder_konum + 1  // CW
+        else do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    end_A = A
+end
+
+function encoder_B_handler() do
+    let A = end_A
+    let B = gpio.pin_read(gpio.PORT_A, 2)
+    
+    if (B != end_B) do
+        if (A != B) do
+            encoder_konum = encoder_konum + 1  // CW
+        else do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    end_B = B
+end
+
+function encoder_oku() -&gt; int do
+    return encoder_konum
+end</code></pre>
+<p><strong>आउटपुट:</strong>वास्तविक समय में रोटरी एनकोडर स्थिति को ट्रैक करता है। CW/CCW दिशा का स्वचालित रूप से पता लगाया जाता है।</p>
+</div>
+
+<h2>💡 उदाहरण 3: मल्टी-सोर्स प्राथमिकता हैंडलिंग</h2>
+<div class="example-box">
+<h3>समस्या: प्राथमिकता के क्रम में एकाधिक व्यवधान स्रोतों का प्रबंधन करना</h3>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+const KRITIK_OLAY_PIN: int = 0   // PA0 -&gt; Emergency stop
+const NORMAL_OLAY_PIN: int = 1   // PA1 -&gt; Regular sensor
+const DUSUK_OLAY_PIN: int = 2    // PA2 -&gt; Low priority event
+
+function coklu_interrupt_init() do
+    // Critical event (highest priority)
+    gpio.pin_init(gpio.PORT_A, KRITIK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(KRITIK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: kritik_handler
+    end)
+    nvic.enable_irq(nvic.EXTI0_IRQn, 0)  // Highest priority
+    
+    // Normal event (medium priority)
+    gpio.pin_init(gpio.PORT_A, NORMAL_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(NORMAL_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: normal_handler
+    end)
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)  // Medium priority
+    
+    // Low priority event
+    gpio.pin_init(gpio.PORT_A, DUSUK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(DUSUK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: dusuk_handler
+    end)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 10)  // Low priority
+end
+
+function kritik_handler() do
+    // Emergency stop - preempt everything!
+    motor_durdur()
+    alarm_calar()
+    io.yazdir_satır("CRITICAL: Emergency stop!")
+end
+
+function normal_handler() do
+    // Regular sensor reading
+    let deger = sensor_oku()
+    io.yazdir_satır("Sensor value: " + deger.metne())
+end
+
+function dusuk_handler() do
+    // Low priority background task
+    log_olay("Low priority event")
+end</code></pre>
+<p><strong>आउटपुट:</strong>गंभीर घटनाएँ कम प्राथमिकता वाले व्यवधानों को रोक देती हैं। सिस्टम सुरक्षा सुनिश्चित की गई है.</p>
+</div>
+
+<h2>📚एपीआई संदर्भ</h2>
+<h3>मूलभूत प्रकार्य</h3>
+<pre><code>// EXTI hattını structlandırır
+function init(line: int, config: EXTIConfig) -&gt; Result
+
+// EXTI hattını etkinleştirir
+function enable(line: int)
+
+// EXTI hattını devre dışı bırabreak
+function disable(line: int)
+
+// Pending flag'i temizler
+function clear_pending(line: int)
+
+// Pending flag'i kontrol eder
+function is_pending(line: int) -&gt; bool
+
+// Software interrupt tetikler
+function trigger_software(line: int)
+
+// GPIO pin ile EXTI hattını matchir
+function connect_gpio(line: int, port: gpio.Port, pin: int)</code></pre>
+
+<div class="warning">
+<strong>⚠️ महत्वपूर्ण नोट्स:</strong>
+<ul>
+<li><strong>साझा आईआरक्यू:</strong>EXTI5-9 और EXTI10-15 साझा IRQ का उपयोग करते हैं</li>
+<li><strong>पिन मैपिंग:</strong>समान पिन नंबर विभिन्न पोर्ट (PA0, PB0, PC0 -&gt; EXTI0) पर समान EXTI लाइन का उपयोग करता है</li>
+<li><strong>कॉलबैक सुरक्षा:</strong>कॉलबैक फ़ंक्शन छोटे होने चाहिए (भारी ऑपरेशन को मुख्य लूप पर स्थगित किया जाना चाहिए)</li>
+<li><strong>बहस:</strong>कोई हार्डवेयर डिबाउंस नहीं, सॉफ़्टवेयर फ़िल्टरिंग की आवश्यकता है</li>
+</ul>
+</div>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<table>
+<tbody><tr>
+<th>प्लैटफ़ॉर्म</th>
+<th>EXTI लाइन्स</th>
+<th>समूहों को बाधित करें</th>
+<th>इवेंट मोड</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>20 (0-15 + 4 विशेष)</td>
+<td>7 आईआरक्यू</td>
+<td>हाँ</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>23 (0-15 + 8 विशेष)</td>
+<td>7 आईआरक्यू</td>
+<td>हाँ</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>23</td>
+<td>7 आईआरक्यू</td>
+<td>हाँ</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>20</td>
+<td>ईसीएलआईसी (47 आईआरक्यू)</td>
+<td>हाँ</td>
+</tr>
+<tr>
+<td>ईएसपी32</td>
+<td>सभी जीपीआईओ</td>
+<td>2 सीपीयू कोर</td>
+<td>नहीं।</td>
+</tr>
+</tbody></table>
+
+<h2>✅ सर्वोत्तम प्रथाएँ</h2>
+<ul>
+<li>✅ <strong>डिबाउंस का प्रयोग करें:</strong>यांत्रिक बटनों पर 20-50 एमएस डिबाउंस लागू करें</li>
+<li>✅ <strong>आइए कॉलबैक को छोटा रखें:</strong>इंटरप्ट हैंडलर में न्यूनतम कार्रवाई, ध्वज सेट करें</li>
+<li>✅ <strong>प्राथमिकता निर्धारित करें:</strong>महत्वपूर्ण घटनाओं के लिए कम प्राथमिकता वाली संख्या का उपयोग करें</li>
+<li>✅ <strong>लंबित स्पष्ट:</strong>इंटरप्ट हैंडलर एंड में लंबित बिट साफ़ करें</li>
+<li>❌ <strong>फ़्लोट लेनदेन डोमेन:</strong>व्यवधान पर फ़्लोटिंग-पॉइंट गणना से बचें</li>
+<li>❌ <strong>लंबी देरी का उपयोग करना:</strong>ब्लॉकिंग डिले कॉलबैक फ़ोर्ड का उपयोग नहीं किया जाना चाहिए</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="en_hal-gpio-en.html">राज्य::gpio</a>- GPIO पिन कॉन्फ़िगरेशन</li>
+<li><a href="en_hal-nvic-en.html">राज्य::एनविक</a>- प्राथमिकता प्रबंधन को बाधित करें</li>
+<li><a href="en_hal-power-en.html">राज्य::शक्ति</a>- वेकअप के साथ कम पावर मोड</li>
+<li><a href="en_hal-systick-en.html">राज्य::सिस्टिक</a>- बहस का समय</li>
+<li><a href="en_hal-timer-en.html">राज्य::टाइमर</a>- हार्डवेयर एनकोडर मोड</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-en.html">🔙 एचएएल मॉड्यूल</a> | 
+<a href="en_hal-exti-en.html">🌐तुर्की</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

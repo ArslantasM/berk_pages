@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>thread - 다중 스레드 프로그래밍 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🧵 스레드 - 다중 스레드 프로그래밍</h1>
+<p>스레드, 뮤텍스, 채널, 아크, 원자, ThreadPool</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">67</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">878</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">27KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import thread
+
+// Thread spawn
+let handle = thread.spawn(function() do
+    print("Thread'from merhaba!")
+    return 42
+end)
+
+let sonuç = thread.join(handle)
+print("Sonuç: " + sonuç.yazıya())
+
+// Mutex (mutual exclusion)
+let count_occurrences = thread.mutex_new(0)
+
+let threads = []
+her i in range(0, 10) for do
+    threads.push(thread.spawn(function() do
+        her j in range(0, 100) for do
+            thread.mutex_lock(count_occurrences, function(değer) do
+                return değer + 1
+            end)
+        end
+    end))
+end
+
+her t in threads for do
+    thread.join(t)
+end
+
+let sum = thread.mutex_get(count_occurrences)
+print("Toplam: " + sum.yazıya())  // 1000
+
+// Channel (message passing)
+let (tx, rx) = thread.channel_create()
+
+thread.spawn(function() do
+    thread.channel_send(tx, "Mesaj 1")
+    thread.channel_send(tx, "Mesaj 2")
+end)
+
+print(thread.channel_receive(rx))  // "Mesaj 1"
+print(thread.channel_receive(rx))  // "Mesaj 2"</code></pre>
+<h2>📚 동기화</h2>
+<ul>
+<li><strong>뮤텍스:</strong>상호 배제 잠금</li>
+<li><strong>Rw잠금:</strong>읽기-쓰기 잠금(여러 판독기, 단일 기록기)</li>
+<li><strong>채널:</strong>메시지 전달(mpsc, mpmc)</li>
+<li><strong>원자:</strong>잠금 없는 원자 작업</li>
+<li><strong>호:</strong>원자 참조 카운팅</li>
+<li><strong>장벽:</strong>모든 스레드를 기다립니다.</li>
+<li><strong>신호기:</strong>자원 계산</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>생산자-소비자 패턴</h3>
+<pre><code>import thread, collections
+
+let (tx, rx) = thread.channel_create()
+
+// Producers
+her i in range(0, 3) for do
+    let sender = tx.clone()
+    thread.spawn(function() do
+        her j in range(0, 5) for do
+            let mesaj = "Producer " + i.yazıya() + " - Item " + j.yazıya()
+            thread.channel_send(sender, mesaj)
+            thread.sleep(100)  // 100ms
+        end
+    end)
+end
+
+// Consumer
+let consumer = thread.spawn(function() do
+    let items = []
+    
+    for do
+        let sonuç = thread.channel_receive_timeout(rx, 1000)
+        
+        if sonuç.tamam_mı() then do
+            let mesaj = sonuç.pop()
+            print("Tüketildi: " + mesaj)
+            items.push(mesaj)
+        end else do
+            // Timeout - tüm producer'lar bitmiş
+            kır
+        end
+    end
+    
+    return items.len()
+end)
+
+let sum = thread.join(consumer)
+print("Toplam item: " + sum.yazıya())  // 15</code></pre>
+</div>
+<div class="example-box">
+<h3>병렬 맵 축소</h3>
+<pre><code>import thread
+
+function parallel_map(veri: Dizi, f: Fonksiyon, thread_sayısı: int) -&gt; Dizi do
+    let chunk_boyutu = (veri.len() + thread_sayısı - 1) / thread_sayısı
+    let handles = []
+    
+    her i in range(0, thread_sayısı) for do
+        let başlangıç = i * chunk_boyutu
+        let bitiş = math.min(başlangıç + chunk_boyutu, veri.len())
+        
+        if başlangıç &gt;= veri.len() then do
+            devam
+        end
+        
+        let chunk = veri.dilimle(başlangıç, bitiş)
+        
+        let handle = thread.spawn(function() do
+            return chunk.map(f)
+        end)
+        
+        handles.push(handle)
+    end
+    
+    // Sonuçları join
+    let sonuç = []
+    her handle in handles for do
+        let chunk_result = thread.join(handle)
+        sonuç = sonuç + chunk_result
+    end
+    
+    return sonuç
+end
+
+function parallel_reduce(veri: Dizi, f: Fonksiyon, başlangıç: herhangi) -&gt; herhangi do
+    let partial_results = parallel_map(veri, function(x) do return x end, 4)
+    
+    // Local reduce'lar
+    let handles = []
+    let chunk_boyutu = (partial_results.len() + 4 - 1) / 4
+    
+    her i in range(0, 4) for do
+        let başlangıç_idx = i * chunk_boyutu
+        let bitiş_idx = math.min(başlangıç_idx + chunk_boyutu, partial_results.len())
+        
+        if başlangıç_idx &gt;= partial_results.len() then do
+            devam
+        end
+        
+        let chunk = partial_results.dilimle(başlangıç_idx, bitiş_idx)
+        
+        handles.push(thread.spawn(function() do
+            let acc = başlangıç
+            her x in chunk for do
+                acc = f(acc, x)
+            end
+            return acc
+        end))
+    end
+    
+    // Final reduce
+    let sonuç = başlangıç
+    her handle in handles for do
+        sonuç = f(sonuç, thread.join(handle))
+    end
+    
+    return sonuç
+end
+
+// Kullanım: 1'from 1_000_000'a to topla
+let sayılar = range(1, 1_000_001).collect()
+let sum = parallel_reduce(sayılar, function(a, b) do return a + b end, 0)
+print("Toplam: " + sum.yazıya())  // 500000500000</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

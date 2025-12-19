@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::crc - CRC32 कैलकुलेटर | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 राज्य::सीआरसी</h1>
+<p>हार्डवेयर CRC32 कैलकुलेटर - तेज़ डेटा इंटीग्रिटी चेक</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360 पंक्तियाँ</span>
+<span class="stat-badge">~12 कार्य</span>
+<span class="stat-badge">एसटीएम32/जीडी32</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>CRC मॉड्यूल हार्डवेयर त्वरित CRC32 गणना प्रदान करता है। बहुपद 0x04C11DB7 (ईथरनेट मानक) का उपयोग करता है। फ़र्मवेयर अखंडता जाँच, फ़्लैश सत्यापन, संचार प्रोटोकॉल और डेटा भ्रष्टाचार का पता लगाना महत्वपूर्ण हैं। यह सॉफ्टवेयर सीआरसी से 10-100 गुना तेज है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li><strong>हार्डवेयर CRC32:</strong>एकल-चक्र 32-बिट सीआरसी गणना</li>
+<li><strong>मानक बहुपद:</strong>0x04C11DB7 (ईथरनेट, ज़िप, पीएनजी)</li>
+<li><strong>तेज़ प्रदर्शन:</strong>प्रति 32-बिट शब्द 1 घड़ी चक्र</li>
+<li><strong>आरंभिक मूल्य:</strong>कॉन्फ़िगर करने योग्य (डिफ़ॉल्ट 0xFFFFFFFF)</li>
+<li><strong>डीएमए संगत:</strong>डीएमए स्थानांतरण के साथ उपयोग किया जा सकता है</li>
+<li><strong>संचय:</strong>अनुक्रमिक सीआरसी गणना समर्थन</li>
+<li><strong>रीसेट क्षमता:</strong>प्रारंभिक मूल्य पर त्वरित रीसेट</li>
+<li><strong>कम बिजली:</strong>न्यूनतम बिजली की खपत</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::crc, hal::rcc
+
+// Enable CRC clock
+rcc.periph_clock_enable(rcc.PERIPH_CRC)
+
+// Initialize CRC
+crc.init()
+
+// Calculate CRC32 of data
+let data: Array&lt;int&gt; = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+let checksum = crc.calculate(data)
+
+io.yazdir_satır("CRC32: 0x" + checksum.onaltılıya())
+
+// Verify data
+if crc.verify(data, checksum) do
+    io.yazdir_satır("Data integrity OK")
+end</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// CRC Configuration
+struct CRCConfig do
+    polynomial: int = 0x04C11DB7,  // Default Ethernet polynomial
+    initial_value: int = 0xFFFFFFFF,
+    input_reverse: bool = false,
+    output_reverse: bool = false
+end
+
+// CRC Result
+struct CRCResult do
+    value: int,
+    valid: bool
+end</code></pre>
+
+<h2>💡 उदाहरण 1: फ़र्मवेयर इंटीग्रिटी जाँच</h2>
+<div class="example-box">
+<h3>समस्या: यह सत्यापित करना कि फ़्लैश में फ़र्मवेयर दूषित नहीं है</h3>
+<pre><code>import hal::crc, hal::flash
+
+const FIRMWARE_START: int = 0x0800_8000  // Application start
+const FIRMWARE_SIZE: int = 128 * 1024     // 128 KB
+const CRC_STORAGE: int = 0x0807_FFFC      // Last 4 bytes of app region
+
+function firmware_calculate_crc() -&gt; int do
+    crc.reset()
+    
+    // Calculate CRC of firmware (32-bit words)
+    let word_count = FIRMWARE_SIZE / 4
+    let addr = FIRMWARE_START
+    
+    for i forde 0..word_count do
+        let word = *(addr cast *int)
+        crc.accumulate(word)
+        addr = addr + 4
+    end
+    
+    return crc.get_value()
+end
+
+function firmware_store_crc(checksum: int) do
+    // Unlock flash
+    flash.unlock()
+    
+    // Erase last page
+    flash.erase_page(CRC_STORAGE)
+    
+    // Write CRC
+    flash.program_word(CRC_STORAGE, checksum)
+    
+    flash.lock()
+    
+    io.yazdir_satır("CRC stored: 0x" + checksum.onaltılıya())
+end
+
+function firmware_verify() -&gt; bool do
+    // Read stored CRC
+    let stored_crc = *(CRC_STORAGE cast *int)
+    
+    // Calculate current CRC
+    let calculated_crc = firmware_calculate_crc()
+    
+    io.yazdir_satır("Stored CRC:     0x" + stored_crc.onaltılıya())
+    io.yazdir_satır("Calculated CRC: 0x" + calculated_crc.onaltılıya())
+    
+    if stored_crc == calculated_crc do
+        io.yazdir_satır("✅ Firmware integrity OK")
+        return true
+    else do
+        io.yazdir_satır("❌ Firmware corrupted!")
+        return false
+    end
+end
+
+function main() do
+    crc.init()
+    
+    // On firmware update: store CRC
+    // firmware_store_crc(firmware_calculate_crc())
+    
+    // On boot: verify firmware
+    if not firmware_verify() do
+        io.yazdir_satır("ERROR: Cannot start corrupted firmware")
+        // Enter safe mode or bootloader
+        loop do end  // Halt
+    end
+    
+    io.yazdir_satır("Starting application...")
+end</code></pre>
+<p><strong>परिणाम:</strong>बूट के दौरान फ़र्मवेयर भ्रष्टाचार का पता चला है। सुरक्षित स्टार्ट-अप सुनिश्चित किया गया है।</p>
+</div>
+
+<h2>💡 उदाहरण 2: यूएआरटी पैकेट सत्यापन</h2>
+<div class="example-box">
+<h3>समस्या: क्रमिक संचार में पैकेट अखंडता की जाँच</h3>
+<pre><code>import hal::crc, hal::usart
+
+struct Packet do
+    header: int8 = 0xAA,
+    length: int8,
+    data: Array&lt;int8&gt;,
+    crc32: int
+end
+
+function packet_calculate_crc(pkt: Packet) -&gt; int do
+    crc.reset()
+    
+    // CRC over header + length + data
+    crc.accumulate_byte(pkt.header)
+    crc.accumulate_byte(pkt.length)
+    
+    for byte forde pkt.data do
+        crc.accumulate_byte(byte)
+    end
+    
+    return crc.get_value()
+end
+
+function packet_send(pkt: Packet) do
+    // Calculate CRC
+    pkt.crc32 = packet_calculate_crc(pkt)
+    
+    // Send packet
+    usart.write_byte(usart.USART1, pkt.header)
+    usart.write_byte(usart.USART1, pkt.length)
+    
+    for byte forde pkt.data do
+        usart.write_byte(usart.USART1, byte)
+    end
+    
+    // Send CRC (big-endian)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 24) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 16) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, (pkt.crc32 &gt;&gt; 8) &amp; 0xFF cast int8)
+    usart.write_byte(usart.USART1, pkt.crc32 &amp; 0xFF cast int8)
+end
+
+function packet_receive() -&gt; Option&lt;Packet&gt; do
+    // Read header
+    let header = usart.read_byte(usart.USART1)
+    if header != 0xAA do
+        return Option.Hiçbiri
+    end
+    
+    // Read length
+    let length = usart.read_byte(usart.USART1)
+    
+    // Read data
+    let data = Array.new(length)
+    for i forde 0..length do
+        data[i] = usart.read_byte(usart.USART1)
+    end
+    
+    // Read CRC
+    let crc_recv = 0 cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    crc_recv = (crc_recv &lt;&lt; 8) | usart.read_byte(usart.USART1) cast int
+    
+    // Create packet
+    let pkt = Packet do
+        header: header,
+        length: length,
+        data: data,
+        crc32: crc_recv
+    end
+    
+    // Verify CRC
+    let crc_calc = packet_calculate_crc(pkt)
+    
+    if crc_calc == crc_recv do
+        io.yazdir_satır("✅ Packet CRC OK")
+        return Option.Some(pkt)
+    else do
+        io.yazdir_satır("❌ Packet CRC mismatch!")
+        return Option.Hiçbiri
+    end
+end</code></pre>
+<p><strong>परिणाम:</strong>यूएआरटी के माध्यम से आने वाले दूषित पैकेट अस्वीकार कर दिए जाते हैं। डेटा अखंडता की गारंटी है.</p>
+</div>
+
+<h2>💡 उदाहरण 3: एसडी कार्ड फ़ाइल सत्यापन</h2>
+<div class="example-box">
+<h3>समस्या: यह जांचना कि एसडी कार्ड से पढ़ी गई फ़ाइल दूषित तो नहीं है</h3>
+<pre><code>import hal::crc, hal::sdio
+
+function file_calculate_crc(filename: String) -&gt; int do
+    // Open file
+    let file = sdio.file_open(filename, sdio.MODE_READ)
+    
+    if not file.is_valid() do
+        io.yazdir_satır("ERROR: Cannot open file")
+        return 0
+    end
+    
+    crc.reset()
+    
+    // Read file in 512-byte blocks
+    let buffer: Array&lt;int8&gt; = Array.new(512)
+    
+    loop do
+        let bytes_read = sdio.file_read(file, buffer)
+        
+        if bytes_read == 0 do
+            break  // EOF
+        end
+        
+        // Process full 32-bit words
+        for i forde 0..(bytes_read/4) do
+            let word = (buffer[i*4] cast int) |
+                           ((buffer[i*4+1] cast int) &lt;&lt; 8) |
+                           ((buffer[i*4+2] cast int) &lt;&lt; 16) |
+                           ((buffer[i*4+3] cast int) &lt;&lt; 24)
+            crc.accumulate(word)
+        end
+        
+        // Handle remaining bytes
+        let remainder = bytes_read % 4
+        if remainder &gt; 0 do
+            for i forde (bytes_read - remainder)..bytes_read do
+                crc.accumulate_byte(buffer[i])
+            end
+        end
+    end
+    
+    sdio.file_close(file)
+    
+    return crc.get_value()
+end
+
+function file_verify(filename: String, expected_crc: int) -&gt; bool do
+    io.yazdir_satır("Verifying " + filename + "...")
+    
+    let calculated = file_calculate_crc(filename)
+    
+    io.yazdir_satır("Expected:   0x" + expected_crc.onaltılıya())
+    io.yazdir_satır("Calculated: 0x" + calculated.onaltılıya())
+    
+    return calculated == expected_crc
+end</code></pre>
+<p><strong>उपयोग:</strong>यह सुनिश्चित करता है कि एसडी कार्ड से पढ़ते समय फर्मवेयर अपडेट फ़ाइलें दूषित न हों।</p>
+</div>
+
+<h2>📚एपीआई संदर्भ</h2>
+<h3>मूलभूत प्रकार्य</h3>
+<pre><code>// CRC initialization
+function init()
+function deinit()
+function reset()  // Reset to initial value
+
+// CRC calculation
+function calculate(data: Array&lt;int&gt;) -&gt; int
+function accumulate(word: int)  // Add 32-bit word
+function accumulate_byte(byte: int8)  // Add 8-bit byte
+
+// Get result
+function get_value() -&gt; int
+
+// Verification
+function verify(data: Array&lt;int&gt;, expected: int) -&gt; bool</code></pre>
+
+<div class="warning">
+<strong>⚠️ महत्वपूर्ण नोट्स:</strong>
+<ul>
+<li><strong>शब्द संरेखण:</strong>सीआरसी हार्डवेयर 32-बिट वर्ड अलाइन्ड के साथ काम करता है</li>
+<li><strong>बाइट क्रम:</strong>बाइट ऑर्डर के लिए लिटिल-एंडियन प्रोसेसर पर विचार किया जाना चाहिए</li>
+<li><strong>आरंभिक मूल्य:</strong>एंड्रा रीसेट करें 0xFFFFFFFF (नोट 0x00000000)</li>
+<li><strong>अंतिम एक्सओआर:</strong>कुछ प्रोटोकॉल के लिए अंतिम XOR 0xFFFFFFFF की आवश्यकता होती है</li>
+</ul>
+</div>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<table>
+<tbody><tr>
+<th>प्लैटफ़ॉर्म</th>
+<th>सीआरसी समर्थन</th>
+<th>बहुपद</th>
+<th>रफ़्तार</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ हाँ</td>
+<td>0x04C11DB7</td>
+<td>1 चक्र/शब्द</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ हाँ</td>
+<td>0x04C11DB7</td>
+<td>1 चक्र/शब्द</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ हाँ</td>
+<td>विन्यास</td>
+<td>1 चक्र/शब्द</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ हाँ</td>
+<td>विन्यास</td>
+<td>1 चक्र/शब्द</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>✅ हाँ</td>
+<td>0x04C11DB7</td>
+<td>1 चक्र/शब्द</td>
+</tr>
+</tbody></table>
+
+<h2>✅ सर्वोत्तम प्रथाएँ</h2>
+<ul>
+<li>✅ <strong>फ़र्मवेयर जाँच:</strong>बूट के दौरान फ़र्मवेयर सीआरसी जाँच</li>
+<li>✅ <strong>संचार:</strong>पैकेजों में सीआरसी का उपयोग करें (विशेषकर वायरलेस)</li>
+<li>✅ <strong>भंडारण:</strong>सीआरसी के लिए फ्लैश/एसडी कार्ड से पढ़ा गया डेटा</li>
+<li>✅ <strong>उपयोग से पहले रीसेट करें:</strong>प्रत्येक गणना से पहले crc.reset() पर कॉल करें</li>
+<li>❌ <strong>क्रिप्टो के लिए नहीं:</strong>सीआरसी सुरक्षा के लिए नहीं, बल्कि त्रुटि का पता लगाने के लिए है</li>
+<li>❌ <strong>बाइट संरेखण:</strong>गैर-संरेखित पहुंच प्रदर्शन हानि पैदा करती है</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="hi_hal-flash-en.html">राज्य::फ़्लैश</a>- फ़र्मवेयर अखंडता सत्यापन</li>
+<li><a href="hi_hal-usart-en.html">राज्य::usart</a>- यूएआरटी पैकेट सीआरसी</li>
+<li><a href="hi_hal-sdio-en.html">राज्य::sdio</a>- एसडी कार्ड फ़ाइल सत्यापन</li>
+<li><a href="hi_hal-dma-en.html">राज्य::डीएमए</a>- सीआरसी गणना के साथ डीएमए</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-en.html">🔙 एचएएल मॉड्यूल</a> | 
+<a href="hi_hal-crc-en.html">🌐तुर्की</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

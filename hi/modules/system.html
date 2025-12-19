@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>मॉड्यूल सिस्टम - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/modules/system.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="modül-sistemi"><a class="header" href="#modül-sistemi">मॉड्यूल प्रणाली</a></h1>
+<p>बर्क में<strong>प्रत्येक फ़ाइल एक मॉड्यूल है</strong>. मॉड्यूल सिस्टम आपके कोड को व्यवस्थित करने और पुन: उपयोग करने का मूल तरीका है।</p>
+<h2 id="temel-kavramlar"><a class="header" href="#temel-kavramlar">बुनियादी अवधारणाओं</a></h2>
+<h3 id="modül-nedir"><a class="header" href="#modül-nedir">मॉड्यूल क्या है?</a></h3>
+<p>मॉड्यूल कोड की एक इकाई है जिसमें संबंधित फ़ंक्शन, संरचनाएं और स्थिरांक शामिल होते हैं। प्रत्येक<code data-no-translate="true">.berk</code>फ़ाइल स्वचालित रूप से एक मॉड्यूल है.</p>
+<pre><code class="language-berk">// matematik.berk - Bu dosya "matematik" modülüdür
+export function topla(a: sayı, b: sayı) -&gt; sayı do
+    return a + b
+end
+
+export const PI = 3.14159
+</code></pre>
+<h3 id="modül-hiyerarşisi"><a class="header" href="#modül-hiyerarşisi">मॉड्यूल पदानुक्रम</a></h3>
+<p>मॉड्यूल फ़ाइल सिस्टम संरचना का पालन करते हैं:</p>
+<pre><code>proje/
+├── ana.berk
+├── matematik/
+│   ├── temel.berk       (matematik::temel)
+│   ├── geometri.berk    (matematik::geometri)
+│   └── ileri.berk       (matematik::ileri)
+└── io/
+    └── dosya.berk       (io::dosya)
+</code></pre>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">मॉड्यूल उपयोग</a></h2>
+<h3 id="kullan-ifadesi"><a class="header" href="#kullan-ifadesi">कथन का प्रयोग करें</a></h3>
+<pre><code class="language-berk">// Modül içe aktarma
+kullan matematik;
+
+// Belirli öğeleri içe aktarma
+kullan matematik::topla;
+kullan matematik::{topla, çarp, PI};
+
+// Tüm öğeleri içe aktarma
+kullan matematik::*;
+
+// Takma ad ile kullanım
+kullan matematik::topla olarak toplama;
+</code></pre>
+<h3 id="modül-yolları"><a class="header" href="#modül-yolları">मॉड्यूल पथ</a></h3>
+<pre><code class="language-berk">// Alt modül erişimi
+kullan matematik::geometri::alan;
+
+// İç içe modüller
+kullan matematik::geometri::{alan, çevre, hacim};
+</code></pre>
+<h2 id="görünürlük"><a class="header" href="#görünürlük">दृश्यता</a></h2>
+<h3 id="dışa_aktar-anahtar-kelimesi"><a class="header" href="#dışa_aktar-anahtar-kelimesi">निर्यात_निर्यात कीवर्ड</a></h3>
+<p>सभी आइटम डिफ़ॉल्ट रूप से<strong>विशेष है</strong>. बाहरी पहुंच के लिए<code data-no-translate="true">dışa_aktar</code>उपयोग:</p>
+<pre><code class="language-berk">// Genel function - dışarıdan erişilebilir
+export function hesapla() -&gt; sayı do
+    return dahili_hesaplama()
+end
+
+// Özel function - sadece bu modülde kullanılabilir
+function dahili_hesaplama() -&gt; sayı do
+    return 42
+end
+</code></pre>
+<h3 id="yapı-ve-enum-görünürlüğü"><a class="header" href="#yapı-ve-enum-görünürlüğü">संरचना और एनम दृश्यता</a></h3>
+<pre><code class="language-berk">// Genel struct
+export struct Nokta do
+    x: sayı
+    y: sayı
+end
+
+// Özel struct
+struct DahiliVeri do
+    değer: sayı
+end
+</code></pre>
+<h2 id="modül-organizasyonu"><a class="header" href="#modül-organizasyonu">मॉड्यूल संगठन</a></h2>
+<h3 id="tek-dosya-modül"><a class="header" href="#tek-dosya-modül">एकल फ़ाइल मॉड्यूल</a></h3>
+<pre><code class="language-berk">// matematik.berk
+export function topla(a: sayı, b: sayı) -&gt; sayı do return a + b end
+export function çarp(a: sayı, b: sayı) -&gt; sayı do return a * b end
+</code></pre>
+<h3 id="çok-dosya-modül"><a class="header" href="#çok-dosya-modül">मल्टी फ़ाइल मॉड्यूल</a></h3>
+<pre><code>matematik/
+├── temel.berk      // matematik::temel
+├── geometri.berk   // matematik::geometri
+└── trigonometri.berk // matematik::trigonometri
+</code></pre>
+<pre><code class="language-berk">// ana.berk
+kullan matematik::temel::topla;
+kullan matematik::geometri::alan;
+</code></pre>
+<h2 id="modül-çözümleme"><a class="header" href="#modül-çözümleme">मॉड्यूल विश्लेषण</a></h2>
+<h3 id="arama-sırası"><a class="header" href="#arama-sırası">खोज आदेश</a></h3>
+<p>बीईआरके कंपाइलर इस क्रम में मॉड्यूल खोजता है:</p>
+<ol>
+<li><strong>वर्तमान निर्देशिका</strong>: <code data-no-translate="true">./</code></li>
+<li><strong>स्रोत निर्देशिका</strong>: <code data-no-translate="true">./src/</code></li>
+<li><strong>मानक पुस्तकालय</strong>: <code data-no-translate="true">./stdlib/</code></li>
+<li><strong>बाहरी पैकेज</strong>: <code data-no-translate="true">~/.berk/packages/</code></li>
+</ol>
+<h3 id="örnek-çözümleme"><a class="header" href="#örnek-çözümleme">उदाहरण विश्लेषण</a></h3>
+<pre><code class="language-berk">kullan matematik::geometri;
+// Arama sırası:
+// 1. ./matematik/geometri.berk
+// 2. ./src/matematik/geometri.berk
+// 3. ./stdlib/matematik/geometri.berk
+// 4. ~/.berk/packages/matematik/geometri.berk
+</code></pre>
+<h2 id="standart-kütüphane-modülleri"><a class="header" href="#standart-kütüphane-modülleri">मानक पुस्तकालय मॉड्यूल</a></h2>
+<pre><code class="language-berk">use io;              // Giriş/Çıkış işlemleri
+use String;           // String işlemleri
+use matematik;       // Matematik fonksiyonları
+use koleksiyonlar;   // Liste, HashMap vb.
+use dosya;           // Dosya işlemleri
+use ağ;              // Network işlemleri
+</code></pre>
+<h2 id="en-i̇yi-uygulamalar"><a class="header" href="#en-i̇yi-uygulamalar">सर्वोत्तम प्रथाएं</a></h2>
+<ul>
+<li>✅ <strong>समूह संबंधित कोड</strong>: समान कार्यों को एक ही मॉड्यूल में रखें</li>
+<li>✅ <strong>स्पष्ट संज्ञाओं का प्रयोग करें</strong>: मॉड्यूल नाम में सामग्री स्पष्ट रूप से इंगित होनी चाहिए</li>
+<li>✅ <strong>न्यूनतम निर्यात</strong>: केवल वही निर्यात करें जो आवश्यक हो</li>
+<li>✅ <strong>चक्रीय निर्भरता से बचें</strong>: A → B → A बनाना</li>
+<li>✅ <strong>सुसंगत संरचना</strong>: प्रोजेक्ट के सभी मॉड्यूल की संरचना समान होनी चाहिए</li>
+</ul>
+<h2 id="örnekler"><a class="header" href="#örnekler">उदाहरण</a></h2>
+<h3 id="basit-matematik-modülü"><a class="header" href="#basit-matematik-modülü">सरल गणित मॉड्यूल</a></h3>
+<pre><code class="language-berk">// matematik.berk
+export const PI = 3.14159
+export const E = 2.71828
+
+export function kare(x: sayı) -&gt; sayı do
+    return x * x
+end
+
+export function küp(x: sayı) -&gt; sayı do
+    return x * x * x
+end
+</code></pre>
+<h3 id="kullanımı"><a class="header" href="#kullanımı">प्रयोग</a></h3>
+<pre><code class="language-berk">// main.berk
+use matematik::{kare, PI};
+
+function main() do
+    let sonuç = kare(5)
+    print("Kare: {}", sonuç)
+    print("Pi: {}", PI)
+end
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../modules/hi_index.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../modules/hi_import-export.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../modules/hi_index.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../modules/hi_import-export.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

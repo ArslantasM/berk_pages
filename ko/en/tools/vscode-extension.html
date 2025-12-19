@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>VS 코드 플러그인 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/tools/vscode-extension.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="vs-code-eklentisi"><a class="header" href="#vs-code-eklentisi">VS 코드 추가 기능</a></h1>
+<p>BERK VS 코드 확장,<strong>전문 개발 경험</strong>에 대한 모든 기능을 갖춘 IDE 지원을 제공합니다. LSP(언어 서버 프로토콜)로 구동됩니다.</p>
+<h2 id="kurulum"><a class="header" href="#kurulum">설정</a></h2>
+<h3 id="marketplace-üzerinden"><a class="header" href="#marketplace-üzerinden">마켓플레이스를 통해</a></h3>
+<ol>
+<li>VS 코드 열기</li>
+<li>확장 프로그램(Ctrl+Shift+X) 메뉴로 이동</li>
+<li>"BERK 언어 지원"을 검색하세요.</li>
+<li>"설치" 버튼을 클릭하세요</li>
+</ol>
+<h3 id="komut-satırından"><a class="header" href="#komut-satırından">명령줄에서</a></h3>
+<pre><code class="\&quot;language-bash\&quot;">code --install-extension ArslantasM-tools.berk-lang
+</code></pre>
+<h2 id="\&quot;temel-özellikler\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#temel-özellikler\&quot;">주요 특징</a></h2>
+<h3 id="\&quot;1-syntax-highlighting\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#1-syntax-highlighting\&quot;">1. 구문 강조</a></h3>
+<ul>
+<li>✅ 터키어 및 영어 키워드</li>
+<li>✅ 문자열 보간</li>
+<li>✅ 코멘트 라인</li>
+<li>✅ 하이라이트 입력</li>
+<li>✅ 함수 이름</li>
+</ul>
+<h3 id="\&quot;2-intelligisense-code-completion\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#2-intelligisense-code-completion\&quot;">2. IntelliSense(코드 완성)</a></h3>
+<pre><code class="\&quot;language-berk\&quot;">// 'let' yazın and Ctrl+Space
+let x = 42
+
+// 'x.' yazın - otomatik metodlar gösterilir
+x.to_string()
+x.karakter_uzunluğu()
+</code></pre>
+<h3 id="\&quot;3-go-to-definition-f12\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#3-go-to-definition-f12\&quot;">3. 정의로 이동(F12)</a></h3>
+<p>함수/변수에서 F12를 누르세요.</p>
+<pre><code class="\&quot;language-berk\&quot;">let sonuç = hesapla(10)  // F12 ile hesapla() tanımına git
+</code></pre>
+<h3 id="\&quot;4-find-all-references-shift-f12\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#4-find-all-references-shift-f12\&quot;">4. 모든 참고문헌 찾기(Shift+F12)</a></h3>
+<p>기호의 모든 용도 찾기</p>
+<h3 id="\&quot;5-rename-symbol-f2\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#5-rename-symbol-f2\&quot;">5. 기호 이름 바꾸기(F2)</a></h3>
+<p>안전한 이름 변경 - 모든 참조가 자동으로 업데이트됩니다.</p>
+<h3 id="\&quot;6-hover-information\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#6-hover-information\&quot;">6. 호버 정보</a></h3>
+<p>기호 위로 마우스를 가져가세요.</p>
+<ul>
+<li>유형 정보</li>
+<li>선적 서류 비치</li>
+<li>서명 정보</li>
+</ul>
+<h3 id="\&quot;7-diagnostics-error-checking\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#7-diagnostics-error-checking\&quot;">7. 진단(오류 ​​검사)</a></h3>
+<p>실시간 오류 확인:</p>
+<ul>
+<li>🔴 구문 오류</li>
+<li>🟠 경고</li>
+<li>🔵 정보</li>
+</ul>
+<h3 id="\&quot;8-code-actions-ctrl\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#8-code-actions-ctrl\&quot;">8. 코드 작업(Ctrl+.)</a></h3>
+<p>빠른 수정 및 리팩토링:</p>
+<ul>
+<li>자동 추가 가져오기</li>
+<li>유형 설명 추가</li>
+<li>변수 추출</li>
+</ul>
+<h3 id="\&quot;9-signature-help-ctrl-shift-space\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#9-signature-help-ctrl-shift-space\&quot;">9. 서명 도움말(Ctrl+Shift+Space)</a></h3>
+<pre><code class="\&quot;language-berk\&quot;">function hesapla(x: sayı, y: sayı, z: sayı) do
+end
+
+hesapla(  // Ctrl+Shift+Space - parametre yardımı
+</code></pre>
+<h3 id="\&quot;10-document-symbols-ctrl-shift-o\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#10-document-symbols-ctrl-shift-o\&quot;">10. 문서 기호(Ctrl+Shift+O)</a></h3>
+<p>파일의 모든 기호(함수, 변수) 목록</p>
+<h3 id="\&quot;11-semantic-tokens\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#11-semantic-tokens\&quot;">11. 시맨틱 토큰</a></h3>
+<p>고급 구문 강조 - 유형 정보에 따른 색상 지정</p>
+<h3 id="\&quot;12-inlay-hints\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#12-inlay-hints\&quot;">12. 인레이 힌트</a></h3>
+<p>인라인 유형 및 매개변수 설명</p>
+<h3 id="\&quot;13-code-lens\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#13-code-lens\&quot;">13. 코드 렌즈</a></h3>
+<p>참조 번호 및 빠른 작업</p>
+<h2 id="\&quot;komutlar\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#komutlar\&quot;">명령</a></h2>
+<p>명령 팔레트를 통해(Ctrl+Shift+P):</p>
+<table><thead><tr><th>명령</th><th>설명</th><th>지름길</th></tr></thead><tbody>
+<tr><td>BERK: 빌드</td><td>프로젝트 컴파일</td><td>Ctrl+B</td></tr>
+<tr><td>BERK: 실행</td><td>달리다</td><td>F5</td></tr>
+<tr><td>BERK: 빌드 릴리스</td><td>컴파일 릴리스</td><td>Ctrl+Shift+B</td></tr>
+<tr><td>BERK: 깨끗함</td><td>빌드 캐시 지우기</td><td>-</td></tr>
+<tr><td>BERK: 새 프로젝트</td><td>새 프로젝트 만들기</td><td>-</td></tr>
+<tr><td>BERK: 문서 생성</td><td>문서 생성</td><td>-</td></tr>
+<tr><td>BERK: LSP를 다시 시작</td><td>언어 서버 다시 시작</td><td>-</td></tr>
+</tbody></table>
+<h2 id="\&quot;kod-snippetleri\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#kod-snippetleri\&quot;">코드 조각</a></h2>
+<h3 id="\&quot;türkçe-snippetler\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#türkçe-snippetler\&quot;">터키어 조각</a></h3>
+<table><thead><tr><th>방아쇠</th><th>설명</th></tr></thead><tbody>
+<tr><td><code data-no-translate="true">fonk</code></td><td>기능 템플릿</td></tr>
+<tr><td><code data-no-translate="true">if</code></td><td>If-else 블록</td></tr>
+<tr><td><code data-no-translate="true">for</code></td><td>for 루프</td></tr>
+<tr><td><code data-no-translate="true">struct</code></td><td>구조 정의</td></tr>
+<tr><td><code data-no-translate="true">enum</code></td><td>열거형 정의</td></tr>
+<tr><td><code data-no-translate="true">test</code></td><td>테스트 기능</td></tr>
+<tr><td><code data-no-translate="true">ana</code></td><td>주요 기능</td></tr>
+</tbody></table>
+<h3 id="\&quot;kullanım-örneği\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#kullanım-örneği\&quot;">사용 사례</a></h3>
+<pre><code class="\&quot;language-berk\&quot;">// 'fonk' yazın and Tab
+function isim(parametre: type) -&gt; type do
+    // kod buraya
+end
+</code></pre>
+<h2 id="\&quot;debugging-desteği\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#debugging-desteği\&quot;">디버깅 지원</a></h2>
+<p><code data-no-translate="true">launch.json</code>구성:</p>
+<pre><code class="\&quot;language-json\&quot;">{
+  \"version\": \"0.2.0\",
+  \"configurations\": [
+    {
+      \"type\": \"berk\",
+      \"request\": \"launch\",
+      \"name\": \"Debug BERK Program\",
+      \"program\": \"${workspaceFolder}/main.berk\",
+      \"stopOnEntry\": false
+    }
+  ]
+}
+</code></pre>
+<h2 id="\&quot;ayarlar\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#ayarlar\&quot;">설정</a></h2>
+<p><code data-no-translate="true">settings.json</code>:</p>
+<pre><code class="\&quot;language-json\&quot;">{
+  \"berk.lsp.enabled\": true,
+  \"berk.lsp.trace.server\": \"off\",
+  \"berk.build.optimizationLevel\": 2,
+  \"berk.format.indentSize\": 4,
+  \"berk.lint.warnings\": true,
+  \"berk.inlayHints.enabled\": true,
+  \"berk.semanticTokens.enabled\": true
+}
+</code></pre>
+<h2 id="\&quot;format-on-save\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#format-on-save\&quot;">저장 시 포맷</a></h2>
+<pre><code class="\&quot;language-json\&quot;">{
+  \"[berk]\": {
+    \"editor.formatOnSave\": true,
+    \"editor.defaultFormatter\": \"ArslantasM-tools.berk-lang\"
+  }
+}
+</code></pre>
+<h2 id="\&quot;task-runner\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#task-runner\&quot;">태스크 러너</a></h2>
+<p><code data-no-translate="true">tasks.json</code>:</p>
+<pre><code class="\&quot;language-json\&quot;">{
+  \"version\": \"2.0.0\",
+  \"tasks\": [
+    {
+      \"label\": \"build\",
+      \"type\": \"shell\",
+      \"command\": \"berk-lang build\",
+      \"group\": {
+        \"kind\": \"build\",
+        \"isDefault\": true
+      }
+    }
+  ]
+}
+</code></pre>
+<h2 id="\&quot;problem-matcher\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#problem-matcher\&quot;">문제 일치자</a></h2>
+<p>BERK는 오류 형식을 자동으로 감지합니다.</p>
+<pre><code>error[E0308]: type uyuşmazlığı
+  --&gt; src/main.berk:5:14
+   |
+ 5 |     let x: sayı = \"merhaba\";
+   |              ^^^^      ^^^^^^^^^
+</code></pre>
+<h2 id="\&quot;workspace-önerileri\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#workspace-önerileri\&quot;">작업 공간 제안</a></h2>
+<p><code data-no-translate="true">.vscode/extensions.json</code>:</p>
+<pre><code class="\&quot;language-json\&quot;">{
+  \"recommendations\": [
+    \"ArslantasM-tools.berk-lang\"
+  ]
+}
+</code></pre>
+<h2 id="\&quot;performans-i̇puçları\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#performans-i̇puçları\&quot;">성능 팁</a></h2>
+<ol>
+<li>
+<p>✅ <strong>LSP 캐시</strong>사용:</p>
+<pre><code class="\&quot;language-json\&quot;">\"berk.lsp.cache.enabled\": true
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>증분 분석</strong>활동적인:</p>
+<pre><code class="\&quot;language-json\&quot;">\"berk.lsp.incrementalSync\": true
+</code></pre>
+</li>
+<li>
+<p>⚠️ 매우 큰 파일의 경우<strong>의미론적 토큰</strong>닫다:</p>
+<pre><code class="\&quot;language-json\&quot;">\"berk.semanticTokens.enabled\": false
+</code></pre>
+</li>
+</ol>
+<h2 id="\&quot;sorun-giderme\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#sorun-giderme\&quot;">문제 해결</a></h2>
+<h3 id="\&quot;lsp-çalışmıyorsa\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#lsp-çalışmıyorsa\&quot;">LSP가 작동하지 않는 경우</a></h3>
+<ol>
+<li>커맨드 팔레트 → "BERK: LSP 재시작"</li>
+<li>VS 코드 다시 시작</li>
+<li>출력 패널 → "BERK Language Server" 로그 참조</li>
+</ol>
+<h3 id="\&quot;syntax-highlighting-yok\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#syntax-highlighting-yok\&quot;">구문 강조 없음</a></h3>
+<ol>
+<li>파일 확장자<code data-no-translate="true">.berk</code>이어야 한다</li>
+<li>언어 모드 "BERK"를 선택해야 합니다(오른쪽 하단).</li>
+</ol>
+<h2 id="\&quot;özet\&quot;"><a class="\&quot;header\&quot;" href="\&quot;#özet\&quot;">요약</a></h2>
+<ul>
+<li>✅ 13가지 LSP 기능</li>
+<li>✅ 구문 강조</li>
+<li>✅ 코드 완성</li>
+<li>✅ 정의로 이동</li>
+<li>✅ 디버깅</li>
+<li>✅ 작업 실행자</li>
+<li>✅ 스니펫</li>
+<li>✅ 저장 시 포맷</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../tools/ko_en_repl.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../tools/ko_en_debugging.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../tools/ko_en_repl.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../tools/ko_en_debugging.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

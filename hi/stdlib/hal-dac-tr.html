@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::dac - डिजिटल-से-एनालॉग कनवर्टर | बर्क</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#3498db;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📈 hal::dac</h1>
+<p>डिजिटल-टू-एनालॉग कनवर्टर - एनालॉग सिग्नल जनरेशन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 पंक्तियाँ</span>
+<span class="stat-badge">~10 कार्य</span>
+<span class="stat-badge">12 बिट</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>DAC मॉड्यूल डिजिटल मानों को एनालॉग वोल्टेज में परिवर्तित करता है। तरंग उत्पादन, ऑडियो, सेंसर सिमुलेशन के लिए उपयोग किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>12-बिट रिज़ॉल्यूशन (0-4095)</li>
+<li>2 आउटपुट चैनल</li>
+<li>डीएमए समर्थन</li>
+<li>त्रिभुज/शोर तरंग पीढ़ी</li>
+<li>टाइमर ट्रिगर</li>
+<li>आउटपुट बफ़र</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::dac, hal::gpio
+
+// DAC pin (PA4 = DAC_OUT1)
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_ANALOG end)
+
+// Initialize DAC
+let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+
+// Output voltage (0-3.3V)
+dac.write(dac1, 2048)  // ~1.65V (mid-scale)</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: साइन वेव जेनरेटर</h3>
+<pre><code>import hal::dac, hal::timer, math
+
+const SAMPLES = 100
+
+function generate_sine_wave() do
+    // Generate sine wave lookup table
+    let sine_table = [0u16; SAMPLES]
+    her i in 0..SAMPLES for do
+        let angle = 2.0 * math.PI * i.kesir() / SAMPLES.kesir()
+        let value = (math.sin(angle) + 1.0) * 2047.5
+        sine_table[i] = value.sayı()
+    end
+    
+    // Setup DAC with DMA
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    dac.enable_dma(dac1)
+    
+    // Timer trigger (1kHz = 1kHz sine with 100 samples)
+    let tim6 = timer.init_basic(timer.TIM6, do
+        frequency: 100_000  // 100kHz update rate
+    end)
+    
+    dac.set_trigger(dac1, dac.TRIGGER_TIM6)
+    
+    // Start DMA circular mode
+    dma.circular_transfer(dac.get_dma_channel(), 
+        sine_table.as_ptr(),
+        dac.get_data_register(dac1),
+        SAMPLES
+    )
+    
+    timer.start(tim6)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: ऑडियो टोन जेनरेटर</h3>
+<pre><code>import hal::dac, math
+
+function play_tone(freq: kesir, duration_ms: sayı) do
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    let sample_rate = 8000.0  // 8kHz
+    let samples = (sample_rate * duration_ms.kesir() / 1000.0).sayı()
+    
+    her i in 0..samples for do
+        let t = i.kesir() / sample_rate
+        let value = (math.sin(2.0 * math.PI * freq * t) + 1.0) * 2047.5
+        dac.write(dac1, value.sayı())
+        core.delay_us(125)  // 8kHz = 125us per sample
+    end
+end
+
+function main() do
+    // Play musical scale (C4 to C5)
+    let freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
+    
+    her freq in freqs for do
+        play_tone(freq, 500)  // 500ms each note
+        core.delay_ms(100)    // 100ms gap
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: फ़ंक्शन जेनरेटर (त्रिकोण, सॉटूथ, वर्ग)</h3>
+<pre><code>import hal::dac, hal::timer, hal::dma
+
+enum Waveform {
+    SINE,
+    TRIANGLE,
+    SAWTOOTH,
+    SQUARE
+}
+
+const SAMPLES = 256
+
+function generate_waveform(waveform: Waveform, freq: kesir) do
+    let wave_table = [0u16; SAMPLES]
+    
+    // Generate waveform lookup table
+    her i in 0..SAMPLES for do
+        let phase = i.kesir() / SAMPLES.kesir()
+        
+        let value = eşle waveform do
+            Waveform::SINE =&gt; do
+                let angle = 2.0 * math.PI * phase
+                (math.sin(angle) + 1.0) * 2047.5
+            end,
+            
+            Waveform::TRIANGLE =&gt; do
+                if phase &lt; 0.5 then do
+                    phase * 4.0 * 4095.0
+                end yoksa do
+                    (1.0 - (phase - 0.5) * 2.0) * 4095.0
+                end
+            end,
+            
+            Waveform::SAWTOOTH =&gt; do
+                phase * 4095.0
+            end,
+            
+            Waveform::SQUARE =&gt; do
+                if phase &lt; 0.5 then 4095.0 yoksa 0.0
+            end
+        end
+        
+        wave_table[i] = value.sayı()
+    end
+    
+    // Setup DAC with DMA + Timer trigger
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1, do
+        trigger: dac.TRIGGER_TIM6,
+        dma_enable: true
+    end)
+    
+    // Timer frequency = desired_freq * SAMPLES
+    let tim6 = timer.init_basic(timer.TIM6, do
+        frequency: (freq * SAMPLES.kesir()).sayı()
+    end)
+    
+    // DMA circular mode
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM5, do
+        direction: dma.M2P,
+        src_address: wave_table.as_ptr(),
+        dst_address: dac.get_data_register(dac1),
+        data_count: SAMPLES,
+        src_increment: true,
+        dst_increment: false,
+        circular: true,
+        data_size: dma.SIZE_16BIT
+    end)
+    
+    dma.start(dma_ch)
+    timer.start(tim6)
+    
+    io.println("Generating {} waveform at {}Hz", waveform, freq)
+end
+
+function main() do
+    // Generate 1kHz triangle wave
+    generate_waveform(Waveform::TRIANGLE, 1000.0)
+    
+    for do
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: डुअल चैनल डीएसी (स्टीरियो आउटपुट)</h3>
+<pre><code>import hal::dac, hal::gpio
+
+function dac_dual_init() -&gt; (dac.Handle, dac.Handle) do
+    // PA4 = DAC_OUT1 (left channel)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_ANALOG end)
+    
+    // PA5 = DAC_OUT2 (right channel)
+    gpio.pin_init(gpio.PORT_A, 5, do mode: gpio.MODE_ANALOG end)
+    
+    // Initialize both channels
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    let dac2 = dac.init(dac.DAC1, dac.CHANNEL_2)
+    
+    return (dac1, dac2)
+end
+
+function stereo_tone(left_freq: kesir, right_freq: kesir) do
+    let (dac_left, dac_right) = dac_dual_init()
+    
+    let sample_rate = 8000.0
+    
+    her i in 0..8000 for do  // 1 second
+        let t = i.kesir() / sample_rate
+        
+        // Left channel
+        let left_val = (math.sin(2.0 * math.PI * left_freq * t) + 1.0) * 2047.5
+        dac.write(dac_left, left_val.sayı())
+        
+        // Right channel
+        let right_val = (math.sin(2.0 * math.PI * right_freq * t) + 1.0) * 2047.5
+        dac.write(dac_right, right_val.sayı())
+        
+        core.delay_us(125)
+    end
+end
+
+function main() do
+    // Stereo test: 440Hz left, 880Hz right
+    stereo_tone(440.0, 880.0)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: वोल्टेज संदर्भ/सेंसर सिमुलेशन</h3>
+<pre><code>import hal::dac
+
+function voltage_to_dac(voltage: kesir) -&gt; u16 do
+    // DAC: 0-3.3V = 0-4095
+    let dac_val = (voltage / 3.3) * 4095.0
+    return dac_val.clamp(0.0, 4095.0).sayı()
+end
+
+function simulate_temperature_sensor() do
+    // Simulate LM35 temperature sensor (10mV/°C)
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Simulate 25°C room temperature
+    let temp_c = 25.0
+    
+    for do
+        // LM35: 10mV per degree Celsius
+        let voltage = temp_c * 0.01  // 25°C = 0.25V
+        
+        dac.write(dac1, voltage_to_dac(voltage))
+        
+        io.println("Simulating {}°C ({}V)", temp_c, voltage)
+        
+        // Slowly vary temperature
+        temp_c += 0.5
+        if temp_c &gt; 40.0 then temp_c = 20.0
+        
+        core.delay_ms(1000)
+    end
+end
+
+function calibration_voltages() do
+    // Generate precise reference voltages for ADC calibration
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    let test_voltages = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.3]
+    
+    her voltage in test_voltages for do
+        dac.write(dac1, voltage_to_dac(voltage))
+        io.println("Output: {}V (measure with ADC)", voltage)
+        core.delay_ms(5000)  // Hold for 5 seconds
+    end
+end
+
+function main() do
+    simulate_temperature_sensor()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: DAC के माध्यम से PWM-जैसा DC मोटर नियंत्रण</h3>
+<pre><code>import hal::dac
+
+function motor_speed_control() do
+    // DAC output -&gt; Motor driver analog input
+    let dac1 = dac.init(dac.DAC1, dac.CHANNEL_1)
+    
+    // Speed ramp up
+    io.println("Motor ramping up...")
+    her speed in 0..=100 for do
+        let voltage = (speed.kesir() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    end
+    
+    // Hold max speed
+    io.println("Motor at max speed")
+    core.delay_ms(2000)
+    
+    // Speed ramp down
+    io.println("Motor ramping down...")
+    her speed in (0..=100).rev() for do
+        let voltage = (speed.kesir() / 100.0) * 3.3
+        dac.write(dac1, voltage_to_dac(voltage))
+        core.delay_ms(50)
+    end
+    
+    io.println("Motor stopped")
+end
+
+function voltage_to_dac(voltage: kesir) -&gt; u16 do
+    return ((voltage / 3.3) * 4095.0).clamp(0.0, 4095.0).sayı()
+end
+
+function main() do
+    for do
+        motor_speed_control()
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ डीएसी कॉन्फ़िगरेशन</h2>
+<pre><code>// DAC Configuration
+struct DACConfig do
+    channel: Channel,           // CHANNEL_1 or CHANNEL_2
+    trigger: Trigger,           // Software, Timer, EXTI
+    output_buffer: bool,        // Enable for external loads
+    dma_enable: bool,           // DMA for waveform generation
+    noise_wave: bool,           // Noise generation
+    triangle_wave: bool,        // Triangle generation
+    amplitude: sayı             // Wave amplitude (0-12)
+end
+
+// Trigger Sources
+enum Trigger {
+    SOFTWARE,    // Manual trigger
+    TIM2_TRGO,   // Timer 2
+    TIM4_TRGO,   // Timer 4
+    TIM6_TRGO,   // Timer 6
+    TIM7_TRGO,   // Timer 7
+    EXTI9        // External line 9
+}
+
+// Channels
+enum Channel {
+    CHANNEL_1,  // PA4
+    CHANNEL_2   // PA5
+}</code></pre>
+
+<h2>📚 डीएसी कार्य</h2>
+<pre><code>// Initialization
+function init(dac: DACInstance, channel: Channel) -&gt; Handle
+function init_with_config(dac: DACInstance, config: DACConfig) -&gt; Handle
+
+// Basic output
+function write(handle: Handle, value: u16)  // 0-4095
+function write_voltage(handle: Handle, voltage: kesir)  // 0.0-3.3V
+
+// Advanced features
+function enable_dma(handle: Handle)
+function set_trigger(handle: Handle, trigger: Trigger)
+function software_trigger(handle: Handle)
+
+// Waveform generation
+function enable_noise_wave(handle: Handle, amplitude: sayı)
+function enable_triangle_wave(handle: Handle, amplitude: sayı)
+
+// Utility
+function get_data_register(handle: Handle) -&gt; *let u16
+function clock_enable()
+function clock_disable()</code></pre>
+
+<h2>📊 डीएसी उपयोग परिदृश्य</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">आवेदन</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">आवृत्ति</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">तरीका</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">स्पष्टीकरण</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डीसी वोल्टेज संदर्भ</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">स्थिर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">मैन्युअल लेखन</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">अंशांकन, सेंसर सिमुलेशन</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">ऑडियो टोन (8kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">100Hz-4kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सॉफ्टवेयर लूप</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सरल बीपर, अलार्म</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">तरंगरूप जेनरेटर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">1Hz-10kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डीएमए + टाइमर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">फ़ंक्शन जनरेटर, परीक्षण उपकरण</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">ऑडियो प्लेबैक (44kHz)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">20Hz-20kHz</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डीएमए + आई2एस/टाइमर</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">संगीत, आवाज</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">इंजन गति नियंत्रण</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डीसी-100हर्ट्ज</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">धीमा अद्यतन</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एनालॉग मोटर ड्राइवर इनपुट</td>
+</tr>
+</tbody></table>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>डीएमए + टाइमर</strong>: तरंगरूप उत्पादन के लिए उपयोग करें (सीपीयू-मुक्त)</li>
+<li><strong>तालिकाओं को देखो</strong>: ज्या/त्रिकोण मानों की पूर्व-गणना करें</li>
+<li><strong>आउटपुट बफ़र</strong>: बाहरी लोड के लिए सक्षम करें (&gt;5kΩ)</li>
+<li><strong>दोहरा चैनल</strong>: स्टीरियो या डिफरेंशियल आउटपुट के लिए उपयोग करें</li>
+<li><strong>ट्रिगर स्रोत</strong>: सटीक समय निर्धारण के लिए टाइमर ट्रिगर आदर्श</li>
+</ul>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>STM32F1</strong>: 2-चैनल 12-बिट डीएसी</li>
+<li><strong>STM32F4</strong>: 2-चैनल 12-बिट डीएसी, 1 एमएसपीएस तक</li>
+<li><strong>एसटीएम32एल4</strong>: 2-चैनल 12-बिट डीएसी, अल्ट्रा-लो-पावर</li>
+<li><strong>STM32H7</strong>: 2-चैनल 12-बिट डीएसी, 1 एमएसपीएस तक</li>
+<li><strong>जीडी32</strong>: संगत डीएसी</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>वोल्टेज रेंज</strong>: 0V - 3.3V (VDDA संदर्भ)</li>
+<li><strong>आउटपुट करेंट</strong>: बफर के बिना अधिकतम ~5mA, बफर के साथ 10-20mA</li>
+<li><strong>आउटपुट बफ़र</strong>: भार &lt;5kΩ प्रतिबाधा के लिए सक्षम करें</li>
+<li><strong>पिन मैपिंग</strong>: PA4 = DAC_OUT1, PA5 = DAC_OUT2 (निश्चित, कोई विकल्प नहीं)</li>
+<li><strong>संकल्प</strong>: 12-बिट (0-4095), दाएँ-संरेखित या बाएँ-संरेखित</li>
+<li><strong>नमूना दर</strong>: डीएमए + टाइमर ट्रिगर के साथ 1 एमएसपीएस तक</li>
+<li><strong>शोर/त्रिकोण</strong>: हार्डवेयर वेवफॉर्म जेनरेशन मोड (परीक्षण के लिए आदर्श)</li>
+<li><strong>दोहरी मोड</strong>: दोनों चैनलों पर एक साथ अपडेट (सिंक्रनाइज़्ड आउटपुट)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::timer</code>- डीएसी ट्रिगर स्रोत</li>
+<li><code data-no-translate="true">hal::dma</code>- तरंगरूप पीढ़ी</li>
+<li><code data-no-translate="true">hal::adc</code>- एडीसी-डीएसी लूपबैक परीक्षण</li>
+<li><code data-no-translate="true">hal::gpio</code>- पिन कॉन्फ़िगरेशन</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00087957.pdf">AN3126: DAC का उपयोग करके ऑडियो और वेवफॉर्म जेनरेशन</a></li>
+<li>संदर्भ मैनुअल: डिजिटल-टू-एनालॉग कनवर्टर (डीएसी) अध्याय</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>모듈 및 구성 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/modules/index.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="modüller-ve-organizasyon"><a class="header" href="#modüller-ve-organizasyon">모듈 및 조직</a></h1>
+<p>BERK에서 모듈 시스템은 코드를 구성하고 재사용성을 높이며 대규모 프로젝트를 보다 쉽게 ​​관리할 수 있도록 설계되었습니다.</p>
+<h2 id="modül-temelleri"><a class="header" href="#modül-temelleri">모듈 기초</a></h2>
+<p>각 BERK 파일은 모듈로 간주됩니다. 모듈을 사용하면 관련 함수, 구조 및 상수를 결합할 수 있습니다.</p>
+<h3 id="basit-modül-örneği"><a class="header" href="#basit-modül-örneği">간단한 모듈 예</a></h3>
+<pre><code class="language-berk">// matematik.berk
+export function topla(a: sayı, b: sayı) -&gt; sayı
+do
+    return a + b
+end
+
+export function çarp(a: sayı, b: sayı) -&gt; sayı
+do
+    return a * b
+end
+
+export const PI = 3.14159
+</code></pre>
+<h2 id="modül-kullanımı"><a class="header" href="#modül-kullanımı">모듈 사용법</a></h2>
+<h3 id="kullan-ifadesi-yerel-modüller"><a class="header" href="#kullan-ifadesi-yerel-modüller">Use 문(네이티브 모듈)</a></h3>
+<p><code data-no-translate="true">kullan</code>다음 표현식을 사용하여 기본 모듈에서 기호를 가져올 수 있습니다.</p>
+<pre><code class="language-berk">// Tek function içe aktarma
+use matematik::topla;
+
+// Birden fazla öğe içe aktarma
+use matematik::{topla, çarp, PI};
+
+// Tüm dışa aktarılanları içe aktarma
+use matematik::*;
+
+// Takma ad ile içe aktarma
+use matematik::PI as pi_sayısı;
+</code></pre>
+<h3 id="içe_aktar-ifadesi-harici-paketler"><a class="header" href="#içe_aktar-ifadesi-harici-paketler">가져오기 명세서(외부 패키지)</a></h3>
+<p><code data-no-translate="true">içe_aktar</code>이 명령문은 외부 패키지를 설치하는 데 사용됩니다.</p>
+<pre><code class="language-berk">// Harici paket içe aktarma
+import "serde" as json;
+
+// Seçici içe aktarma
+import "http"::{get, post, İstek};
+</code></pre>
+<h2 id="modül-organizasyonu"><a class="header" href="#modül-organizasyonu">모듈 구성</a></h2>
+<h3 id="dizin-yapısı"><a class="header" href="#dizin-yapısı">디렉토리 구조</a></h3>
+<p>모듈은 파일 시스템 구조를 따릅니다.</p>
+<pre><code>proje/
+├── main.berk
+├── matematik/
+│   ├── temel.berk
+│   ├── geometri.berk
+│   └── istatistik.berk
+└── String/
+    ├── işlemler.berk
+    └── biçimlendir.berk
+</code></pre>
+<h3 id="modül-yolları"><a class="header" href="#modül-yolları">모듈 경로</a></h3>
+<pre><code class="language-berk">// Alt modül kullanımı
+kullan matematik::geometri::alan_hesapla;
+
+// İç içe modüller
+kullan matematik::geometri::{alan, çevre};
+</code></pre>
+<h2 id="dışa-aktarma"><a class="header" href="#dışa-aktarma">내보내다</a></h2>
+<h3 id="tek-öğe-dışa-aktarma"><a class="header" href="#tek-öğe-dışa-aktarma">단품 수출</a></h3>
+<pre><code class="language-berk">export function hesapla() -&gt; sayı
+do
+    return 42
+end
+</code></pre>
+<h3 id="birden-fazla-öğe-dışa-aktarma"><a class="header" href="#birden-fazla-öğe-dışa-aktarma">여러 항목 내보내기</a></h3>
+<pre><code class="language-berk">// Gruplama sözdizimi
+export { fonk1, fonk2, YapıAdı };
+
+// Her birini ayrı ayrı
+export function fonk1() do end
+export function fonk2() do end
+export struct YapıAdı do end
+</code></pre>
+<h2 id="görünürlük-kuralları"><a class="header" href="#görünürlük-kuralları">가시성 규칙</a></h2>
+<p>BERK의 가시성은 기본적으로 비공개입니다.</p>
+<ul>
+<li><strong>수출됨</strong>다른 모듈에서 항목을 사용할 수 있습니다.</li>
+<li><strong>수출되지 않음</strong>항목은 모듈 내에서만 사용할 수 있습니다.</li>
+</ul>
+<pre><code class="language-berk">// Bu function dışa aktarıldı - dışarıdan erişilebilir
+export function genel_işlev() do end
+
+// Bu function dışa aktarılmadı - yalnızca module in
+function özel_işlev() do end
+</code></pre>
+<h2 id="modül-çözümleme"><a class="header" href="#modül-çözümleme">모듈 분석</a></h2>
+<h3 id="arama-yolları"><a class="header" href="#arama-yolları">검색 경로</a></h3>
+<p>BERK 컴파일러는 다음 순서로 모듈을 검색합니다.</p>
+<ol>
+<li>현재 디렉터리(<code data-no-translate="true">.</code>)</li>
+<li><code data-no-translate="true">./src/</code>예배 규칙서</li>
+<li><code data-no-translate="true">./stdlib/</code>예배 규칙서</li>
+<li>외부 패킷 경로(<code data-no-translate="true">~/.berk/packages/</code>)</li>
+</ol>
+<h3 id="sembol-önceliği"><a class="header" href="#sembol-önceliği">기호 우선순위</a></h3>
+<p>이름이 충돌하는 경우 우선 순위:</p>
+<ol>
+<li>지역 범위 변수</li>
+<li>가져온 기호</li>
+<li>모듈 전역</li>
+</ol>
+<h2 id="en-iyi-uygulamalar"><a class="header" href="#en-iyi-uygulamalar">모범 사례</a></h2>
+<h3 id="modül-organizasyon-önerileri"><a class="header" href="#modül-organizasyon-önerileri">모듈 구성 제안</a></h3>
+<ul>
+<li>✅ <strong>그룹 관련 코드</strong>: 동일한 기능을 제공하는 코드는 동일한 모듈에 있어야 합니다.</li>
+<li>✅ <strong>명확한 명사를 사용하세요</strong>: 모듈 이름은 내용을 명확하게 나타내야 합니다.</li>
+<li>✅ <strong>불필요한 내보내기를 수행하지 마십시오</strong>: API의 일부가 되어야 하는 요소만 내보냅니다.</li>
+<li>✅ <strong>순환 종속성 방지</strong>A -&gt; B -&gt; A와 같은 종속성은 문제를 일으킵니다.</li>
+</ul>
+<h3 id="içe-aktarma-stilleri"><a class="header" href="#içe-aktarma-stilleri">스타일 가져오기</a></h3>
+<pre><code class="language-berk">// ✅ İyi: Açık and okunabilir
+use matematik::geometri::{domain, çevre};
+
+// ⚠️ Dikkatli use: Tüm içe aktarmalar isim çakışmasına neden olabilir
+use matematik::*;
+
+// ✅ İyi: Uzun isimler for takma ad
+use matematik::trigonometri as trig;
+</code></pre>
+<h2 id="gelişmiş-özellikler"><a class="header" href="#gelişmiş-özellikler">고급 기능</a></h2>
+<h3 id="modül-tanımı"><a class="header" href="#modül-tanımı">모듈 설명</a></h3>
+<p>파일 내에서 모듈을 인라인으로 정의할 수 있습니다.</p>
+<pre><code class="language-berk">module yardımcılar do
+    export function yardımcı() do
+        print("Yardımcı function")
+    end
+end
+
+use yardımcılar::yardımcı;
+</code></pre>
+<h3 id="yeniden-dışa-aktarma"><a class="header" href="#yeniden-dışa-aktarma">재수출</a></h3>
+<p>모듈에서 가져온 항목을 자신의 모듈에서 내보낼 수 있습니다.</p>
+<pre><code class="language-berk">// matematik/index.berk
+use matematik::temel::*;
+use matematik::geometri::*;
+
+// Tüm alt module fonksiyonlarını dışa aktar
+export *;
+</code></pre>
+<h2 id="paket-yönetimi-bpm"><a class="header" href="#paket-yönetimi-bpm">패키지 관리(BPM)</a></h2>
+<p>BERK 패키지 관리자(BPM)를 사용하면 외부 패키지를 관리할 수 있습니다.</p>
+<h3 id="berk-toml-yapılandırması"><a class="header" href="#berk-toml-yapılandırması">berk.toml 구성</a></h3>
+<pre><code class="language-toml">[package]
+name = "projemiz"
+version = "1.0.0"
+
+[dependencies]
+serde = "1.0"
+http = "0.2"
+</code></pre>
+<h3 id="paket-kullanımı"><a class="header" href="#paket-kullanımı">패키지 사용법</a></h3>
+<pre><code class="language-berk">import "serde" as json;
+
+function main() do
+    let veri = json::serileştir({isim: "Ali", yaş: 30})
+    print(veri)
+end
+</code></pre>
+<h2 id="örnek-proje-yapısı"><a class="header" href="#örnek-proje-yapısı">샘플 프로젝트 구조</a></h2>
+<pre><code class="language-berk">// src/matematik/temel.berk
+export function topla(a: sayı, b: sayı) -&gt; sayı do
+    return a + b
+end
+
+// src/matematik/geometri.berk  
+export function domain(r: kesir) -&gt; kesir do
+    use matematik::temel::çarp;
+    return 3.14159 * r * r
+end
+
+// src/main.berk
+use matematik::temel::topla;
+use matematik::geometri::domain;
+
+function main() do
+    let sonuç1 = topla(5, 3)
+    let sonuç2 = domain(2.5)
+    
+    print("Toplam: " + sonuç1)
+    print("Alan: " + sonuç2)
+end
+</code></pre>
+<h2 id="özet"><a class="header" href="#özet">요약</a></h2>
+<ul>
+<li>각 파일은 모듈입니다</li>
+<li><code data-no-translate="true">kullan</code>로컬 모듈의 경우,<code data-no-translate="true">içe_aktar</code>외부 패키지의 경우</li>
+<li><code data-no-translate="true">dışa_aktar</code>다른 모듈에 대한 항목 열기</li>
+<li>모듈은 디렉토리 구조를 따릅니다.</li>
+<li>공개 상태는 기본적으로 비공개입니다.</li>
+<li>BPM을 통한 패키지 관리 지원</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../error-handling/ko_error-types.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../modules/ko_system.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../error-handling/ko_error-types.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../modules/ko_system.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

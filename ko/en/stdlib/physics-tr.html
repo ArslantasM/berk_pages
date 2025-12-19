@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>물리학 - 3D 물리학 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚛️ 물리학 - 3D 물리 엔진</h1>
+<p>강체, 충돌, 제약 조건, 연체</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">86</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,089</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">34KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import physics
+
+// 3D World
+let world = physics.world_create([0.0, -9.81, 0.0])
+
+// Ground plane
+let ground = physics.body_create_static()
+physics.body_add_shape(ground, physics.plane_shape([0.0, 1.0, 0.0], 0.0))
+physics.world_add_body(world, ground)
+
+// Sphere
+let sphere = physics.body_create_dynamic(1.0)
+physics.body_add_shape(sphere, physics.sphere_shape(0.5))
+physics.body_set_position(sphere, [0.0, 10.0, 0.0])
+physics.world_add_body(world, sphere)
+
+// Simulate
+her i in range(0, 100) for do
+    physics.world_step(world, 1.0/60.0)
+    let pos = physics.body_get_position(sphere)
+    print("t=" + i.yazıya() + ": y=" + pos[1].yazıya())
+end</code></pre>
+<h2>📚 모양</h2>
+<ul>
+<li>상자, 구체, 캡슐, 실린더, 원뿔</li>
+<li>메쉬(볼록한 껍질)</li>
+<li>하이트필드(지형)</li>
+</ul>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

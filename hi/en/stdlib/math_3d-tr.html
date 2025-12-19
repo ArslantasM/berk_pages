@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>गणित_3डी - 3डी गणित | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📐 गणित_3डी - 3डी गणित</h1>
+<p>वेक्टर3, मैट्रिक्स4, क्वाटरनियन, ट्रांसफ़ॉर्मेशन</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">94</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,156</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">36KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import math_3d
+
+// Vector3
+let v1 = math_3d.vec3(1.0, 2.0, 3.0)
+let v2 = math_3d.vec3(4.0, 5.0, 6.0)
+let sum = math_3d.vec3_add(v1, v2)
+let nokta = math_3d.vec3_dot(v1, v2)
+let çapraz = math_3d.vec3_cross(v1, v2)
+
+// Matrix4 (4x4 transformation matrix)
+let M = math_3d.mat4_identity()
+M = math_3d.mat4_translate(M, [10.0, 0.0, 0.0])
+M = math_3d.mat4_rotate_y(M, 45.0)
+M = math_3d.mat4_scale(M, [2.0, 2.0, 2.0])
+
+// Quaternion (rotation)
+let q = math_3d.quat_from_axis_angle([0.0, 1.0, 0.0], 90.0)
+let rotated = math_3d.quat_rotate_vec3(q, v1)</code></pre>
+<h2>📚कार्य</h2>
+<ul>
+<li><strong>वेक्टर3:</strong>जोड़ें, उप, mul, डॉट, क्रॉस, सामान्यीकृत, लंबाई</li>
+<li><strong>मैट्रिक्स4:</strong>अनुवाद करना, घुमाना, मापना, परिप्रेक्ष्य, देखना</li>
+<li><strong>चतुर्भुज:</strong>from_axis_angel, slerp, to_matrix</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>कैमरा सिस्टम</h3>
+<pre><code>import math_3d
+
+sınıf Camera do
+    let position: Vec3
+    let target: Vec3
+    let up: Vec3
+    
+    function view_matrix() -&gt; Mat4 do
+        return math_3d.mat4_look_at(self.position, self.target, self.up)
+    end
+    
+    function projection_matrix(fov: kesir, aspect: kesir, near: kesir, far: kesir) -&gt; Mat4 do
+        return math_3d.mat4_perspective(fov, aspect, near, far)
+    end
+end
+
+let cam = Camera.new()
+cam.position = math_3d.vec3(0.0, 5.0, 10.0)
+cam.target = math_3d.vec3(0.0, 0.0, 0.0)
+cam.up = math_3d.vec3(0.0, 1.0, 0.0)
+
+let view = cam.view_matrix()
+let proj = cam.projection_matrix(45.0, 16.0/9.0, 0.1, 100.0)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

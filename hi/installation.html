@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>इंस्टालेशन - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="hi_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/installation.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kurulum"><a class="header" href="#kurulum">स्थापित करना</a></h1>
+<p>इस अनुभाग में, आप सीखेंगे कि अपने सिस्टम पर BERK प्रोग्रामिंग भाषा कैसे स्थापित करें।</p>
+<h2 id="gereksinimler"><a class="header" href="#gereksinimler">आवश्यकताएं</a></h2>
+<h3 id="windows"><a class="header" href="#windows">खिड़कियाँ</a></h3>
+<ul>
+<li>विंडोज़ 10/11 (64-बिट)</li>
+<li><a href="https://rustup.rs/">जंग उपकरण श्रृंखला</a> (1.70+)</li>
+<li><a href="https://visualstudio.microsoft.com/downloads/">विजुअल स्टूडियो बिल्ड टूल्स 2022</a></li>
+<li><a href="https://llvm.org/">एलएलवीएम 17.0.6</a></li>
+<li>जाना</li>
+<li>न्यूनतम 8 जीबी रैम (संकलन के लिए)</li>
+</ul>
+<h3 id="linux"><a class="header" href="#linux">लिनक्स</a></h3>
+<ul>
+<li>उबंटू 20.04+ / डेबियन 11+ / फेडोरा 35+</li>
+<li>जंग उपकरण श्रृंखला (1.70+)</li>
+<li>जीसीसी/क्लैंग कंपाइलर</li>
+<li>एलएलवीएम 17.0.6</li>
+<li>जाना</li>
+<li>न्यूनतम 4 जीबी रैम</li>
+</ul>
+<h3 id="macos"><a class="header" href="#macos">मैक ओएस</a></h3>
+<ul>
+<li>macOS 11 (बिग सुर) या बाद का संस्करण</li>
+<li>जंग उपकरण श्रृंखला (1.70+)</li>
+<li>एक्सकोड कमांड लाइन टूल्स</li>
+<li>एलएलवीएम 17.0.6 (होमब्रू)</li>
+<li>जाना</li>
+<li>न्यूनतम 4 जीबी रैम</li>
+</ul>
+<h2 id="rust-kurulumu"><a class="header" href="#rust-kurulumu">जंग स्थापना</a></h2>
+<p>बर्क रस्ट में लिखा गया है। आपको पहले रस्ट इंस्टॉल करना होगा:</p>
+<h3 id="windowslinuxmacos"><a class="header" href="#windowslinuxmacos">विंडोज़/लिनक्स/मैकओएस</a></h3>
+<pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+</code></pre>
+<p>स्थापना के बाद:</p>
+<pre><code class="language-bash">rustc --version
+cargo --version
+</code></pre>
+<p>आउटपुट:</p>
+<pre><code>rustc 1.75.0 (1.75.0 2024-01-01)
+cargo 1.75.0 (1.75.0 2024-01-01)
+</code></pre>
+<h2 id="llvm-kurulumu"><a class="header" href="#llvm-kurulumu">एलएलवीएम इंस्टालेशन</a></h2>
+<p>मूल कोड जनरेशन के लिए BERK LLVM 17 का उपयोग करता है।</p>
+<h3 id="windows-Ön-derlenmiş"><a class="header" href="#windows-Ön-derlenmiş">विंडोज़ (पूर्व-संकलित)</a></h3>
+<ol>
+<li>
+<p><strong>एलएलवीएम 17.0.6 डाउनलोड करें:</strong></p>
+<ul>
+<li><a href="https://github.com/llvm/llvm-project/releases/tag/llvmorg-17.0.6">एलएलवीएम रिलीज़</a></li>
+<li><code data-no-translate="true">LLVM-17.0.6-win64.exe</code>डाउनलोड फ़ाइल</li>
+</ul>
+</li>
+<li>
+<p><strong>इलाज:</strong></p>
+<ul>
+<li>इंस्टॉलर चलाएँ</li>
+<li>"सिस्टम पथ में एलएलवीएम जोड़ें" जांचें</li>
+<li>स्थापना तरीका:<code data-no-translate="true">C:\Program Files\LLVM</code>(गलती करना)</li>
+</ul>
+</li>
+<li>
+<p><strong>सत्यापित करें:</strong></p>
+<pre><code class="language-powershell">llvm-config --version
+</code></pre>
+</li>
+</ol>
+<h3 id="windows-kaynak-koddan"><a class="header" href="#windows-kaynak-koddan">विंडोज़ (स्रोत कोड से)</a></h3>
+<p>विस्तृत स्थापना के लिए:<a href="../hi_LLVM_SETUP.html">LLVM_SETUP.md</a></p>
+<pre><code class="language-powershell"># LLVM kaynak kodunu indir
+git clone --depth 1 --branch llvmorg-17.0.6 https://github.com/llvm/llvm-project.git
+
+# Build dizini oluştur
+cd llvm-project
+mkdir build
+cd build
+
+# CMake yapılandırması
+cmake -G Ninja ../llvm `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DLLVM_TARGETS_TO_BUILD=all `
+  -DCMAKE_INSTALL_PREFIX=C:\llvm-17
+
+# Derle (2-3 saat sürebilir)
+ninja
+ninja install
+</code></pre>
+<h3 id="linux-ubuntudebian"><a class="header" href="#linux-ubuntudebian">लिनक्स (उबंटू/डेबियन)</a></h3>
+<pre><code class="language-bash"># LLVM 17 repository ekle
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 17
+
+# Gerekli paketler
+sudo apt install llvm-17-dev libllvm17 llvm-17-tools clang-17
+</code></pre>
+<h3 id="linux-fedora"><a class="header" href="#linux-fedora">लिनक्स (फेडोरा)</a></h3>
+<pre><code class="language-bash">sudo dnf install llvm17-devel llvm17-libs clang17
+</code></pre>
+<h3 id="macos-homebrew"><a class="header" href="#macos-homebrew">मैकओएस (होमब्रू)</a></h3>
+<pre><code class="language-bash">brew install llvm@17
+
+# PATH'e ekle
+echo 'export PATH="/opt/homebrew/opt/llvm@17/bin:$PATH"' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+</code></pre>
+<h3 id="llvm-environment-variables"><a class="header" href="#llvm-environment-variables">एलएलवीएम पर्यावरण चर</a></h3>
+<p>स्थापना के बाद पर्यावरण चर सेट करें:</p>
+<p><strong>विंडोज़ (पॉवरशेल):</strong></p>
+<pre><code class="language-powershell">$env:LLVM_SYS_170_PREFIX = "C:\llvm-17"
+[Environment]::SetEnvironmentVariable("LLVM_SYS_170_PREFIX", "C:\llvm-17", "User")
+</code></pre>
+<p><strong>Linux/macOS (बैश/Zsh):</strong></p>
+<pre><code class="language-bash">export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17
+echo 'export LLVM_SYS_170_PREFIX=/usr/lib/llvm-17' &gt;&gt; ~/.bashrc
+</code></pre>
+<h2 id="berk-kurulumu"><a class="header" href="#berk-kurulumu">बर्क स्थापना</a></h2>
+<h3 id="method-1-pre-built-binary-windows---Önerilen-"><a class="header" href="#method-1-pre-built-binary-windows---Önerilen-">विधि 1: पूर्व-निर्मित बाइनरी (विंडोज़ - अनुशंसित) ⚡</a></h3>
+<p><strong>Windows x64 उपयोगकर्ताओं के लिए सबसे तेज़ तरीका:</strong></p>
+<ol>
+<li>
+<p><strong>डाउनलोड करना:</strong></p>
+<ul>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/BERK-lang.exe">बर्क-lang.exe (2.2 एमबी)</a></li>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-lsp.exe">berk-lsp.exe (1.2 एमबी)</a></li>
+<li>🔗 <a href="https://github.com/ArslantasM/berk_pages/raw/main/releases/berk-repl.exe">बर्क-repl.exe (464 KB)</a></li>
+<li>तीन अलग-अलग फ़ाइलें: कंपाइलर, एलएसपी, और आरईपीएल (एलएलवीएम डायनेमिक लिंकिंग)</li>
+</ul>
+</li>
+<li>
+<p><strong>इलाज:</strong></p>
+<pre><code class="language-powershell"># İstediğiniz bir klasöre kopyalayın
+New-Item -ItemType Directory -Path C:\BERK -Force
+Move-Item .\BERK-lang.exe C:\BERK\
+
+# PATH'e ekleyin
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    [Environment]::GetEnvironmentVariable("Path", "User") + ";C:\BERK",
+    "User"
+)
+
+# Yeni terminal açın ve test edin
+BERK-lang --version
+</code></pre>
+</li>
+<li>
+<p><strong>त्वरित परीक्षण:</strong></p>
+<pre><code class="language-powershell"># REPL ile anında test
+BERK-lang repl
+&gt;&gt;&gt; print("Merhaba!")
+Merhaba!
+</code></pre>
+</li>
+</ol>
+<p><strong>विशेषताएँ:</strong></p>
+<ul>
+<li>✅ एलएलवीएम 17 डायनेमिक लिंकिंग - सिस्टम एलएलवीएम का उपयोग करता है</li>
+<li>✅ सभी 19 लक्ष्य प्लेटफार्मों के लिए समर्थन</li>
+<li>✅ REPL, JIT रन और नेटिव कंपाइल मोड</li>
+<li>✅ रनटाइम लाइब्रेरी शामिल हैं (JSON, क्रिप्टो, HTTP)</li>
+</ul>
+<p><strong>टिप्पणियाँ:</strong>चूंकि एलएलवीएम डायनेमिक लिंकिंग का उपयोग किया गया था, कुल आकार घटकर ~3.8 एमबी हो गया (v0.8.0 में 83 एमबी था)।</p>
+<h3 id="method-2-kaynak-koddan-tüm-platformlar"><a class="header" href="#method-2-kaynak-koddan-tüm-platformlar">विधि 2: स्रोत कोड से (सभी प्लेटफ़ॉर्म)</a></h3>
+<p><strong>Linux/macOS या अनुकूलन चाहने वालों के लिए:</strong></p>
+<pre><code class="language-bash"># Repository'yi klonla
+git clone https://github.com/ArslantasM/berk.git
+cd berk/berk-lang
+
+# LLVM feature ile derle
+cargo build --release --features llvm
+
+# Test et
+cargo test --features llvm
+
+# Binary'yi PATH'e ekle (Linux/macOS)
+sudo ln -s $(pwd)/target/release/BERK-lang /usr/local/bin/BERK-lang
+
+# Binary'yi PATH'e ekle (Windows)
+# target\release\BERK-lang.exe dosyasını PATH'teki bir dizine kopyalayın
+</code></pre>
+<p><strong>संकलन समय:</strong>~40 सेकंड (रिलीज़ बिल्ड)</p>
+<h3 id="method-3-cargo-install-gelecek"><a class="header" href="#method-3-cargo-install-gelecek">विधि 3: कार्गो इंस्टालेशन (भविष्य)</a></h3>
+<pre><code class="language-bash"># Planlanan özellik
+cargo install BERK-lang --features llvm
+</code></pre>
+<h2 id="kurulum-doğrulama"><a class="header" href="#kurulum-doğrulama">स्थापना सत्यापन</a></h2>
+<p>सत्यापित करें कि स्थापना सफल रही:</p>
+<pre><code class="language-bash"># Derleyici versiyonu
+BERK-lang --version
+</code></pre>
+<p>आउटपुट:</p>
+<pre><code>🚀 BERK Derleyici v1.0.0
+   LLVM 17.0.6 (19 Target Support)
+</code></pre>
+<h3 id="hızlı-test-repl"><a class="header" href="#hızlı-test-repl">त्वरित परीक्षण: आरईपीएल</a></h3>
+<p><strong>सबसे तेज़ तरीका - REPL का उपयोग करें:</strong></p>
+<pre><code class="language-bash">BERK-lang repl
+</code></pre>
+<p>आरईपीएल में परीक्षण:</p>
+<pre><code class="language-berk">&gt;&gt;&gt; print("Kurulum başarılı! 🎉")
+Kurulum başarılı! 🎉
+
+&gt;&gt;&gt; let x = 42
+&gt;&gt;&gt; print(x * 2)
+84
+
+&gt;&gt;&gt; function kare(n: int) -&gt; int { return n * n }
+&gt;&gt;&gt; print(kare(5))
+25
+</code></pre>
+<p>गमन करना:<code data-no-translate="true">:quit</code>या Ctrl+C</p>
+<h3 id="test-programı-derleme"><a class="header" href="#test-programı-derleme">परीक्षण कार्यक्रम (संकलन)</a></h3>
+<p><strong>फ़ाइल से चल रहा है:</strong></p>
+<p><strong>परीक्षण.बर्क:</strong></p>
+<pre><code class="language-berk">function main() -&gt; int
+do
+    print("Kurulum başarılı! 🎉")
+    return 0
+end
+</code></pre>
+<p><strong>विकल्प 1: जेआईटी ऑपरेशन (तेज़)</strong></p>
+<pre><code class="language-bash">BERK-lang run test.berk
+</code></pre>
+<p><strong>विकल्प 2: मूल संकलन</strong></p>
+<pre><code class="language-bash">BERK-lang compile test.berk -o test.exe
+./test.exe
+</code></pre>
+<p>दोनों मामलों में आउटपुट:</p>
+<pre><code>Kurulum başarılı! 🎉
+</code></pre>
+<h2 id="vs-code-eklentisi-opsiyonel"><a class="header" href="#vs-code-eklentisi-opsiyonel">वीएस कोड ऐड-इन (वैकल्पिक)</a></h2>
+<p>यदि आप VS कोड का उपयोग कर रहे हैं, तो BERK प्लगइन इंस्टॉल करें:</p>
+<h3 id="method-1-marketplace-yakında"><a class="header" href="#method-1-marketplace-yakında">विधि 1: बाज़ार (जल्द ही आ रहा है)</a></h3>
+<pre><code>VS Code → Extensions → "BERK" ara → Install
+</code></pre>
+<h3 id="method-2-manuel-kurulum"><a class="header" href="#method-2-manuel-kurulum">विधि 2: मैन्युअल स्थापना</a></h3>
+<pre><code class="language-bash">cd berk/berk-vscode
+npm install
+npm run compile
+code --install-extension BERK-lang-0.1.0.vsix
+</code></pre>
+<p>विशेषताएँ:</p>
+<ul>
+<li>वाक्य - विन्यास पर प्रकाश डालना</li>
+<li>कोड स्निपेट</li>
+<li>इंटेलिजेंस (बुनियादी)</li>
+<li>रन/डीबग कमांड</li>
+<li>स्टेटस बार एकीकरण</li>
+</ul>
+<h2 id="repl-kullanımı"><a class="header" href="#repl-kullanımı">आरईपीएल का उपयोग करना</a></h2>
+<p>आरईपीएल (रीड-एवल-प्रिंट लूप) मुख्य कंपाइलर के साथ आता है:</p>
+<pre><code class="language-bash"># REPL'i başlat
+BERK-lang repl
+</code></pre>
+<h3 id="repl-komutları"><a class="header" href="#repl-komutları">आरईपीएल कमांड</a></h3>
+<pre><code class="language-berk">BERK&gt; :help
+
+Kullanılabilir komutlar:
+  :quit, :q      - REPL'den çık
+  :help, :h      - Yardım göster
+  :clear, :c     - Ekranı temizle
+  :history       - Komut geçmişi
+  :lang &lt;tr|en&gt;  - Dil değiştir (Türkçe/English)
+  :type &lt;expr&gt;   - İfadenin tipini göster
+</code></pre>
+<h3 id="repl-Örnekleri"><a class="header" href="#repl-Örnekleri">आरईपीएल उदाहरण</a></h3>
+<p><strong>सरल गणना:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; 5 + 3
+8
+
+&gt;&gt;&gt; 10 * 2.5
+25.0
+</code></pre>
+<p><strong>चर:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; let isim = "BERK"
+&gt;&gt;&gt; print("Merhaba, " + isim)
+Merhaba, BERK
+</code></pre>
+<p><strong>कार्य:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; function topla(a: int, b: int) -&gt; int { return a + b }
+&gt;&gt;&gt; topla(10, 20)
+30
+</code></pre>
+<p><strong>भाषा बदलना:</strong></p>
+<pre><code class="language-berk">&gt;&gt;&gt; :lang en
+Language switched to English
+
+&gt;&gt;&gt; function hello(name: string) { print("Hello, " + name) }
+&gt;&gt;&gt; hello("World")
+Hello, World
+
+&gt;&gt;&gt; :lang tr
+Dil Türkçe'ye değiştirildi
+</code></pre>
+<h2 id="sorun-giderme"><a class="header" href="#sorun-giderme">समस्या निवारण</a></h2>
+<h3 id="llvm-bulunamıyor"><a class="header" href="#llvm-bulunamıyor">एलएलवीएम नहीं मिल सका</a></h3>
+<p><strong>गलती:</strong></p>
+<pre><code>error: could not find native static library `LLVM-17`
+</code></pre>
+<p><strong>समाधान:</strong></p>
+<pre><code class="language-bash"># LLVM_SYS_170_PREFIX doğru ayarlı mı?
+echo $LLVM_SYS_170_PREFIX  # Linux/macOS
+echo $env:LLVM_SYS_170_PREFIX  # Windows
+
+# LLVM kurulu mu?
+llvm-config --version
+</code></pre>
+<h3 id="cargo-build-hatası"><a class="header" href="#cargo-build-hatası">कार्गो निर्माण त्रुटि</a></h3>
+<p><strong>गलती:</strong></p>
+<pre><code>error: linker `link.exe` not found
+</code></pre>
+<p><strong>समाधान (विंडोज़):</strong></p>
+<ul>
+<li>विजुअल स्टूडियो बिल्ड टूल्स 2022 इंस्टॉल होना चाहिए</li>
+<li>"C++ के साथ डेस्कटॉप विकास" कार्यभार का चयन किया जाना चाहिए</li>
+</ul>
+<h3 id="yavaş-derleme"><a class="header" href="#yavaş-derleme">धीमा संकलन</a></h3>
+<p><strong>सुझावों:</strong></p>
+<pre><code class="language-bash"># Parallel build (4 core)
+cargo build --release --features llvm -j4
+
+# Incremental compilation
+export CARGO_INCREMENTAL=1
+
+# Daha az optimization (debug build)
+cargo build --features llvm
+</code></pre>
+<h3 id="macos-arm-m1m2-sorunları"><a class="header" href="#macos-arm-m1m2-sorunları">macOS ARM (M1/M2) समस्याएँ</a></h3>
+<pre><code class="language-bash"># Rosetta 2 kurulumu
+softwareupdate --install-rosetta
+
+# ARM native LLVM
+brew install llvm@17
+
+# Architecture kontrol
+arch
+# Çıktı: arm64
+</code></pre>
+<h2 id="ek-kurulum-adımları"><a class="header" href="#ek-kurulum-adımları">अतिरिक्त सेटअप चरण</a></h2>
+<h3 id="debugger-gelecek"><a class="header" href="#debugger-gelecek">डिबगर (भविष्य)</a></h3>
+<pre><code class="language-bash"># GDB (Linux)
+sudo apt install gdb
+
+# LLDB (macOS)
+xcode-select --install
+</code></pre>
+<h3 id="profiler-gelecek"><a class="header" href="#profiler-gelecek">प्रोफाइलर (भविष्य)</a></h3>
+<pre><code class="language-bash"># Valgrind (Linux)
+sudo apt install valgrind
+
+# Instruments (macOS)
+# Xcode ile birlikte gelir
+</code></pre>
+<h2 id="kurulum-tamamlandı"><a class="header" href="#kurulum-tamamlandı">स्थापना पूर्ण!</a></h2>
+<p>अब आप बर्क के साथ कोड करने के लिए तैयार हैं!</p>
+<p><strong>अगला चरण:</strong> <a href="./hi_hello-world.html">हैलो वर्ल्ड!</a>अपना प्रोग्राम लिखें</p>
+<h2 id="yardım-ve-destek"><a class="header" href="#yardım-ve-destek">सहायता और समर्थन</a></h2>
+<p>समस्याएं आ रही हैं?</p>
+<ul>
+<li><a href="./hi_faq.html">अक्सर पूछे जाने वाले प्रश्न</a>- अक्सर पूछे जाने वाले प्रश्नों</li>
+<li><a href="https://github.com/ArslantasM/berk/issues">गिटहब मुद्दे</a>- दोष रिपोर्ट</li>
+<li><a href="https://github.com/ArslantasM/berk/discussions">विचार विमर्श</a>- सामुदायिक सहायता</li>
+<li>ईमेल: BERK-support@example.com</li>
+</ul>
+<hr>
+<p><strong>पूर्व:</strong> <a href="./hi_intro.html">प्रवेश द्वार</a> | <strong>अगला:</strong> <a href="./hi_hello-world.html">हैलो वर्ल्ड!</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="hi_intro.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="hi_hello-world.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="hi_intro.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="hi_hello-world.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

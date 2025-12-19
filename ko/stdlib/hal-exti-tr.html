@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::exti - 외부 인터럽트 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ 주::exti</h1>
+<p>외부 인터럽트 - GPIO 핀 이벤트 감지</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~360줄</span>
+<span class="stat-badge">~15가지 기능</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>EXTI 모듈은 GPIO 핀에서 발생하는 변화(상승 에지, 하강 에지)를 캡처하여 인터럽트를 생성합니다. 버튼 누르기, 외부 센서 신호 및 비동기 이벤트에 매우 중요합니다. 폴링 없이도 낮은 전력 소비와 높은 응답 시간을 제공합니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li><strong>16개 EXTI 라인:</strong>EXTI0-EXTI15(GPIO 핀용)</li>
+<li><strong>트리거 모드:</strong>상승 에지, 하강 에지 또는 둘 다</li>
+<li><strong>마스킹:</strong>인터럽트 활성화/비활성화 지원</li>
+<li><strong>소프트웨어 중단:</strong>소프트웨어에서 인터럽트 트리거</li>
+<li><strong>이벤트 모드:</strong>인터럽트 없이 DMA 트리거링</li>
+<li><strong>웨이크업 소스:</strong>정지/대기 모드 종료</li>
+<li><strong>디바운스 지원:</strong>소프트웨어 기반 노이즈 필터링</li>
+<li><strong>우선순위 제어:</strong>NVIC를 통한 우선순위 관리</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+// Button pin setup (PA0 - User Button)
+gpio.pin_init(gpio.PORT_A, 0, do
+    mode: gpio.MODE_INPUT,
+    pull: gpio.PULL_DOWN,
+    speed: gpio.SPEED_LOW
+end)
+
+// EXTI configuration (falling edge for button press)
+let exti_cfg = exti.init(0, do  // EXTI line 0 -&gt; PA0
+    trigger: exti.TRIGGER_FALLING,
+    mode: exti.MODE_INTERRUPT,
+    callback: buton_callback
+end)
+
+// Enable interrupt in NVIC
+nvic.enable_irq(nvic.EXTI0_IRQn, do
+    priority: 5
+end)
+
+// Callback function
+function buton_callback() do
+    // Button pressed!
+    led_toggle()
+end</code></pre>
+
+<h2>📦 유형 및 열거형</h2>
+<pre><code>// EXTI Lines (0-15 for GPIO pins)
+enum Line {
+    LINE_0, LINE_1, LINE_2, LINE_3, LINE_4,
+    LINE_5, LINE_6, LINE_7, LINE_8, LINE_9,
+    LINE_10, LINE_11, LINE_12, LINE_13, LINE_14, LINE_15,
+    LINE_PVD = 16,    // PVD output
+    LINE_RTC = 17,    // RTC alarm
+    LINE_USB = 18,    // USB wakeup
+    LINE_ETH = 19     // Ethernet wakeup
+}
+
+// Trigger Mode
+enum Trigger {
+    TRIGGER_RISING,   // 0-&gt;1 transition
+    TRIGGER_FALLING,  // 1-&gt;0 transition
+    TRIGGER_BOTH      // Any edge
+}
+
+// EXTI Mode
+enum Mode {
+    MODE_INTERRUPT,   // Generate interrupt
+    MODE_EVENT        // Generate event (for DMA)
+}
+
+struct EXTIConfig do
+    trigger: Trigger,
+    mode: Mode,
+    callback: function(),
+    debounce_ms: sayı = 0  // Software debounce
+end</code></pre>
+
+<h2>💡 예 1: 디바운스가 포함된 버튼</h2>
+<div class="example-box">
+<h3>문제: 기계식 버튼의 튕김 문제</h3>
+<pre><code>import hal::exti, hal::gpio, hal::systick
+
+let son_basin_zamani: sayı64 = 0
+const DEBOUNCE_SURESI: sayı = 50  // 50 ms
+
+function buton_init() do
+    // PA0 -&gt; User Button (Active Low)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI0 -&gt; Falling edge (button press)
+    exti.init(0, do
+        trigger: exti.TRIGGER_FALLING,
+        mode: exti.MODE_INTERRUPT,
+        callback: buton_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI0_IRQn, 5)
+end
+
+function buton_handler() do
+    let simdiki_zaman = systick.get_ms()
+    
+    // Debounce check
+    if (simdiki_zaman - son_basin_zamani &lt; DEBOUNCE_SURESI) do
+        return  // Ignore bouncing
+    end
+    
+    son_basin_zamani = simdiki_zaman
+    
+    // Real button press detected
+    buton_basildi()
+end
+
+function buton_basildi() do
+    io.yazdir_satır("Button pressed!")
+    led_toggle()
+end</code></pre>
+<p><strong>산출:</strong>튀는 문제 없이 버튼 감지를 청소합니다. 50ms 이내에 재트리거를 필터링합니다.</p>
+</div>
+
+<h2>💡 예 2: 로터리 인코더(구적 디코더)</h2>
+<div class="example-box">
+<h3>문제: 기계식 엔코더로 위치 판독</h3>
+<pre><code>import hal::exti, hal::gpio
+
+let encoder_konum: sayı = 0
+let son_A: mantık = false
+let son_B: mantık = false
+
+function encoder_init() do
+    // PA1 -&gt; Encoder A channel
+    gpio.pin_init(gpio.PORT_A, 1, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // PA2 -&gt; Encoder B channel
+    gpio.pin_init(gpio.PORT_A, 2, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_UP
+    end)
+    
+    // EXTI on both channels (both edges)
+    exti.init(1, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_A_handler
+    end)
+    
+    exti.init(2, do
+        trigger: exti.TRIGGER_BOTH,
+        callback: encoder_B_handler
+    end)
+    
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 5)
+    
+    // Read initial state
+    son_A = gpio.pin_read(gpio.PORT_A, 1)
+    son_B = gpio.pin_read(gpio.PORT_A, 2)
+end
+
+function encoder_A_handler() do
+    let A = gpio.pin_read(gpio.PORT_A, 1)
+    let B = son_B
+    
+    // Quadrature decoding logic
+    if (A != son_A) do
+        if (A == B) do
+            encoder_konum = encoder_konum + 1  // CW
+        yoksa do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    son_A = A
+end
+
+function encoder_B_handler() do
+    let A = son_A
+    let B = gpio.pin_read(gpio.PORT_A, 2)
+    
+    if (B != son_B) do
+        if (A != B) do
+            encoder_konum = encoder_konum + 1  // CW
+        yoksa do
+            encoder_konum = encoder_konum - 1  // CCW
+        end
+    end
+    
+    son_B = B
+end
+
+function encoder_oku() -&gt; sayı do
+    return encoder_konum
+end</code></pre>
+<p><strong>산출:</strong>실시간으로 로터리 엔코더 위치를 추적합니다. CW/CCW 방향이 자동으로 감지됩니다.</p>
+</div>
+
+<h2>💡 예 3: 다중 소스 우선순위 처리</h2>
+<div class="example-box">
+<h3>문제: 우선순위에 따라 여러 인터럽트 소스 관리</h3>
+<pre><code>import hal::exti, hal::gpio, hal::nvic
+
+const KRITIK_OLAY_PIN: sayı = 0   // PA0 -&gt; Emergency stop
+const NORMAL_OLAY_PIN: sayı = 1   // PA1 -&gt; Regular sensor
+const DUSUK_OLAY_PIN: sayı = 2    // PA2 -&gt; Low priority event
+
+function coklu_interrupt_init() do
+    // Critical event (highest priority)
+    gpio.pin_init(gpio.PORT_A, KRITIK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(KRITIK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: kritik_handler
+    end)
+    nvic.enable_irq(nvic.EXTI0_IRQn, 0)  // Highest priority
+    
+    // Normal event (medium priority)
+    gpio.pin_init(gpio.PORT_A, NORMAL_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(NORMAL_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: normal_handler
+    end)
+    nvic.enable_irq(nvic.EXTI1_IRQn, 5)  // Medium priority
+    
+    // Low priority event
+    gpio.pin_init(gpio.PORT_A, DUSUK_OLAY_PIN, do
+        mode: gpio.MODE_INPUT, pull: gpio.PULL_UP
+    end)
+    exti.init(DUSUK_OLAY_PIN, do
+        trigger: exti.TRIGGER_FALLING,
+        callback: dusuk_handler
+    end)
+    nvic.enable_irq(nvic.EXTI2_IRQn, 10)  // Low priority
+end
+
+function kritik_handler() do
+    // Emergency stop - preempt everything!
+    motor_durdur()
+    alarm_calar()
+    io.yazdir_satır("CRITICAL: Emergency stop!")
+end
+
+function normal_handler() do
+    // Regular sensor reading
+    let deger = sensor_oku()
+    io.yazdir_satır("Sensor value: " + deger.metne())
+end
+
+function dusuk_handler() do
+    // Low priority background task
+    log_olay("Low priority event")
+end</code></pre>
+<p><strong>산출:</strong>중요한 이벤트는 우선순위가 낮은 인터럽트를 선점합니다. 시스템 보안이 보장됩니다.</p>
+</div>
+
+<h2>📚 API 참조</h2>
+<h3>기본 기능</h3>
+<pre><code>// EXTI hattını yapılandırır
+function init(line: sayı, config: EXTIConfig) -&gt; Sonuç
+
+// EXTI hattını etkinleştirir
+function enable(line: sayı)
+
+// EXTI hattını devre dışı bırakır
+function disable(line: sayı)
+
+// Pending flag'i temizler
+function clear_pending(line: sayı)
+
+// Pending flag'i kontrol eder
+function is_pending(line: sayı) -&gt; mantık
+
+// Software interrupt tetikler
+function trigger_software(line: sayı)
+
+// GPIO pin ile EXTI hattını eşleştirir
+function connect_gpio(line: sayı, port: gpio.Port, pin: sayı)</code></pre>
+
+<div class="warning">
+<strong>⚠️ 중요 사항:</strong>
+<ul>
+<li><strong>공유 IRQ:</strong>EXTI5-9 및 EXTI10-15는 공유 IRQ를 사용합니다.</li>
+<li><strong>핀 매핑:</strong>동일한 핀 번호는 다른 포트에서 동일한 EXTI 라인을 사용합니다(PA0, PB0, PC0 -&gt; EXTI0).</li>
+<li><strong>콜백 안전:</strong>콜백 함수는 짧아야 합니다(과중한 작업은 메인 루프로 연기되어야 함).</li>
+<li><strong>디바운스:</strong>하드웨어 디바운스 없음, 소프트웨어 필터링 필요</li>
+</ul>
+</div>
+
+<h2>🖥️ 플랫폼 지원</h2>
+<table>
+<tbody><tr>
+<th>플랫폼</th>
+<th>EXTI 라인</th>
+<th>인터럽트 그룹</th>
+<th>이벤트 모드</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>20 (0-15 + 4 스페셜)</td>
+<td>IRQ 7개</td>
+<td>예</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>23 (0-15 + 8 스페셜)</td>
+<td>IRQ 7개</td>
+<td>예</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>23</td>
+<td>IRQ 7개</td>
+<td>예</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>20</td>
+<td>ECLIC(IRQ 47개)</td>
+<td>예</td>
+</tr>
+<tr>
+<td>ESP32</td>
+<td>모든 GPIO</td>
+<td>CPU 코어 2개</td>
+<td>아니요</td>
+</tr>
+</tbody></table>
+
+<h2>✅ 모범 사례</h2>
+<ul>
+<li>✅ <strong>디바운스 사용:</strong>기계식 버튼에 20~50ms 디바운스 적용</li>
+<li>✅ <strong>콜백을 짧게 유지하겠습니다.</strong>인터럽트 핸들러에서 최소 작업 수행, 플래그 설정</li>
+<li>✅ <strong>우선순위 설정:</strong>중요한 이벤트에는 낮은 우선순위 번호 사용</li>
+<li>✅ <strong>삭제 대기 중:</strong>인터럽트 핸들러 끝에서 보류 중인 비트 지우기</li>
+<li>❌ <strong>부동 거래 만들기:</strong>인터럽트 시 부동 소수점 계산 방지</li>
+<li>❌ <strong>긴 지연 사용:</strong>콜백에는 차단 지연을 사용하면 안 됩니다.</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><a href="ko_hal-gpio-tr.html">상태::gpio</a>- GPIO 핀 구성</li>
+<li><a href="ko_hal-nvic-tr.html">상태::nvic</a>- 인터럽트 우선순위 관리</li>
+<li><a href="ko_hal-power-tr.html">상태::전력</a>- 웨이크업 기능이 있는 저전력 모드</li>
+<li><a href="ko_hal-systick-tr.html">상태::시스틱</a>- 디바운스 타이밍</li>
+<li><a href="ko_hal-timer-tr.html">상태::타이머</a>- 하드웨어 인코더 모드</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">🔙 HAL 모듈</a> | 
+<a href="ko_hal-exti-en.html">🌐영어</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

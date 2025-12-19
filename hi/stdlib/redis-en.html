@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>रेडिस - रेडिस कैश क्लाइंट | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#dc382d 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #dc382d;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔴 रेडिस</h1>
+<p>रेडिस कैश क्लाइंट - आरईएसपी प्रोटोकॉल</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~450 पंक्तियाँ</span>
+<span class="stat-badge">~60 कार्य</span>
+<span class="stat-badge">इन-मेमोरी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>Redis मॉड्यूल RESP (REdis सीरियलाइज़ेशन प्रोटोकॉल) पर एक पूर्ण विशेषताओं वाला Redis क्लाइंट प्रदान करता है। यह स्ट्रिंग, हैश, सूची, सेट संचालन और पब/उप समर्थन प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>स्ट्रिंग ऑपरेशन: GET, SET, INCR, DECR</li>
+<li>हैश ऑपरेशन: HSET, HGET, HGETALL</li>
+<li>सूची संचालन: LPUSH, RPUSH, LRANGE</li>
+<li>सेट ऑपरेशन: SADD, SMEMBER, SISMEMBER</li>
+<li>मुख्य समाप्ति: समाप्ति, टीटीएल</li>
+<li>पब/उप संदेश</li>
+<li>पाइपलाइन और लेनदेन</li>
+<li>कनेक्शन पूलिंग</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import redis
+
+// Connect
+let client = redis.connect("127.0.0.1:6379")?
+
+// String operations
+client.set("user:1:name", "Alice")?
+let name = client.get("user:1:name")?
+io.println("Name: {}", name)
+
+// With expiration (5 minutes)
+client.setex("session:abc", 300, "user_data")?
+
+client.close()</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: सत्र प्रबंधन</h3>
+<pre><code>import redis, crypto, time, json
+
+struct SessionStore do
+    redis: redis.Client
+end
+
+struct Session do
+    user_id: int,
+    username: str,
+    created_at: time.Instant,
+    data: Map[str, str]
+end
+
+function session_store_new(redis_url: str) -&gt; Result[SessionStore, Error] do
+    return Ok(SessionStore do
+        redis: redis.connect(redis_url)?
+    end)
+end
+
+function create_session(store: SessionStore, user_id: int, username: str) 
+    -&gt; Result[str, Error] do
+    // Generate session ID
+    let session_id = crypto.random_hex(32)
+    
+    // Create session
+    let session = Session do
+        user_id: user_id,
+        username: username,
+        created_at: time.now(),
+        data: Map.new()
+    end
+    
+    // Store in Redis (1 hour TTL)
+    let key = "session:{}".formatla(session_id)
+    let value = json.encode(session)
+    store.redis.setex(key, 3600, value)?
+    
+    return Ok(session_id)
+end
+
+function get_session(store: SessionStore, session_id: str) 
+    -&gt; Result[Optional[Session], Error] do
+    let key = "session:{}".formatla(session_id)
+    let value = store.redis.get(key)?
+    
+    if value.is_none()  do
+        return Ok(None)
+    end
+    
+    let session: Session = json.decode(value.unwrap())?
+    return Ok(Some(session))
+end
+
+function destroy_session(store: SessionStore, session_id: str) -&gt; Result[None, Error] do
+    let key = "session:{}".formatla(session_id)
+    store.redis.del(key)?
+    return Ok(None)
+end
+
+// useım
+function main() do
+    let store = session_store_new("127.0.0.1:6379")?
+    
+    // Login - create session
+    let session_id = create_session(store, 123, "alice")?
+    io.println("Session created: {}", session_id)
+    
+    // Verify session
+    if session = get_session(store, session_id)?  do
+        io.println("User: {} (ID: {})", session.username, session.user_id)
+    end
+    
+    // Logout - destroy session
+    destroy_session(store, session_id)?
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: दर सीमित करना</h3>
+<pre><code>import redis, time
+
+function rate_limit_check(client: redis.Client, user_id: int, max_requests: int, window_secs: int) 
+    -&gt; Result[bool, Error] do
+    let key = "rate_limit:{}".formatla(user_id)
+    
+    // Increment counter
+    let count = client.incr(key)?
+    
+    // Set expiry on first request
+    if count == 1  do
+        client.expire(key, window_secs)?
+    end
+    
+    // Check limit
+    return Ok(count &lt;= max_requests)
+end
+
+// API endpoint
+function handle_request(client: redis.Client, user_id: int) -&gt; Result[None, Error] do
+    // 100 requests per minute
+    if rate_limit_check(client, user_id, 100, 60)?  do
+        // Process request
+        io.println("Request processed")
+    else do
+        io.println("Rate limit exceeded")
+    end
+    return Ok(None)
+end</code></pre>
+</div>
+
+<h2>📊डेटा संरचनाएं</h2>
+<pre><code>// Hash (dictionary)
+client.hset("user:1", "name", "Alice")?
+client.hset("user:1", "email", "alice@example.com")?
+let all = client.hgetall("user:1")?
+
+// List (queue)
+client.lpush("queue:tasks", "task1")?
+client.lpush("queue:tasks", "task2")?
+let task = client.rpop("queue:tasks")?
+
+// Set (unique items)
+client.sadd("tags", "python")?
+client.sadd("tags", "rust")?
+let members = client.smembers("tags")?</code></pre>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">msgpack</code>- बाइनरी क्रमबद्धता</li>
+<li><code data-no-translate="true">json</code>- JSON क्रमांकन</li>
+<li><code data-no-translate="true">postgresql</code>- लगातार भंडारण</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

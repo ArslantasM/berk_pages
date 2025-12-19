@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::i2c - अंतर-एकीकृत सर्किट | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#16a085;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔗 राज्य::i2c</h1>
+<p>इंटर-इंटीग्रेटेड सर्किट बस - I²C प्रोटोकॉल</p>
+<div style="margin-top:15px">
+<span class="stat-badge">396 पंक्तियाँ</span>
+<span class="stat-badge">~18 कार्य</span>
+<span class="stat-badge">बहु मास्टर</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>I2C (I²C, IIC) एक दो-तार तुल्यकालिक संचार प्रोटोकॉल है। इसका उपयोग सेंसर, EEPROM, RTC, OLED डिस्प्ले जैसी परिधीय इकाइयों से कनेक्शन के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>मास्टर/स्लेव मोड</li>
+<li>7-बिट/10-बिट एड्रेसिंग</li>
+<li>मानक मोड (100 kHz)</li>
+<li>तेज़ मोड (400 किलोहर्ट्ज़)</li>
+<li>फास्ट मोड प्लस (1 मेगाहर्ट्ज)</li>
+<li>मल्टी-मास्टर समर्थन</li>
+<li>घड़ी खिंचती हुई</li>
+<li>डीएमए समर्थन</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::i2c, hal::gpio
+
+// Setup I2C pins (PB6=SCL, PB7=SDA)
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 6, do  // SCL
+    mode: gpio.MODE_AF_OD,
+    speed: gpio.SPEED_HIGH,
+    pull: gpio.PULL_UP,
+    af: 4
+end)
+gpio.pin_init(gpio.PORT_B, 7, do  // SDA
+    mode: gpio.MODE_AF_OD,
+    speed: gpio.SPEED_HIGH,
+    pull: gpio.PULL_UP,
+    af: 4
+end)
+
+// Initialize I2C
+let i2c1 = i2c.init(i2c.I2C1, do
+    speed: i2c.SPEED_100KHZ,
+    mode: i2c.MODE_I2C
+end)
+
+// Write to device
+i2c.write(i2c1, 0x3C, [0x00, 0xAE])  // Address 0x3C
+
+// Read from device
+let data = i2c.read(i2c1, 0x50, 16)  // Read 16 bytes</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: BMP280 तापमान/दबाव सेंसर</h3>
+<pre><code>import hal::i2c
+
+const BMP280_ADDR = 0x76
+
+struct BMP280Data do
+    temperature: float,
+    pressure: float
+end
+
+function bmp280_init(i2c1: i2c.Handle) -&gt; Result[None, Error] do
+    // Read chip ID (should be 0x58)
+    let id = i2c.read_register(i2c1, BMP280_ADDR, 0xD0)?
+    if id != 0x58 ise do
+        return Error("Invalid BMP280 chip ID")
+    end
+    
+    // Configure sensor (normal mode, oversampling x16)
+    i2c.write_register(i2c1, BMP280_ADDR, 0xF4, 0xB7)?  // ctrl_meas
+    i2c.write_register(i2c1, BMP280_ADDR, 0xF5, 0xA0)?  // config
+    
+    return Ok(None)
+end
+
+function bmp280_read(i2c1: i2c.Handle) -&gt; Result[BMP280Data, Error] do
+    // Read raw data (6 bytes: press_msb, press_lsb, press_xlsb, temp_msb, temp_lsb, temp_xlsb)
+    let data = i2c.read_bytes(i2c1, BMP280_ADDR, 0xF7, 6)?
+    
+    // Parse raw values
+    let press_raw = (data[0] &lt;&lt; 12) | (data[1] &lt;&lt; 4) | (data[2] &gt;&gt; 4)
+    let temp_raw = (data[3] &lt;&lt; 12) | (data[4] &lt;&lt; 4) | (data[5] &gt;&gt; 4)
+    
+    // Apply calibration (simplified)
+    let temperature = temp_raw.float() / 100.0
+    let pressure = press_raw.float() / 256.0
+    
+    return Ok(BMP280Data do
+        temperature: temperature,
+        pressure: pressure
+    end)
+end
+
+function ana() do
+    let i2c1 = i2c.init(i2c.I2C1, do
+        speed: i2c.SPEED_400KHZ
+    end)
+    
+    bmp280_init(i2c1)?
+    
+    loop do
+        let data = bmp280_read(i2c1)?
+        io.println("Temp: {:.1f}°C  Pressure: {:.0f} Pa".formatla(
+            data.temperature, data.pressure
+        ))
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: एमपीयू6050 6-एक्सिस आईएमयू (एक्सेलेरोमीटर + जायरोस्कोप)</h3>
+<pre><code>import hal::i2c
+
+const MPU6050_ADDR = 0x68
+
+struct MPU6050Data do
+    accel_x: float,
+    accel_y: float,
+    accel_z: float,
+    gyro_x: float,
+    gyro_y: float,
+    gyro_z: float,
+    temperature: float
+end
+
+function mpu6050_init(i2c1: i2c.Handle) -&gt; Result[None, Error] do
+    // Wake up MPU6050 (PWR_MGMT_1 register = 0)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x6B, 0x00)?
+    core.delay_ms(100)
+    
+    // Configure accelerometer (±2g)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x1C, 0x00)?
+    
+    // Configure gyroscope (±250°/s)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x1B, 0x00)?
+    
+    return Ok(None)
+end
+
+function mpu6050_read(i2c1: i2c.Handle) -&gt; Result[MPU6050Data, Error] do
+    // Read 14 bytes starting from ACCEL_XOUT_H (0x3B)
+    let data = i2c.read_bytes(i2c1, MPU6050_ADDR, 0x3B, 14)?
+    
+    // Parse accelerometer data (raw values are signed 16-bit)
+    let accel_x = ((data[0] olarak i16) &lt;&lt; 8 | data[1] olarak i16).float() / 16384.0
+    let accel_y = ((data[2] olarak i16) &lt;&lt; 8 | data[3] olarak i16).float() / 16384.0
+    let accel_z = ((data[4] olarak i16) &lt;&lt; 8 | data[5] olarak i16).float() / 16384.0
+    
+    // Parse temperature (°C = raw/340 + 36.53)
+    let temp_raw = ((data[6] olarak i16) &lt;&lt; 8 | data[7] olarak i16)
+    let temperature = temp_raw.float() / 340.0 + 36.53
+    
+    // Parse gyroscope data (°/s)
+    let gyro_x = ((data[8] olarak i16) &lt;&lt; 8 | data[9] olarak i16).float() / 131.0
+    let gyro_y = ((data[10] olarak i16) &lt;&lt; 8 | data[11] olarak i16).float() / 131.0
+    let gyro_z = ((data[12] olarak i16) &lt;&lt; 8 | data[13] olarak i16).float() / 131.0
+    
+    return Ok(MPU6050Data do
+        accel_x: accel_x,
+        accel_y: accel_y,
+        accel_z: accel_z,
+        gyro_x: gyro_x,
+        gyro_y: gyro_y,
+        gyro_z: gyro_z,
+        temperature: temperature
+    end)
+end
+
+function ana() do
+    let i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
+    mpu6050_init(i2c1)?
+    
+    loop do
+        let data = mpu6050_read(i2c1)?
+        io.println("Accel: X={:.2f}g Y={:.2f}g Z={:.2f}g".formatla(
+            data.accel_x, data.accel_y, data.accel_z
+        ))
+        io.println("Gyro:  X={:.1f}°/s Y={:.1f}°/s Z={:.1f}°/s".formatla(
+            data.gyro_x, data.gyro_y, data.gyro_z
+        ))
+        io.println("Temp: {:.1f}°C".formatla(data.temperature))
+        io.println("---")
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: OLED डिस्प्ले (SSD1306)</h3>
+<pre><code>import hal::i2c
+
+const SSD1306_ADDR = 0x3C
+
+function oled_command(i2c1: i2c.Handle, cmd: u8) -&gt; Result[None, Error] do
+    i2c.write(i2c1, SSD1306_ADDR, [0x00, cmd])?  // 0x00 = command mode
+    return Ok(None)
+end
+
+function oled_data(i2c1: i2c.Handle, data: u8) -&gt; Result[None, Error] do
+    i2c.write(i2c1, SSD1306_ADDR, [0x40, data])?  // 0x40 = data mode
+    return Ok(None)
+end
+
+function oled_init(i2c1: i2c.Handle) -&gt; Result[None, Error] do
+    // Display off
+    oled_command(i2c1, 0xAE)?
+    
+    // Set display clock
+    oled_command(i2c1, 0xD5)?
+    oled_command(i2c1, 0x80)?
+    
+    // Set multiplex ratio
+    oled_command(i2c1, 0xA8)?
+    oled_command(i2c1, 0x3F)?
+    
+    // Set display offset
+    oled_command(i2c1, 0xD3)?
+    oled_command(i2c1, 0x00)?
+    
+    // Set start line
+    oled_command(i2c1, 0x40)?
+    
+    // Charge pump
+    oled_command(i2c1, 0x8D)?
+    oled_command(i2c1, 0x14)?
+    
+    // Memory mode
+    oled_command(i2c1, 0x20)?
+    oled_command(i2c1, 0x00)?
+    
+    // Set segment remap
+    oled_command(i2c1, 0xA1)?
+    
+    // Set COM output scan direction
+    oled_command(i2c1, 0xC8)?
+    
+    // Set COM pins
+    oled_command(i2c1, 0xDA)?
+    oled_command(i2c1, 0x12)?
+    
+    // Set contrast
+    oled_command(i2c1, 0x81)?
+    oled_command(i2c1, 0xCF)?
+    
+    // Set precharge
+    oled_command(i2c1, 0xD9)?
+    oled_command(i2c1, 0xF1)?
+    
+    // Set VCOMH
+    oled_command(i2c1, 0xDB)?
+    oled_command(i2c1, 0x40)?
+    
+    // Display on
+    oled_command(i2c1, 0xA4)?
+    oled_command(i2c1, 0xA6)?  // Normal display (not inverted)
+    oled_command(i2c1, 0xAF)?  // Turn on
+    
+    return Ok(None)
+end
+
+function oled_clear(i2c1: i2c.Handle) -&gt; Result[None, Error] do
+    each page forde 0..8 for do
+        oled_command(i2c1, 0xB0 + page)?  // Set page
+        oled_command(i2c1, 0x00)?          // Low column
+        oled_command(i2c1, 0x10)?          // High column
+        
+        each i forde 0..128 for do
+            oled_data(i2c1, 0x00)?
+        end
+    end
+    return Ok(None)
+end
+
+function oled_print(i2c1: i2c.Handle, text: str) -&gt; Result[None, Error] do
+    // Simple 5x8 font (implement font data)
+    // This is a simplified example
+    each char forde text.harfler() for do
+        // Write character bitmap
+        oled_data(i2c1, 0xFF)?  // Example pixel data
+    end
+    return Ok(None)
+end
+
+function ana() do
+    let i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
+    
+    oled_init(i2c1)?
+    oled_clear(i2c1)?
+    oled_print(i2c1, "BERK Embedded!")?
+    
+    loop do
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 4: I2C स्कैनर (डिवाइस डिस्कवरी)</h3>
+<pre><code>import hal::i2c
+
+function i2c_scan(i2c1: i2c.Handle) do
+    io.println("I2C Bus Taraması başlatılıyor...")
+    io.println("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F")
+    
+    each row forde 0..8 for do
+        io.print("{:X}0: ".formatla(row))
+        
+        each col forde 0..16 for do
+            let addr = row * 16 + col
+            
+            if addr &lt; 0x08 veya addr &gt; 0x77 ise do
+                io.print("   ")
+                devam
+            end
+            
+            // Try to write 0 bytes (address ping)
+            match i2c.write(i2c1, addr olarak u8, []) do
+                Ok(_) =&gt; io.print("{:02X} ".formatla(addr)),
+                Error(_) =&gt; io.print("-- ")
+            end
+        end
+        io.println("")
+    end
+    
+    io.println("Tarama Oklandı!")
+end
+
+function ana() do
+    core.system_init()
+    
+    let i2c1 = i2c.init(i2c.I2C1, do
+        speed: i2c.SPEED_100KHZ
+    end)
+    
+    i2c_scan(i2c1)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 5: मल्टी-डिवाइस संचार</h3>
+<pre><code>import hal::i2c
+
+const EEPROM_ADDR = 0x50
+const RTC_ADDR = 0x68
+const TEMP_SENSOR_ADDR = 0x48
+
+function eeprom_write(i2c1: i2c.Handle, addr: u16, data: u8) -&gt; Result[None, Error] do
+    let addr_high = (addr &gt;&gt; 8) olarak u8
+    let addr_low = (addr &amp; 0xFF) olarak u8
+    i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low, data])?
+    core.delay_ms(5)  // EEPROM write cycle time
+    return Ok(None)
+end
+
+function eeprom_read(i2c1: i2c.Handle, addr: u16) -&gt; Result[u8, Error] do
+    let addr_high = (addr &gt;&gt; 8) olarak u8
+    let addr_low = (addr &amp; 0xFF) olarak u8
+    
+    // Write address
+    i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low])?
+    
+    // Read data
+    let data = i2c.read(i2c1, EEPROM_ADDR, 1)?
+    return Ok(data[0])
+end
+
+function rtc_set_time(i2c1: i2c.Handle, hour: u8, minute: u8, second: u8) -&gt; Result[None, Error] do
+    // DS1307 RTC format (BCD encoding)
+    let hour_bcd = ((hour / 10) &lt;&lt; 4) | (hour % 10)
+    let min_bcd = ((minute / 10) &lt;&lt; 4) | (minute % 10)
+    let sec_bcd = ((second / 10) &lt;&lt; 4) | (second % 10)
+    
+    i2c.write(i2c1, RTC_ADDR, [0x00, sec_bcd, min_bcd, hour_bcd])?
+    return Ok(None)
+end
+
+function temp_read(i2c1: i2c.Handle) -&gt; Result[float, Error] do
+    // LM75 temperature sensor
+    let data = i2c.read_bytes(i2c1, TEMP_SENSOR_ADDR, 0x00, 2)?
+    let temp_raw = ((data[0] olarak i16) &lt;&lt; 8 | data[1] olarak i16) &gt;&gt; 5
+    let temp = temp_raw.float() * 0.125
+    return Ok(temp)
+end
+
+function ana() do
+    let i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_100KHZ end)
+    
+    // EEPROM test
+    eeprom_write(i2c1, 0x0000, 0xAB)?
+    let value = eeprom_read(i2c1, 0x0000)?
+    io.println("EEPROM[0]: 0x{:02X}".formatla(value))
+    
+    // RTC set
+    rtc_set_time(i2c1, 14, 30, 0)?  // 14:30:00
+    io.println("RTC ayarlandı")
+    
+    // Temperature reading
+    loop do
+        let temp = temp_read(i2c1)?
+        io.println("Sıcaklık: {:.2f}°C".formatla(temp))
+        core.delay_ms(2000)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// I2C Instance
+enum Instance {
+    I2C1, I2C2, I2C3
+}
+
+// I2C Speed Mode
+enum Speed {
+    SPEED_100KHZ,   // Standard mode (100 kHz)
+    SPEED_400KHZ,   // Fast mode (400 kHz)
+    SPEED_1MHZ      // Fast mode plus (1 MHz)
+}
+
+// Addressing Mode
+enum AddressMode {
+    ADDR_7BIT,   // 7-bit addressing (default)
+    ADDR_10BIT   // 10-bit addressing
+}
+
+// Duty Cycle (Fast mode)
+enum DutyCycle {
+    DUTY_2,      // Tlow/Thigh = 2
+    DUTY_16_9    // Tlow/Thigh = 16/9
+}
+
+struct Config do
+    speed: Speed,
+    mode: AddressMode,
+    duty_cycle: Optional[DutyCycle],
+    own_address: Optional[u8],  // For slave mode
+    ack_enable: bool,
+    dma_enable: bool
+end</code></pre>
+
+<h2>⚙️ कार्य</h2>
+
+<h3>प्रारंभ</h3>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+// Initialize I2C with configuration
+
+function deinit(handle: Handle)
+// Deinitialize I2C
+
+function enable(handle: Handle)
+// Enable I2C peripheral
+
+function disable(handle: Handle)
+// Disable I2C peripheral</code></pre>
+
+<h3>मास्टर मोड संचालन</h3>
+<pre><code>function write(handle: Handle, addr: u8, data: [u8]) -&gt; Result[None, Error]
+// Write data to slave device
+
+function read(handle: Handle, addr: u8, len: int) -&gt; Result[[u8], Error]
+// Read data from slave device
+
+function write_read(handle: Handle, addr: u8, write_data: [u8], read_len: int) -&gt; Result[[u8], Error]
+// Combined write then read (repeated start)
+
+function write_register(handle: Handle, addr: u8, reg: u8, value: u8) -&gt; Result[None, Error]
+// Write single byte to register
+
+function read_register(handle: Handle, addr: u8, reg: u8) -&gt; Result[u8, Error]
+// Read single byte from register
+
+function read_bytes(handle: Handle, addr: u8, reg: u8, len: int) -&gt; Result[[u8], Error]
+// Read multiple bytes from register</code></pre>
+
+<h3>स्थिति एवं नियंत्रण</h3>
+<pre><code>function is_device_ready(handle: Handle, addr: u8, trials: int) -&gt; bool
+// Check if device is ready (ACK polling)
+
+function get_bus_state(handle: Handle) -&gt; BusState
+// Get current bus state
+
+enum BusState {
+    IDLE,
+    BUSY,
+    MASTER_TX,
+    MASTER_RX,
+    SLAVE_TX,
+    SLAVE_RX,
+    ERROR
+}</code></pre>
+
+<h3>त्रुटि प्रबंधन</h3>
+<pre><code>function get_error(handle: Handle) -&gt; Optional[I2CError]
+// Get last error
+
+enum I2CError {
+    NACK,           // No acknowledge
+    ARBITRATION_LOST, // Multi-master arbitration lost
+    BUS_ERROR,      // Bus error (misplaced start/stop)
+    OVERRUN,        // Data overrun
+    TIMEOUT         // Timeout occurred
+}
+
+function clear_error(handle: Handle)
+// Clear error flags</code></pre>
+
+<h3>डीएमए समर्थन</h3>
+<pre><code>function write_dma(handle: Handle, addr: u8, data: &amp;[u8]) -&gt; Result[None, Error]
+// Write data using DMA
+
+function read_dma(handle: Handle, addr: u8, buffer: &amp;mut [u8]) -&gt; Result[None, Error]
+// Read data using DMA</code></pre>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>पुल-अप प्रतिरोध:</strong>4.7kΩ सामान्य उपयोग के लिए आदर्श (10kΩ के लिए 100 kHz, 2.2kΩ के लिए 400 kHz)</li>
+<li><strong>केबल लंबाई:</strong>छोटी केबलों (&lt;1m) का उपयोग करें, लंबी केबलों से धारिता बढ़ती है</li>
+<li><strong>बस की गति:</strong>सेंसर डेटाशीट के अनुसार चयन करें (अधिकांश समर्थन 100-400 kHz)</li>
+<li><strong>डीएमए उपयोग:</strong>बड़े डेटा ट्रांसफर में सीपीयू लोड कम करता है (&gt;10 बाइट्स)</li>
+<li><strong>त्रुटि प्रबंधन:</strong>प्रत्येक I2C लेनदेन के बाद त्रुटि जाँच संरचना</li>
+<li><strong>घड़ी का विस्तार:</strong>धीमे दासों के लिए सक्षम करें</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>एससीएल और एसडीए पिन पर<strong>बाहरी खिंचाव</strong>आवश्यकता (4.7kΩ)</li>
+<li>जीपीआईओ पिन<strong>MODE_AF_OD</strong>इसे (खुली नाली) के रूप में संरचित करें</li>
+<li>बस में अधिकतम 112 डिवाइस (7-बिट) या 1024 डिवाइस (10-बिट)।</li>
+<li>प्रारंभ/रोक स्थिति समय संवेदनशीलता महत्वपूर्ण है</li>
+<li>मल्टी-मास्टर मोड में मध्यस्थता हानि हो सकती है</li>
+<li>5V सहनशील पिन का उपयोग करें अन्यथा लेवल शिफ्टर</li>
+<li>ईएमआई/शोर के लिए ट्विस्टेड-पेयर केबल या शील्डिंग का उपयोग करें</li>
+</ul>
+
+<h2>🎯 सामान्य I2C डिवाइस</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#16a085;color:white">
+<th>उपकरण</th><th>पता</th><th>स्पष्टीकरण</th>
+</tr>
+<tr><td>पीसीएफ8574</td><td>0x20-0x27</td><td>8-बिट I/O विस्तारक</td></tr>
+<tr><td>एटी24सी256</td><td>0x50-0x57</td><td>256K ईईपीरोम</td></tr>
+<tr><td>एमपीयू6050</td><td>0x68, 0x69</td><td>6-अक्ष IMU</td></tr>
+<tr><td>बीएमपी280</td><td>0x76, 0x77</td><td>दाबानुकूलित संवेदक</td></tr>
+<tr><td>डीएस1307</td><td>0x68</td><td>आरटीसी (वास्तविक समय घड़ी)</td></tr>
+<tr><td>एसएसडी1306</td><td>0x3C, 0x3D</td><td>ओएलईडी डिस्प्ले</td></tr>
+<tr><td>एडीएस1115</td><td>0x48-0x4B</td><td>16-बिट एडीसी</td></tr>
+<tr><td>एलएम75</td><td>0x48-0x4F</td><td>तापमान संवेदक</td></tr>
+</tbody></table>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32:</strong>सभी श्रृंखलाओं पर I2C1/I2C2/I2C3</li>
+<li><strong>ईएसपी32:</strong>2x I2C (सॉफ़्टवेयर कॉन्फ़िगर करने योग्य पिन)</li>
+<li><strong>जीडी32वीएफ103:</strong>I2C0/I2C1 (आरआईएससी-वी)</li>
+<li><strong>एनआरएफ52:</strong>TWI (दो-तार इंटरफ़ेस)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- एससीएल/एसडीए पिन कॉन्फिगरेशन</li>
+<li><code data-no-translate="true">hal::dma</code>- डीएमए स्थानान्तरण</li>
+<li><code data-no-translate="true">hal::int</code>-हस्तक्षेप करना</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li>एनएक्सपी यूएम10204 - आई2सी-बस विशिष्टता और उपयोगकर्ता मैनुअल</li>
+<li>STM32 AN2824 - I2C अनुकूलित उदाहरण</li>
+<li>I2C बस पुल-अप रेसिस्टर गणना (टेक्सास इंस्ट्रूमेंट्स)</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="en_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_en_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

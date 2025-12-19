@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Loops - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/control-flow/loops.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="döngüler"><a class="header" href="#döngüler">loops</a></h1>
+<p>Loop structures for repetitive operations.</p>
+<h2 id="for-döngüsü-range"><a class="header" href="#for-döngüsü-range">For Loop (Range)</a></h2>
+<pre><code class="language-berk">// 0'from 4'e to (5 hariç)
+for i 0'from 5'e {
+    print(i)  // 0, 1, 2, 3, 4
+}
+
+// 0'from 5'e to (5 dahil)
+for i 0'from 6'ya to {
+    print(i)  // 0, 1, 2, 3, 4, 5
+}
+
+// Tersden sayma
+for i 10'from 0'a {
+    print(i)  // 10, 9, 8, ..., 1
+}
+
+// Adım boyutu
+for i 0'from 10'a adım 2 {
+    print(i)  // 0, 2, 4, 6, 8
+}
+</code></pre>
+<p>English syntax:</p>
+<pre><code class="language-berk">for i from 0 to 5 {
+    print(i)
+}
+
+for i from 0 to 5 inclusive {
+    print(i)
+}
+</code></pre>
+<h2 id="for-each-döngüsü"><a class="header" href="#for-each-döngüsü">For-Each Loop</a></h2>
+<pre><code class="language-berk">let sayılar = [1, 2, 3, 4, 5]
+
+for sayı sayılarda {
+    print(sayı)
+}
+
+// İndeks ile
+for (indeks, değer) sayılarda {
+    print(indeks, ": ", değer)
+}
+</code></pre>
+<p>English:</p>
+<pre><code class="language-berk">for num in numbers {
+    print(num)
+}
+
+for (index, value) in numbers {
+    print(index, ": ", value)
+}
+</code></pre>
+<h2 id="while-döngüsü"><a class="header" href="#while-döngüsü">While Loop</a></h2>
+<pre><code class="language-berk">let count_occurrences = 0
+
+while count_occurrences &lt; 5 {
+    print(count_occurrences)
+    count_occurrences += 1
+}
+</code></pre>
+<p>English:</p>
+<pre><code class="language-berk">var counter = 0
+
+while counter &lt; 5 {
+    print(counter)
+    counter += 1
+}
+</code></pre>
+<h2 id="do-while-döngüsü"><a class="header" href="#do-while-döngüsü">Do-While Loop</a></h2>
+<p>Works at least once:</p>
+<pre><code class="language-berk">let x = 0
+
+do {
+    print(x)
+    x += 1
+} while x &lt; 5
+</code></pre>
+<h2 id="sonsuz-döngü"><a class="header" href="#sonsuz-döngü">Infinite Loop</a></h2>
+<pre><code class="language-berk">for {
+    // Sonsuz for
+    if koşul {
+        kır  // Çıkış
+    }
+}
+</code></pre>
+<h2 id="break-ve-continue"><a class="header" href="#break-ve-continue">Break and Continue</a></h2>
+<h3 id="break-kır"><a class="header" href="#break-kır">Break</a></h3>
+<p>Exit the loop:</p>
+<pre><code class="language-berk">for i 0'from 10'a {
+    if i == 5 {
+        kır  // Döngü durur
+    }
+    print(i)  // 0, 1, 2, 3, 4
+}
+</code></pre>
+<h3 id="continue-devam"><a class="header" href="#continue-devam">Continue</a></h3>
+<p>Move to next iteration:</p>
+<pre><code class="language-berk">for i 0'from 10'a {
+    if i % 2 == 0 {
+        devam  // Çift sayıları atla
+    }
+    print(i)  // 1, 3, 5, 7, 9 (tek sayılar)
+}
+</code></pre>
+<h2 id="İç-İçe-döngüler"><a class="header" href="#İç-İçe-döngüler">Nested Loops</a></h2>
+<pre><code class="language-berk">for i 1'from 4'e {
+    for j 1'from 4'e {
+        print(i * j, " ", sonlandırma: "")
+    }
+    print()  // Yeni satır
+}
+// Çıktı:
+// 1 2 3
+// 2 4 6
+// 3 6 9
+</code></pre>
+<p>Tagged break:</p>
+<pre><code class="language-berk">dış: for i 0'from 5'e {
+    iç: for j 0'from 5'e {
+        if i * j &gt; 10 {
+            kır dış  // Dış döngüden çık
+        }
+        print(i, "*", j, "=", i*j)
+    }
+}
+</code></pre>
+<h2 id="döngü-ile-koleksiyonlar"><a class="header" href="#döngü-ile-koleksiyonlar">Collections with Loop</a></h2>
+<h3 id="liste-Üzerinde"><a class="header" href="#liste-Üzerinde">On List</a></h3>
+<pre><code class="language-berk">let meyveler = ["elma", "armut", "kiraz"]
+
+for meyve meyvelerde {
+    print(meyve)
+}
+
+// Filtreleme
+for meyve meyvelerde {
+    if meyve.len &gt; 4 {
+        print(meyve)
+    }
+}
+</code></pre>
+<h3 id="map-Üzerinde"><a class="header" href="#map-Üzerinde">On Map</a></h3>
+<pre><code class="language-berk">let yaşlar = {
+    "Ahmet": 25,
+    "Mehmet": 30,
+    "Ayşe": 28
+}
+
+for (isim, yaş) yaşlarda {
+    print(isim, ": ", yaş)
+}
+</code></pre>
+<h3 id="range-ile"><a class="header" href="#range-ile">with range</a></h3>
+<pre><code class="language-berk">// 1'from 10'a (10 dahil)
+for x [1..10]'da {
+    print(x)
+}
+
+// Filtreli range
+for x [1..20]'de {
+    if x % 3 == 0 {
+        print(x)  // 3'e bölünenler
+    }
+}
+</code></pre>
+<h2 id="iterator-metodları"><a class="header" href="#iterator-metodları">Iterator Methods</a></h2>
+<pre><code class="language-berk">let sayılar = [1, 2, 3, 4, 5]
+
+// Map
+let kareler = sayılar.eşle(x =&gt; x * x)
+
+// Filter
+let çiftler = sayılar.filtrele(x =&gt; x % 2 == 0)
+
+// Reduce
+let sum = sayılar.azalt((a, b) =&gt; a + b)
+
+// ForEach
+sayılar.herbiri(x =&gt; print(x))
+</code></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ Things to Do</a></h3>
+<pre><code class="language-berk">// Anlamlı let isimleri
+for öğrenci öğrencilerde {
+    işle(öğrenci)
+}
+
+// For-each tercih edin
+let List = [1, 2, 3]
+for eleman listede {  // İyi
+    print(eleman)
+}
+
+// Iterator metodları kullanın
+let sonuç = sayılar
+    .filtrele(x =&gt; x &gt; 0)
+    .eşle(x =&gt; x * 2)
+    .azalt((a, b) =&gt; a + b)
+</code></pre>
+<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ Things to Avoid</a></h3>
+<pre><code class="language-berk">// Manuel indeks yönetimi
+for i 0'from List.len'a {
+    print(List[i])  // Kötü
+}
+// Bunun yerine:
+for eleman listede {
+    print(eleman)  // İyi
+}
+
+// Sonsuz for tuzakları
+while true {  // Tehlikeli
+    // Çıkış koşulu olmadan
+}
+
+// Gereksiz iç içe döngüler
+// O(n²) or daha kötü karmaşıklık
+</code></pre>
+<h2 id="Örnekler"><a class="header" href="#Örnekler">examples</a></h2>
+<h3 id="fibonacci"><a class="header" href="#fibonacci">Fibonacci</a></h3>
+<pre><code class="language-berk">function fibonacci(n: number) -&gt; Liste&lt;number&gt; {
+    let sonuç = [0, 1]
+    
+    for i 2'from n'ye {
+        let sonraki = sonuç[i-1] + sonuç[i-2]
+        sonuç.push(sonraki)
+    }
+    
+    return sonuç
+}
+</code></pre>
+<h3 id="asal-sayılar"><a class="header" href="#asal-sayılar">Prime Numbers</a></h3>
+<pre><code class="language-berk">function asal_mi(n: number) -&gt; Boolean {
+    if n &lt; 2 {
+        return false
+    }
+    
+    for i 2'from n'ye {
+        if i * i &gt; n {
+            kır
+        }
+        if n % i == 0 {
+            return false
+        }
+    }
+    
+    return true
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../control-flow/en_if-else.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../control-flow/en_pattern-matching.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../control-flow/en_if-else.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../control-flow/en_pattern-matching.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>로깅 - 로깅 시스템 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📋 로깅 - 로깅 시스템</h1>
+<p>레벨, 포맷터, 핸들러, 회전</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">40</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">672</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">21KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import logging
+
+// Basit kullanım
+logging.debug("Debug mesajı")
+logging.info("Bilgi mesajı")
+logging.warning("Uyarı!")
+logging.error("Err oluştu")
+logging.critical("Kritik hata!")
+
+// Logger oluştur
+let logger = logging.logger_new("app")
+logging.set_level(logger, logging.INFO)
+
+// File handler
+let handler = logging.file_handler("app.log")
+logging.add_handler(logger, handler)
+
+logging.info(logger, "Uygulama başladı")
+logging.error(logger, "Bağlantı hatası")</code></pre>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>구조화된 로깅</h3>
+<pre><code>import logging, json
+
+let logger = logging.logger_new("api")
+
+function api_request_log(method: yazı, path: yazı, status: int, duration_ms: kesir) do
+    let data = do
+        "method": method,
+        "path": path,
+        "status": status,
+        "duration_ms": duration_ms,
+        "timestamp": time.now().yazıya()
+    end
+    
+    logging.info(logger, json.stringify(data))
+end
+
+api_request_log("GET", "/api/users", 200, 45.3)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

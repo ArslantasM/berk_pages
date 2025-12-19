@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>시간 - 시간 및 날짜 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏰ 시간 - 시간 및 날짜</h1>
+<p>날짜시간, 기간, 형식, 시간대</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">58</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">731</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">23KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import time
+
+// Şu an
+let now = time.now()
+print(now.yazıya())  // "2025-01-15 14:30:45"
+
+// Unix timestamp
+let timestamp = time.unix()
+print(timestamp.yazıya())  // 1705328445
+
+// Formatting
+let formatted = time.format(now, "%Y-%m-%d %H:%M:%S")
+print(formatted)  // "2025-01-15 14:30:45"
+
+// Parsing
+let tarih = time.parse("2025-01-15", "%Y-%m-%d")
+
+// Duration
+let başlangıç = time.now()
+// ... işlemler ...
+let bitiş = time.now()
+let süre = time.duration(başlangıç, bitiş)
+print("Geçen süre: " + süre.saniye().yazıya() + "s")
+
+// Sleep
+time.sleep(1000)  // 1000ms = 1 saniye</code></pre>
+<h2>📚 특징</h2>
+<ul>
+<li>DateTime 작업(UTC, 현지 시간대)</li>
+<li>기간 산술</li>
+<li>strftime/strptime 형식 지정</li>
+<li>ISO 8601 지원</li>
+<li>타이머, 스톱워치</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>벤치마크 타이머</h3>
+<pre><code>import time
+
+sınıf Stopwatch do
+    let başlangıç: DateTime
+    let tur_zamanları: Dizi
+    
+    function başlat() do
+        self.başlangıç = time.now()
+        self.tur_zamanları = []
+    end
+    
+    function type() do
+        self.tur_zamanları.push(time.now())
+    end
+    
+    function durdur() -&gt; Duration do
+        return time.duration(self.başlangıç, time.now())
+    end
+    
+    function tur_süresi(index: int) -&gt; Duration do
+        if index == 0  do
+            return time.duration(self.başlangıç, self.tur_zamanları[0])
+        end else do
+            return time.duration(self.tur_zamanları[index-1], self.tur_zamanları[index])
+        end
+    end
+end
+
+let sw = Stopwatch.new()
+sw.başlat()
+
+// Test 1
+each i in range(0, 1000000) for do
+    let x = i * i
+end
+sw.type()
+
+// Test 2
+each i in range(0, 500000) for do
+    let x = math.sqrt(i.float())
+end
+sw.type()
+
+print("Tur 1: " + sw.tur_süresi(0).milisaniye().yazıya() + "ms")
+print("Tur 2: " + sw.tur_süresi(1).milisaniye().yazıya() + "ms")
+print("Toplam: " + sw.durdur().milisaniye().yazıya() + "ms")</code></pre>
+</div>
+<div class="example-box">
+<h3>작업 스케줄러</h3>
+<pre><code>import time, thread
+
+sınıf ScheduledTask do
+    let function: function
+    let çalışma_zamanı: DateTime
+    
+    function new(f: function, çalışma_zamanı: DateTime) do
+        self.function = f
+        self.çalışma_zamanı = çalışma_zamanı
+    end
+end
+
+sınıf Scheduler do
+    let görevler: Dizi
+    
+    function new() do
+        self.görevler = []
+    end
+    
+    function zamanla(f: function, gecikme_ms: int) do
+        let çalışma_zamanı = time.add_ms(time.now(), gecikme_ms)
+        self.görevler.push(ScheduledTask.new(f, çalışma_zamanı))
+    end
+    
+    function çalıştır() do
+        loop do
+            let now = time.now()
+            let çalıştırılan = 0
+            
+            each task in self.görevler for do
+                if time.before(task.çalışma_zamanı, now)  do
+                    task.function()
+                    çalıştırılan = çalıştırılan + 1
+                end
+            end
+            
+            // Çalıştırılan görevleri kaldır
+            self.görevler = self.görevler.filtrele(function(g) do
+                return time.after(g.çalışma_zamanı, now)
+            end)
+            
+            if self.görevler.len() == 0  do
+                kır
+            end
+            
+            time.sleep(100)  // 100ms check interval
+        end
+    end
+end
+
+let scheduler = Scheduler.new()
+
+scheduler.zamanla(function() do
+    print("Görev 1 çalıştı: " + time.now().yazıya())
+end, 1000)
+
+scheduler.zamanla(function() do
+    print("Görev 2 çalıştı: " + time.now().yazıya())
+end, 2000)
+
+scheduler.çalıştır()</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

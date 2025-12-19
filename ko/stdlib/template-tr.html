@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>템플릿 - 템플릿 엔진 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎨 템플릿</h1>
+<p>템플릿 엔진 - Jinja2/Mustache Inspired</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~300줄</span>
+<span class="stat-badge">~20가지 기능</span>
+<span class="stat-badge">변수 및 필터</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>템플릿 엔진 모듈은 Jinja2 및 Mustache에서 영감을 받은 템플릿 렌더링을 제공합니다. HTML, 이메일 및 텍스트 생성에 이상적입니다.</p>
+
+<h2>🚀 사용법</h2>
+<pre><code>import template
+
+let ctx = template.context()
+ctx.set("name", "Alice")
+ctx.set("age", 30)
+
+let result = template.render("Hello, {{name}}! Age: {{age}}", ctx)
+// Output: Hello, Alice! Age: 30</code></pre>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">markdown</code>- 마크다운 렌더링</li>
+<li><code data-no-translate="true">email</code>- 이메일 템플릿</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

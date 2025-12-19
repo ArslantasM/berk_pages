@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>HAL::वॉचडॉग - वॉचडॉग टाइमर | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🐕 राज्य::प्रहरी</h1>
+<p>वॉचडॉग टाइमर - सिस्टम विश्वसनीयता और रीसेट प्रबंधन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~280 पंक्तियाँ</span>
+<span class="stat-badge">~8 कार्य</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>वॉचडॉग टाइमर स्वचालित रूप से सॉफ़्टवेयर त्रुटियों के कारण होने वाले सिस्टम फ़्रीज़ का पता लगाता है और सिस्टम को रीसेट करता है। यदि माइक्रोकंट्रोलर एक अप्रत्याशित स्थिति (अनंत लूप, गतिरोध) में प्रवेश करता है, तो टाइमआउट होता है क्योंकि वॉचडॉग काउंटर रीसेट नहीं होता है और सिस्टम पुनरारंभ होता है।</p>
+
+<p>प्रहरी दो प्रकार के होते हैं:<strong>आईडब्ल्यूडीजी</strong>(स्वतंत्र वॉचडॉग - एलएसआई घड़ी के साथ काम करता है, कम पावर मोड में भी सक्रिय है) और<strong>डब्ल्यूडब्ल्यूडीजी</strong>(विंडो वॉचडॉग - विंडो नियंत्रण के साथ अधिक सटीक समय)।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>स्वतंत्र प्रहरी (आईडब्ल्यूडीजी) - एलएसआई घड़ी (32 किलोहर्ट्ज़)</li>
+<li>विंडो वॉचडॉग (WWDG) - APB1 घड़ी</li>
+<li>कॉन्फ़िगर करने योग्य टाइमआउट (एमएस - सेकंड)</li>
+<li>प्रारंभिक चेतावनी व्यवधान (डब्ल्यूडब्ल्यूडीजी)</li>
+<li>स्रोत का पता लगाना रीसेट करें</li>
+<li>डिबग मोड फ़्रीज़ समर्थन</li>
+<li>स्लीप/स्टॉप मोड में काम करना</li>
+<li>प्रीस्केलर सेटिंग्स (4 - 256)</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::watchdog, hal::core
+
+// Independent watchdog (4 saniye timeout)
+let wdg = watchdog.init_iwdg(do
+    timeout_ms: 4000,
+    window_mode: false
+end)
+
+// Ana for
+for do
+    // Normal işlemler
+    core.delay_ms(500)
+    
+    // Watchdog'u besle (refresh)
+    watchdog.refresh(wdg)
+    
+    // Eğer bu satır çalışmazsa sistem 4 saniye in resetlenir
+end</code></pre>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// Watchdog Tipi
+enum WatchdogType {
+    IWDG,  // Independent watchdog
+    WWDG   // Window watchdog
+}
+
+// Prescaler değerleri
+enum Prescaler {
+    DIV_4,
+    DIV_8,
+    DIV_16,
+    DIV_32,
+    DIV_64,
+    DIV_128,
+    DIV_256
+}
+
+// Reset Source
+enum ResetSource {
+    POWER_ON,      // Power-on reset
+    PIN_RESET,     // External pin reset
+    SOFTWARE,      // Software reset
+    IWDG_RESET,    // Independent watchdog
+    WWDG_RESET,    // Window watchdog
+    LOW_POWER,     // Low-power reset
+    BROWNOUT       // Brown-out reset
+}
+
+struct WatchdogConfig do
+    type: WatchdogType,
+    timeout_ms: sayı,       // Milliseconds
+    window_mode: mantık,    // Window watchdog only
+    prescaler: Prescaler,
+    reload_value: sayı
+end</code></pre>
+
+<h2>💡 उदाहरण 1: बेसिक आईडब्ल्यूडीजी का उपयोग करना</h2>
+<div class="example-box">
+<h3>2-सेकंड वॉचडॉग के साथ सिस्टम सुरक्षा</h3>
+<pre><code>import hal::watchdog, hal::gpio, hal::core
+
+let led_green = gpio.pin_init(gpio.PORT_C, 13, gpio.MODE_OUTPUT)
+let led_red = gpio.pin_init(gpio.PORT_C, 14, gpio.MODE_OUTPUT)
+
+function main() do
+    // Check reset source
+    let reset_cause = watchdog.get_reset_source()
+    
+    if reset_cause == watchdog.IWDG_RESET then do
+        // Watchdog reset occurred!
+        gpio.pin_write(led_red, gpio.HIGH)
+        core.delay_ms(2000)
+        gpio.pin_write(led_red, gpio.LOW)
+    end
+    
+    // Initialize watchdog (2 second timeout)
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 2000,
+        window_mode: false
+    end)
+    
+    // Main loop
+    for do
+        // Normal operation
+        gpio.pin_toggle(led_green)
+        core.delay_ms(100)
+        
+        // Feed watchdog every 100ms (well before 2s timeout)
+        watchdog.refresh(wdg)
+    end
+end</code></pre>
+</div>
+
+<h2>💡 उदाहरण 2: टास्क मॉनिटर के साथ वॉचडॉग</h2>
+<div class="example-box">
+<h3>मल्टी-टास्क मॉनिटरिंग और वॉचडॉग फीडिंग</h3>
+<pre><code>import hal::watchdog, hal::time
+
+let son_beslenme_zamani: Zaman
+let watchdog_aktif = true
+
+function kritik_gorev_1() do
+    // Kritik işlemler
+    core.delay_ms(50)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+end
+
+function kritik_gorev_2() do
+    // Başka kritik işlemler
+    core.delay_ms(75)
+    
+    // İşlem başarılı
+    watchdog_besleme_istegi()
+end
+
+function watchdog_besleme_istegi() do
+    son_beslenme_zamani = time.now()
+end
+
+function watchdog_yonetici(wdg: WatchdogHandle) do
+    for do
+        // Check if tasks are healthy
+        let elapsed = time.now() - son_beslenme_zamani
+        
+        if elapsed &lt; time.milliseconds(500) then do
+            // Tasks are running OK, feed watchdog
+            watchdog.refresh(wdg)
+        yoksa do
+            // Tasks hung! Let watchdog reset the system
+            io.println("UYARI: Görevler askıda! Watchdog resetleyecek...")
+        end
+        
+        core.delay_ms(100)
+    end
+end
+
+function main() do
+    // 1 saniye watchdog timeout
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 1000,
+        window_mode: false
+    end)
+    
+    son_beslenme_zamani = time.now()
+    
+    // Start tasks
+    thread.spawn(|| kritik_gorev_1())
+    thread.spawn(|| kritik_gorev_2())
+    thread.spawn(|| watchdog_yonetici(wdg))
+    
+    thread.join_all()
+end</code></pre>
+</div>
+
+<h2>💡 उदाहरण 3: विंडो वॉचडॉग (डब्ल्यूडब्ल्यूडीजी)</h2>
+<div class="example-box">
+<h3>विंडो नियंत्रण के साथ सटीक समय</h3>
+<pre><code>import hal::watchdog
+
+// WWDG: Hem çok erken hem çok continue beslemeyi engeller
+function wwdg_demo() do
+    // Window: 50-100ms aralığında beslenmeli
+    let wwdg = watchdog.init_wwdg(do
+        timeout_ms: 100,
+        window_ms: 50,  // Pencere başlangıcı
+        early_wakeup_interrupt: true
+    end)
+    
+    // Early warning interrupt handler
+    watchdog.set_interrupt_handler(wwdg, || do
+        io.println("Watchdog erken uyarı!")
+        // Burası early wakeup interrupt (zamanında besle)
+    end)
+    
+    let count_occurrences = 0
+    for do
+        // İşlemler
+        core.delay_ms(30)
+        
+        // 30ms + 30ms = 60ms (pencere in: 50-100ms ✓)
+        core.delay_ms(30)
+        
+        // Watchdog'u besle
+        watchdog.refresh(wwdg)
+        
+        count_occurrences += 1
+        
+        // Simulate hang every 10 iterations
+        if count_occurrences % 10 == 0 then do
+            io.println("Simüle edilen gecikme...")
+            core.delay_ms(150)  // Too late! WWDG will reset
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 उदाहरण 4: वॉचडॉग + बैकअप रजिस्टर</h2>
+<div class="example-box">
+<h3>कारण रिकॉर्डिंग और विश्लेषण रीसेट करें</h3>
+<pre><code>import hal::watchdog, hal::rtc
+
+struct ResetInfo do
+    count: sayı,
+    last_reason: ResetSource,
+    timestamp: sayı
+end
+
+function reset_bilgisi_kaydet() do
+    let reason = watchdog.get_reset_source()
+    
+    // Backup register'from önceki bilgiyi input
+    let reset_count = rtc.backup_read(0)
+    reset_count += 1
+    
+    // Yeni bilgiyi kaydet
+    rtc.backup_write(0, reset_count)
+    rtc.backup_write(1, reason.to_int())
+    rtc.backup_write(2, time.timestamp())
+    
+    io.println("Reset sayısı: " + reset_count.yazıya())
+    io.println("Reset nedeni: " + reason.to_string())
+end
+
+function main() do
+    // Initialize RTC for backup registers
+    rtc.init()
+    
+    // Log reset information
+    reset_bilgisi_kaydet()
+    
+    // Check for excessive resets
+    let reset_count = rtc.backup_read(0)
+    if reset_count &gt; 10 then do
+        io.println("HATA: Çok fazla reset! Sistem unstable.")
+        // Enter safe mode or disable some features
+        rtc.backup_write(0, 0)  // Reset counter
+    end
+    
+    // Initialize watchdog
+    let wdg = watchdog.init_iwdg(do
+        timeout_ms: 3000,
+        window_mode: false
+    end)
+    
+    // Normal operation
+    for do
+        // Your code here
+        watchdog.refresh(wdg)
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📊एपीआई संदर्भ</h2>
+
+<h3>प्रारंभ</h3>
+<pre><code>function init_iwdg(config: WatchdogConfig) -&gt; WatchdogHandle
+function init_wwdg(config: WatchdogConfig) -&gt; WatchdogHandle
+function deinit(handle: WatchdogHandle)</code></pre>
+
+<h3>नियंत्रण</h3>
+<pre><code>function refresh(handle: WatchdogHandle)
+function start(handle: WatchdogHandle)
+function is_running(handle: WatchdogHandle) -&gt; mantık</code></pre>
+
+<h3>जानकारी रीसेट करें</h3>
+<pre><code>function get_reset_source() -&gt; ResetSource
+function clear_reset_flags()
+function software_reset()</code></pre>
+
+<h3>विंडो वॉचडॉग (केवल WWDG)</h3>
+<pre><code>function set_interrupt_handler(handle: WatchdogHandle, callback: Fonksiyon)
+function get_counter(handle: WatchdogHandle) -&gt; sayı</code></pre>
+
+<h2>⚙️ प्लेटफ़ॉर्म समर्थन</h2>
+<table>
+<tbody><tr><th>प्लैटफ़ॉर्म</th><th>आईडब्ल्यूडीजी</th><th>डब्ल्यूडब्ल्यूडीजी</th><th>अधिकतम समयबाह्य</th></tr>
+<tr><td>STM32F4</td><td>✓</td><td>✓</td><td>32 सेकंड</td></tr>
+<tr><td>STM32F1</td><td>✓</td><td>✓</td><td>26 सेकंड</td></tr>
+<tr><td>ईएसपी32</td><td>✓</td><td>✗</td><td>विन्यास</td></tr>
+<tr><td>GD32VF103</td><td>✓</td><td>✓</td><td>26 सेकंड</td></tr>
+</tbody></table>
+
+<h2>💡 सर्वोत्तम प्रथाएँ</h2>
+<ul>
+<li><strong>समयबाह्य चयन:</strong>यह कार्य की अधिकतम अवधि से 2-3 गुना अधिक होनी चाहिए</li>
+<li><strong>भोजन की आवृत्ति:</strong>टाइमआउट के 50-75% के अंतराल पर फ़ीड करें</li>
+<li><strong>डिबग मोड:</strong>विकास के दौरान वॉचडॉग को फ़्रीज़ करें (डीबगर ब्रेकप्वाइंट पर)</li>
+<li><strong>महत्वपूर्ण अनुभाग:</strong>उन स्थानों पर वॉचडॉग टाइमआउट की गणना करें जहां व्यवधान अक्षम है</li>
+<li><strong>लॉगिंग रीसेट करें:</strong>बैकअप रजिस्टर में रीसेट कारणों को स्टोर करें</li>
+<li><strong>आईडब्ल्यूडीजी बनाम डब्ल्यूडब्ल्यूडीजी:</strong>उत्पादन में IWDG (LSI स्वतंत्र), महत्वपूर्ण समय के लिए WWDG</li>
+<li><strong>पावर मोड:</strong>IWDG कम-पावर मोड में काम करता है, WWDG बंद हो जाता है</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>एक बार शुरू होने के बाद, IWDG को रोका नहीं जा सकता (हार्डवेयर प्रतिबंध)</li>
+<li>डिबगिंग के दौरान वॉचडॉग रीसेट को रोकने के लिए DBGMCU_APB1_FZ रजिस्टर सेट करें</li>
+<li>एलएसआई घड़ी सहनशीलता 40% तक हो सकती है - टाइमआउट गणना में इसे ध्यान में रखें</li>
+<li>फ़्लैश प्रोग्रामिंग के दौरान वॉचडॉग को अक्षम करें (मिटाने में लंबा समय लग सकता है)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="hi_hal-rtc-tr.html">राज्य::rtc</a>- रीसेट लॉगिंग के लिए बैकअप रजिस्टर</li>
+<li><a href="hi_hal-power-tr.html">राज्य::शक्ति</a>- लो-पावर मोड और वॉचडॉग</li>
+<li><a href="hi_hal-clock-tr.html">राज्य::घड़ी</a>- एलएसआई घड़ी विन्यास</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_hal-watchdog-en.html">🇬🇧अंग्रेज़ी</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

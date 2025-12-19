@@ -1,0 +1,764 @@
+# BERK Programming Language - Complete API Reference
+
+> This is the full API reference for AI/LLM systems. For a shorter overview, see llms.txt
+
+## Table of Contents
+
+1. [Language Overview](#language-overview)
+2. [Complete Keyword Reference](#complete-keyword-reference)
+3. [Type System](#type-system)
+4. [Standard Library API](#standard-library-api)
+5. [AI/ML API](#aiml-api)
+6. [HAL API](#hal-api)
+
+---
+
+## Language Overview
+
+BERK is a compiled systems programming language with:
+- Bilingual syntax (Turkish keywords have English equivalents)
+- Static typing with local type inference
+- Result/Option types for error handling
+- Pattern matching with exhaustiveness checking
+- Zero-cost abstractions
+- No garbage collector (ownership-based memory management)
+
+---
+
+## Complete Keyword Reference
+
+### Variable Declarations
+```
+değişken / var     - Mutable variable
+sabit / const      - Constant
+```
+
+### Functions
+```
+işlev / func       - Function definition
+geri dön / return  - Return from function
+dışa / pub         - Public visibility
+```
+
+### Control Flow
+```
+eğer / if          - Conditional
+yoksa / else       - Else branch
+eşleş / match      - Pattern matching
+eş / match         - Pattern matching (alias)
+için / for         - For loop
+döngü / for        - For loop (alias)
+iken / while       - While loop
+piksek / while     - While loop (alias)
+kır / break        - Break loop
+devam / continue   - Continue loop
+```
+
+### Types
+```
+yapı / struct      - Struct definition
+sayım / enum       - Enum definition
+tip / type         - Type alias
+arayüz / trait     - Trait definition
+uygula / impl      - Implementation block
+```
+
+### Modules
+```
+kullan / use       - Import
+modül / mod        - Module definition
+paket / crate      - Crate reference
+```
+
+### Error Handling
+```
+dene / try         - Try block
+yakala / catch     - Catch block
+hata / error       - Error
+Sonuç / Result     - Result type
+Seçenek / Option   - Option type
+Tamam / Ok         - Ok variant
+Hata / Err         - Err variant
+Bazı / Some        - Some variant
+Hiç / None         - None variant
+```
+
+### Built-in Types
+```
+Sayı / Number      - Numeric types (i8, i16, i32, i64, u8, u16, u32, u64, f32, f64)
+Yazı / String      - UTF-8 string
+Bool / Bool        - Boolean (doğru/true, yanlış/false)
+karakter / char    - Unicode character
+Liste / List       - Dynamic array
+Dizi / Array       - Fixed-size array
+Demet / Tuple      - Tuple type
+```
+
+### Literals
+```
+doğru / true       - Boolean true
+yanlış / false     - Boolean false
+boş / null         - Null value
+```
+
+### Other Keywords
+```
+olarak / as        - Type casting
+içinde / in        - Iteration
+ile / with         - With clause
+ve / and           - Logical AND
+veya / or          - Logical OR
+değil / not        - Logical NOT
+öz / self          - Self reference
+Öz / Self          - Self type
+```
+
+---
+
+## Type System
+
+### Primitive Types
+| Type | Size | Description |
+|------|------|-------------|
+| `i8` | 1 byte | Signed 8-bit integer |
+| `i16` | 2 bytes | Signed 16-bit integer |
+| `i32` | 4 bytes | Signed 32-bit integer (default) |
+| `i64` | 8 bytes | Signed 64-bit integer |
+| `u8` | 1 byte | Unsigned 8-bit integer |
+| `u16` | 2 bytes | Unsigned 16-bit integer |
+| `u32` | 4 bytes | Unsigned 32-bit integer |
+| `u64` | 8 bytes | Unsigned 64-bit integer |
+| `f32` | 4 bytes | 32-bit floating point |
+| `f64` | 8 bytes | 64-bit floating point (default) |
+| `bool` | 1 byte | Boolean |
+| `char` | 4 bytes | Unicode scalar value |
+
+### Compound Types
+```berk
+// Array (fixed size)
+var arr: [i32; 5] = [1, 2, 3, 4, 5]
+
+// List (dynamic)
+var list: List<i32> = List.new()
+
+// Tuple
+var tuple: (i32, String, bool) = (42, "hello", true)
+
+// Struct
+struct Point {
+    x: f64,
+    y: f64
+}
+
+// Enum
+enum Color {
+    Red,
+    Green,
+    Blue,
+    Rgb(u8, u8, u8)
+}
+```
+
+### Generic Types
+```berk
+func identity<T>(value: T) -> T {
+    return value
+}
+
+struct Container<T> {
+    value: T
+}
+```
+
+---
+
+## Standard Library API
+
+### io Module
+```berk
+use io
+
+// Print to stdout
+io.print(value: any) -> ()
+io.println(value: any) -> ()
+
+// Read from stdin
+io.read_line() -> Result<String, Error>
+io.read_char() -> Result<char, Error>
+
+// Formatted output
+io.printf(format: String, args: ...) -> ()
+```
+
+### fs Module
+```berk
+use fs
+
+// File operations
+fs.read(path: String) -> Result<String, Error>
+fs.read_bytes(path: String) -> Result<List<u8>, Error>
+fs.write(path: String, content: String) -> Result<(), Error>
+fs.write_bytes(path: String, data: List<u8>) -> Result<(), Error>
+fs.append(path: String, content: String) -> Result<(), Error>
+fs.delete(path: String) -> Result<(), Error>
+fs.exists(path: String) -> bool
+fs.copy(src: String, dst: String) -> Result<(), Error>
+fs.rename(old: String, new: String) -> Result<(), Error>
+
+// Directory operations
+fs.mkdir(path: String) -> Result<(), Error>
+fs.mkdir_all(path: String) -> Result<(), Error>
+fs.rmdir(path: String) -> Result<(), Error>
+fs.list_dir(path: String) -> Result<List<String>, Error>
+```
+
+### string Module
+```berk
+use string
+
+// String methods (also available on String type)
+String.len() -> usize
+String.is_empty() -> bool
+String.contains(s: String) -> bool
+String.starts_with(s: String) -> bool
+String.ends_with(s: String) -> bool
+String.trim() -> String
+String.trim_start() -> String
+String.trim_end() -> String
+String.to_uppercase() -> String
+String.to_lowercase() -> String
+String.replace(from: String, to: String) -> String
+String.split(sep: String) -> List<String>
+String.chars() -> List<char>
+String.bytes() -> List<u8>
+String.substring(start: usize, end: usize) -> String
+String.parse<T>() -> Result<T, Error>
+```
+
+### collections Module
+```berk
+use collections
+
+// HashMap
+HashMap<K, V>.new() -> HashMap<K, V>
+HashMap.insert(key: K, value: V) -> Option<V>
+HashMap.get(key: K) -> Option<V>
+HashMap.remove(key: K) -> Option<V>
+HashMap.contains_key(key: K) -> bool
+HashMap.len() -> usize
+HashMap.is_empty() -> bool
+HashMap.keys() -> List<K>
+HashMap.values() -> List<V>
+HashMap.iter() -> Iterator<(K, V)>
+
+// HashSet
+HashSet<T>.new() -> HashSet<T>
+HashSet.insert(value: T) -> bool
+HashSet.remove(value: T) -> bool
+HashSet.contains(value: T) -> bool
+HashSet.len() -> usize
+HashSet.is_empty() -> bool
+HashSet.iter() -> Iterator<T>
+HashSet.union(other: HashSet<T>) -> HashSet<T>
+HashSet.intersection(other: HashSet<T>) -> HashSet<T>
+```
+
+### math Module
+```berk
+use math
+
+// Constants
+math.PI: f64
+math.E: f64
+math.TAU: f64
+
+// Functions
+math.abs(x: Number) -> Number
+math.sqrt(x: f64) -> f64
+math.pow(base: f64, exp: f64) -> f64
+math.exp(x: f64) -> f64
+math.log(x: f64) -> f64
+math.log10(x: f64) -> f64
+math.log2(x: f64) -> f64
+math.sin(x: f64) -> f64
+math.cos(x: f64) -> f64
+math.tan(x: f64) -> f64
+math.asin(x: f64) -> f64
+math.acos(x: f64) -> f64
+math.atan(x: f64) -> f64
+math.atan2(y: f64, x: f64) -> f64
+math.floor(x: f64) -> f64
+math.ceil(x: f64) -> f64
+math.round(x: f64) -> f64
+math.min(a: Number, b: Number) -> Number
+math.max(a: Number, b: Number) -> Number
+math.clamp(x: Number, min: Number, max: Number) -> Number
+```
+
+### time Module
+```berk
+use time
+
+// Current time
+time.now() -> DateTime
+time.timestamp() -> i64
+time.timestamp_millis() -> i64
+
+// DateTime
+DateTime.year() -> i32
+DateTime.month() -> u32
+DateTime.day() -> u32
+DateTime.hour() -> u32
+DateTime.minute() -> u32
+DateTime.second() -> u32
+DateTime.format(fmt: String) -> String
+DateTime.add_days(days: i64) -> DateTime
+DateTime.add_hours(hours: i64) -> DateTime
+
+// Duration
+Duration.from_secs(secs: u64) -> Duration
+Duration.from_millis(millis: u64) -> Duration
+Duration.as_secs() -> u64
+Duration.as_millis() -> u64
+
+// Sleep
+time.sleep(duration: Duration) -> ()
+time.sleep_ms(ms: u64) -> ()
+time.sleep_secs(secs: u64) -> ()
+```
+
+### thread Module
+```berk
+use thread
+
+// Thread creation
+thread.spawn(f: fn() -> T) -> JoinHandle<T>
+JoinHandle.join() -> Result<T, Error>
+
+// Thread operations
+thread.current() -> Thread
+thread.sleep(duration: Duration) -> ()
+thread.yield_now() -> ()
+
+// Mutex
+Mutex<T>.new(value: T) -> Mutex<T>
+Mutex.lock() -> MutexGuard<T>
+Mutex.try_lock() -> Option<MutexGuard<T>>
+
+// Channel
+channel<T>() -> (Sender<T>, Receiver<T>)
+Sender.send(value: T) -> Result<(), Error>
+Receiver.recv() -> Result<T, Error>
+Receiver.try_recv() -> Option<T>
+```
+
+### async Module
+```berk
+use async
+
+// Async runtime
+async.run(future: Future<T>) -> T
+async.spawn(future: Future<T>) -> Task<T>
+Task.await() -> T
+
+// Async functions
+async func fetch_data() -> Result<String, Error> {
+    // ...
+}
+
+// Await
+var result = fetch_data().await?
+```
+
+### http Module
+```berk
+use http
+
+// HTTP Client
+http.get(url: String) -> Result<Response, Error>
+http.post(url: String, body: String) -> Result<Response, Error>
+http.put(url: String, body: String) -> Result<Response, Error>
+http.delete(url: String) -> Result<Response, Error>
+
+// Response
+Response.status() -> u16
+Response.headers() -> HashMap<String, String>
+Response.text() -> Result<String, Error>
+Response.json<T>() -> Result<T, Error>
+Response.bytes() -> Result<List<u8>, Error>
+
+// HTTP Server
+Server.new(addr: String) -> Server
+Server.route(path: String, handler: fn(Request) -> Response) -> ()
+Server.start() -> Result<(), Error>
+
+// Request
+Request.method() -> String
+Request.path() -> String
+Request.headers() -> HashMap<String, String>
+Request.body() -> String
+Request.query(key: String) -> Option<String>
+
+// Response builder
+Response.ok(body: String) -> Response
+Response.json(data: any) -> Response
+Response.status(code: u16) -> Response
+Response.header(key: String, value: String) -> Response
+```
+
+### json Module
+```berk
+use json
+
+// Parsing
+json.parse(s: String) -> Result<Value, Error>
+json.parse_as<T>(s: String) -> Result<T, Error>
+
+// Serialization
+json.stringify(value: any) -> Result<String, Error>
+json.stringify_pretty(value: any) -> Result<String, Error>
+
+// Value type
+Value.is_null() -> bool
+Value.is_bool() -> bool
+Value.is_number() -> bool
+Value.is_string() -> bool
+Value.is_array() -> bool
+Value.is_object() -> bool
+Value.as_bool() -> Option<bool>
+Value.as_i64() -> Option<i64>
+Value.as_f64() -> Option<f64>
+Value.as_str() -> Option<String>
+Value.as_array() -> Option<List<Value>>
+Value.as_object() -> Option<HashMap<String, Value>>
+Value[key: String] -> Value
+Value[index: usize] -> Value
+```
+
+### regex Module
+```berk
+use regex
+
+// Regex
+Regex.new(pattern: String) -> Result<Regex, Error>
+Regex.is_match(text: String) -> bool
+Regex.find(text: String) -> Option<Match>
+Regex.find_all(text: String) -> List<Match>
+Regex.replace(text: String, replacement: String) -> String
+Regex.replace_all(text: String, replacement: String) -> String
+Regex.captures(text: String) -> Option<Captures>
+
+// Match
+Match.start() -> usize
+Match.end() -> usize
+Match.as_str() -> String
+```
+
+### crypto Module
+```berk
+use crypto
+
+// Hashing
+crypto.sha256(data: List<u8>) -> List<u8>
+crypto.sha512(data: List<u8>) -> List<u8>
+crypto.md5(data: List<u8>) -> List<u8>
+crypto.blake3(data: List<u8>) -> List<u8>
+
+// HMAC
+crypto.hmac_sha256(key: List<u8>, data: List<u8>) -> List<u8>
+
+// Random
+crypto.random_bytes(len: usize) -> List<u8>
+
+// Encoding
+crypto.base64_encode(data: List<u8>) -> String
+crypto.base64_decode(s: String) -> Result<List<u8>, Error>
+crypto.hex_encode(data: List<u8>) -> String
+crypto.hex_decode(s: String) -> Result<List<u8>, Error>
+```
+
+---
+
+## AI/ML API
+
+### ai.tensor Module
+```berk
+use ai.tensor
+
+// Tensor creation
+Tensor.new(data: List<List<f32>>) -> Tensor
+Tensor.zeros(shape: List<usize>) -> Tensor
+Tensor.ones(shape: List<usize>) -> Tensor
+Tensor.rand(shape: List<usize>) -> Tensor
+Tensor.randn(shape: List<usize>) -> Tensor
+Tensor.from_list(data: List<f32>, shape: List<usize>) -> Tensor
+
+// Tensor properties
+Tensor.shape() -> List<usize>
+Tensor.ndim() -> usize
+Tensor.size() -> usize
+Tensor.dtype() -> DType
+
+// Tensor operations
+Tensor.add(other: Tensor) -> Tensor
+Tensor.sub(other: Tensor) -> Tensor
+Tensor.mul(other: Tensor) -> Tensor
+Tensor.div(other: Tensor) -> Tensor
+Tensor.matmul(other: Tensor) -> Tensor
+Tensor.transpose() -> Tensor
+Tensor.reshape(shape: List<usize>) -> Tensor
+Tensor.flatten() -> Tensor
+Tensor.sum() -> Tensor
+Tensor.mean() -> Tensor
+Tensor.max() -> Tensor
+Tensor.min() -> Tensor
+Tensor.softmax(dim: i32) -> Tensor
+Tensor.relu() -> Tensor
+Tensor.sigmoid() -> Tensor
+Tensor.tanh() -> Tensor
+
+// Gradients
+Tensor.requires_grad(flag: bool) -> Tensor
+Tensor.backward() -> ()
+Tensor.grad() -> Option<Tensor>
+```
+
+### ai.nn Module
+```berk
+use ai.nn
+
+// Layers
+nn.Linear(in_features: usize, out_features: usize) -> Linear
+nn.Conv2d(in_ch: usize, out_ch: usize, kernel: usize) -> Conv2d
+nn.BatchNorm1d(features: usize) -> BatchNorm1d
+nn.BatchNorm2d(features: usize) -> BatchNorm2d
+nn.Dropout(p: f32) -> Dropout
+nn.Embedding(num: usize, dim: usize) -> Embedding
+nn.LSTM(input: usize, hidden: usize) -> LSTM
+nn.GRU(input: usize, hidden: usize) -> GRU
+nn.Transformer(d_model: usize, nhead: usize) -> Transformer
+
+// Activations
+nn.ReLU() -> ReLU
+nn.Sigmoid() -> Sigmoid
+nn.Tanh() -> Tanh
+nn.Softmax(dim: i32) -> Softmax
+nn.GELU() -> GELU
+nn.LeakyReLU(slope: f32) -> LeakyReLU
+
+// Containers
+nn.Sequential(layers: List<Layer>) -> Sequential
+Sequential.forward(input: Tensor) -> Tensor
+Sequential.parameters() -> List<Tensor>
+
+// Loss functions
+nn.MSELoss() -> MSELoss
+nn.CrossEntropyLoss() -> CrossEntropyLoss
+nn.BCELoss() -> BCELoss
+nn.L1Loss() -> L1Loss
+```
+
+### ai.optim Module
+```berk
+use ai.optim
+
+// Optimizers
+optim.SGD(params: List<Tensor>, lr: f32) -> SGD
+optim.Adam(params: List<Tensor>, lr: f32) -> Adam
+optim.AdamW(params: List<Tensor>, lr: f32) -> AdamW
+optim.RMSprop(params: List<Tensor>, lr: f32) -> RMSprop
+
+// Optimizer methods
+Optimizer.step() -> ()
+Optimizer.zero_grad() -> ()
+
+// Learning rate schedulers
+optim.StepLR(optimizer: Optimizer, step_size: usize) -> StepLR
+optim.CosineAnnealingLR(optimizer: Optimizer, T_max: usize) -> CosineAnnealingLR
+Scheduler.step() -> ()
+```
+
+### ai.train Module
+```berk
+use ai.train
+
+// Training loop utilities
+train.train_epoch(model: Module, loader: DataLoader, optimizer: Optimizer, loss_fn: Loss) -> f32
+train.evaluate(model: Module, loader: DataLoader, loss_fn: Loss) -> f32
+
+// DataLoader
+DataLoader.new(dataset: Dataset, batch_size: usize, shuffle: bool) -> DataLoader
+DataLoader.iter() -> Iterator<(Tensor, Tensor)>
+
+// Checkpointing
+train.save_checkpoint(model: Module, path: String) -> Result<(), Error>
+train.load_checkpoint(model: Module, path: String) -> Result<(), Error>
+```
+
+---
+
+## HAL API
+
+### hal.gpio Module
+```berk
+use hal.gpio
+
+// Pin modes
+enum Mode {
+    Input,
+    Output,
+    InputPullUp,
+    InputPullDown,
+    OutputOpenDrain,
+    Analog,
+    Alternate(u8)
+}
+
+// Pin configuration
+Pin.new(port: char, pin: u8, mode: Mode) -> Pin
+Pin.set_mode(mode: Mode) -> ()
+
+// Digital I/O
+Pin.high() -> ()
+Pin.low() -> ()
+Pin.toggle() -> ()
+Pin.read() -> bool
+Pin.write(value: bool) -> ()
+
+// Interrupts
+Pin.set_interrupt(edge: Edge, callback: fn()) -> ()
+enum Edge { Rising, Falling, Both }
+```
+
+### hal.timer Module
+```berk
+use hal.timer
+
+// Timer configuration
+Timer.new(id: u8) -> Timer
+Timer.set_frequency(hz: u32) -> ()
+Timer.set_period(ms: u32) -> ()
+
+// Timer control
+Timer.start() -> ()
+Timer.stop() -> ()
+Timer.reset() -> ()
+Timer.count() -> u32
+
+// Delay functions
+timer.delay_us(us: u32) -> ()
+timer.delay_ms(ms: u32) -> ()
+timer.delay_s(s: u32) -> ()
+
+// Callbacks
+Timer.set_callback(callback: fn()) -> ()
+```
+
+### hal.usart Module
+```berk
+use hal.usart
+
+// USART configuration
+Usart.new(id: u8, baud: u32) -> Usart
+Usart.set_baud(baud: u32) -> ()
+Usart.set_parity(parity: Parity) -> ()
+Usart.set_stop_bits(bits: StopBits) -> ()
+
+// Communication
+Usart.write(data: List<u8>) -> Result<(), Error>
+Usart.write_str(s: String) -> Result<(), Error>
+Usart.read() -> Result<u8, Error>
+Usart.read_line() -> Result<String, Error>
+Usart.available() -> usize
+
+enum Parity { None, Even, Odd }
+enum StopBits { One, Two }
+```
+
+### hal.spi Module
+```berk
+use hal.spi
+
+// SPI configuration
+Spi.new(id: u8) -> Spi
+Spi.set_clock(hz: u32) -> ()
+Spi.set_mode(mode: SpiMode) -> ()
+
+// Communication
+Spi.transfer(data: List<u8>) -> Result<List<u8>, Error>
+Spi.write(data: List<u8>) -> Result<(), Error>
+Spi.read(len: usize) -> Result<List<u8>, Error>
+
+enum SpiMode { Mode0, Mode1, Mode2, Mode3 }
+```
+
+### hal.i2c Module
+```berk
+use hal.i2c
+
+// I2C configuration
+I2c.new(id: u8) -> I2c
+I2c.set_speed(speed: I2cSpeed) -> ()
+
+// Communication
+I2c.write(addr: u8, data: List<u8>) -> Result<(), Error>
+I2c.read(addr: u8, len: usize) -> Result<List<u8>, Error>
+I2c.write_read(addr: u8, write: List<u8>, read_len: usize) -> Result<List<u8>, Error>
+I2c.scan() -> List<u8>
+
+enum I2cSpeed { Standard, Fast, FastPlus }
+```
+
+### hal.adc Module
+```berk
+use hal.adc
+
+// ADC configuration
+Adc.new(id: u8) -> Adc
+Adc.set_resolution(bits: u8) -> ()
+Adc.set_sample_time(time: SampleTime) -> ()
+
+// Reading
+Adc.read(channel: u8) -> u16
+Adc.read_voltage(channel: u8, vref: f32) -> f32
+
+enum SampleTime { Cycles3, Cycles15, Cycles28, Cycles56, Cycles84 }
+```
+
+### hal.pwm Module
+```berk
+use hal.pwm
+
+// PWM configuration
+Pwm.new(timer: u8, channel: u8) -> Pwm
+Pwm.set_frequency(hz: u32) -> ()
+Pwm.set_duty(percent: f32) -> ()
+Pwm.set_duty_raw(value: u16) -> ()
+
+// Control
+Pwm.enable() -> ()
+Pwm.disable() -> ()
+```
+
+---
+
+## Error Messages
+
+Common error messages and their meanings:
+
+| Error Code | Message | Meaning |
+|------------|---------|---------|
+| E0001 | Type mismatch | Expected type does not match actual type |
+| E0002 | Undefined variable | Variable not declared in scope |
+| E0003 | Undefined function | Function not found |
+| E0004 | Argument count mismatch | Wrong number of arguments |
+| E0005 | Cannot borrow | Borrow checker violation |
+| E0006 | Use after move | Value used after being moved |
+| E0007 | Module not found | Import path invalid |
+| E0008 | Pattern not exhaustive | Match missing cases |
+| E0009 | Division by zero | Runtime division by zero |
+| E0010 | Index out of bounds | Array/list access out of range |
+
+---
+
+*Generated for AI/LLM consumption - BERK v1.4*

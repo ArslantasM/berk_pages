@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::enum - 하드웨어 열거 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📝 상태::열거형</h1>
+<p>하드웨어 열거 및 상수</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366라인</span>
+<span class="stat-badge">정의</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>하드웨어 열거 정의: 레지스터 주소, 비트 마스크, 상수.</p>
+
+<h2>📦 콘텐츠</h2>
+<pre><code>içe_aktar hal::enum
+
+// GPIO Definitions
+sabit GPIOA_BASE = 0x40020000
+sabit GPIOB_BASE = 0x40020400
+
+// RCC Definitions
+sabit RCC_BASE = 0x40023800
+sabit RCC_AHB1ENR = 0x40023830
+
+// IRQ Numbers
+sabit IRQ_TIM2 = 28
+sabit IRQ_USART1 = 37
+
+// Bit masks
+sabit GPIO_MODER_MASK = 0x03
+sabit GPIO_PUPDR_MASK = 0x03</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

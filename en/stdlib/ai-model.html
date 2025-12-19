@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>model - Model Management - BERK Programming Language</title>
+        
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 20px;
+                margin: -20px -20px 30px -20px;
+                border-radius: 8px;
+            }
+            .module-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .stat-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .function-group {
+                margin: 30px 0;
+                padding: 20px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 4px solid var(--links);
+            }
+            .example-box {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .perf-comparison {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .perf-card {
+                background: var(--sidebar-bg);
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+                border: 2px solid var(--links);
+            }
+            .perf-metric {
+                font-size: 2.5em;
+                font-weight: bold;
+                color: var(--links);
+                margin: 10px 0;
+            }
+        </style>
+
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>model - Model Management</h1>
+                        <p>Model saving, loading and serialization operations</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">28.8x</div><div>Faster</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">882x</div><div>Compression</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">LZ4</div><div>algorithm</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">100%</div><div>Truth</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Overview</h2>
+                    <p>The model module provides optimized serialization for saving, loading and sharing trained models. It offers 28.8x faster saving and 882x smaller file size with LZ4 compression algorithm.</p>
+
+                    <div class="perf-comparison">
+                        <div class="perf-card">
+                            <h3>Before (JSON)</h3>
+                            <div class="perf-metric">880ms</div>
+                            <p>Recording time</p>
+                            <div class="perf-metric">131MB</div>
+                            <p>File size</p>
+                        </div>
+                        <div class="perf-card">
+                            <h3>After (LZ4)</h3>
+                            <div class="perf-metric">30ms</div>
+                            <p>Recording time</p>
+                            <div class="perf-metric">0.15MB</div>
+                            <p>File size</p>
+                        </div>
+                    </div>
+
+                    <h2>Saving a Model</h2>
+
+                    <div class="example-box">
+                        <h3>Simple Registration</h3>
+                        <pre><code class="language-berk">use ai/model;
+use ai/nn;
+
+let model = Sequential::new([
+    Linear::new(784, 256),
+    ReLU::new(),
+    Linear::new(256, 10)
+]);
+
+// Model eğitimi...
+
+// LZ4 sıkıştırma ile kaydet
+model.kaydet("model.berk")?;
+print("Model kaydedildi!");
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Compression Levels</h3>
+                        <pre><code class="language-berk">use ai/model;
+
+// Hızlı kaydetme (Level 1 - varsayılan)
+model.kaydet_sıkıştırma("model.berk", seviye: 1)?;
+
+// Maksimum sıkıştırma (Level 9)
+model.kaydet_sıkıştırma("model_compressed.berk", seviye: 9)?;
+
+// Sıkıştırmasız (debug for)
+model.kaydet_ham("model_raw.berk")?;
+</code></pre>
+                    </div>
+
+                    <h2>Model Loading</h2>
+
+                    <div class="example-box">
+                        <h3>Simple Installation</h3>
+                        <pre><code class="language-berk">use ai/model;
+use ai/nn;
+
+// Model yapısını tanımla
+let model = Sequential::new([
+    Linear::new(784, 256),
+    ReLU::new(),
+    Linear::new(256, 10)
+]);
+
+// Ağırlıkları yükle
+model.yükle("model.berk")?;
+
+// Inference
+let x = Tensor::random([1, 784]);
+let pred = model.ileri(x);
+print("Tahmin: {}", pred.argmax());
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Partial Loading</h3>
+                        <pre><code class="language-berk">use ai/model;
+
+// Sadece belirli katmanları yükle
+model.yükle_kısmi("model.berk", katmanlar: ["conv1", "conv2", "fc"])?;
+
+// Transfer learning for
+model.dondur_katmanlar(["conv1", "conv2"]); // Bu katmanları eğitme
+model.çöz_katmanlar(["fc"]);                 // Sadece fc'yi eğit
+</code></pre>
+                    </div>
+
+                    <h2>Binary Format</h2>
+
+                    <div class="function-group">
+                        <h3>File Structure</h3>
+                        <pre><code>
+┌─────────────────────────────────────┐
+│ Magic Number (4 bytes): "BERK"     │
+├─────────────────────────────────────┤
+│ Version (2 bytes): 1.0              │
+├─────────────────────────────────────┤
+│ Compression Type (1 byte): LZ4=1   │
+├─────────────────────────────────────┤
+│ Metadata Length (4 bytes)           │
+├─────────────────────────────────────┤
+│ Metadata (JSON):                    │
+│   - model_type                      │
+│   - layer_count                     │
+│   - param_count                     │
+│   - created_at                      │
+├─────────────────────────────────────┤
+│ Compressed Tensor Data (LZ4)        │
+│   Layer 1 weights + biases          │
+│   Layer 2 weights + biases          │
+│   ...                               │
+└─────────────────────────────────────┘
+</code></pre>
+                    </div>
+
+                    <h2>Model Metadata</h2>
+
+                    <div class="example-box">
+                        <h3>Reading Metadata</h3>
+                        <pre><code class="language-berk">use ai/model;
+
+let metadata = Model::oku_metadata("model.berk")?;
+
+print("Model tipi: {}", metadata.model_type);
+print("Parametre sayısı: {}", metadata.param_count);
+print("Oluşturulma: {}", metadata.created_at);
+print("Berk versiyonu: {}", metadata.berk_version);
+
+// Dosya boyutu
+print("Dosya boyutu: {} MB", metadata.file_size / 1024.0 / 1024.0);
+</code></pre>
+                    </div>
+
+                    <h2>Checkpoint Management</h2>
+
+                    <div class="function-group">
+                        <h3>Training Checkpoints</h3>
+                        <pre><code class="language-berk">use ai/model;
+use ai/train;
+
+// Her 10 epoch'ta kaydet
+her epoch in range(100) for do
+    trainer.eğit_epoch();
+    
+    if epoch % 10 == 0 then do
+        model.kaydet(f"checkpoints/epoch_{epoch}.berk")?;
+        print("Checkpoint kaydedildi: epoch {}", epoch);
+    end
+end
+
+// En iyi modeli kaydet
+if val_loss &lt; best_loss then do
+    model.kaydet("checkpoints/best_model.berk")?;
+    best_loss = val_loss;
+end
+</code></pre>
+                    </div>
+
+                    <h2>Model Export</h2>
+
+                    <div class="example-box">
+                        <h3>ONNX Export</h3>
+                        <pre><code class="language-berk">kullan ai/model;
+
+// ONNX formatına çevir
+model.onnx_export(
+    path: "model.onnx",
+    input_shape: [1, 3, 224, 224],
+    opset_version: 13
+)?;
+
+// TorchScript export
+model.torchscript_export("model.pt")?;
+
+// TensorFlow SavedModel
+model.tensorflow_export("saved_model/")?;
+</code></pre>
+                    </div>
+
+                    <h2>Performance Optimizations</h2>
+
+                    <div class="function-group">
+                        <h3>LZ4 Compression</h3>
+                        <ul>
+                            <li><strong>Level 1:</strong>Fast compression (default) - 28.8x faster</li>
+                            <li><strong>Dictionary:</strong>Optimized for repetitive weight patterns</li>
+                            <li><strong>parallel:</strong>Multi-core compression support</li>
+                            <li><strong>Streaming:</strong>Memory-efficient for large models</li>
+                        </ul>
+                    </div>
+
+                    <h2>Performance Metrics</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Process</th><th>JSON (Pre)</th><th>LZ4 (Later)</th><th>Improvement</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Saving a Model</td><td>880ms</td><td>30ms</td><td><strong>28.8x faster</strong></td></tr>
+                            <tr><td>Model Loading</td><td>~1000ms</td><td>99ms</td><td><strong>10.1x faster</strong></td></tr>
+                            <tr><td>File Size</td><td>131MB</td><td>0.15MB</td><td><strong>882x smaller</strong></td></tr>
+                            <tr><td>Truth</td><td>100%</td><td>100%</td><td><strong>lossless</strong></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>API Reference</h2>
+
+                    <div class="function-group">
+                        <h3>Model Class</h3>
+                        <ul>
+                            <li><code data-no-translate="true">kaydet(path: dizgi) -&gt; Sonuç</code>- Save model (LZ4 Level 1)</li>
+                            <li><code data-no-translate="true">yükle(path: dizgi) -&gt; Sonuç</code>- Upload model</li>
+                            <li><code data-no-translate="true">kaydet_sıkıştırma(path: dizgi, seviye: int) -&gt; Sonuç</code>- Custom compression level</li>
+                            <li><code data-no-translate="true">yükle_kısmi(path: dizgi, katmanlar: [dizgi]) -&gt; Sonuç</code>- Partial loading</li>
+                            <li><code data-no-translate="true">oku_metadata(path: dizgi) -&gt; Metadata</code>- Just read metadata</li>
+                            <li><code data-no-translate="true">onnx_export(path: dizgi, ...) -&gt; Sonuç</code>- ONNX export</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Checkpoint Class</h3>
+                        <ul>
+                            <li><code data-no-translate="true">kaydet_checkpoint(epoch, model, optimizer, metrics)</code></li>
+                            <li><code data-no-translate="true">yükle_checkpoint(path) -&gt; (epoch, model, optimizer)</code></li>
+                            <li><code data-no-translate="true">en_iyi_checkpoint() -&gt; dizgi</code>- Best checkpoint path</li>
+                            <li><code data-no-translate="true">checkpoint_listesi() -&gt; [dizgi]</code>- All checkpoints</li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/en_ai-train.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/en_ai-llm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/en_ai-train.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/en_ai-llm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

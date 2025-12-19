@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>अक्सर पूछे जाने वाले प्रश्न - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="hi_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/faq.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sık-sorulan-sorular"><a class="header" href="#sık-sorulan-sorular">अक्सर पूछे जाने वाले प्रश्नों</a></h1>
+<h2 id="genel-sorular"><a class="header" href="#genel-sorular">सामान्य प्रश्न</a></h2>
+<h3 id="berk-nedir"><a class="header" href="#berk-nedir">बर्क क्या है?</a></h3>
+<p>बर्क एक आधुनिक सिस्टम प्रोग्रामिंग भाषा है। यह जंग-स्तर की मेमोरी सुरक्षा और C/C++-स्तर का प्रदर्शन प्रदान करता है। यह एलएलवीएम बैकएंड का उपयोग करके मूल कोड उत्पन्न करता है और 19 लक्ष्य प्लेटफार्मों के लिए समर्थन प्रदान करता है। द्विभाषी वाक्यविन्यास सुविधा के साथ, आप तुर्की और अंग्रेजी दोनों कीवर्ड का उपयोग कर सकते हैं।</p>
+<h3 id="neden-berk-kullanmalıyım"><a class="header" href="#neden-berk-kullanmalıyım">मुझे बर्क का उपयोग क्यों करना चाहिए?</a></h3>
+<ul>
+<li><strong>उच्च प्रदर्शन</strong>: एलएलवीएम (98-100%) के साथ सी/सी++ स्तर पर नेटिव कोड जनरेशन</li>
+<li><strong>जंग-स्तर की सुरक्षा</strong>: आधुनिक प्रकार की प्रणाली, पैटर्न मिलान, व्यापक त्रुटि प्रबंधन</li>
+<li><strong>व्यापक स्टैडलिब</strong>: 75 मॉड्यूल (42 कोर + 33 एचएएल), 4100+ फ़ंक्शन, NumPy/SciPy स्तर की वैज्ञानिक कंप्यूटिंग, एम्बेडेड सिस्टम समर्थन</li>
+<li><strong>क्रॉस प्लेटफार्म</strong>: डेस्कटॉप (विंडोज़/लिनक्स/मैकओएस), एंबेडेड (एआरएम/आरआईएससी-वी/एवीआर/ईएसपी32), मोबाइल (एंड्रॉइड/आईओएस), वेबअसेंबली</li>
+<li><strong>यूजर फ्रेंडली</strong>: स्वच्छ वाक्यविन्यास, स्पष्ट त्रुटि संदेश, आरईपीएल समर्थन, वैकल्पिक द्विभाषी कीवर्ड</li>
+</ul>
+<h3 id="berk-hangi-platformlarda-çalışır"><a class="header" href="#berk-hangi-platformlarda-çalışır">BERK किस प्लेटफॉर्म पर काम करता है?</a></h3>
+<p><strong>डेस्कटॉप</strong>: विंडोज़ x64 (सक्रिय), लिनक्स x64, macOS ARM64</p>
+<p><strong>एंबेडेड (7 प्लेटफ़ॉर्म, 95% पूर्ण, 100% बाज़ार कवरेज)</strong>:</p>
+<ul>
+<li><strong>टीयर 1</strong>: ईएसपी32 (वाईफाई/बीएलई, 35% बाजार), एसटीएम32एफ4 (औद्योगिक, 25%), आरपी2040 (निर्माता, 15%)</li>
+<li><strong>कतार 2</strong>: एनआरएफ52 (बीएलई, 8%), जीडी32 (चीन, 7%), नुवोटन (एशिया, 5%)</li>
+<li><strong>3 टियर</strong>: Arduino (शैक्षिक, 30M उपयोगकर्ता)</li>
+</ul>
+<p><strong>गतिमान</strong>: एंड्रॉइड (एआरएम/x86), आईओएस (एआरएम64) - प्रायोगिक</p>
+<p><strong>वेबअसेंबली</strong>: WASM32, WASI - नियोजित</p>
+<p><strong>एचएएल समर्थन</strong>: 61 प्लेटफ़ॉर्म-विशिष्ट मॉड्यूल, ऑटो-जनरेटर (15,901 लाइनें सीएमएसआईएस परीक्षण)</p>
+<h3 id="berk-açık-kaynak-mı"><a class="header" href="#berk-açık-kaynak-mı">क्या बर्क खुला स्रोत है?</a></h3>
+<p>हां, बीईआरके जीपीएल-3 लाइसेंस के तहत एक ओपन सोर्स प्रोजेक्ट है। GitHub पर सक्रिय विकास हो रहा है। 98% समग्र पूर्णता के साथ v1.0.0 के बहुत करीब।</p>
+<h2 id="syntax-and-dil-Özellikleri"><a class="header" href="#syntax-and-dil-Özellikleri">वाक्य-विन्यास और भाषा विशेषताएँ</a></h2>
+<h3 id="İki-dilli-syntax-nasıl-çalışır"><a class="header" href="#İki-dilli-syntax-nasıl-çalışır">द्विभाषी वाक्यविन्यास कैसे काम करता है?</a></h3>
+<p>बर्क में आप एक ही प्रोग्राम को दो अलग-अलग तरीकों से लिख सकते हैं:</p>
+<pre><code class="language-berk">// Türkçe
+function merhaba() {
+    print("Merhaba Dünya!")
+}
+
+// İngilizce
+function hello() {
+    print("Hello World!")
+}
+</code></pre>
+<p>दोनों शैलियाँ एक ही बाइटकोड पर संकलित होती हैं। आप उन्हें एक ही फ़ाइल में मिला भी सकते हैं!</p>
+<h3 id="hangi-programlama-paradigmalarını-destekler"><a class="header" href="#hangi-programlama-paradigmalarını-destekler">यह किन प्रोग्रामिंग प्रतिमानों का समर्थन करता है?</a></h3>
+<ul>
+<li><strong>अनिवार्य प्रोग्रामिंग</strong>: प्रक्रियात्मक कोड, प्रत्यक्ष स्मृति नियंत्रण</li>
+<li><strong>कार्यात्मक प्रोग्रामिंग</strong>: पुनरावर्तक, उच्च-क्रम कार्य, अपरिवर्तनीयता</li>
+<li><strong>संरचित प्रोग्रामिंग</strong>: संरचनाएं, मॉड्यूलर वास्तुकला, पैटर्न मिलान</li>
+<li><strong>सिस्टम प्रोग्रामिंग</strong>: निम्न स्तर का नियंत्रण, शून्य लागत सार, इनलाइन असेंबली (v1.0 नियोजित)</li>
+<li><strong>सुरक्षा टाइप करें</strong>: मजबूत स्थैतिक प्रकार की जाँच,<strong>सामान्य प्रकार (चरण 4.1-4.4 पूर्ण)</strong></li>
+</ul>
+<h3 id="garbage-collector-var-mı"><a class="header" href="#garbage-collector-var-mı">क्या कचरा संग्रहकर्ता है?</a></h3>
+<p>नहीं, BERK मैन्युअल मेमोरी प्रबंधन का उपयोग करता है।<strong>जंग-शैली स्वामित्व प्रणाली v0.9.0 में पूरी हुई</strong>- उधार चेकर, नॉन-लेक्सिकल लाइफटाइम्स (एनएलएल), मूव सिमेंटिक्स (<code data-no-translate="true">geçir</code>, <code data-no-translate="true">paylaş</code>, <code data-no-translate="true">değiştir</code>) जंग-स्तरीय मेमोरी सुरक्षा प्रदान करता है। इसमें रीजन मेमोरी (263x मॉलोक से तेज़) और मिमैलोक एकीकरण भी है।</p>
+<h3 id="performans-rust-c-ile-nasıl-karşılaştırılır"><a class="header" href="#performans-rust-c-ile-nasıl-karşılaştırılır">प्रदर्शन की तुलना रस्ट/सी से कैसे की जाती है?</a></h3>
+<p>एलएलवीएम बैकएंड की बदौलत बीईआरके सी/सी++ (98-100%) के बराबर प्रदर्शन प्रदान करता है। एलएलवीएम आईआर ऑप्टिमाइज़ेशन पास, रीजन मेमोरी एलोकेटर (263x स्पीडअप), और मिमलोक इंटीग्रेशन का उपयोग करता है। -O0 से -O3 तक अनुकूलन स्तरों का समर्थन करता है। बेंचमार्क सुइट के साथ निरंतर प्रदर्शन की निगरानी की जाती है।</p>
+<h2 id="standart-Library"><a class="header" href="#standart-Library">मानक पुस्तकालय</a></h2>
+<h3 id="stdlib-neler-içerir"><a class="header" href="#stdlib-neler-içerir">stdlib में क्या शामिल है?</a></h3>
+<p>BERK v1.0.0 एक व्यापक मानक लाइब्रेरी प्रदान करता है:</p>
+<p><strong>कोर मॉड्यूल (11)</strong>: io, स्ट्रिंग, संग्रह, परिणाम, समय, fs, थ्रेड, sys, टर्मिनल, iter, fmt<br>
+<strong>गणित एवं विज्ञान (7)</strong>: गणित, भौतिकी, जटिल, यादृच्छिक, लाइनलग, सांख्यिकी, ऑप्टिम<br>
+<strong>वेब एवं डेटा (12)</strong>: http, json, xml, yaml, csv, regex, नेटवर्क, async, एन्कोडिंग, संपीड़न, क्रिप्टो, sqlite<br>
+<strong>ग्राफ़िक्स और गेम (9)</strong>: जीयूआई, ग्राफिक्स, ऑडियो, छवि, फिजिक्स2डी, कैड3डी, मेश, गणित_3डी, रंग<br>
+<strong>उन्नत (3)</strong>: परीक्षण, लॉगिंग, नियम<br>
+<strong>एंबेडेड एचएएल (33)</strong>: जीपीआईओ, एडीसी, डीएसी, टाइमर, पीडब्लूएम, यूसार्ट, एसपीआई, आई2सी, कैन, यूएसबी, डीएमए, क्लॉक, पावर, आरटीसी, आरएनजी, सीआरसी, फ्लैश, एक्सटीआई, एनविक, इंटरप्ट, सिस्टिक, वॉचडॉग और बहुत कुछ</p>
+<p><strong>कुल</strong>: 75 मॉड्यूल, 4100+ फ़ंक्शन, 1140 केबी कोड</p>
+<h3 id="numpyscipy-benzeri-özellikler-var-mı"><a class="header" href="#numpyscipy-benzeri-özellikler-var-mı">क्या NumPy/SciPy जैसी सुविधाएं हैं?</a></h3>
+<p>हाँ! देशी प्रदर्शन के साथ v1.0.0 वैज्ञानिक कंप्यूटिंग मॉड्यूल:</p>
+<ul>
+<li><code data-no-translate="true">linalg</code>: मैट्रिक्स ऑपरेशन, एलयू/क्यूआर/चोलेस्की अपघटन, आइजेनवैल्यू/आइजेनवेक्टर, लीनियर सॉल्वर</li>
+<li><code data-no-translate="true">stats</code>: वर्णनात्मक आँकड़े, संभाव्यता वितरण, परिकल्पना परीक्षण (टी-टेस्ट, एनोवा), प्रतिगमन</li>
+<li><code data-no-translate="true">optim</code>: अप्रतिबंधित/विवश अनुकूलन, ग्रेडिएंट डिसेंट, बीएफजीएस, सिम्युलेटेड एनीलिंग, रूट फाइंडिंग</li>
+<li><code data-no-translate="true">physics</code>: भौतिकी सिमुलेशन, संख्यात्मक तरीके</li>
+<li><code data-no-translate="true">math_3d</code>: 3डी वेक्टर/मैट्रिक्स संचालन</li>
+<li><code data-no-translate="true">complex</code>: जटिल संख्या अंकगणित</li>
+</ul>
+<h3 id="cc-Librarylerini-kullanabilir-miyim"><a class="header" href="#cc-Librarylerini-kullanabilir-miyim">क्या मैं C/C++ लाइब्रेरीज़ का उपयोग कर सकता हूँ?</a></h3>
+<p><strong>हाँ!</strong>एफएफआई (फॉरेन फंक्शन इंटरफेस) प्रणाली v0.9.0 में पूरी हुई। 30+ परीक्षणों, libm एकीकरण (40+ गणित कार्यों) और प्रत्यक्ष C लाइब्रेरी कॉल के साथ पूर्ण C ABI समर्थन। सिक्योर सी इंटरऑप को रस्ट अनसेफ एफएफआई-जैसे सिंटैक्स के साथ प्रदान किया गया है।</p>
+<h2 id="performance-and-optimizasyon"><a class="header" href="#performance-and-optimizasyon">प्रदर्शन और अनुकूलन</a></h2>
+<h3 id="berk-ne-kadar-hızlı"><a class="header" href="#berk-ne-kadar-hızlı">बर्क कितना तेज़ है?</a></h3>
+<p>एलएलवीएम बैकएंड के लिए धन्यवाद, यह सी/सी++ के बराबर प्रदर्शन प्रदान करता है। यह नेटिव कोड जनरेशन, एलएलवीएम ऑप्टिमाइज़ेशन पास और शून्य-लागत एब्स्ट्रैक्शन के साथ सिस्टम प्रोग्रामिंग के लिए आवश्यक गति प्रदान करता है। रोडमैप में JIT कंपाइलर और BLAS/LAPACK एकीकरण शामिल है।</p>
+<h3 id="optimizasyon-seviyeleri-nelerdir"><a class="header" href="#optimizasyon-seviyeleri-nelerdir">अनुकूलन स्तर क्या हैं?</a></h3>
+<pre><code class="language-bash">berk build -O0  # Optimizasyon yok (hızlı derleme, debug)
+berk build -O1  # Temel optimizasyonlar
+berk build -O2  # Varsayılan (dengelenmiş performans)
+berk build -O3  # Agresif optimizasyon (maksimum hız)
+</code></pre>
+<p>एलएलवीएम अनुकूलन पाइपलाइन का उपयोग करता है: डेड कोड उन्मूलन, निरंतर फोल्डिंग, लूप अनरोलिंग, इनलाइन विस्तार। लिंक-टाइम ऑप्टिमाइज़ेशन (एलटीओ) समर्थन भविष्य के संस्करणों में जोड़ा जाएगा।</p>
+<h3 id="paralel-programlama-destekleniyor-mu"><a class="header" href="#paralel-programlama-destekleniyor-mu">क्या समानांतर प्रोग्रामिंग समर्थित है?</a></h3>
+<p>हाँ,<code data-no-translate="true">thread</code>आप मॉड्यूल के साथ मल्टी-थ्रेडिंग कर सकते हैं:</p>
+<pre><code class="language-berk">import thread
+
+function işçi(id: number) {
+    print("Thread ", id, " çalışıyor")
+}
+
+function main() {
+    variable t1 = thread.spawn(işçi, 1)
+    variable t2 = thread.spawn(işçi, 2)
+    
+    thread.join(t1)
+    thread.join(t2)
+}
+</code></pre>
+<h2 id="araçlar-and-ekosistem"><a class="header" href="#araçlar-and-ekosistem">उपकरण और पारिस्थितिकी तंत्र</a></h2>
+<h3 id="ideeditor-desteği-var-mı"><a class="header" href="#ideeditor-desteği-var-mı">क्या आईडीई/संपादक समर्थन मौजूद है?</a></h3>
+<p><strong>वीएस कोड एक्सटेंशन v0.4.0</strong>वीएस कोड मार्केटप्लेस पर लाइव है!</p>
+<ul>
+<li><strong>एलएसपी v0.9.4</strong>: परिभाषा पर जाएं (F12), संदर्भ ढूंढें (Shift+F12), नाम बदलें (F2)</li>
+<li><strong>उन्नत विशेषताएँ</strong>: हस्ताक्षर सहायता, कोड क्रियाएं, सिमेंटिक टोकन, इनले संकेत, कोड लेंस</li>
+<li><strong>एलएलवीएम एकीकरण</strong>: मूल संकलन समर्थन</li>
+<li><strong>निदान</strong>: वास्तविक समय त्रुटि/चेतावनी का पता लगाना</li>
+<li><strong>स्वत: पूर्ण करने</strong>: संदर्भ-जागरूक सुझाव</li>
+<li><strong>एक्सटेंशन आईडी</strong>: <code data-no-translate="true">ArslantasM-tools.berk-lang</code></li>
+</ul>
+<h3 id="package-manager-var-mı"><a class="header" href="#package-manager-var-mı">क्या कोई पैकेज मैनेजर है?</a></h3>
+<p><strong>हाँ!</strong>बीपीएम (बीईआरके पैकेज मैनेजर) उत्पादन के लिए तैयार:</p>
+<ul>
+<li><strong>8 आदेश</strong>: <code data-no-translate="true">new</code>, <code data-no-translate="true">add</code>, <code data-no-translate="true">update</code>, <code data-no-translate="true">build</code>, <code data-no-translate="true">run</code>, <code data-no-translate="true">publish</code>, <code data-no-translate="true">install</code>, <code data-no-translate="true">search</code></li>
+<li><strong>विशेषताएँ</strong>: निर्भरता रिज़ॉल्यूशन, बाइनरी कैश (5GB), लॉकफ़ाइल (<code data-no-translate="true">berk.lock</code>), समानांतर डाउनलोड</li>
+<li><strong>6 प्लेटफार्म</strong>: एंबेडेड लक्ष्य समर्थन</li>
+<li><strong>परीक्षण कवरेज</strong>: 29/30 परीक्षण उत्तीर्ण (97%)</li>
+<li><strong>रजिस्ट्री सर्वर</strong>: उत्पादन के लिए तैयार (पोस्टग्रेएसक्यूएल, जेडब्ल्यूटी ऑथ, एड25519 हस्ताक्षर)</li>
+</ul>
+<h3 id="repl-interactive-shell-var-mı"><a class="header" href="#repl-interactive-shell-var-mı">क्या कोई आरईपीएल (इंटरैक्टिव शेल) है?</a></h3>
+<p><strong>हाँ!</strong> <code data-no-translate="true">berk-repl.exe</code>(9.3 एमबी) के साथ त्वरित कोड निष्पादन:</p>
+<pre><code class="language-bash">berk repl
+&gt;&gt;&gt; variable x = 10
+&gt;&gt;&gt; print(x * 2)
+20
+&gt;&gt;&gt; import math
+&gt;&gt;&gt; math.sqrt(144)
+12.0
+</code></pre>
+<p><strong>जेआईटी मोड</strong>: फ़ाइलों को सीधे निष्पादित करना (कोई संकलन आवश्यक नहीं):</p>
+<pre><code class="language-bash">berk run program.berk  # Instant execution
+</code></pre>
+<h3 id="api-Documentationu-var-mı"><a class="header" href="#api-Documentationu-var-mı">क्या कोई एपीआई दस्तावेज़ीकरण है?</a></h3>
+<p><strong>हाँ!</strong>बर्कडॉक टूल के साथ स्वचालित दस्तावेज़ीकरण:</p>
+<ul>
+<li><strong>लाइव साइट</strong>: <a href="https://arslantasm.github.io/berk-stdlib-docs/">arslantasm.github.io/berk-stdlib-docs</a></li>
+<li><strong>1,662 प्रलेखित वस्तुएँ</strong>: कार्य, प्रकार, मॉड्यूल</li>
+<li><strong>43 मॉड्यूल</strong>: पूर्ण एपीआई संदर्भ</li>
+<li><strong>2,187 HTML फ़ाइलें</strong>: से उत्पन्न<code data-no-translate="true">///</code>दस्तावेज़ टिप्पणियाँ</li>
+<li><strong>एलएसपी एकीकरण</strong>: वीएस कोड में दस्तावेज़ीकरण को घुमाएँ</li>
+<li><strong>नियमावली</strong>: 70+ पेज की व्यापक मार्गदर्शिका</li>
+</ul>
+<h2 id="katkıda-bulunma"><a class="header" href="#katkıda-bulunma">योगदान</a></h2>
+<h3 id="nasıl-katkıda-bulunabilirim"><a class="header" href="#nasıl-katkıda-bulunabilirim">मैं कैसे योगदान दे सकता हूँ?</a></h3>
+<ol>
+<li><strong>कोड</strong>: GitHub से प्रोजेक्ट फोर्क करें, एक फीचर शाखा खोलें, एक PR भेजें</li>
+<li><strong>प्रलेखन</strong>: टाइपो सुधार, नए उदाहरण, अनुवाद सुधार</li>
+<li><strong>परीक्षा</strong>: बग रिपोर्ट, परीक्षण मामले, बेंचमार्क</li>
+<li><strong>stdlib</strong>: नए मॉड्यूल, फ़ंक्शंस, एल्गोरिदम सुधार</li>
+</ol>
+<h3 id="hangi-teknolojileri-bilmem-gerekir"><a class="header" href="#hangi-teknolojileri-bilmem-gerekir">मुझे कौन सी तकनीकें जानने की आवश्यकता है?</a></h3>
+<ul>
+<li><strong>जंग</strong>: रस्ट में लिखा गया कंपाइलर (एलएलवीएम 17.0.6)</li>
+<li><strong>एलएलवीएम</strong>: एलएलवीएम आईआर ज्ञान के लिए बैकएंड उपयोगी है</li>
+<li><strong>पारसर्स</strong>: लेक्सर/पार्सर विकास अनुभव</li>
+<li><strong>परीक्षा</strong>: 191 इकाई परीक्षण, 79 स्वामित्व परीक्षण, 30+ एफएफआई परीक्षण (85% कवरेज)</li>
+</ul>
+<h3 id="proje-ne-kadar-olgun"><a class="header" href="#proje-ne-kadar-olgun">प्रोजेक्ट कितना परिपक्व है?</a></h3>
+<p><strong>98% पूर्ण</strong>(v1.0.0 के बहुत करीब):</p>
+<ul>
+<li><strong>कोर कंपाइलर</strong>: 100% (एलएलवीएम बैकएंड, स्वामित्व प्रणाली, जेनरिक)</li>
+<li><strong>रनटाइम सिस्टम</strong>: 100% (क्षेत्र मेमोरी, एफएफआई, थ्रेडिंग)</li>
+<li><strong>मानक पुस्तकालय</strong>: 95% (75 मॉड्यूल, 4100+ फ़ंक्शन)</li>
+<li><strong>टूलींग</strong>: 100% (बीपीएम, एलएसपी v0.9.4, वीएस कोड एक्सटेंशन v0.4.0)</li>
+<li><strong>अंतः स्थापित प्रणालियाँ</strong>: 95% (7 प्लेटफार्म, एचएएल ऑटो-जनरेटर)</li>
+<li><strong>प्रलेखन</strong>: 95% (1,662 आइटम, लाइव एपीआई दस्तावेज़)</li>
+<li><strong>परीक्षण कवरेज</strong>: 85% (310+ उत्तीर्ण परीक्षण)</li>
+</ul>
+<p><strong>v1.0.0 रिलीज</strong>: जनवरी 2026 का लक्ष्य है</p>
+<h3 id="İletişim-kanalları-nelerdir"><a class="header" href="#İletişim-kanalları-nelerdir">संचार चैनल क्या हैं?</a></h3>
+<ul>
+<li><strong>गिटहब मुद्दे</strong>: बग रिपोर्ट और सुविधा अनुरोध</li>
+<li><strong>विचार विमर्श</strong>: सामान्य चर्चाएँ, प्रश्न</li>
+<li><strong>कलह</strong>: वास्तविक समय चैट (जल्द ही आ रही है)</li>
+</ul>
+<h2 id="karşılaştırmalar"><a class="header" href="#karşılaştırmalar">तुलना</a></h2>
+<h3 id="rust-vs-berk"><a class="header" href="#rust-vs-berk">जंग बनाम बर्क?</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>प्रवृत्ति</th><th>जंग</th><th>बर्क</th></tr></thead><tbody>
+<tr><td>प्रदर्शन</td><td>मूल (एलएलवीएम)</td><td>मूल (एलएलवीएम), सी/सी++ स्तर</td></tr>
+<tr><td>स्मृति सुरक्षा</td><td>स्वामित्व + उधार चेकर</td><td><strong>स्वामित्व + उधार चेकर (v0.9.0)</strong></td></tr>
+<tr><td>मेमोरी आवंटन</td><td>सिस्टम आवंटनकर्ता</td><td>रीजन मेमोरी (263x स्पीड) + मिमलोक</td></tr>
+<tr><td>सिस्टम टाइप करें</td><td>मजबूत स्थैतिक</td><td>मजबूत स्थैतिक, पैटर्न मिलान, सामान्य प्रकार</td></tr>
+<tr><td>एफएफआई</td><td>असुरक्षित एफएफआई</td><td>पूर्ण सी एबीआई समर्थन (30+ परीक्षण)</td></tr>
+<tr><td>stdlib</td><td>विस्तृत</td><td>75 मॉड्यूल (वैज्ञानिक + एंबेडेड एचएएल)</td></tr>
+<tr><td>टूलींग</td><td>कार्गो, जंग-विश्लेषक</td><td>बीपीएम, एलएसपी v0.9.4, वीएस कोड एक्सटेंशन</td></tr>
+<tr><td>परिपक्वता</td><td>उत्पादन के लिए तैयार</td><td>v1.0 के निकट (98% पूर्ण)</td></tr>
+</tbody></table>
+</div>
+<p>बीईआरके ने रस्ट की स्वामित्व प्रणाली (v0.9.0, 98/98 परीक्षण) लागू की है। यह क्षेत्र मेमोरी एलोकेटर, वैज्ञानिक कंप्यूटिंग और एम्बेडेड सिस्टम केंद्रित stdlib, तुर्की/अंग्रेजी द्विभाषी वाक्यविन्यास के साथ 263x प्रदर्शन वृद्धि के साथ खुद को अलग करता है।</p>
+<h3 id="python-vs-berk"><a class="header" href="#python-vs-berk">पायथन बनाम बर्क?</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>प्रवृत्ति</th><th>अजगर</th><th>बर्क</th></tr></thead><tbody>
+<tr><td>प्रदर्शन</td><td>व्याख्या की गई (~100x धीमी)</td><td>मूल (एलएलवीएम, सी/सी++ स्तर)</td></tr>
+<tr><td>सिस्टम टाइप करें</td><td>गतिशील</td><td>स्थैतिक (संकलन-समय प्रकार की जाँच)</td></tr>
+<tr><td>वैज्ञानिक</td><td>NumPy/SciPy (सी बैकएंड)</td><td>लाइनलग/आँकड़े/ऑप्टिम (मूल)</td></tr>
+<tr><td>मेमोरी जांच</td><td>जीसी (अप्रत्याशित ओवरहेड)</td><td>मैनुअल (अनुमानित प्रदर्शन)</td></tr>
+<tr><td>तैनाती</td><td>दुभाषिया + निर्भरताएँ</td><td>स्टैंडअलोन निष्पादन योग्य</td></tr>
+<tr><td>लक्ष्य मंच</td><td>डेस्कटॉप</td><td>डेस्कटॉप + एंबेडेड + मोबाइल + WASM</td></tr>
+</tbody></table>
+</div>
+<p>बीईआरके पायथन के लिए वैज्ञानिक कंप्यूटिंग की अभिव्यक्ति को सी/सी++ के लिए सिस्टम प्रोग्रामिंग के प्रदर्शन के साथ जोड़ता है। एम्बेडेड और रीयल-टाइम सिस्टम के लिए आदर्श।</p>
+<h3 id="c-vs-berk"><a class="header" href="#c-vs-berk">सी/सी++ बनाम बर्क?</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>प्रवृत्ति</th><th>सी/सी++</th><th>बर्क</th></tr></thead><tbody>
+<tr><td>प्रदर्शन</td><td>मूल (सबसे तेज़)</td><td>मूल (एलएलवीएम, तुलनीय)</td></tr>
+<tr><td>स्मृति सुरक्षा</td><td>मैनुअल (असुरक्षित)</td><td>मैनुअल + प्रकार की सुरक्षा</td></tr>
+<tr><td>त्रुटि प्रबंधन</td><td>त्रुटि कोड/अपवाद</td><td>परिणाम प्रकार + पैटर्न मिलान</td></tr>
+<tr><td>आधुनिक विशेषताएँ</td><td>नाराज़</td><td>पैटर्न मिलान, पुनरावर्तक, आधुनिक stdlib</td></tr>
+<tr><td>सीखना</td><td>जटिल (सूचक अंकगणित)</td><td>आसान (आधुनिक वाक्यविन्यास)</td></tr>
+<tr><td>stdlib</td><td>न्यूनतम</td><td>व्यापक (75 मॉड्यूल, 4100+ फ़ंक्शन)</td></tr>
+<tr><td>एफएफआई</td><td>देशी</td><td><strong>पूर्ण सी एबीआई समर्थन (v0.9.0)</strong></td></tr>
+<tr><td>स्वामित्व</td><td>कोई नहीं</td><td><strong>जंग-शैली (v0.9.0)</strong></td></tr>
+</tbody></table>
+</div>
+<p>BERK आधुनिक भाषा सुविधाओं के साथ C/C++ की सिस्टम प्रोग्रामिंग शक्ति को जोड़ती है।<strong>एफएफआई प्रणाली v0.9.0 में पूरी हुई</strong>- सी लाइब्रेरीज़ के साथ पूर्ण अनुकूलता, libm एकीकरण, 30+ परीक्षणों के साथ उत्पादन के लिए तैयार।</p>
+<h2 id="sorun-giderme"><a class="header" href="#sorun-giderme">समस्या निवारण</a></h2>
+<h3 id="tanımlanmamış-Reference-hatası-alıyorum"><a class="header" href="#tanımlanmamış-Reference-hatası-alıyorum">मुझे "अपरिभाषित संदर्भ" त्रुटि मिल रही है</a></h3>
+<p>आप मॉड्यूल आयात करना भूल गए होंगे:</p>
+<pre><code class="language-berk">import math  // math Moduleünü ekleyin
+
+function main() {
+    variable x = math.sqrt(16)  // Artık çalışır
+}
+</code></pre>
+<h3 id="derleme-çok-uzun-sürüyor"><a class="header" href="#derleme-çok-uzun-sürüyor">संकलन में बहुत अधिक समय लगता है</a></h3>
+<p><code data-no-translate="true">-O0</code>आप शीघ्रता से संकलन कर सकते हैं:</p>
+<pre><code class="language-bash">berk build -O0 program.berk
+</code></pre>
+<h3 id="stack-overflow-hatası"><a class="header" href="#stack-overflow-hatası">"स्टैक ओवरफ़्लो" त्रुटि</a></h3>
+<p>रिकर्सिव फ़ंक्शंस में टेल-कॉल ऑप्टिमाइज़ेशन का उपयोग करें या पुनरावृत्त संस्करण पर स्विच करें।</p>
+<hr>
+<p><strong>क्या आपका प्रश्न यहाँ नहीं है?</strong> <a href="https://github.com/berkos/berk-lang/discussions">गिटहब चर्चाएँ</a>पर पूछो!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="contributing/hi_docs.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="hi_roadmap.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="contributing/hi_docs.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="hi_roadmap.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

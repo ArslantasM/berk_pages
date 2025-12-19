@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>json - JSON पार्सर | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📋 json - JSON पार्सर/सीरियलाइज़र</h1>
+<p>JSON पार्सिंग, क्रमांकन, सुंदर प्रिंट</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">51</div><div>कार्य</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,204</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">37KB</div><div>आप</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import json
+
+// JSON parse
+let veri = '{"name":"BERK","version":"1.0","active":true}'
+let obj = json.parse(veri)
+print(obj["name"])  // "BERK"
+
+// JSON stringify
+let kullanıcı = {"id": 1, "isim": "Ali", "yaş": 25}
+let json_str = json.stringify(kullanıcı)
+print(json_str)  // {"id":1,"isim":"Ali","yaş":25}
+
+// Pretty print
+let güzel = json.stringify_pretty(kullanıcı, 2)
+print(güzel)
+// {
+//   "id": 1,
+//   "isim": "Ali",
+//   "yaş": 25
+// }</code></pre>
+<h2>📚विशेषताएं</h2>
+<ul>
+<li>JSON पार्सिंग (RFC 8259 अनुरूप)</li>
+<li>JSON क्रमबद्धता</li>
+<li>सुंदर मुद्रण</li>
+<li>यूटीएफ-8 समर्थन</li>
+<li>संख्या, स्ट्रिंग, बूलियन, शून्य, सरणी, ऑब्जेक्ट</li>
+<li>त्रुटि प्रबंधन</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>एपीआई प्रतिक्रिया प्रसंस्करण</h3>
+<pre><code>import json, http
+
+let yanıt = http.get("https://api.github.com/users/arslantasm")
+let veri = json.parse(yanıt.gövde)
+
+print("Kullanıcı: " + veri["login"])
+print("Repos: " + veri["public_repos"].yazıya())
+print("Followers: " + veri["followers"].yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>कॉन्फ़िग फ़ाइल</h3>
+<pre><code>import json, io
+
+// Load config
+let config_str = io.fs::read("config.json")
+let config = json.parse(config_str)
+
+// Use config
+let host = config["database"]["host"]
+let port = config["database"]["port"]
+
+// Save config
+config["last_updated"] = time.now()
+io.dosya_yaz("config.json", json.stringify_pretty(config, 2))</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

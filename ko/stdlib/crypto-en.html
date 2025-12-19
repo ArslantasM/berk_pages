@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>암호화 - 암호화 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 암호화 - 암호화</h1>
+<p>해시, AES, RSA, SHA, HMAC, 디지털 서명</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">950</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28KB</div><div>너</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import crypto
+
+// Hash functions
+let veri = "Merhaba BERK"
+let md5 = crypto.md5(veri)
+let sha256 = crypto.sha256(veri)
+let sha512 = crypto.sha512(veri)
+
+// HMAC (keyed hash)
+let anahtar = "secret_key"
+let hmac = crypto.hmac_sha256(veri, anahtar)
+
+// AES encryption (symmetric)
+let aes_key = crypto.aes_key_generate(256)
+let şifreli = crypto.aes_encrypt(veri, aes_key)
+let çözülmüş = crypto.aes_decrypt(şifreli, aes_key)
+
+// RSA encryption (asymmetric)
+let (public_key, private_key) = crypto.rsa_keypair_generate(2048)
+let encrypted = crypto.rsa_encrypt(veri, public_key)
+let decrypted = crypto.rsa_decrypt(encrypted, private_key)
+
+// Digital signature
+let imza = crypto.rsa_sign(veri, private_key)
+let geçerli = crypto.rsa_verify(veri, imza, public_key)
+
+// Random bytes (secure)
+let random = crypto.random_bytes(32)</code></pre>
+<h2>📚 암호화 알고리즘</h2>
+<ul>
+<li><strong>해시시:</strong>MD5, SHA-1, SHA-256, SHA-512, SHA-3, BLAKE2</li>
+<li><strong>대칭:</strong>AES-128/192/256(CBC, GCM), ChaCha20</li>
+<li><strong>비대칭:</strong>RSA-2048/4096, ECC(secp256k1, ed25519)</li>
+<li><strong>HMAC:</strong>HMAC-SHA256, HMAC-SHA512</li>
+<li><strong>주요 파생:</strong>PBKDF2, 아르곤2, 스크립트</li>
+<li><strong>무작위의:</strong>CSPRNG(암호적으로 안전함)</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>비밀번호 해싱(Argon2)</h3>
+<pre><code>import crypto
+
+function şifre_hash(şifre: yazı) -&gt; yazı do
+    // Argon2id (memory-hard, GPU resistant)
+    let salt = crypto.random_bytes(16)
+    let hash = crypto.argon2id(şifre, salt, do
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,  // 64 MB
+        parallellik: 4
+    end)
+    
+    // Combine salt + hash
+    return crypto.encode_base64(salt) + "$" + crypto.encode_base64(hash)
+end
+
+function şifre_doğrula(şifre: yazı, hash: yazı) -&gt; bool do
+    let parçalar = hash.split("$")
+    let salt = crypto.decode_base64(parçalar[0])
+    let beklenen = crypto.decode_base64(parçalar[1])
+    
+    let hesaplanan = crypto.argon2id(şifre, salt, do
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,
+        parallellik: 4
+    end)
+    
+    return crypto.constant_time_compare(hesaplanan, beklenen)
+end
+
+// Usage
+let hash = şifre_hash("güçlü_şifre_123")
+print("Hash: " + hash)
+
+let geçerli = şifre_doğrula("güçlü_şifre_123", hash)
+print("Doğrulama: " + geçerli.yazıya())  // true</code></pre>
+</div>
+<div class="example-box">
+<h3>보안 메시지 교환(RSA + AES 하이브리드)</h3>
+<pre><code>import crypto, json
+
+function şifreli_mesaj_gönder(mesaj: yazı, alıcı_public_key: RSAPublicKey) -&gt; yazı do
+    // 1. Generate random AES key
+    let aes_key = crypto.aes_key_generate(256)
+    
+    // 2. Encrypt message with AES (fast)
+    let şifreli_mesaj = crypto.aes_gcm_encrypt(mesaj, aes_key)
+    
+    // 3. Encrypt AES key with RSA (secure)
+    let şifreli_key = crypto.rsa_encrypt(aes_key, alıcı_public_key)
+    
+    // 4. Create package
+    let paket = do
+        "encrypted_message": crypto.encode_base64(şifreli_mesaj),
+        "encrypted_key": crypto.encode_base64(şifreli_key)
+    end
+    
+    return json.stringify(paket)
+end
+
+function şifreli_mesaj_al(paket_json: yazı, private_key: RSAPrivateKey) -&gt; yazı do
+    // 1. Parse package
+    let paket = json.parse(paket_json)
+    let şifreli_mesaj = crypto.decode_base64(paket["encrypted_message"])
+    let şifreli_key = crypto.decode_base64(paket["encrypted_key"])
+    
+    // 2. Decrypt AES key
+    let aes_key = crypto.rsa_decrypt(şifreli_key, private_key)
+    
+    // 3. Decrypt message
+    let mesaj = crypto.aes_gcm_decrypt(şifreli_mesaj, aes_key)
+    
+    return mesaj
+end
+
+// Usage
+let (alice_pub, alice_priv) = crypto.rsa_keypair_generate(2048)
+let (bob_pub, bob_priv) = crypto.rsa_keypair_generate(2048)
+
+// Alice -&gt; Bob
+let paket = şifreli_mesaj_gönder("Gizli mesaj!", bob_pub)
+let mesaj = şifreli_mesaj_al(paket, bob_priv)
+print(mesaj)  // "Gizli mesaj!"</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>पीडीएफ - पीडीएफ जनरेशन | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📄 पीडीएफ</h1>
+<p>पीडीएफ दस्तावेज़ निर्माण</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400 पंक्तियाँ</span>
+<span class="stat-badge">~35 कार्य</span>
+<span class="stat-badge">पीडीएफ 1.7</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>प्रोग्रामेटिक पीडीएफ दस्तावेज़ निर्माण और हेरफेर। पाठ, आकार, चित्र और बहु-पृष्ठ दस्तावेज़ों का समर्थन करता है।</p>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import pdf
+
+// Create PDF
+let doc = pdf.new()
+doc.set_title("My Document")
+doc.set_author("BERK")
+
+// Add page
+let page = doc.add_page(pdf.A4)
+page.text(100, 700, "Hello PDF!", 12)
+page.line(100, 690, 200, 690)
+
+// Save
+doc.save("output.pdf")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-en.html">← सभी मॉड्यूल</a> | <a href="hi_pdf-tr.html">🇹🇷तुर्की</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

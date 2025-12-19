@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>ऑडियो - ऑडियो प्रोसेसिंग | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔊 ऑडियो - ऑडियो प्रोसेसिंग</h1>
+<p>ऑडियो I/O, DSP, संश्लेषण, प्रभाव, MIDI</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">163</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,669</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">55KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import audio
+
+// Audio dosyası yükle
+let ses = audio.load("music.wav")
+audio.play(ses)
+
+// Ses üret (synthesizer)
+let osc = audio.oscillator_create(SINE, 440.0)  // A4 notası
+audio.oscillator_play(osc, 1.0)  // 1 saniye
+
+// Microphone input
+let mic = audio.input_open()
+let buffer = audio.input_read(mic, 1024)
+
+// Real-time processing
+let output = audio.output_open(44100, 2)  // 44.1kHz stereo
+
+for do
+    let samples = audio.input_read(mic, 512)
+    
+    // Apply effect
+    let processed = audio.reverb(samples, 0.5)
+    
+    audio.output_write(output, processed)
+end</code></pre>
+<h2>📚विशेषताएं</h2>
+<ul>
+<li><strong>मैं/हे:</strong>WAV, MP3, OGG, FLAC को लोड/सेव करें</li>
+<li><strong>प्लेबैक:</strong>वास्तविक समय ऑडियो प्लेबैक, स्ट्रीमिंग</li>
+<li><strong>संश्लेषण:</strong>थरथरानवाला (साइन, वर्ग, सॉटूथ, त्रिकोण), एडीएसआर लिफाफा</li>
+<li><strong>प्रभाव:</strong>रिवर्ब, विलंब, कोरस, विरूपण, ईक्यू, कंप्रेसर</li>
+<li><strong>डीएसपी:</strong>एफएफटी, आईएफएफटी, फिल्टर (लोपास, हाईपास, बैंडपास), कनवल्शन</li>
+<li><strong>मिडी:</strong>MIDI इनपुट/आउटपुट, नोट पार्सिंग</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>सिंथेसाइज़र (एडीएसआर लिफाफा)</h3>
+<pre><code>import audio, math
+
+function synthesizer_note(frekans: kesir, süre: kesir) -&gt; AudioBuffer do
+    let sample_rate = 44100
+    let num_samples = (sample_rate * süre).int()
+    
+    // ADSR parameters
+    let attack = 0.05    // 50ms attack
+    let decay = 0.1      // 100ms decay
+    let sustain = 0.7    // 70% sustain level
+    let release = 0.2    // 200ms release
+    
+    let buffer = audio.buffer_create(num_samples, 1)
+    
+    her i in range(0, num_samples) for do
+        let t = i.kesir() / sample_rate
+        
+        // Oscillator
+        let sample = math.sin(2.0 * math.PI * frekans * t)
+        
+        // ADSR envelope
+        let amplitude = 0.0
+        
+        if t &lt; attack then do
+            amplitude = t / attack
+        end else if t &lt; (attack + decay) then do
+            let decay_t = (t - attack) / decay
+            amplitude = 1.0 - decay_t * (1.0 - sustain)
+        end else if t &lt; (süre - release) then do
+            amplitude = sustain
+        end else do
+            let release_t = (t - (süre - release)) / release
+            amplitude = sustain * (1.0 - release_t)
+        end
+        
+        audio.buffer_set(buffer, i, sample * amplitude * 0.3)
+    end
+    
+    return buffer
+end
+
+// C major chord
+let C4 = synthesizer_note(261.63, 2.0)  // C
+let E4 = synthesizer_note(329.63, 2.0)  // E
+let G4 = synthesizer_note(392.00, 2.0)  // G
+
+// Mix
+let chord = audio.mix([C4, E4, G4])
+audio.play(chord)</code></pre>
+</div>
+<div class="example-box">
+<h3>वास्तविक समय ऑडियो प्रभाव प्रोसेसर</h3>
+<pre><code>import audio
+
+// Effect chain
+sınıf EffectChain do
+    let effects: Dizi
+    
+    function new() do
+        self.effects = []
+    end
+    
+    function push(effect: Effect) do
+        self.effects.push(effect)
+    end
+    
+    function process(input: AudioBuffer) -&gt; AudioBuffer do
+        let output = input
+        
+        her effect in self.effects for do
+            output = effect.process(output)
+        end
+        
+        return output
+    end
+end
+
+// Reverb effect
+sınıf Reverb do
+    let decay: kesir
+    let delay_buffer: AudioBuffer
+    
+    function new(decay_factor: kesir) do
+        self.decay = decay_factor
+        self.delay_buffer = audio.buffer_create(44100, 1)  // 1 saniye buffer
+    end
+    
+    function process(input: AudioBuffer) -&gt; AudioBuffer do
+        let output = audio.buffer_create(input.len(), 1)
+        
+        her i in range(0, input.len()) for do
+            let sample = audio.buffer_get(input, i)
+            let delayed = audio.buffer_get(self.delay_buffer, i % self.delay_buffer.len())
+            
+            let mixed = sample + delayed * self.decay
+            audio.buffer_set(output, i, mixed)
+            audio.buffer_set(self.delay_buffer, i % self.delay_buffer.len(), mixed)
+        end
+        
+        return output
+    end
+end
+
+// Effect chain setup
+let chain = EffectChain.new()
+chain.push(Reverb.new(0.5))
+chain.push(audio.compressor_create(-20.0, 4.0))  // Threshold, ratio
+
+// Real-time processing
+let input = audio.input_open()
+let output = audio.output_open(44100, 1)
+
+for do
+    let buffer = audio.input_read(input, 512)
+    let processed = chain.process(buffer)
+    audio.output_write(output, processed)
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

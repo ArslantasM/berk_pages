@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::can - नियंत्रक क्षेत्र नेटवर्क | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#d35400 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#d35400;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🚗राज्य::कर सकते हैं</h1>
+<p>नियंत्रक क्षेत्र नेटवर्क - ऑटोमोटिव संचार</p>
+<div style="margin-top:15px">
+<span class="stat-badge">383 पंक्तियाँ</span>
+<span class="stat-badge">~14 कार्य</span>
+<span class="stat-badge">ऑटोमोटिव</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>CAN (कंट्रोलर एरिया नेटवर्क) ऑटोमोटिव और औद्योगिक अनुप्रयोगों में उपयोग किया जाने वाला एक विश्वसनीय संचार प्रोटोकॉल है। यह ECU (इंजन कंट्रोल यूनिट), सेंसर और एक्चुएटर्स के बीच संचार प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>CAN 2.0A (11-बिट आईडी) / 2.0B (29-बिट आईडी)</li>
+<li>1 एमबीपीएस बिटरेट तक</li>
+<li>त्रुटि का पता लगाना/सुधार करना</li>
+<li>संदेश फ़िल्टरिंग (28 फ़िल्टर)</li>
+<li>3TX मेलबॉक्स</li>
+<li>2 आरएक्स फीफो</li>
+<li>प्राथमिकता-आधारित मध्यस्थता</li>
+<li>स्वचालित पुन:संचरण</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::can, hal::gpio
+
+// CAN pins: PB8=RX, PB9=TX
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 8, do mode: gpio.MODE_AF, af: 9 end)
+gpio.pin_init(gpio.PORT_B, 9, do mode: gpio.MODE_AF, af: 9 end)
+
+// Initialize CAN (500 kbps)
+let can1 = can.init(can.CAN1, do
+    bitrate: 500_000,
+    mode: can.MODE_NORMAL
+end)
+
+// Send message
+can.send(can1, do
+    id: 0x123,
+    data: [0x01, 0x02, 0x03],
+    extended_id: false
+end)
+
+// Receive message
+if msg = can.receive(can1, 100) then do
+    io.println("Received ID: 0x{:X}".formatla(msg.id))
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: ईसीयू सिम्युलेटर</h3>
+<pre><code>import hal::can, hal::core
+
+const ENGINE_RPM = 0x100
+const VEHICLE_SPEED = 0x101
+const COOLANT_TEMP = 0x102
+const THROTTLE_POS = 0x103
+
+function send_rpm(can1: can.Handle, rpm: sayı) do
+    let data = [
+        (rpm &gt;&gt; 8) &amp; 0xFF,
+        rpm &amp; 0xFF
+    ]
+    
+    can.send(can1, do
+        id: ENGINE_RPM,
+        data: data,
+        extended_id: false
+    end)
+end
+
+function send_speed(can1: can.Handle, speed: sayı) do
+    can.send(can1, do
+        id: VEHICLE_SPEED,
+        data: [speed &amp; 0xFF],
+        extended_id: false
+    end)
+end
+
+function send_temp(can1: can.Handle, temp: sayı) do
+    // Temperature in Celsius + 40
+    let temp_byte = (temp + 40) &amp; 0xFF
+    
+    can.send(can1, do
+        id: COOLANT_TEMP,
+        data: [temp_byte],
+        extended_id: false
+    end)
+end
+
+function main() do
+    core.system_init()
+    
+    // Setup CAN
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Configure filter (accept all)
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,  // Accept all IDs
+        fifo: can.FIFO0
+    end)
+    
+    // Simulate ECU data
+    let rpm = 800  // Idle RPM
+    let speed = 0
+    let temp = 20
+    
+    for do
+        // Send telemetry at 10Hz
+        send_rpm(can1, rpm)
+        send_speed(can1, speed)
+        send_temp(can1, temp)
+        
+        // Simulate acceleration
+        if rpm &lt; 6000 then do
+            rpm += 100
+            speed = (rpm / 100)  // Simplified
+            temp += 1  // Engine heats up
+        else do
+            rpm = 800  // Back to idle
+            speed = 0
+            temp = 20
+        end
+        
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: कैन बस मॉनिटर</h3>
+<pre><code>import hal::can
+
+function message_name(id: u32) -&gt; yazı do
+    return eşle id do
+        0x100 =&gt; "Engine RPM",
+        0x101 =&gt; "Vehicle Speed",
+        0x102 =&gt; "Coolant Temp",
+        0x103 =&gt; "Throttle Pos",
+        0x200 =&gt; "Brake Status",
+        0x300 =&gt; "Door Status",
+        _ =&gt; "Unknown"
+    end
+end
+
+function parse_data(msg: can.Message) do
+    io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
+    
+    // Print data bytes
+    her byte in msg.data[0..msg.dlc] for do
+        io.print("{:02X} ".formatla(byte))
+    end
+    
+    // Interpret known messages
+    let name = message_name(msg.id)
+    io.print(" // {}", name)
+    
+    eşle msg.id do
+        0x100 =&gt; do  // RPM
+            let rpm = (msg.data[0] &lt;&lt; 8) | msg.data[1]
+            io.print(" = {} RPM", rpm)
+        end,
+        0x101 =&gt; do  // Speed
+            io.print(" = {} km/h", msg.data[0])
+        end,
+        0x102 =&gt; do  // Temp
+            let temp = msg.data[0].sayı() - 40
+            io.print(" = {}°C", temp)
+        end,
+        _ =&gt; do end
+    end
+    
+    io.println()
+end
+
+function main() do
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Accept all messages
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,
+        fifo: can.FIFO0
+    end)
+    
+    io.println("CAN Bus Monitor Started (500 kbps)")
+    io.println("Press Ctrl+C to exit\n")
+    
+    for do
+        // Check for messages (non-blocking)
+        if msg = can.receive(can1, 10) then do
+            parse_data(msg)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: OBD-II डायग्नोस्टिक्स</h3>
+<pre><code>import hal::can
+
+const OBD_REQUEST = 0x7DF
+const OBD_RESPONSE = 0x7E8
+const PID_ENGINE_RPM = 0x0C
+const PID_VEHICLE_SPEED = 0x0D
+
+function obd_request(can1: can.Handle, pid: u8) -&gt; Sonuç[sayı, Err] do
+    can.send(can1, do
+        id: OBD_REQUEST,
+        data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
+        dlc: 8
+    end)?
+    
+    if response = can.receive(can1, 100) then do
+        if response.id == OBD_RESPONSE then do
+            return Ok(eşle pid do
+                PID_ENGINE_RPM =&gt; ((response.data[3] &lt;&lt; 8) | response.data[4]) / 4,
+                PID_VEHICLE_SPEED =&gt; response.data[3].sayı(),
+                _ =&gt; 0
+            end)
+        end
+    end
+    
+    return Err("Timeout")
+end
+
+function main() do
+    let can1 = can.init(can.CAN1, do bitrate: 500_000 end)
+    
+    for do
+        if rpm = obd_request(can1, PID_ENGINE_RPM)? then do
+            io.println("RPM: {}", rpm)
+        end
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 प्रकार</h2>
+<pre><code>struct Message do
+    id: u32,
+    data: [u8; 8],
+    dlc: u8,
+    extended_id: bool
+end
+
+struct Config do
+    bitrate: sayı,
+    mode: Mode
+end</code></pre>
+
+<h2>⚙️ कार्य</h2>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+function send(handle: Handle, msg: Message) -&gt; Sonuç[None, Err]
+function receive(handle: Handle, timeout_ms: sayı) -&gt; İsteğe_Bağlı[Message]
+function filter_config(handle: Handle, config: FilterConfig)</code></pre>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>CAN ट्रांसीवर (TJA1050, MCP2551) की आवश्यकता है</li>
+<li>120Ω समाप्ति प्रतिरोधों की आवश्यकता है (बस के दोनों सिरों पर)</li>
+<li>अधिकतम बस लंबाई: 40 मीटर (1 एमबीपीएस), 500 मीटर (125 केबीपीएस)</li>
+<li>ट्विस्टेड-पेयर केबल का उपयोग करें (CAN_H, CAN_L)</li>
+<li>फ़िल्टर कॉन्फ़िगरेशन महत्वपूर्ण है (उच्च ट्रैफ़िक में)</li>
+<li>ISO 11898 मानक का उपयोग किया जाता है</li>
+</ul>
+
+<h2>🎯आवेदन परिदृश्य</h2>
+<ul>
+<li>ऑटोमोटिव ईसीयू संचार</li>
+<li>OBD-II डायग्नोस्टिक्स</li>
+<li>औद्योगिक स्वचालन (कैनओपन)</li>
+<li>समुद्री (एनएमईए 2000)</li>
+</ul>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32 एफ1/एफ4:</strong>बीएक्सकैन (2एक्स कैन)</li>
+<li><strong>एसटीएम32 एच7:</strong>CAN-एफडी</li>
+<li><strong>ईएसपी32:</strong>TWAI</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- TX/RX पिन कर सकते हैं</li>
+<li><code data-no-translate="true">hal::int</code>- व्यवधान उत्पन्न कर सकता है</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

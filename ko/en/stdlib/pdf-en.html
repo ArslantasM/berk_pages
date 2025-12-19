@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>pdf - PDF 생성 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📄 PDF</h1>
+<p>PDF 문서 생성</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400줄</span>
+<span class="stat-badge">~35개 기능</span>
+<span class="stat-badge">PDF 1.7</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>프로그래밍 방식의 PDF 문서 생성 및 조작. 텍스트, 도형, 이미지 및 다중 페이지 문서를 지원합니다.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import pdf
+
+// Create PDF
+let doc = pdf.new()
+doc.set_title("My Document")
+doc.set_author("BERK")
+
+// Add page
+let page = doc.add_page(pdf.A4)
+page.text(100, 700, "Hello PDF!", 12)
+page.line(100, 690, 200, 690)
+
+// Save
+doc.save("output.pdf")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← 모든 모듈</a> | <a href="en_pdf-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

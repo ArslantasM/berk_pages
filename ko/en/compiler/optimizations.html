@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>최적화 수준 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/compiler/optimizations.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="optimizasyon-seviyeleri"><a class="header" href="#optimizasyon-seviyeleri">최적화 수준</a></h1>
+<p>BERK 컴파일러,<strong>LLVM 최적화 프로그램</strong>다음을 사용하여 최대 성능을 위해 코드를 최적화합니다.</p>
+<h2 id="optimizasyon-seviyeleri-1"><a class="header" href="#optimizasyon-seviyeleri-1">최적화 수준</a></h2>
+<table><thead><tr><th>수준</th><th>깃발</th><th>사용</th><th>편집</th><th>성능</th><th>바이너리 크기</th></tr></thead><tbody>
+<tr><td><strong>O0</strong></td><td><code data-no-translate="true">-O0</code></td><td>디버그</td><td>🚀 매우 빠름</td><td>🐌 천천히</td><td>📦대형</td></tr>
+<tr><td><strong>O1</strong></td><td><code data-no-translate="true">-O1</code></td><td>기초</td><td>⚡ 빠름</td><td>⚡ 중간</td><td>📦 매체</td></tr>
+<tr><td><strong>O2</strong></td><td><code data-no-translate="true">-O2</code></td><td>기본</td><td>🐌 천천히</td><td>🚀 빠르게</td><td>📦 작은</td></tr>
+<tr><td><strong>O3</strong></td><td><code data-no-translate="true">-O3</code></td><td>최고</td><td>🐌 가장 느림</td><td>🚀 가장 빠름</td><td>📦 변수</td></tr>
+</tbody></table>
+<h3 id="o0-optimizasyon-yok"><a class="header" href="#o0-optimizasyon-yok">-O0(최적화 없음)</a></h3>
+<pre><code class="language-bash">berk-lang build --opt=0 program.berk
+# veya
+berk-lang build -O0 program.berk
+</code></pre>
+<p><strong>특징</strong>:</p>
+<ul>
+<li>✅ 가장 빠른 컴파일 시간</li>
+<li>✅ 디버그 기호는 보존됩니다</li>
+<li>✅ 스택 추적이 정확함</li>
+<li>❌ 매우 느린 작동</li>
+<li>❌ 큰 바이너리 크기</li>
+</ul>
+<p><strong>사용 영역</strong>: 개발 및 디버깅</p>
+<h3 id="o1-temel-optimizasyonlar"><a class="header" href="#o1-temel-optimizasyonlar">-O1(기본 최적화)</a></h3>
+<pre><code class="language-bash">berk-lang build --opt=1 program.berk
+</code></pre>
+<p><strong>구현된 최적화</strong>:</p>
+<ul>
+<li>일정한 접기:<code data-no-translate="true">5 + 10</code> → <code data-no-translate="true">15</code></li>
+<li>데드코드 제거 : 사용하지 않는 코드 삭제</li>
+<li>기본 인라인: 매우 작은 함수가 인라인됩니다.</li>
+<li>레지스터 할당: 변수가 레지스터에 할당됩니다.</li>
+</ul>
+<p><strong>성능</strong>: ~2-5x 가속도(O0에 비해)</p>
+<h3 id="o2-tam-optimizasyon-varsayılan"><a class="header" href="#o2-tam-optimizasyon-varsayılan">-O2(전체 최적화 - 기본값)</a></h3>
+<pre><code class="language-bash">berk-lang build --opt=2 program.berk
+# veya sadece
+berk-lang build --release program.berk
+</code></pre>
+<p><strong>구현된 최적화</strong>:</p>
+<ul>
+<li>모든 O1 최적화</li>
+<li><strong>루프 최적화</strong>: 루프 가속</li>
+<li><strong>함수 인라인</strong>: 중간 크기의 기능</li>
+<li><strong>벡터화</strong>: SIMD 지침</li>
+<li><strong>테일콜 최적화</strong>: 재귀 호출 최적화</li>
+<li><strong>공통 하위 표현 제거</strong></li>
+</ul>
+<p><strong>성능</strong>: ~10-20x 가속도(O0 기준)</p>
+<h3 id="o3-agresif-optimizasyon"><a class="header" href="#o3-agresif-optimizasyon">-O3(공격적 최적화)</a></h3>
+<pre><code class="language-bash">berk-lang build --opt=3 program.berk
+</code></pre>
+<p><strong>구현된 최적화</strong>:</p>
+<ul>
+<li>모든 O2 최적화</li>
+<li><strong>공격적인 인라인</strong>: 큰 함수도 인라인입니다.</li>
+<li><strong>루프 풀기</strong>: 루프를 엽니다</li>
+<li><strong>투기적 실행</strong></li>
+<li><strong>절차간 최적화</strong></li>
+</ul>
+<p><strong>성능</strong>: ~15-30x 가속도(O0 기준)</p>
+<p>⚠️ <strong>주목</strong>: 컴파일 시간이 너무 길어서 바이너리 크기가 커질 수 있습니다.</p>
+<h2 id="özel-optimizasyonlar"><a class="header" href="#özel-optimizasyonlar">맞춤형 최적화</a></h2>
+<h3 id="lto-link-time-optimization"><a class="header" href="#lto-link-time-optimization">LTO(링크 시간 최적화)</a></h3>
+<p>모든 모듈은 함께 최적화됩니다.</p>
+<pre><code class="language-bash">berk-lang build --lto program.berk
+</code></pre>
+<p><strong>장점</strong>:</p>
+<ul>
+<li>크로스 모듈 인라이닝</li>
+<li>데드 코드 제거(전체 프로그램)</li>
+<li>10-30% 성능 향상</li>
+</ul>
+<p><strong>불리</strong>: 컴파일 시간이 너무 길다</p>
+<h3 id="pgo-profile-guided-optimization"><a class="header" href="#pgo-profile-guided-optimization">PGO(프로필 기반 최적화)</a></h3>
+<p>프로그램을 실행하면 프로필을 수집한 다음 최적화합니다.</p>
+<pre><code class="language-bash"># 1. Profiling for derle
+berk-lang build --profile-generate program.berk -o program.exe
+
+# 2. Programı çalıştır (profil topla)
+./program.exe
+
+# 3. Profil kullanarak optimize et
+berk-lang build --profile-use=default.profdata program.berk -o program_optimized.exe
+</code></pre>
+<p><strong>성능</strong>: 15~40% 추가 가속</p>
+<h3 id="size-optimization"><a class="header" href="#size-optimization">크기 최적화</a></h3>
+<p>바이너리 크기를 줄이려면:</p>
+<pre><code class="language-bash"># Boyut optimizasyonu
+berk-lang build --opt-size program.berk
+
+# Aggressive size optimization
+berk-lang build --opt-size-aggressive program.berk
+
+# Strip sembolleri
+berk-lang build --strip program.berk
+</code></pre>
+<p><strong>결론</strong>: 30-70% 더 작은 바이너리</p>
+<h2 id="optimizasyon-teknikleri"><a class="header" href="#optimizasyon-teknikleri">최적화 기술</a></h2>
+<h3 id="constant-folding"><a class="header" href="#constant-folding">일정한 접기</a></h3>
+<pre><code class="language-berk">// Kaynak kod
+let x = 5 + 10 * 2
+
+// Optimize sonrası
+let x = 25
+</code></pre>
+<h3 id="dead-code-elimination"><a class="header" href="#dead-code-elimination">데드 코드 제거</a></h3>
+<pre><code class="language-berk">// Kaynak kod
+function hesapla() -&gt; sayı do
+    let x = 10
+    let y = 20  // Kullanılmıyor
+    return x
+end
+
+// Optimize sonrası
+function hesapla() -&gt; sayı do
+    return 10
+end
+</code></pre>
+<h3 id="function-inlining"><a class="header" href="#function-inlining">함수 인라인</a></h3>
+<pre><code class="language-berk">// Kaynak kod
+function topla(a: sayı, b: sayı) -&gt; sayı do
+    return a + b
+end
+
+let sonuç = topla(5, 10)
+
+// Optimize sonrası (O2+)
+let sonuç = 15  // Fonksiyon çağrısı yok!
+</code></pre>
+<h3 id="loop-unrolling"><a class="header" href="#loop-unrolling">루프 풀기</a></h3>
+<pre><code class="language-berk">// Kaynak kod
+for i 0'from 4'e do
+    print(i)
+end
+
+// Optimize sonrası (O3)
+print(0)
+print(1)
+print(2)
+print(3)
+</code></pre>
+<h3 id="vectorization-simd"><a class="header" href="#vectorization-simd">벡터화(SIMD)</a></h3>
+<pre><code class="language-berk">// Kaynak kod
+let a: [sayı; 4] = [1, 2, 3, 4]
+let b: [sayı; 4] = [5, 6, 7, 8]
+let c: [sayı; 4]
+
+for i 0'from 4'e do
+    c[i] = a[i] + b[i]
+end
+
+// Optimize sonrası (O2+ SIMD)
+// Tek SIMD instruction ile 4 toplama birden!
+// paddq xmm0, xmm1
+</code></pre>
+<h2 id="optimizasyon-kontrolü"><a class="header" href="#optimizasyon-kontrolü">최적화 제어</a></h2>
+<h3 id="belirli-optimizasyonları-aktifdeaktif-et"><a class="header" href="#belirli-optimizasyonları-aktifdeaktif-et">특정 최적화 활성화/비활성화</a></h3>
+<pre><code class="language-bash"># Inlining'i kapat
+berk-lang build -O2 --no-inline program.berk
+
+# Vectorization'ı kapat
+berk-lang build -O2 --no-vectorize program.berk
+
+# Loop unrolling'i kapat
+berk-lang build -O3 --no-unroll-loops program.berk
+</code></pre>
+<h3 id="fonksiyon-bazlı-optimizasyon"><a class="header" href="#fonksiyon-bazlı-optimizasyon">기능 기반 최적화</a></h3>
+<pre><code class="language-berk">// Bu fonksiyonu inline etme
+#[no_inline]
+function debug_fonksiyon() do
+    // debug kodu
+end
+
+// Bu fonksiyonu her zaman inline et
+#[always_inline]
+function hızlı_işlem() do
+    // kritik kod
+end
+</code></pre>
+<h2 id="performans-karşılaştırması"><a class="header" href="#performans-karşılaştırması">성능 비교</a></h2>
+<p><strong>시험</strong>: 피보나치(40) 계산</p>
+<table><thead><tr><th>수준</th><th>지속</th><th>가속</th><th>컴파일 시간</th><th>바이너리 크기</th></tr></thead><tbody>
+<tr><td>-O0</td><td>2.5초</td><td>1x</td><td>0.1초</td><td>250KB</td></tr>
+<tr><td>-O1</td><td>0.8초</td><td>3배</td><td>0.2초</td><td>180KB</td></tr>
+<tr><td>-O2</td><td>0.12초</td><td>21배</td><td>0.5초</td><td>120KB</td></tr>
+<tr><td>-O3</td><td>0.09초</td><td>28배</td><td>1.2초</td><td>140KB</td></tr>
+<tr><td>-O3 --lto</td><td>0.07초</td><td>36배</td><td>3.5초</td><td>110KB</td></tr>
+</tbody></table>
+<h2 id="hangi-seviyeyi-kullanmalı"><a class="header" href="#hangi-seviyeyi-kullanmalı">어떤 레벨을 사용할 것인가?</a></h2>
+<table><thead><tr><th>상황</th><th>제안</th><th>어디서부터</th></tr></thead><tbody>
+<tr><td>🔧 개발</td><td><code data-no-translate="true">-O0</code></td><td>빠른 컴파일, 쉬운 디버깅</td></tr>
+<tr><td>🧪 테스트</td><td><code data-no-translate="true">-O1</code></td><td>중간 성능, 빠른 컴파일</td></tr>
+<tr><td>🚀 생산</td><td><code data-no-translate="true">-O2</code></td><td>좋은 성능, 합리적인 컴파일</td></tr>
+<tr><td>🏆 최대 속도</td><td><code data-no-translate="true">-O3 --lto</code></td><td>최고의 성능</td></tr>
+<tr><td>📦 작은 바이너리</td><td><code data-no-translate="true">--opt-size</code></td><td>임베디드 시스템</td></tr>
+</tbody></table>
+<h2 id="berk-toml-yapılandırması"><a class="header" href="#berk-toml-yapılandırması">berk.toml 구성</a></h2>
+<pre><code class="language-toml">[build]
+optimization = 2          # Varsayılan: O2
+lto = true               # Link-Time Optimization
+strip = false            # Debug sembolleri koru
+
+[profile.dev]
+optimization = 0
+debug = true
+
+[profile.release]
+optimization = 3
+lto = true
+strip = true
+
+[profile.bench]
+optimization = 3
+lto = true
+pgo = true
+</code></pre>
+<h2 id="profil-kullanımı"><a class="header" href="#profil-kullanımı">프로필 사용</a></h2>
+<pre><code class="language-bash"># Dev profili
+berk-lang build --profile=dev program.berk
+
+# Release profili
+berk-lang build --profile=release program.berk
+
+# Bench profili
+berk-lang build --profile=bench program.berk
+</code></pre>
+<h2 id="optimizasyon-i̇puçları"><a class="header" href="#optimizasyon-i̇puçları">최적화 팁</a></h2>
+<ol>
+<li>
+<p>✅ <strong>릴리스 빌드 사용</strong>:</p>
+<pre><code class="language-bash">berk-lang build --release program.berk
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>LTO 추가</strong>(생산용):</p>
+<pre><code class="language-bash">berk-lang build --release --lto program.berk
+</code></pre>
+</li>
+<li>
+<p>✅ <strong>PGO를 사용하다</strong>(중요한 애플리케이션):</p>
+<pre><code class="language-bash">berk-lang build --profile-generate program.berk
+./program.exe  # Profil topla
+berk-lang build --profile-use=default.profdata program.berk
+</code></pre>
+</li>
+<li>
+<p>⚠️ <strong>O3 조심해</strong>: 때로는 O2보다 느림</p>
+</li>
+<li>
+<p>⚠️ <strong>바이너리 크기가 중요한 경우</strong>: <code data-no-translate="true">--opt-size</code>사용</p>
+</li>
+</ol>
+<h2 id="özet"><a class="header" href="#özet">요약</a></h2>
+<ul>
+<li>✅ <strong>-O0</strong>: 디버그, 빠른 컴파일</li>
+<li>✅ <strong>-O1</strong>: 기본 최적화</li>
+<li>✅ <strong>-O2</strong>: 생산(기본값)</li>
+<li>✅ <strong>-O3</strong>: 최대 속도</li>
+<li>✅ <strong>--lto</strong>: 성능 +10-30%</li>
+<li>✅ <strong>--pgo</strong>: 성능 +15-40%</li>
+<li>✅ <strong>--선택 크기</strong>: 작은 바이너리</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../compiler/ko_en_compilation.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../compiler/ko_en_cross-compile.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../compiler/ko_en_compilation.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../compiler/ko_en_cross-compile.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

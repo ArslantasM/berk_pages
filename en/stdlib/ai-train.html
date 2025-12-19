@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>train - Model Training - BERK Programming Language</title>
+
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>train - Model Training</h1>
+                        <p>Training loops, callbacks and metrics tracking</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">4.96x</div><div>Parallel</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">6</div><div>Callback</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">18K</div><div>batch/sec</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Overview</h2>
+                    <p>The train module provides high-level API and callback system for model training.</p>
+
+                    <div class="example-box">
+                        <h3>Simple Training Loop</h3>
+                        <pre><code class="language-berk">use ai/train;
+use ai/nn;
+use ai/optim;
+
+let trainer = Trainer::new(
+    model: model,
+    optimizer: Adam::new(model.parametreler(), lr: 0.001),
+    loss_fn: CrossEntropyLoss::new()
+);
+
+let sonuç = trainer.eğit(
+    train_loader: train_loader,
+    val_loader: val_loader,
+    epochs: 50
+);
+
+print("En iyi doğruluk: {:.2f}%", sonuç.best_acc * 100.0);
+</code></pre>
+                    </div>
+
+                    <h2>Callbacks</h2>
+
+                    <div class="function-group">
+                        <h3>EarlyStopping</h3>
+                        <pre><code class="language-berk">use ai/train;
+
+let early_stop = EarlyStopping::new(
+    patience: 10,          // 10 epoch break
+    min_delta: 0.001,      // Minimum iyileştirme
+    mode: "min"            // Loss for 'min', acc for 'max'
+);
+
+let trainer = Trainer::new(model, optimizer, loss_fn)
+    .callback_ekle(early_stop);
+
+trainer.eğit(train_loader, val_loader, epochs: 100);
+// En fazla 100 epoch, ama 10 epoch iyileşme yoksa durur
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>ModelCheckpoint</h3>
+                        <pre><code class="language-berk">use ai/train;
+
+let checkpoint = ModelCheckpoint::new(
+    filepath: "models/best_model.berk",
+    monitor: "val_acc",
+    mode: "max",
+    save_best_only: true
+);
+
+let trainer = Trainer::new(model, optimizer, loss_fn)
+    .callback_ekle(checkpoint);
+
+trainer.eğit(train_loader, val_loader, epochs: 50);
+// En iyi model otomatik kaydedilir
+</code></pre>
+                    </div>
+
+                    <h2>Parallel Batch Processing</h2>
+
+                    <div class="example-box">
+                        <h3>Parallel Education with Rayon</h3>
+                        <pre><code class="language-berk">use ai/train;
+use ai/tensor;
+
+// Paralel batch inference
+let results = batches
+    .paralel_iter()
+    .map(|batch| model.ileri(batch))
+    .topla();
+
+// Performans: 4,410 → 18,546 batch/sn (4.96x)
+</code></pre>
+                    </div>
+
+                    <h2>Metrics Tracking</h2>
+
+                    <div class="function-group">
+                        <h3>Training Metrics</h3>
+                        <pre><code class="language-berk">use ai/train;
+
+let history = History::new();
+
+let trainer = Trainer::new(model, optimizer, loss_fn)
+    .callback_ekle(history);
+
+trainer.eğit(train_loader, val_loader, epochs: 50);
+
+// Metrics'e eriş
+print("Train loss: {:?}", history.train_loss);
+print("Val accuracy: {:?}", history.val_acc);
+
+// Plot (varsa)
+history.plot("training_curves.png");
+</code></pre>
+                    </div>
+
+                    <h2>Custom Training Loop</h2>
+
+                    <div class="example-box">
+                        <pre><code class="language-berk">use ai/nn;
+use ai/optim;
+
+function özel_eğitim(
+    model: Model,
+    train_loader: DataLoader,
+    epochs: int
+) do
+    let optimizer = Adam::new(model.parametreler(), lr: 0.001);
+    
+    her epoch in range(epochs) for do
+        let epoch_loss = 0.0;
+        
+        her (x, y) in train_loader for do
+            // Forward pass
+            let pred = model.ileri(x);
+            let loss = cross_entropy(pred, y);
+            
+            // Backward pass
+            optimizer.sıfırla();
+            loss.geri();
+            optimizer.adım();
+            
+            epoch_loss += loss.değer();
+        end
+        
+        print("Epoch {}: Loss = {:.4f}", epoch, epoch_loss);
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>API Reference</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Callback</th><th>Explanation</th><th>Use</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>EarlyStopping</td><td>Early stop</td><td>Overfitting prevention</td></tr>
+                            <tr><td>ModelCheckpoint</td><td>Save model</td><td>Save the best model</td></tr>
+                            <tr><td>History</td><td>Metrics tracking</td><td>Education chart</td></tr>
+                            <tr><td>LearningRateMonitor</td><td>LR log</td><td>Watch LR change</td></tr>
+                            <tr><td>ProgressBar</td><td>progress bar</td><td>terminal output</td></tr>
+                        </tbody>
+                    </table>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/en_ai-optim.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/en_ai-model.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/en_ai-optim.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/en_ai-model.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

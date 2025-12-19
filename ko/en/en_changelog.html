@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>변경 로그 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="en_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/changelog.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="changelog"><a class="header" href="#changelog">변경 내역</a></h1>
+<p>BERK 버전 기록. 각 버전에는 성능, 보안 및 기능에 초점을 맞춘 개선 사항이 포함되어 있습니다.</p>
+
+<h2 id="v100---production-release"><a class="header" href="#v100---production-release">v1.0.0 - 프로덕션 릴리스(2025년 12월 2일)</a></h2>
+
+<h3 id="temel-değişiklikler"><a class="header" href="#temel-değişiklikler">근본적인 변화</a></h3>
+<ul>
+<li><strong>LLVM 동적 연결</strong>: 정적 LLVM 대신 동적 연결 사용</li>
+<li><strong>파일 크기</strong>: 83MB → 3.8MB (22배 감소)<ul>
+<li>BERK-lang.exe: 2.2MB</li>
+<li>berk-lsp.exe: 1.2MB</li>
+<li>berk-repl.exe: 464KB</li>
+</ul>
+</li>
+<li><strong>세 개의 별도 바이너리</strong>: 컴파일러, LSP 및 REPL 별도의 실행 파일</li>
+<li><strong>생산 준비</strong>: 완성도 99%, 주요 기능 모두 안정적</li>
+</ul>
+
+<h3 id="tamamlanan-özellikler"><a class="header" href="#tamamlanan-özellikler">완전한 기능</a></h3>
+<ul>
+<li>소유권 시스템(98/98 테스트)</li>
+<li>FFI(외부 함수 인터페이스, 30개 이상의 테스트)</li>
+<li>BPM(패키지 관리자, 29/30 테스트)</li>
+<li>LSP v0.9.4(9/9 기능)</li>
+<li>HAL(33개 모듈, 7개 플랫폼)</li>
+<li>총 모듈 75개(42 stdlib + 33 HAL)</li>
+<li>4100개 이상의 기능</li>
+</ul>
+
+<h3 id="kaldırılan-bağımlılıklar"><a class="header" href="#kaldırılan-bağımlılıklar">제거된 종속성</a></h3>
+<ul>
+<li>LLVM 정적 라이브러리는 이제 바이너리에 내장되어 있습니다.</li>
+<li>LLVM 17은 사용자 시스템에 설치되어야 합니다(이전에는 필요함).</li>
+</ul>
+
+<hr>
+
+<h2 id="v080---standard-library-v14-scientific-computing"><a class="header" href="#v080---standard-library-v14-scientific-computing">v0.8.0 - 표준 라이브러리 v1.4 "과학 컴퓨팅"</a></h2>
+
+<h3 id="major-updates"><a class="header" href="#major-updates">주요 업데이트</a></h3>
+
+<h4 id="standart-Library-v14"><a class="header" href="#standart-Library-v14">표준 라이브러리 v1.4 - 과학 컴퓨팅</a></h4>
+<p>대학 및 연구 수준의 수학 도서관. NumPy/SciPy 수준 기능, 기본 성능.</p>
+
+<p><strong>새 모듈(3개, 76.5KB):</strong></p>
+<ol>
+<li><strong>라이날그</strong>(25.4KB) - 선형대수학<ul>
+<li>행렬 연산(곱하기, 전치, 역)</li>
+<li>분해(LU, QR, Cholesky, SVD)</li>
+<li>고유값/고유벡터 계산</li>
+<li>선형 시스템 솔버</li>
+</ul>
+</li>
+<li><strong>통계</strong>(24.5KB) - 통계 및 확률<ul>
+<li>기술 통계(평균, 중앙값, 분산, 표준)</li>
+<li>확률 분포(정규, 카이제곱, t-검정)</li>
+<li>가설 검정(t-검정, ANOVA, 카이제곱)</li>
+<li>회귀 분석(선형, 다항식, 다중)</li>
+</ul>
+</li>
+<li><strong>최적</strong>(26.6KB) - 최적화 알고리즘<ul>
+<li>제약 없는 최적화(경사하강법, BFGS, 뉴턴)</li>
+<li>제한된 최적화(페널티 방법)</li>
+<li>전역 최적화(시뮬레이션 어닐링, 유전)</li>
+<li>근 찾기(이등분, Newton-Raphson, 시컨트)</li>
+</ul>
+</li>
+</ol>
+
+<p><strong>향상된 모듈:</strong></p>
+<ul>
+<li><strong>푸시</strong>(9.2KB → 19.7KB, +10.5KB) - 반복자 확장, 지연 평가</li>
+<li><strong>fmt</strong>(9.1KB → 17.9KB, +8.8KB) - 고급 형식, printf 스타일</li>
+</ul>
+
+<h4 id="runtime-Libraryleri-v09"><a class="header" href="#runtime-Libraryleri-v09">런타임 라이브러리 v0.9</a></h4>
+<ul>
+<li><strong>JSON 라이브러리</strong>: 고성능 구문 분석/직렬화(11/11 테스트 통과)</li>
+<li><strong>암호화 라이브러리</strong>: MD5, SHA-256, Base64, 보안 랜덤(13/13 테스트 통과)</li>
+<li><strong>HTTP 라이브러리</strong>: libcurl 백엔드가 있는 REST 클라이언트(11/11 테스트 통과)</li>
+</ul>
+
+<h3 id="compiler-improvements"><a class="header" href="#compiler-improvements">컴파일러 개선</a></h3>
+<ul>
+<li><strong>LLVM 백엔드</strong>: 네이티브 코드 생성, C/C++ 수준의 성능</li>
+<li><strong>CFG 분석</strong>: 제어 흐름 그래프 최적화</li>
+<li><strong>데이터 흐름 최적화</strong>: 데드코드 제거, 지속적인 전파</li>
+<li><strong>패턴 매칭</strong>: 완전성 검사, 보호 조항</li>
+<li><strong>오류 처리</strong>: 결과 유형, try-catch 메커니즘</li>
+</ul>
+
+<h3 id="platform-support"><a class="header" href="#platform-support">플랫폼 지원</a></h3>
+<p><strong>19개 대상 플랫폼:</strong></p>
+<ul>
+<li><strong>데스크탑</strong>: Windows x64(활성), Linux x64, macOS ARM64</li>
+<li><strong>임베디드</strong>: ARM Cortex-M, RISC-V, AVR(아두이노), ESP32</li>
+<li><strong>이동하는</strong>: 안드로이드(ARM/x86), iOS(ARM64)</li>
+<li><strong>웹어셈블리</strong>: WASM32, WASI</li>
+</ul>
+
+<h3 id="tooling"><a class="header" href="#tooling">압형</a></h3>
+<ul>
+<li><strong>REPL</strong>: 대화형 쉘, 즉시 실행</li>
+<li><strong>JIT 모드</strong>: 컴파일 없이 직접 실행</li>
+<li><strong>AOT 모드</strong>: 네이티브 실행 파일 생성</li>
+<li><strong>VS 코드 확장</strong>: 구문 강조, 코드 완성, 진단</li>
+</ul>
+
+<h3 id="stdlib-statistics"><a class="header" href="#stdlib-statistics">Stdlib 통계</a></h3>
+<ul>
+<li><strong>총 75개 모듈</strong>:
+<ul>
+<li>42개 코어/stdlib 모듈(코어, 수학/과학, 웹/데이터, 그래픽/게임, 고급)</li>
+<li>33개 HAL 모듈(임베디드 시스템 하드웨어 추상화)</li>
+</ul>
+</li>
+<li><strong>1140KB</strong>총 stdlib 코드(HAL 제외)</li>
+<li><strong>4100개 이상의 기능</strong>: 모든 도메인에 걸친 포괄적인 API 적용 범위</li>
+<li><strong>성능</strong>: 기본 구현, LLVM 최적화, 외부 런타임 종속성 없음</li>
+</ul>
+
+<h3 id="performance-highlights"><a class="header" href="#performance-highlights">실적 하이라이트</a></h3>
+<ul>
+<li><strong>실행 속도</strong>: C/C++ 수준(98-100%)</li>
+<li><strong>바이너리 크기</strong>: 83MB(LLVM 정적으로 연결됨 - v1.0.0에서 제거됨)</li>
+<li><strong>최적화 수준</strong>: -O0(디버그) ~ -O3(최대 속도)</li>
+<li><strong>비용이 전혀 들지 않는 추상화</strong>: 높은 수준의 구문, 낮은 수준의 성능</li>
+</ul>
+
+<h3 id="documentation"><a class="header" href="#documentation">선적 서류 비치</a></h3>
+<ul>
+<li><strong>101페이지</strong>: 완전한 언어 참조</li>
+<li><strong>42개의 stdlib 모듈</strong>: 전체 API 문서(코어, 수학, 웹, 그래픽)</li>
+<li><strong>HAL 모듈 33개</strong>: 임베디드 시스템을 위한 하드웨어 추상화</li>
+<li><strong>이중 언어</strong>: 터키어/영어 병행 문서</li>
+<li><strong>총</strong>: 75개의 라이브러리 모듈이 문서화되어 있습니다.</li>
+</ul>
+
+<h3 id="known-limitations"><a class="header" href="#known-limitations">알려진 제한 사항</a></h3>
+<ul>
+<li><strong>Windows 전용 컴파일러</strong>: 소스에서 Linux/macOS 빌드</li>
+<li><strong>수동 메모리 관리</strong>: v1.5에 예정된 소유권 시스템</li>
+<li><strong>FFI 없음</strong>: v1.0에서는 C/C++ 상호 운용이 예정되어 있습니다.</li>
+<li><strong>비동기/대기 없음</strong>: v1.0에서는 고성능 비동기화 예정</li>
+</ul>
+
+<hr>
+
+<h2 id="earlier-versions"><a class="header" href="#earlier-versions">이전 버전</a></h2>
+
+<h3 id="v070---compiler-core"><a class="header" href="#v070---compiler-core">v0.7.0 - 컴파일러 코어</a></h3>
+<ul>
+<li>LLVM 백엔드 통합</li>
+<li>유형 시스템 구현</li>
+<li>패턴 매칭 지원</li>
+<li>기본 stdlib(15개 모듈)</li>
+</ul>
+
+<h3 id="v060---parser-and-frontend"><a class="header" href="#v060---parser-and-frontend">v0.6.0 - 파서 및 프런트엔드</a></h3>
+<ul>
+<li>이중 언어 구문 분석기(터키어/영어)</li>
+<li>AST 생성</li>
+<li>의미론적 분석</li>
+<li>오류 보고 시스템</li>
+</ul>
+
+<h3 id="v050---prototype"><a class="header" href="#v050---prototype">v0.5.0 - 프로토타입</a></h3>
+<ul>
+<li>초기 언어 디자인</li>
+<li>렉서 구현</li>
+<li>기본 구문 정의</li>
+<li>개념 증명 컴파일러</li>
+</ul>
+
+<hr>
+
+<p><strong>메모</strong>: 자세한 릴리스 정보:<a href="./RELEASE_NOTES.md">RELEASE_NOTES.md</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="en_roadmap.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="en_roadmap.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

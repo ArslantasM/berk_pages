@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>sys - System Operations | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ sys - System Operations</h1>
+<p>Process, Environment, Command Line, Platform</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">62</div><div>Function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">801</div><div>Line</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">25KB</div><div>Dimension</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import sys
+
+// Command line arguments
+let args = sys.args()
+print("Program: " + args[0])
+
+// Environment variables
+let path = sys.env("PATH")
+sys.set_env("MY_VAR", "value")
+
+// Process execution
+let sonuç = sys.exec("ls", ["-la"])
+print("Çıktı: " + sonuç.stdout)
+print("Exit code: " + sonuç.exit_code.yazıya())
+
+// Platform info
+print("OS: " + sys.os())  // "linux", "windows", "macos"
+print("Arch: " + sys.arch())  // "x86_64", "aarch64"</code></pre>
+<h2>📚 Features</h2>
+<ul>
+<li>Process management (spawn, exec, kill)</li>
+<li>Environment variables</li>
+<li>Command line arguments</li>
+<li>Exit codes</li>
+<li>Platform detection</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Build Script</h3>
+<pre><code>import sys, fs
+
+function build() -&gt; Sonuç do
+    print("Building project...")
+    
+    // Clean
+    if fs.var_mı("build") then do
+        fs.dizin_sil_recursive("build")
+    end
+    fs.dizin_oluştur("build")
+    
+    // Compile
+    let sonuç = sys.exec("rustc", ["--crate-type", "lib", "src/lib.rs", "-o", "build/libmy.so"])
+    
+    if sonuç.exit_code != 0 then do
+        print("Build failed:")
+        print(sonuç.stderr)
+        return Err("Compilation error")
+    end
+    
+    print("Build successful!")
+    return Ok(yok)
+end
+
+build()</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

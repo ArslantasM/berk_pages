@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>टॉमल - टीओएमएल पार्सर | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ टॉमल</h1>
+<p>TOML v1.0.0 पार्सर</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350 पंक्तियाँ</span>
+<span class="stat-badge">~30 कार्य</span>
+<span class="stat-badge">v1.0.0</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>कॉन्फ़िगरेशन फ़ाइलों के लिए TOML (टॉम की स्पष्ट न्यूनतम भाषा) पार्सर। स्ट्रिंग्स, पूर्णांक, फ़्लोट्स, बूलियन, एरे और तालिकाओं के समर्थन के साथ मानव-अनुकूल।</p>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import toml
+
+let config = toml.parse("
+    [database]
+    host = \"localhost\"
+    port = 5432
+    
+    [server]
+    bind = \"0.0.0.0:8080\"
+    workers = 4
+")?
+
+let host = config.get("database.host")?
+let port = config.get_int("database.port")?
+println("DB: {}:{}", host, port)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-en.html">← सभी मॉड्यूल</a> | <a href="hi_toml-tr.html">🇹🇷तुर्की</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

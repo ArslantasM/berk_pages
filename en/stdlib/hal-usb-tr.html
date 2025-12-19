@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::usb - USB Controller | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔌 state::usb</h1>
+<p>USB 2.0 Full Speed ​​- Device/Host/OTG Controller</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~420 lines</span>
+<span class="stat-badge">~25 functions</span>
+<span class="stat-badge">STM32F4/F7/H7</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The USB module provides USB 2.0 Full Speed ​​(12 Mbps) communication. It establishes a PC connection with CDC (Virtual COM), HID (Keyboard/Mouse), MSC (Mass Storage) device classes. With host mode, USB flash disk and keyboard reading can be done. It is critical for IoT data logging, debug console, firmware update and user interface.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li><strong>USB 2.0 Full Speed:</strong>12 Mbps (Low Speed ​​1.5 Mbps is also supported)</li>
+<li><strong>Device Mode:</strong>It becomes a virtual device by connecting to a PC</li>
+<li><strong>Host Mode:</strong>USB peripherals can be connected (flash, keyboard)</li>
+<li><strong>OTG Support:</strong>Dynamic switching between Device and Host modes</li>
+<li><strong>Device Classes:</strong>CDC, HID, MSC, Audio, Custom</li>
+<li><strong>DMA Support:</strong>High-speed data transfer</li>
+<li><strong>VBUS Detection:</strong>USB cable insertion detection</li>
+<li><strong>Self/Bus Powered:</strong>Power management flexibility</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::usb, hal::gpio
+
+// USB pins: PA11 (D-), PA12 (D+)
+gpio.pin_init(gpio.PORT_A, 11, do
+    mode: gpio.MODE_AF,
+    af: gpio.AF10_USB
+end)
+
+gpio.pin_init(gpio.PORT_A, 12, do
+    mode: gpio.MODE_AF,
+    af: gpio.AF10_USB
+end)
+
+// Initialize USB CDC (Virtual COM Port)
+usb.init_cdc(do
+    vid: 0x0483,  // ST Microelectronics VID
+    pid: 0x5740,  // CDC PID
+    manufacturer: "BERK Embedded",
+    product: "Virtual COM Port"
+end)
+
+// Connect to PC
+usb.connect()
+
+// Wait for enumeration
+for do
+    if usb.is_configured() do
+        kır
+    end
+end
+
+io.yazdir_satır("USB connected!")
+
+// Send data to PC
+usb.cdc_write("Hello from BERK!\r\n")</code></pre>
+
+<h2>📦 Types and Enums</h2>
+<pre><code>// USB Mode
+enum Mode {
+    DEVICE,    // Device mode (slave)
+    HOST,      // Host mode (master)
+    OTG        // On-The-Go (dynamic)
+}
+
+// Device Classes
+enum DeviceClass {
+    CDC,       // Communication Device Class (Virtual COM)
+    HID,       // Human Interface Device (Keyboard/Mouse)
+    MSC,       // Mass Storage Class (USB Disk)
+    AUDIO,     // Audio Class
+    CUSTOM     // Custom class
+}
+
+// USB Speed
+enum Speed {
+    LOW_SPEED,   // 1.5 Mbps
+    FULL_SPEED,  // 12 Mbps
+    HIGH_SPEED   // 480 Mbps (USB 2.0 HS only)
+}
+
+// Power Mode
+enum PowerMode {
+    SELF_POWERED,   // External power supply
+    BUS_POWERED     // Powered from USB cable (max 500 mA)
+}
+
+struct USBConfig do
+    mode: Mode = DEVICE,
+    device_class: DeviceClass = CDC,
+    speed: Speed = FULL_SPEED,
+    power_mode: PowerMode = BUS_POWERED,
+    max_power_ma: sayı = 100,
+    vid: sayı16 = 0x0483,
+    pid: sayı16 = 0x5740
+end</code></pre>
+
+<h2>💡 Example 1: USB CDC Virtual COM Port (Debug Console)</h2>
+<div class="example-box">
+<h3>Problem: Using USB instead of UART for serial communication with PC</h3>
+<pre><code>import hal::usb
+
+let usb_rx_buffer: Dizi&lt;sayı8&gt; = Dizi.new(256)
+let usb_rx_index: sayı = 0
+
+function usb_console_init() do
+    usb.init_cdc(do
+        vid: 0x0483,
+        pid: 0x5740,
+        manufacturer: "BERK",
+        product: "Debug Console",
+        serial_number: "BERK-001"
+    end)
+    
+    // Set receive callback
+    usb.cdc_set_rx_callback(usb_console_rx_handler)
+    
+    usb.connect()
+    
+    // Wait for enumeration
+    for do
+        if usb.is_configured() do
+            kır
+        end
+        delay_ms(100)
+    end
+    
+    usb.cdc_write("\r\n=== BERK Embedded Debug Console ===\r\n")
+    usb.cdc_write("Type 'help' for commands\r\n&gt; ")
+end
+
+function usb_console_rx_handler(data: Dizi&lt;sayı8&gt;) do
+    for byte in data do
+        if byte == 13 do  // Enter key
+            // Process command
+            usb.cdc_write("\r\n")
+            
+            let cmd = Metin.from_bytes(usb_rx_buffer, usb_rx_index)
+            usb_console_process_command(cmd)
+            
+            usb_rx_index = 0
+            usb.cdc_write("&gt; ")
+        yoksa if byte == 8 or byte == 127 do  // Backspace
+            if usb_rx_index &gt; 0 do
+                usb_rx_index = usb_rx_index - 1
+                usb.cdc_write("\b \b")  // Erase character
+            end
+        yoksa do
+            if usb_rx_index &lt; 256 do
+                usb_rx_buffer[usb_rx_index] = byte
+                usb_rx_index = usb_rx_index + 1
+                usb.cdc_write_byte(byte)  // Echo
+            end
+        end
+    end
+end
+
+function usb_console_process_command(cmd: Metin) do
+    eşleştir cmd do
+        "help" =&gt; do
+            usb.cdc_write("Commands:\r\n")
+            usb.cdc_write("  help    - Show this help\r\n")
+            usb.cdc_write("  status  - System status\r\n")
+            usb.cdc_write("  reset   - Reset system\r\n")
+        end,
+        
+        "status" =&gt; do
+            usb.cdc_write("CPU: STM32F407\r\n")
+            usb.cdc_write("Clock: 168 MHz\r\n")
+            usb.cdc_write("Uptime: " + systick.get_ms().metne() + " ms\r\n")
+        end,
+        
+        "reset" =&gt; do
+            usb.cdc_write("Resetting...\r\n")
+            delay_ms(100)
+            nvic.system_reset()
+        end,
+        
+        _ =&gt; do
+            usb.cdc_write("Unknown command: " + cmd + "\r\n")
+        end
+    end
+end</code></pre>
+<p><strong>Use:</strong>Open /dev/ttyACM0 or COM3 with PuTTY/TeraTerm on PC. The 115200 baud setting is unnecessary (USB CDC).</p>
+</div>
+
+<h2>💡 Example 2: USB HID Keyboard Emulation</h2>
+<div class="example-box">
+<h3>Problem: Making MCU look like a USB keyboard (automatic typing)</h3>
+<pre><code>import hal::usb
+
+function usb_keyboard_init() do
+    usb.init_hid(do
+        vid: 0x0483,
+        pid: 0x5750,
+        manufacturer: "BERK",
+        product: "USB Keyboard",
+        hid_type: usb.HID_KEYBOARD
+    end)
+    
+    usb.connect()
+    
+    // Wait for enumeration
+    for do
+        if usb.is_configured() do
+            kır
+        end
+        delay_ms(100)
+    end
+end
+
+function keyboard_press(key: sayı8) do
+    // HID keyboard report: [modifier, reserved, key1-6]
+    let report: Dizi&lt;sayı8&gt; = [0, 0, key, 0, 0, 0, 0, 0]
+    
+    // Send key press
+    usb.hid_send_report(report)
+    
+    delay_ms(50)
+    
+    // Send key release
+    report[2] = 0
+    usb.hid_send_report(report)
+    
+    delay_ms(50)
+end
+
+function keyboard_type_string(text: Metin) do
+    for char_at in text do
+        // Convert ASCII to HID keycode
+        let keycode = ascii_to_hid_keycode(char_at)
+        keyboard_press(keycode)
+    end
+end
+
+function main() do
+    usb_keyboard_init()
+    
+    io.yazdir_satır("USB Keyboard ready")
+    
+    // Wait for button press
+    for do
+        if button_pressed() do
+            // Type "Hello World!" on host PC
+            keyboard_type_string("Hello World!")
+            keyboard_press(0x28)  // Enter key
+            
+            delay_ms(1000)
+        end
+    end
+end</code></pre>
+<p><strong>Conclusion:</strong>When plugged into the PC, it is perceived as a real keyboard. Automatic writing, macro system.</p>
+</div>
+
+<h2>💡 Example 3: USB MSC - Mass Storage (USB Disk Emulation)</h2>
+<div class="example-box">
+<h3>Problem: Making the SD card look like a USB flash disk</h3>
+<pre><code>import hal::usb, hal::sdio
+
+function usb_msc_init() do
+    // Initialize SD card
+    sdio.init()
+    
+    // Get SD card info
+    let sd_info = sdio.get_card_info()
+    
+    io.yazdir_satır("SD Card: " + (sd_info.capacity / 1024 / 1024).metne() + " MB")
+    
+    // Initialize USB MSC
+    usb.init_msc(do
+        vid: 0x0483,
+        pid: 0x5720,
+        product: "BERK USB Disk",
+        block_count: sd_info.block_count,
+        block_size: sd_info.block_size,
+        read_callback: msc_read_block,
+        write_callback: msc_write_block
+    end)
+    
+    usb.connect()
+    
+    io.yazdir_satır("USB Mass Storage ready")
+end
+
+function msc_read_block(block_num: sayı, buffer: Dizi&lt;sayı8&gt;) -&gt; mantık do
+    // Read block from SD card
+    return sdio.read_blocks(block_num, 1, buffer)
+end
+
+function msc_write_block(block_num: sayı, data: Dizi&lt;sayı8&gt;) -&gt; mantık do
+    // Write block to SD card
+    return sdio.write_blocks(block_num, 1, data)
+end
+
+function main() do
+    usb_msc_init()
+    
+    for do
+        // Handle USB events
+        usb.poll()
+        
+        // LED blink when active
+        if usb.is_active() do
+            led_toggle()
+        end
+        
+        delay_ms(100)
+    end
+end</code></pre>
+<p><strong>Use:</strong>It looks like a USB flash disk when plugged into the PC. File copying works.</p>
+</div>
+
+<h2>📚 API Reference</h2>
+<h3>Basic Functions</h3>
+<pre><code>// USB Initialization
+function init_cdc(config: CDCConfig)
+function init_hid(config: HIDConfig)
+function init_msc(config: MSCConfig)
+
+// Connection
+function connect()
+function disconnect()
+function is_configured() -&gt; mantık
+
+// CDC Functions
+function cdc_write(data: Metin)
+function cdc_write_bytes(data: Dizi&lt;sayı8&gt;)
+function cdc_read() -&gt; Dizi&lt;sayı8&gt;
+function cdc_set_rx_callback(callback: function(Dizi&lt;sayı8&gt;))
+
+// HID Functions
+function hid_send_report(report: Dizi&lt;sayı8&gt;)
+function hid_get_report() -&gt; Dizi&lt;sayı8&gt;
+
+// Status
+function get_state() -&gt; USBState
+function is_active() -&gt; mantık
+function poll()  // Process USB events</code></pre>
+
+<div class="warning">
+<strong>⚠️ Important Notes:</strong>
+<ul>
+<li><strong>48MHz Clock:</strong>Full 48 MHz clock required for USB (tolerance ±0.25%)</li>
+<li><strong>VID/PID:</strong>Get your own VID/PID in Production (from USB-IF)</li>
+<li><strong>Enumeration Time:</strong>PC recognition time may take 1-3 seconds</li>
+<li><strong>Interrupt Priority:</strong>USB interrupt must be high priority</li>
+</ul>
+</div>
+
+<h2>🖥️ Platform Support</h2>
+<table>
+<tbody><tr>
+<th>Platform</th>
+<th>USB Support</th>
+<th>speed</th>
+<th>endpoints</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>✅ FS</td>
+<td>12Mbps</td>
+<td>8 EPs</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>✅ FS/HS</td>
+<td>12/480Mbps</td>
+<td>6 EPs (FS), 8 EPs (HS)</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>✅ FS/HS</td>
+<td>12/480Mbps</td>
+<td>6 EPs (FS), 8 EPs (HS)</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>✅ FS/HS</td>
+<td>12/480Mbps</td>
+<td>9 EPs</td>
+</tr>
+</tbody></table>
+
+<h2>✅ Best Practices</h2>
+<ul>
+<li>✅ <strong>CDC for debugging:</strong>Use USB CDC instead of UART (cable requirement is the same)</li>
+<li>✅ <strong>HID for UI:</strong>Use HID keyboard/mouse for simple control</li>
+<li>✅ <strong>MSC for data:</strong>Use MSC for log files (FAT32)</li>
+<li>✅ <strong>Disconnect before reset:</strong>Call usb.disconnect() before reset</li>
+<li>❌ <strong>Float operations:</strong>Using floating-point in USB interrupt</li>
+<li>❌ <strong>Long callbacks:</strong>Keep USB callbacks short (&lt;1 ms)</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="en_hal-clock-tr.html">state::clock</a>- 48 MHz USB clock configuration</li>
+<li><a href="en_hal-gpio-tr.html">state::gpio</a>- USB D+/D- pin setup</li>
+<li><a href="en_hal-sdio-tr.html">state::sdio</a>- SD card for USB MSC backend</li>
+<li><a href="en_hal-dma-tr.html">state::dma</a>- DMA for high-speed USB transfers</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">🔙 HAL Modules</a> | 
+<a href="en_hal-usb-en.html">🌐English</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

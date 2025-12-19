@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>첫 번째 프로그램 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Turkish/English) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="en_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === empty || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = empty;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/hello-world.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="hello-world"><a class="header" href="#hello-world">안녕하세요 월드!</a></h1>
+<p>모든 프로그래밍 언어의 전통, 첫 번째 프로그램 "Hello World!" 인쇄하는 것입니다. 우리는 BERK에서도 이 전통을 이어갑니다!</p>
+<h2 id="your-first-program"><a class="header" href="#your-first-program">첫 번째 프로그램</a></h2>
+<p>즐겨 사용하는 텍스트 편집기에서<code data-no-translate="true">hello.berk</code>다음 이름의 파일을 만듭니다.</p>
+<pre><code class="language-berk">function ana() -&gt; integer
+do
+    print("Hello World!")
+    return 0
+end
+</code></pre>
+<h2 id="understanding-the-code"><a class="header" href="#understanding-the-code">코드 이해</a></h2>
+<p>한 줄씩 살펴보겠습니다.</p>
+<h3 id="1-function-Definition"><a class="header" href="#1-function-Definition">1. 기능 정의</a></h3>
+<pre><code class="language-berk">function ana() -&gt; integer
+</code></pre>
+<ul>
+<li><code data-no-translate="true">function</code>(또는<code data-no-translate="true">function</code>): 함수를 정의합니다.</li>
+<li><code data-no-translate="true">ana</code>(또는<code data-no-translate="true">main</code>): 함수 이름입니다. 프로그램<code data-no-translate="true">ana()</code>기능 시작</li>
+<li><code data-no-translate="true">()</code>: 매개변수 목록(비어 있음)</li>
+<li><code data-no-translate="true">-&gt; integer</code>: 반환 유형(정수)</li>
+</ul>
+<h3 id="2-function-Body"><a class="header" href="#2-function-Body">2. 기능 본체</a></h3>
+<pre><code class="language-berk">do
+    ...
+end
+</code></pre>
+<ul>
+<li><code data-no-translate="true">do</code>(또는<code data-no-translate="true">do</code>): 기능 시작</li>
+<li><code data-no-translate="true">end</code>(또는<code data-no-translate="true">end</code>): 기능 종료</li>
+</ul>
+<h3 id="3-Printing"><a class="header" href="#3-Printing">3.인쇄</a></h3>
+<pre><code class="language-berk">print("Hello World!")
+</code></pre>
+<ul>
+<li><code data-no-translate="true">print()</code>(또는<code data-no-translate="true">print()</code>): 화면에 인쇄합니다.</li>
+<li><code data-no-translate="true">"Hello World!"</code>: 문자열 리터럴</li>
+</ul>
+<h3 id="4-return-value"><a class="header" href="#4-return-value">4. 반환 값</a></h3>
+<pre><code class="language-berk">return 0
+</code></pre>
+<ul>
+<li><code data-no-translate="true">return</code>(또는<code data-no-translate="true">return</code>):기능 종료</li>
+<li><code data-no-translate="true">0</code>: 성공적인 프로그램은 0을 반환합니다(Unix 전통).</li>
+</ul>
+<h2 id="Compilation-and-Execution"><a class="header" href="#Compilation-and-Execution">컴파일 및 실행</a></h2>
+<h3 id="Step-1-Compilation"><a class="header" href="#Step-1-Compilation">1단계: 컴파일</a></h3>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba.exe
+</code></pre>
+<p>산출:</p>
+<pre><code>🚀 BERK Compiler v1.0.0
+   LLVM 17.0.6 (19 Target Support)
+=========================================
+📂 Introduction: hello.berk
+📤 Output: hello.exe
+🎯 Emit: Executable
+⚡ Optimization: O0
+=========================================
+
+✅ Compilation successful!
+</code></pre>
+<h3 id="Step-2-Execution"><a class="header" href="#Step-2-Execution">2단계: 실행</a></h3>
+<p><strong>윈도우:</strong></p>
+<pre><code class="language-powershell">.\merhaba.exe
+</code></pre>
+<p><strong>리눅스/맥OS:</strong></p>
+<pre><code class="language-bash">./merhaba
+</code></pre>
+<p>산출:</p>
+<pre><code>Hello World!
+</code></pre>
+<h2 id="english-version"><a class="header" href="#english-version">영어 버전</a></h2>
+<p>BERK 이중 언어! 동일한 프로그램을 영어로 작성할 수 있습니다.</p>
+<p><strong>hello.berk:</strong></p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    print("Hello World!")
+    return 0
+end
+</code></pre>
+<p>편집:</p>
+<pre><code class="language-bash">BERK-lang hello.berk -o hello.exe
+./hello.exe
+</code></pre>
+<p>산출:</p>
+<pre><code>Hello World!
+</code></pre>
+<h2 id="mixed-usage"><a class="header" href="#mixed-usage">혼합 사용</a></h2>
+<p>터키어와 영어를 혼합할 수도 있습니다.</p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    print("Hello World!")
+    return 0
+end
+</code></pre>
+<p>이것도 유효한 BERK 코드입니다!</p>
+<h2 id="Compilation-options"><a class="header" href="#Compilation-options">컴파일 옵션</a></h2>
+<h3 id="verbose-mode"><a class="header" href="#verbose-mode">자세한 모드</a></h3>
+<p>컴파일 단계를 보려면 다음을 수행하십시오.</p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba.exe -v
+</code></pre>
+<p>산출:</p>
+<pre><code>🔍 Language detection...
+✅ Turkish detected (100.0% confidence)
+
+🌳 AST being created...
+✅ 1 expressions parsed
+
+🧠 Smart analysis (Rules Engine)...
+✅ Analysis complete
+
+🔍 Type checking...
+✅ Type checking successful
+
+🔧 IR generation...
+✅ IR generated
+
+🎯 LLVM IR generation...
+✅ Object file: merhaba.o
+
+🔗 Linking...
+✅ Executable created: merhaba.exe
+
+🎊 Compilation successful!
+</code></pre>
+<h3 id="optimizasyon-Levels"><a class="header" href="#optimizasyon-Levels">최적화 수준</a></h3>
+<p><strong>O0 - 최적화 없음(기본값):</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o0.exe -O0
+</code></pre>
+<p><strong>O1 - 기본 최적화:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o1.exe -O1
+</code></pre>
+<p><strong>O2 - 중간 수준(권장):</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o2.exe -O2
+</code></pre>
+<p><strong>O3 - 공격적인 최적화:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk -o merhaba_o3.exe -O3
+</code></pre>
+<h3 id="different-output-formats"><a class="header" href="#different-output-formats">다양한 출력 형식</a></h3>
+<p><strong>LLVM IR 쇼:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit llvm-ir
+</code></pre>
+<p><strong>조립 쇼:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit asm
+</code></pre>
+<p><strong>IR 쇼:</strong></p>
+<pre><code class="language-bash">BERK-lang hello.berk --emit ir
+</code></pre>
+<h2 id="try-in-repl"><a class="header" href="#try-in-repl">REPL로 시도해 보세요</a></h2>
+<p>대화형 셸에서 시도해 볼 수도 있습니다.</p>
+<pre><code class="language-bash">BERK-repl
+</code></pre>
+<pre><code class="language-berk">BERK&gt; print("Hello REPL!")
+Hello REPL!
+=&gt; Result: Void
+
+BERK&gt; 1 + 2
+=&gt; Result: Integer = 3
+
+BERK&gt; :quit
+Goodbye!
+</code></pre>
+<h2 id="exercises"><a class="header" href="#exercises">수업 과정</a></h2>
+<h3 id="exercise-1-personalization"><a class="header" href="#exercise-1-personalization">연습 1: 개인화</a></h3>
+<p>자신의 이름을 인쇄하도록 프로그램을 수정하세요.</p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    print("Hello, [YOUR NAME]!")
+    return 0
+end
+</code></pre>
+<h3 id="exercise-2-multiple-printing"><a class="header" href="#exercise-2-multiple-printing">연습 2: 다중 압력</a></h3>
+<p>여러 줄을 인쇄합니다.</p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    print("Hello World!")
+    print("Welcome to BERK!")
+    print("Happy coding!")
+    return 0
+end
+</code></pre>
+<h3 id="exercise-3-variable-usage"><a class="header" href="#exercise-3-variable-usage">연습 3: 다양한 사용법</a></h3>
+<p>문자열을 변수에 저장합니다.</p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    variable message = "Hello World!"
+    print(mesaj)
+    return 0
+end
+</code></pre>
+<h3 id="exercise-4-string-concatenation"><a class="header" href="#exercise-4-string-concatenation">연습 4: 문자열 연결</a></h3>
+<p>두 문자열을 연결합니다.</p>
+<pre><code class="language-berk">function main() -&gt; integer
+do
+    variable greeting = "Hello"
+    variable name = "John"
+    print(greeting + ", " + name + "!")
+    return 0
+end
+</code></pre>
+<h2 id="common-errors"><a class="header" href="#common-errors">일반적인 오류</a></h2>
+<h3 id="error-1-no-semicolons"><a class="header" href="#error-1-no-semicolons">오류 1: 세미콜론 없음</a></h3>
+<p>세미콜론은<strong>필요하지 않음</strong>버크에서:</p>
+<pre><code class="language-berk">// ❌ Wrong
+print("Hello");
+
+// ✅ true
+print("Merhaba")
+</code></pre>
+<h3 id="error-2-missing-parentheses"><a class="header" href="#error-2-missing-parentheses">오류 2: 괄호 누락</a></h3>
+<pre><code class="language-berk">// ❌ Wrong
+print "Hello"
+
+// ✅ Correct
+print("Hello")
+</code></pre>
+<h3 id="error-3-no-main-function"><a class="header" href="#error-3-no-main-function">오류 3: main() 함수 없음</a></h3>
+<pre><code class="language-berk">// ❌ Wrong - no main() function
+print("Hello")
+
+// ✅ Correct - has main() function
+function main() -&gt; integer
+do
+    print("Hello")
+    return 0
+end
+</code></pre>
+<h3 id="error-4-missing-return-value"><a class="header" href="#error-4-missing-return-value">오류 4: 반환 값 누락</a></h3>
+<pre><code class="language-berk">// ❌ Wrong - missing return
+function main() -&gt; integer
+do
+    print("Hello")
+end
+
+// ✅ Correct - has return
+function main() -&gt; integer
+do
+    print("Hello")
+    return 0
+end
+</code></pre>
+<h2 id="next-steps"><a class="header" href="#next-steps">다음 단계</a></h2>
+<p>축하해요! 첫 번째 BERK 프로그램을 작성했습니다!</p>
+<p>이제 더 자세히 알아볼 준비가 되었습니다.</p>
+<ol>
+<li><strong><a href="./ko_en_en_first-program.html">첫 번째 프로그램</a></strong>- 좀 더 복잡한 프로그램</li>
+<li><strong><a href="./basics/ko_en_en_variables.html">변수와 상수</a></strong>-데이터 저장</li>
+<li><strong><a href="./basics/ko_en_en_data-types.html">데이터 유형</a></strong>- 유형에 대해 자세히 알아보기</li>
+</ol>
+<h2 id="Summary"><a class="header" href="#Summary">요약</a></h2>
+<p>이 섹션에서 배운 내용:</p>
+<ul>
+<li>✅ 간단한 BERK 프로그램 작성</li>
+<li>✅ 프로그램 컴파일 및 실행</li>
+<li>✅ <code data-no-translate="true">function</code>, <code data-no-translate="true">do</code>, <code data-no-translate="true">end</code>키워드</li>
+<li>✅ <code data-no-translate="true">print()</code>기능</li>
+<li>✅ <code data-no-translate="true">return</code>성명</li>
+<li>✅ 이중 언어 구문 사용</li>
+<li>✅ 일반적인 오류 및 해결 방법</li>
+</ul>
+<hr>
+<p><strong>이전의:</strong> <a href="./ko_en_en_installation.html">설치</a> | <strong>다음:</strong> <a href="./ko_en_en_first-program.html">첫 번째 프로그램</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="en_installation.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="en_first-program.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="en_installation.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="en_first-program.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

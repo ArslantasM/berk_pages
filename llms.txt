@@ -1,0 +1,542 @@
+# BERK Programming Language Documentation
+
+> BERK is a modern, safe, and bilingual (Turkish/English) systems programming language designed for performance, safety, and developer experience.
+
+## Overview
+
+BERK (Bilingual Efficient Runtime Kit) is a compiled systems programming language that uniquely supports both Turkish and English keywords, making it accessible to Turkish-speaking developers while maintaining compatibility with the global programming community.
+
+**Key Features:**
+- 🌍 Bilingual syntax (Turkish & English keywords)
+- 🔒 Memory safety without garbage collection
+- ⚡ High performance (compiles to native code)
+- 📦 Module system with package management
+- 🎯 Pattern matching with exhaustiveness checking
+- 🔧 Embedded systems support (HAL modules)
+- 🤖 AI/ML standard library modules
+
+## Quick Links
+
+| Resource | URL |
+|----------|-----|
+| Homepage | https://arslantasm.github.io/berk_pages/ |
+| Introduction | https://arslantasm.github.io/berk_pages/intro.html |
+| Installation | https://arslantasm.github.io/berk_pages/installation.html |
+| First Program | https://arslantasm.github.io/berk_pages/first-program.html |
+| FAQ | https://arslantasm.github.io/berk_pages/faq.html |
+| Roadmap | https://arslantasm.github.io/berk_pages/roadmap.html |
+
+## Multi-Language Documentation
+
+Documentation is available in multiple languages:
+
+| Language | Base URL | TOC |
+|----------|----------|-----|
+| Turkish (TR) | /berk_pages/ | Default |
+| English (EN) | /berk_pages/en/ | Full translation |
+| Korean (KO) | /berk_pages/ko/ | Full translation |
+| Hindi (HI) | /berk_pages/hi/ | Full translation |
+
+---
+
+## Documentation Structure
+
+### Getting Started
+- `/intro.html` - Introduction to BERK
+- `/installation.html` - Installation guide for all platforms
+- `/hello-world.html` - Your first "Hello World" program
+- `/first-program.html` - Writing your first complete program
+
+### Basics (Core Concepts)
+- `/basics/syntax.html` - Syntax and structure
+- `/basics/variables.html` - Variables and constants (`değişken`/`var`, `sabit`/`const`)
+- `/basics/data-types.html` - Data types (`Sayı`/`Number`, `Yazı`/`String`, `Bool`, etc.)
+- `/basics/operators.html` - Arithmetic, logical, and comparison operators
+- `/basics/comments.html` - Single-line and multi-line comments
+
+### Control Flow
+- `/control-flow/index.html` - Control structures overview
+- `/control-flow/if-else.html` - Conditional statements (`eğer`/`if`, `yoksa`/`else`)
+- `/control-flow/loops.html` - Loop constructs (`döngü`/`for`, `piksek`/`while`)
+- `/control-flow/pattern-matching.html` - Pattern matching (`eş`/`match`)
+
+### Functions
+- `/functions/index.html` - Functions overview
+- `/functions/defining.html` - Function definition (`işlev`/`func`)
+- `/functions/parameters.html` - Parameters and return values
+- `/functions/scope.html` - Local and global variables
+
+### Data Structures
+- `/data-structures/index.html` - Data structures overview
+- `/data-structures/lists.html` - Lists and arrays (`Liste`/`List`)
+- `/data-structures/tuples.html` - Tuples (`Demet`/`Tuple`)
+- `/data-structures/structs.html` - Struct definitions (`yapı`/`struct`)
+
+### Error Handling
+- `/error-handling/index.html` - Error handling overview
+- `/error-handling/try-catch.html` - Try-catch blocks (`dene`/`try`, `yakala`/`catch`)
+- `/error-handling/error-types.html` - Error types and custom errors
+
+### Modules
+- `/modules/index.html` - Module system overview
+- `/modules/system.html` - How the module system works
+- `/modules/import-export.html` - Import and export (`kullan`/`use`, `dışa`/`pub`)
+
+### Language Features
+- `/features/bilingual.html` - Bilingual syntax (Turkish/English)
+- `/features/memory-safety.html` - Memory safety guarantees
+- `/features/type-system.html` - Static type system with inference
+- `/features/strings.html` - String operations and UTF-8 support
+
+---
+
+## Standard Library (61 Modules)
+
+### Core Modules
+| Module | Description | Path |
+|--------|-------------|------|
+| io | Input/Output operations | `/stdlib/io.html` |
+| fs | File system operations | `/stdlib/fs.html` |
+| string | String manipulation | `/stdlib/string.html` |
+| collections | Data collections (HashMap, Set) | `/stdlib/collections.html` |
+| result | Result type for error handling | `/stdlib/result.html` |
+| iter | Iterators and iteration | `/stdlib/iter.html` |
+| fmt | Formatting and printing | `/stdlib/fmt.html` |
+
+### System & Runtime
+| Module | Description | Path |
+|--------|-------------|------|
+| sys | System information and control | `/stdlib/sys.html` |
+| thread | Multi-threading support | `/stdlib/thread.html` |
+| async | Async/await runtime | `/stdlib/async.html` |
+| time | Date and time handling | `/stdlib/time.html` |
+| terminal | Terminal/console operations | `/stdlib/terminal.html` |
+
+### Math & Science
+| Module | Description | Path |
+|--------|-------------|------|
+| math | Mathematical functions | `/stdlib/math.html` |
+| complex | Complex numbers | `/stdlib/complex.html` |
+| random | Random number generation | `/stdlib/random.html` |
+| linalg | Linear algebra | `/stdlib/linalg.html` |
+| stats | Statistical functions | `/stdlib/stats.html` |
+| optim | Optimization algorithms | `/stdlib/optim.html` |
+| physics | Physics calculations | `/stdlib/physics.html` |
+| physics2d | 2D physics engine | `/stdlib/physics2d.html` |
+
+### Data Formats
+| Module | Description | Path |
+|--------|-------------|------|
+| json | JSON parsing and serialization | `/stdlib/json.html` |
+| xml | XML processing | `/stdlib/xml.html` |
+| yaml | YAML parsing | `/stdlib/yaml.html` |
+| csv | CSV file handling | `/stdlib/csv.html` |
+| regex | Regular expressions | `/stdlib/regex.html` |
+| encoding | Character encoding | `/stdlib/encoding.html` |
+| compression | Data compression | `/stdlib/compression.html` |
+
+### Networking
+| Module | Description | Path |
+|--------|-------------|------|
+| http | HTTP client and server | `/stdlib/http.html` |
+| network | Low-level networking | `/stdlib/network.html` |
+| crypto | Cryptography primitives | `/stdlib/crypto.html` |
+
+### Database
+| Module | Description | Path |
+|--------|-------------|------|
+| sqlite | SQLite database | `/stdlib/sqlite.html` |
+
+### Graphics & Media
+| Module | Description | Path |
+|--------|-------------|------|
+| gui | GUI toolkit | `/stdlib/gui.html` |
+| graphics | 2D/3D graphics | `/stdlib/graphics.html` |
+| image | Image processing | `/stdlib/image.html` |
+| audio | Audio playback/recording | `/stdlib/audio.html` |
+| color | Color manipulation | `/stdlib/color.html` |
+
+### 3D & CAD
+| Module | Description | Path |
+|--------|-------------|------|
+| cad3d | 3D CAD operations | `/stdlib/cad3d.html` |
+| mesh | 3D mesh manipulation | `/stdlib/mesh.html` |
+| math_3d | 3D math (vectors, matrices) | `/stdlib/math_3d.html` |
+
+### Utilities
+| Module | Description | Path |
+|--------|-------------|------|
+| testing | Unit testing framework | `/stdlib/testing.html` |
+| logging | Logging utilities | `/stdlib/logging.html` |
+| rules | Business rules engine | `/stdlib/rules.html` |
+
+---
+
+## AI/ML Modules (11 Modules)
+
+BERK includes a comprehensive AI/ML standard library:
+
+| Module | Description | Path |
+|--------|-------------|------|
+| ai-overview | AI/ML module overview | `/stdlib/ai-overview.html` |
+| ai-tensor | Tensor operations | `/stdlib/ai-tensor.html` |
+| ai-nn | Neural network layers | `/stdlib/ai-nn.html` |
+| ai-optim | Optimizers (SGD, Adam, etc.) | `/stdlib/ai-optim.html` |
+| ai-train | Training loops and utilities | `/stdlib/ai-train.html` |
+| ai-model | Model save/load | `/stdlib/ai-model.html` |
+| ai-llm | Large Language Model support | `/stdlib/ai-llm.html` |
+| ai-metrics | ML metrics and evaluation | `/stdlib/ai-metrics.html` |
+| ai-vision | Computer vision utilities | `/stdlib/ai-vision.html` |
+| ai-nlp | Natural language processing | `/stdlib/ai-nlp.html` |
+| ai-rl | Reinforcement learning | `/stdlib/ai-rl.html` |
+
+---
+
+## HAL - Hardware Abstraction Layer (33 Modules)
+
+BERK provides extensive embedded systems support:
+
+### Core HAL
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-index | HAL overview | `/stdlib/hal-index.html` |
+| hal-core | Core HAL functionality | `/stdlib/hal-core.html` |
+| hal-dev | Device abstraction | `/stdlib/hal-dev.html` |
+| hal-std | Standard HAL traits | `/stdlib/hal-std.html` |
+
+### GPIO & Analog
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-gpio | General Purpose I/O | `/stdlib/hal-gpio.html` |
+| hal-adc | Analog-to-Digital Converter | `/stdlib/hal-adc.html` |
+| hal-dac | Digital-to-Analog Converter | `/stdlib/hal-dac.html` |
+| hal-pwm | Pulse Width Modulation | `/stdlib/hal-pwm.html` |
+
+### Communication
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-usart | UART/USART serial | `/stdlib/hal-usart.html` |
+| hal-spi | SPI bus | `/stdlib/hal-spi.html` |
+| hal-i2c | I2C bus | `/stdlib/hal-i2c.html` |
+| hal-can | CAN bus | `/stdlib/hal-can.html` |
+| hal-usb | USB interface | `/stdlib/hal-usb.html` |
+
+### Timing & Control
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-timer | Hardware timers | `/stdlib/hal-timer.html` |
+| hal-clock | Clock configuration | `/stdlib/hal-clock.html` |
+| hal-rtc | Real-time clock | `/stdlib/hal-rtc.html` |
+| hal-systick | System tick timer | `/stdlib/hal-systick.html` |
+| hal-watchdog | Watchdog timer | `/stdlib/hal-watchdog.html` |
+
+### Memory & Storage
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-dma | Direct Memory Access | `/stdlib/hal-dma.html` |
+| hal-flash | Flash memory | `/stdlib/hal-flash.html` |
+
+### Interrupts & Power
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-nvic | Nested Vector Interrupt | `/stdlib/hal-nvic.html` |
+| hal-exti | External interrupts | `/stdlib/hal-exti.html` |
+| hal-int | Interrupt handling | `/stdlib/hal-int.html` |
+| hal-power | Power management | `/stdlib/hal-power.html` |
+
+### Utilities
+| Module | Description | Path |
+|--------|-------------|------|
+| hal-crc | CRC calculation | `/stdlib/hal-crc.html` |
+| hal-rng | Random number generator | `/stdlib/hal-rng.html` |
+| hal-enum | HAL enumerations | `/stdlib/hal-enum.html` |
+| hal-host | Host communication | `/stdlib/hal-host.html` |
+| hal-hw | Hardware utilities | `/stdlib/hal-hw.html` |
+| hal-ie | Interrupt enable/disable | `/stdlib/hal-ie.html` |
+| hal-pipe | Data pipelines | `/stdlib/hal-pipe.html` |
+| hal-regs | Register access | `/stdlib/hal-regs.html` |
+| hal-transc | Transceivers | `/stdlib/hal-transc.html` |
+
+---
+
+## Compiler & Tools
+
+### Compiler
+- `/compiler/overview.html` - BERK compiler overview
+- `/compiler/compilation.html` - Compilation process
+- `/compiler/optimizations.html` - Optimization levels (-O0 to -O3)
+- `/compiler/cross-compile.html` - Cross-compilation for different targets
+
+### Development Tools
+- `/tools/repl.html` - Interactive REPL
+- `/tools/vscode-extension.html` - VS Code extension
+- `/tools/debugging.html` - Debugging guide
+
+---
+
+## Examples & Applications
+
+- `/examples/index.html` - Sample programs overview
+- `/examples/calculations.html` - Simple calculations
+- `/examples/string-ops.html` - String operations
+- `/examples/file-ops.html` - File operations
+- `/examples/web-server.html` - Web server example
+
+---
+
+## Reference
+
+- `/reference/keywords.html` - All keywords (Turkish & English)
+- `/reference/operator-precedence.html` - Operator precedence table
+- `/reference/std-library.html` - Standard library API reference
+- `/reference/error-messages.html` - Error messages guide
+
+---
+
+## Bilingual Keyword Reference
+
+BERK supports both Turkish and English keywords. Here are the most common:
+
+### Declarations
+| Turkish | English | Description |
+|---------|---------|-------------|
+| `değişken` | `var` | Variable declaration |
+| `sabit` | `const` | Constant declaration |
+| `işlev` | `func` | Function definition |
+| `yapı` | `struct` | Struct definition |
+| `sayım` | `enum` | Enum definition |
+
+### Control Flow
+| Turkish | English | Description |
+|---------|---------|-------------|
+| `eğer` | `if` | Conditional |
+| `yoksa` | `else` | Else branch |
+| `eş` | `match` | Pattern matching |
+| `döngü` | `for` | For loop |
+| `piksek` | `while` | While loop |
+| `kır` | `break` | Break loop |
+| `devam` | `continue` | Continue loop |
+
+### Functions
+| Turkish | English | Description |
+|---------|---------|-------------|
+| `geri dön` | `return` | Return value |
+| `dışa` | `pub` | Public visibility |
+| `kullan` | `use` | Import module |
+
+### Types
+| Turkish | English | Description |
+|---------|---------|-------------|
+| `Sayı` | `Number` | Numeric type |
+| `Yazı` | `String` | String type |
+| `Bool` | `Bool` | Boolean type |
+| `Liste` | `List` | List/Array type |
+| `Demet` | `Tuple` | Tuple type |
+
+### Error Handling
+| Turkish | English | Description |
+|---------|---------|-------------|
+| `dene` | `try` | Try block |
+| `yakala` | `catch` | Catch block |
+| `hata` | `error` | Error type |
+
+---
+
+## Code Examples
+
+### Hello World (Turkish)
+```berk
+func main() {
+    print("Merhaba Dünya!")
+}
+```
+
+### Hello World (English)
+```berk
+func main() {
+    print("Hello World!")
+}
+```
+
+### Variables and Types
+```berk
+// Turkish
+var sayı: Number = 42
+var isim: String = "BERK"
+const PI: Number = 3.14159
+
+// English
+var number: Number = 42
+var name: String = "BERK"
+const PI: Number = 3.14159
+```
+
+### Control Flow
+```berk
+// Pattern Matching (Turkish)
+match değer {
+    1 => print("bir"),
+    2 => print("iki"),
+    _ => print("diğer")
+}
+
+// Pattern Matching (English)
+match value {
+    1 => print("one"),
+    2 => print("two"),
+    _ => print("other")
+}
+```
+
+### Functions
+```berk
+// Turkish
+func topla(a: Number, b: Number) -> Number {
+    return a + b
+}
+
+// English
+func add(a: Number, b: Number) -> Number {
+    return a + b
+}
+```
+
+### Structs
+```berk
+// Turkish
+struct Nokta {
+    x: Number,
+    y: Number
+}
+
+func main() {
+    var p = Nokta { x: 10, y: 20 }
+    print(p.x)
+}
+
+// English
+struct Point {
+    x: Number,
+    y: Number
+}
+
+func main() {
+    var p = Point { x: 10, y: 20 }
+    print(p.x)
+}
+```
+
+### Error Handling
+```berk
+// Turkish
+func dosya_oku(yol: String) -> Result<String, Error> {
+    try {
+        var içerik = fs.read(yol)?
+        return Ok(içerik)
+    } catch hata {
+        return Err(hata)
+    }
+}
+
+// English
+func read_file(path: String) -> Result<String, Error> {
+    try {
+        var content = fs.read(path)?
+        return Ok(content)
+    } catch err {
+        return Err(err)
+    }
+}
+```
+
+### HTTP Server
+```berk
+use http
+
+func main() {
+    var server = http.Server.new("0.0.0.0:8080")
+    
+    server.route("/", func(request) {
+        return http.Response.ok("Hello!")
+    })
+    
+    server.start()
+}
+```
+
+### AI/ML Example
+```berk
+use ai.tensor
+use ai.nn
+
+func main() {
+    // Create a tensor
+    var data = Tensor.new([[1.0, 2.0], [3.0, 4.0]])
+    
+    // Build a simple neural network
+    var model = nn.Sequential.new([
+        nn.Linear(2, 16),
+        nn.ReLU(),
+        nn.Linear(16, 1)
+    ])
+    
+    var output = model.forward(data)
+    print(output)
+}
+```
+
+### Embedded/HAL Example
+```berk
+use hal.gpio
+use hal.timer
+
+func main() {
+    // Configure GPIO pin
+    var led = gpio.Pin.new(13, gpio.Mode.Output)
+    
+    // Blink LED
+    for {
+        led.high()
+        timer.delay_ms(500)
+        led.low()
+        timer.delay_ms(500)
+    }
+}
+```
+
+---
+
+## Statistics
+
+- **Total Documentation Pages:** 2724
+- **Standard Library Modules:** 61
+- **AI/ML Modules:** 11
+- **HAL Modules:** 33
+- **Supported Languages:** 4 (Turkish, English, Korean, Hindi)
+
+---
+
+## Contributing
+
+- `/contributing/setup.html` - Development environment setup
+- `/contributing/code.html` - How to contribute code
+- `/contributing/docs.html` - Documentation contribution guide
+
+---
+
+## Contact & Resources
+
+- **GitHub Repository:** https://github.com/ArslantasM/berk
+- **Documentation:** https://arslantasm.github.io/berk_pages/
+- **Changelog:** https://arslantasm.github.io/berk_pages/changelog.html
+
+---
+
+## License
+
+BERK is open source software. See the repository for license details.
+
+---
+
+*Last updated: December 2024*
+*Documentation version: 1.4*

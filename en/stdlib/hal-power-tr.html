@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::power - Power Management | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #2ecc71;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>state::power</h1>
+<p>Power Management - Ultra Low Power Modes</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~420 lines</span>
+<span class="stat-badge">~20 functions</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>Overview</h2>
+<p>The Power module is critical for energy efficiency in embedded systems. It reduces power consumption to microamperes with Sleep, Stop and Standby modes. It is indispensable for battery-powered IoT devices, wearables and long-lasting sensor networks.</p>
+
+<h2>Key Features</h2>
+<ul>
+<li><strong>Sleep Mode:</strong>CPU is stopped, peripherals run (run mode -&gt; sleep ~1-2ms)</li>
+<li><strong>Stop Mode:</strong>All clocks are stopped, SRAM is preserved (&lt;1 μA typical)</li>
+<li><strong>Standby Mode:</strong>Everything is off except the backup domain (~0.3 μA)</li>
+<li><strong>Voltage Scaling:</strong>Dynamic voltage adjustment from 1.8V to 3.6V</li>
+<li><strong>PVD (Programmable Voltage Detector):</strong>Low voltage warning</li>
+<li><strong>Backup Domain:</strong>RTC + 4KB backup SRAM (preserved in standby)</li>
+<li><strong>Wakeup Sources:</strong>RTC alarm, EXTI, USART, USB, tamper</li>
+<li><strong>Regulator Modes:</strong>Main/Low-power regulator selection</li>
+</ul>
+
+<h2>Quick Start</h2>
+<pre><code>import hal::power, hal::rcc
+
+// Sleep Mode (WFI - Wait For Interrupt)
+power.enter_sleep_mode(do
+    mode: power.SLEEP_ON_EXIT
+end)
+
+// Stop Mode (ultra low power)
+power.enter_stop_mode(do
+    regulator: power.REGULATOR_LOW_POWER,
+    wakeup_source: power.WAKEUP_RTC
+end)
+
+// Restore clocks after wakeup from Stop
+rcc.sysclk_restore()
+
+// Standby Mode (lowest power)
+power.enter_standby_mode(do
+    wakeup_pin: power.WAKEUP_PIN1,
+    rtc_alarm: true
+end)</code></pre>
+
+<h2>Types and Enums</h2>
+<pre><code>// Power Modes
+enum PowerMode {
+    RUN,       // Normal operation
+    SLEEP,     // CPU stopped, peripherals active
+    STOP,      // All clocks stopped, SRAM retained
+    STANDBY    // Only backup domain active
+}
+
+// Regulator Modes
+enum Regulator {
+    REGULATOR_MAIN,       // Main regulator (faster wakeup)
+    REGULATOR_LOW_POWER   // Low-power regulator (lower current)
+}
+
+// Wakeup Sources
+enum WakeupSource {
+    WAKEUP_PIN1,  // PA0
+    WAKEUP_PIN2,  // PC13
+    WAKEUP_RTC,   // RTC alarm
+    WAKEUP_TAMPER,
+    WAKEUP_RESET
+}
+
+// Voltage Scaling
+enum VoltageScale {
+    SCALE_1,  // 1.8V (high performance, 168 MHz)
+    SCALE_2,  // 1.5V (medium, 144 MHz)
+    SCALE_3   // 1.2V (low power, 120 MHz)
+}
+
+struct PowerConfig do
+    mode: PowerMode,
+    regulator: Regulator,
+    wakeup_source: WakeupSource,
+    flash_power_down: mantık = true,
+    low_power_deepsleep: mantık = true
+end</code></pre>
+
+<h2>Example 1: Sleep Mode - Periodic Sensor Reading</h2>
+<div class="example-box">
+<h3>Problem: Reading a sensor every 1 second and saving energy</h3>
+<pre><code>import hal::power, hal::rtc, hal::adc, hal::gpio
+
+function sensor_sistemi_init() do
+    // RTC wakeup timer (1 Hz)
+    rtc.init(do
+        clock_source: rtc.LSI,
+        async_prescaler: 127,
+        sync_prescaler: 249  // 32 kHz / 128 / 250 = 1 Hz
+    end)
+    
+    rtc.set_wakeup_timer(do
+        period: 1,  // 1 second
+        callback: sensor_oku_handler
+    end)
+    
+    // ADC for temperature sensor
+    adc.init(adc.ADC1, do
+        resolution: adc.RES_12BIT,
+        channel: adc.CH_TEMP
+    end)
+end
+
+let sensor_veri: Dizi<kesir> = []
+
+function sensor_oku_handler() do
+    // Woke up from sleep!
+    
+    // Read temperature
+    let temp = adc.read_single(adc.ADC1, adc.CH_TEMP)
+    let celsius = (temp * 3.3 / 4096.0 - 0.76) / 0.0025 + 25.0
+    
+    sensor_veri.push(celsius)
+    
+    // Log every 10 readings
+    if (sensor_veri.len &gt;= 10) do
+        let avg = sensor_veri.topla() / sensor_veri.len kayıt kesir
+        io.yazdir_satır("Avg temp: " + avg.metne() + " C")
+        sensor_veri.temizle()
+    end
+end
+
+function main() do
+    sensor_sistemi_init()
+    
+    io.yazdir_satır("Entering sleep mode with RTC wakeup...")
+    
+    for do
+        // Enter sleep mode (CPU stops, RTC continues)
+        power.enter_sleep_mode(do
+            mode: power.SLEEP_WFI
+        end)
+        
+        // Wakes up here on RTC interrupt
+        // sensor_oku_handler() already executed
+    end
+end</kesir></code></pre>
+<p><strong>Power Consumption:</strong>Sleep mode ~1-2 mA (peripherals active), Run mode ~20 mA. Average ~2 mA (90% sleep, 10% active).</p>
+</div>
+
+<h2>Example 2: Stop Mode - Button Wakeup (Ultra Low Power)</h2>
+<div class="example-box">
+<h3>Problem: Minimum power consumption until the button is pressed</h3>
+<pre><code>import hal::power, hal::exti, hal::gpio, hal::rcc
+
+function dusuk_guc_init() do
+    // PA0 -&gt; Wakeup button (external interrupt)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN
+    end)
+    
+    exti.init(0, do
+        trigger: exti.TRIGGER_RISING,
+        mode: exti.MODE_EVENT  // Event mode for wakeup
+    end)
+    
+    // Disable unnecessary peripherals
+    rcc.periph_clock_disable(rcc.PERIPH_TIM2)
+    rcc.periph_clock_disable(rcc.PERIPH_TIM3)
+    rcc.periph_clock_disable(rcc.PERIPH_USART2)
+end
+
+function main() do
+    dusuk_guc_init()
+    
+    io.yazdir_satır("System initialized")
+    io.yazdir_satır("Entering Stop Mode (press button to wake up)...")
+    
+    // Flash power down for extra savings
+    power.flash_power_down_enable()
+    
+    // Enter Stop Mode
+    power.enter_stop_mode(do
+        regulator: power.REGULATOR_LOW_POWER,
+        entry: power.ENTRY_WFE  // Wait For Event
+    end)
+    
+    // *** WOKE UP HERE ***
+    
+    // Restore system clock (Stop mode uses HSI/8)
+    rcc.sysclk_restore()
+    
+    // Re-enable flash
+    power.flash_power_down_disable()
+    
+    io.yazdir_satır("Woke up from Stop Mode!")
+    
+    // Do work
+    led_blink(5)
+    
+    // Go back to sleep
+    io.yazdir_satır("Entering Stop Mode again...")
+    // (loop or jump to stop entry)
+end</code></pre>
+<p><strong>Power Consumption:</strong>Stop mode &lt;1 μA (STM32L4), ~10 μA (STM32F4). Wakeup time ~5-10 μs.</p>
+</div>
+
+<h2>Example 3: Standby Mode - RTC Alarm Wakeup (Deepest Sleep)</h2>
+<div class="example-box">
+<h3>Problem: Sleeping for 1 hour and waking up, SRAM is lost but the backup domain is preserved</h3>
+<pre><code>import hal::power, hal::rtc, hal::backup
+
+const MAGIC_NUMBER: sayı = 0xDEADBEEF
+
+function standby_sistemi_init() do
+    // Enable backup domain access
+    power.backup_access_enable()
+    
+    // RTC configuration (LSE for accuracy)
+    rtc.init(do
+        clock_source: rtc.LSE,  // External 32.768 kHz crystal
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Check if woke up from standby
+    if power.get_flag(power.FLAG_STANDBY) do
+        io.yazdir_satır("Woke up from Standby!")
+        power.clear_flag(power.FLAG_STANDBY)
+        
+        // Check backup register
+        let magic = backup.read_register(0)
+        if (magic == MAGIC_NUMBER) do
+            let wake_count = backup.read_register(1)
+            wake_count = wake_count + 1
+            backup.write_register(1, wake_count)
+            
+            io.yazdir_satır("Wakeup count: " + wake_count.metne())
+        end
+    yoksa do
+        io.yazdir_satır("Fresh boot, initializing...")
+        backup.write_register(0, MAGIC_NUMBER)
+        backup.write_register(1, 0)
+    end
+end
+
+function standby_ile_uyku(saat: sayı) do
+    // Set RTC alarm (wake up after N hours)
+    let simdiki_zaman = rtc.get_time()
+    let alarm_zaman = rtc.Time do
+        hour: (simdiki_zaman.hour + saat) % 24,
+        minute: simdiki_zaman.minute,
+        second: simdiki_zaman.second
+    end
+    
+    rtc.set_alarm(rtc.ALARM_A, alarm_zaman)
+    
+    // Enable wakeup pin as backup
+    power.wakeup_pin_enable(power.WAKEUP_PIN1)
+    
+    io.yazdir_satır("Entering Standby for " + saat.metne() + " hours...")
+    io.yazdir_satır("(All RAM will be lost, only backup registers preserved)")
+    
+    // Enter Standby Mode
+    power.enter_standby_mode()
+    
+    // *** NEVER RETURNS - FULL SYSTEM RESET ON WAKEUP ***
+end
+
+function main() do
+    standby_sistemi_init()
+    
+    // Do some work
+    io.yazdir_satır("Doing important work...")
+    led_blink(3)
+    
+    // Sleep for 1 hour
+    standby_ile_uyku(1)
+end</code></pre>
+<p><strong>Power Consumption:</strong>Standby mode ~0.3-2 μA. 1 hour sleep = 0.0003 mAh. 380+ years with 1000 mAh battery!</p>
+</div>
+
+<h2>Example 4: Voltage Scaling for Dynamic Performance</h2>
+<div class="example-box">
+<h3>Problem: Using Scale 1 when high performance is required, Scale 3 when low power</h3>
+<pre><code>import hal::power, hal::rcc
+
+enum PerformanceMode {
+    HIGH_PERF,   // 168 MHz
+    NORMAL,      // 120 MHz
+    LOW_POWER    // 80 MHz
+}
+
+function set_performance_mode(mode: PerformanceMode) do
+    eşleştir mode do
+        PerformanceMode.HIGH_PERF =&gt; do
+            // Voltage Scale 1 (1.8V)
+            power.set_voltage_scaling(power.SCALE_1)
+            
+            // PLL config for 168 MHz (HSE 8 MHz)
+            rcc.pll_config(do
+                source: rcc.PLL_HSE,
+                pllm: 8,
+                plln: 336,
+                pllp: 2,
+                pllq: 7
+            end)
+            
+            rcc.sysclk_set(rcc.SYSCLK_PLL, 168_000_000)
+            
+            io.yazdir_satır("High Performance: 168 MHz, ~100 mA")
+        end,
+        
+        PerformanceMode.NORMAL =&gt; do
+            // Voltage Scale 2 (1.5V)
+            power.set_voltage_scaling(power.SCALE_2)
+            
+            rcc.pll_config(do
+                source: rcc.PLL_HSE,
+                pllm: 8,
+                plln: 240,
+                pllp: 2,
+                pllq: 5
+            end)
+            
+            rcc.sysclk_set(rcc.SYSCLK_PLL, 120_000_000)
+            
+            io.yazdir_satır("Normal: 120 MHz, ~60 mA")
+        end,
+        
+        PerformanceMode.LOW_POWER =&gt; do
+            // Voltage Scale 3 (1.2V)
+            power.set_voltage_scaling(power.SCALE_3)
+            
+            rcc.sysclk_set(rcc.SYSCLK_HSI, 16_000_000)
+            
+            io.yazdir_satır("Low Power: 16 MHz, ~10 mA")
+        end
+    end
+end
+
+function main() do
+    // Start in low power
+    set_performance_mode(PerformanceMode.LOW_POWER)
+    
+    for do
+        // Idle state
+        power.enter_sleep_mode(do mode: power.SLEEP_WFI end)
+        
+        // Check if high-performance task needed
+        if heavy_computation_requested() do
+            set_performance_mode(PerformanceMode.HIGH_PERF)
+            perform_fft_analysis()
+            set_performance_mode(PerformanceMode.LOW_POWER)
+        end
+    end
+end</code></pre>
+<p><strong>Conclusion:</strong>With dynamic scaling, average power consumption is reduced by 40-60%.</p>
+</div>
+
+<h2>API Reference</h2>
+<h3>Power Modes</h3>
+<pre><code>// Sleep mode entry
+function enter_sleep_mode(mode: SleepMode)
+
+// Stop mode entry
+function enter_stop_mode(config: StopConfig)
+
+// Standby mode entry
+function enter_standby_mode()
+
+// Wakeup configuration
+function wakeup_pin_enable(pin: WakeupPin)
+function wakeup_pin_disable(pin: WakeupPin)
+
+// Voltage scaling
+function set_voltage_scaling(scale: VoltageScale)
+function get_voltage_scaling() -&gt; VoltageScale
+
+// PVD (Programmable Voltage Detector)
+function pvd_enable(level: PVDLevel)
+function pvd_disable()
+
+// Backup domain
+function backup_access_enable()
+function backup_access_disable()
+
+// Flags
+function get_flag(flag: PowerFlag) -&gt; mantık
+function clear_flag(flag: PowerFlag)
+
+// Flash power control
+function flash_power_down_enable()
+function flash_power_down_disable()</code></pre>
+
+<div class="warning">
+<strong>Important Notes:</strong>
+<ul>
+<li><strong>Stop Mode Wakeup:</strong>Clock source reverts to HSI/8, sysclk_restore() required</li>
+<li><strong>Standby Wakeup:</strong>Full system reset, all SRAM is lost (except backup domain)</li>
+<li><strong>Debug Limitations:</strong>Debugger disconnected in Stop/Standby mode</li>
+<li><strong>Peripheral State:</strong>Peripheral state is preserved in Stop mode, lost in Standby</li>
+</ul>
+</div>
+
+<h2>Platform Support</h2>
+<table>
+<tbody><tr>
+<th>Platform</th>
+<th>Sleep Current</th>
+<th>stop current</th>
+<th>Standby Current</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>1.5mA</td>
+<td>22μA</td>
+<td>2μA</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>2.1mA</td>
+<td>11μA</td>
+<td>1.8μA</td>
+</tr>
+<tr>
+<td>STM32L4</td>
+<td>0.9mA</td>
+<td>0.6μA</td>
+<td>0.3μA</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>4mA</td>
+<td>50μA</td>
+<td>6μA</td>
+</tr>
+</tbody></table>
+
+<h2>Best Practices</h2>
+<ul>
+<li> <strong>Peripheral closure:</strong>Disable unused peripherals before stopping</li>
+<li> <strong>GPIO low power:</strong>Configure floating pins input+pull</li>
+<li> <strong>Use backup domain:</strong>Backup register for permanent data in standby</li>
+<li> <strong>RTC calibration:</strong>LSI tolerance 5%, use LSE (accurate timing)</li>
+<li> <strong>Do not debug:</strong>Debugger does not work in Stop/Standby mode</li>
+<li> <strong>Don't rely on SRAM:</strong>SRAM is lost in standby, write critical data to backup domain</li>
+</ul>
+
+<h2>Related Modules</h2>
+<ul>
+<li><a href="en_hal-rtc-tr.html">state::rtc</a>- Wakeup timer configuration</li>
+<li><a href="en_hal-exti-tr.html">state::exti</a>- External wakeup sources</li>
+<li><a href="en_hal-rcc-tr.html">state::rcc</a>- Clock restoration after Stop</li>
+<li><a href="en_hal-gpio-tr.html">state::gpio</a>- Low-power pin configuration</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">HAL Modules</a> | 
+<a href="en_hal-power-en.html">English</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

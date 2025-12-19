@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduction - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="en_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/intro.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="berk-programlama-dili"><a class="header" href="#berk-programlama-dili">BERK Programming Language</a></h1>
+<p><strong>BERK</strong>, designed with true bilingual syntax (Turkish/English) for the first time in the world,<strong>embedded systems and AI/ML production</strong>It is a high-performance system programming language optimized for<strong>C/C++ level performance</strong>It provides productivity on 19 different target platforms (ARM Cortex-M, RISC-V, ESP32, x64/ARM desktop, WebAssembly).</p>
+<h2 id="-neden-berk-adı-seçilmiştir"><a class="header" href="#-neden-berk-adı-seçilmiştir">📖 Why was the name BERK chosen?</a></h2>
+<h3 id="Öztürkçe-kökeni-güçlü-muhkem-sağlam"><a class="header" href="#Öztürkçe-kökeni-güçlü-muhkem-sağlam">Öztürk Origin: "Strong, Strong, Solid"</a></h3>
+<p><strong>BERK</strong>the word in Öztürk<strong>"strong, durable, strong and solid"</strong>means. These qualities directly align with the technical goals of the programming language: memory safety, type system correctness, strong compiler architecture, and stable performance.</p>
+<h3 id="arapçadan-gelen-anlamı-Şimşek"><a class="header" href="#arapçadan-gelen-anlamı-Şimşek">Meaning from Arabic: "Lightning"</a></h3>
+<p>Another meaning found in Turkish is **"lightning"**. This meaning represents the BERK language's vision of speed, performance and agility: fast compilation based on LLVM, C++-level performance and optimized kernel architecture.</p>
+<h3 id="anlamların-birleşimi"><a class="header" href="#anlamların-birleşimi">Combination of Meanings</a></h3>
+<p>BERK, both of Turkish origin<strong>robustness</strong>concept as well as in the world of modern technology<strong>speed and agility</strong>It creates a strong brand identity by combining concepts.</p>
+<h3 id="uluslararası-alanda"><a class="header" href="#uluslararası-alanda">Internationally</a></h3>
+<p>BERK,<strong>Beyond-Efficient Runtime Kernel</strong>(Runtime Core Beyond Efficiency).</p>
+<hr>
+<h2 id="-İndirme-ve-kurulum"><a class="header" href="#-İndirme-ve-kurulum">📥 Download and Installation</a></h2>
+<h3 id="windows-x64-v100"><a class="header" href="#windows-x64-v100">Windows x64 (v1.0.0)</a></h3>
+<p><strong>Latest Version:</strong>BERK v1.0.0 (December 2, 2025)<br>
+<strong>Dimension:</strong>~3.8 MB (3 files)<br>
+<strong>Platform:</strong>Windows 10/11 (64-bit)</p>
+<h4 id="-indirme-linkleri"><a class="header" href="#-indirme-linkleri">🔗 Download Links</a></h4>
+<ul>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/BERK-lang.exe">⬇️ BERK-lang.exe Download</a></strong>- Compiler (2.2 MB)</li>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/berk-lsp.exe">⬇️ berk-lsp.exe Download</a></strong>- Language Server (1.2 MB)</li>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/berk-repl.exe">⬇️ berk-repl.exe Download</a></strong>- REPL (464 KB)</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📚 Documentation (PDF)</a></strong>- Complete Guide</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📖 Online Booklet</a></strong>- Interactive Documentation</li>
+</ul>
+<h4 id="kurulum"><a class="header" href="#kurulum">Setup</a></h4>
+<pre><code class="language-powershell"># 1. BERK-lang.exe'yi indirin
+# 2. İstediğiniz bir klasöre kopyalayın (örn: C:\BERK)
+# 3. PATH'e ekleyin:
+$env:PATH += ";C:\BERK"
+
+# Test edin
+BERK-lang --version
+</code></pre>
+<h4 id="hızlı-başlangıç"><a class="header" href="#hızlı-başlangıç">Quick Start</a></h4>
+<p><strong>Option 1: Interactive REPL (Instant Test)</strong></p>
+<pre><code class="language-bash"># REPL'i başlatın
+BERK-lang repl
+
+# Kod yazın and Enter'a basın - anında çalışır!
+&gt;&gt;&gt; print("Merhaba, BERK!")
+Merhaba, BERK!
+
+&gt;&gt;&gt; let x = 5 + 3
+&gt;&gt;&gt; print(x * 2)
+16
+</code></pre>
+<p><strong>Option 2: Compilation (Native Executable)</strong></p>
+<pre><code class="language-bash"># İlk programınızı yazın (merhaba.berk)
+function main() -&gt; int
+do
+    print("Merhaba, BERK!")
+    return 0
+end
+
+# LLVM ile native kod üretin
+BERK-lang compile merhaba.berk -o merhaba.exe
+
+# Çalıştırın (artık bağımsız executable)
+.\merhaba.exe
+</code></pre>
+<p><strong>Option 3: Running JIT (Compile + Run)</strong></p>
+<pre><code class="language-bash"># Direkt çalıştır (arka planda LLVM JIT)
+BERK-lang run merhaba.berk
+</code></pre>
+<h3 id="diğer-platformlar"><a class="header" href="#diğer-platformlar">Other Platforms</a></h3>
+<p><strong>Linux and macOS:</strong>Compilation from source code is required.</p>
+<pre><code class="language-bash"># Rust toolchain kurulumu
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derleyin
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+</code></pre>
+<hr>
+<h2 id="-berki-Özel-kılan-Özellikler"><a class="header" href="#-berki-Özel-kılan-Özellikler">🌟 Features That Make BERK Special</a></h2>
+<h3 id="-gömülü-sistemler-ve-aiml-için-optimize"><a class="header" href="#-gömülü-sistemler-ve-aiml-için-optimize">🔧 Optimized for Embedded Systems and AI/ML</a></h3>
+<p>BERK,<strong>embedded systems and artificial intelligence production</strong>It is a language designed for:</p>
+<ul>
+<li><strong>Bare-Metal Programming</strong>: Direct hardware access without RTOS</li>
+<li><strong>ARM Cortex-M/RISC-V Support</strong>: Popular MCUs such as STM32, ESP32, Nordic nRF</li>
+<li><strong>Minimal Runtime</strong>: 2-5 KB memory overhead, ideal for critical applications</li>
+<li><strong>AI/ML Inference</strong>: ONNX Runtime integration, libraries optimized for edge AI</li>
+<li><strong>High-Performance Computing</strong>: SIMD, vectorization, zero-cost abstractions</li>
+<li><strong>Real-Time Guarantees</strong>: Deterministic timing, interrupt handling, DMA support</li>
+<li><strong>Cross-Compilation</strong>: Compiling to ARM/RISC-V targets with a single command from Desktop</li>
+</ul>
+<h3 id="-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#-dünyada-İlk-gerçek-Çift-dilli-syntax">🌍 World's First: True Bilingual Syntax</a></h3>
+<p>For the first time in programming languages,<strong>in the same compiler</strong>You can write code with both Turkish and English keywords. This is not just a translation, it is an inherent feature of the language.</p>
+<h3 id="-ccrust-seviyesinde-performans"><a class="header" href="#-ccrust-seviyesinde-performans">⚡ C/C++/Rust Level Performance + AI/ML Optimization</a></h3>
+<ul>
+<li><strong>LLVM Backend</strong>: Zero cost abstractions with native code generation</li>
+<li><strong>Benchmark Results</strong>: 98-100% performance equality with C++</li>
+<li><strong>AI/ML Workloads</strong>: Inference (edge ​​devices) of TensorFlow/PyTorch models with ONNX</li>
+<li><strong>SIMD/Vectorization</strong>: AVX2, NEON, RISC-V Vector extension support</li>
+<li><strong>Memory Efficiency</strong>: Manual control + security guarantees, critical for embedded</li>
+<li><strong>Optimization Levels</strong>: Aggressive optimization between O0-O3 + LTO (Link-Time Optimization)</li>
+<li><strong>Embedded ML</strong>: TinyML, quantization, model compression support</li>
+</ul>
+<h3 id="-rules-based-ai-yaklaşımı"><a class="header" href="#-rules-based-ai-yaklaşımı">🧠 Rules-Based AI Approach + ML Production</a></h3>
+<p>Compiler,<strong>rule based artificial intelligence</strong>Using techniques:</p>
+<ul>
+<li>Intelligent error detection and recommendations (AI-powered error recovery)</li>
+<li>Code optimization decisions (ML-guided optimization)</li>
+<li>Type inference and analysis (static analysis + inference)</li>
+<li>Quality assurance with semantic analysis</li>
+</ul>
+<p><strong>AI/ML Production Pipeline:</strong></p>
+<ul>
+<li><strong>Model Training</strong>: Training with Python/PyTorch, ONNX export</li>
+<li><strong>Model Optimization</strong>: Quantization (INT8/INT16), pruning, distillation</li>
+<li><strong>Edge Deployment</strong>: inference on ARM Cortex-M, ESP32, RISC-V</li>
+<li><strong>Real-Time Inference</strong>: &lt;10ms latency, AI on embedded devices</li>
+<li><strong>TinyML Support</strong>: TensorFlow Lite, ONNX Runtime integration</li>
+<li><strong>Hardware Acceleration</strong>: NPU, DSP, GPU offloading (Metal, CUDA, Vulkan)</li>
+</ul>
+<h3 id="-bilimsel-hesaplama-kütüphaneleri-stdlib-v094"><a class="header" href="#-bilimsel-hesaplama-kütüphaneleri-stdlib-v094">🔬 Comprehensive Standard Library (stdlib v0.9.4)</a></h3>
+<p><strong>75 modules</strong>(42 stdlib + 33 HAL),<strong>4100+ functions</strong>, <strong>1140KB</strong>code:</p>
+<ul>
+<li><strong>Scientific Calculation</strong>: math, linalg, stats, optim, physics, complex, random</li>
+<li><strong>Embedded Systems (HAL)</strong>: 33 modules - GPIO, UART, SPI, I2C, WiFi, Bluetooth, Timer, DMA</li>
+<li><strong>7 Platform Support</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
+<li><strong>Web &amp; Data</strong>: http, json, xml, yaml, csv, sqlite, async</li>
+<li><strong>Graphics &amp; Gameplay</strong>: gui, graphics, audio, image, physics2d, cad3d</li>
+<li><strong>NumPy/SciPy/Julia</strong>level scientific computing</li>
+</ul>
+<h3 id="-19-farklı-hedef-platform"><a class="header" href="#-19-farklı-hedef-platform">🚀 19 Different Target Platforms (Embedded-First)</a></h3>
+<p>Cross-compilation support:</p>
+<ul>
+<li><strong>Embedded (Priority)</strong>: ARM Cortex-M0/M3/M4/M7, RISC-V (32/64-bit), AVR, ESP32/ESP8266, Nordic nRF52/nRF53</li>
+<li><strong>desktop</strong>: Windows (x64/ARM), Linux (x64/ARM/RISC-V), macOS (Intel/Apple Silicon)</li>
+<li><strong>Mobile</strong>: Android (ARM/x86), iOS (ARM64)</li>
+<li><strong>WebAssembly</strong>: Browser and server (WASI)</li>
+<li><strong>Cloud</strong>: AWS Lambda, Azure Functions, Google Cloud Run</li>
+<li><strong>IoT Platforms</strong>: Raspberry Pi, BeagleBone, NVIDIA Jetson (edge ​​AI)</li>
+</ul>
+<p><strong>Supported MCU Families:</strong>STM32, ESP32, Nordic nRF, Microchip SAM, TI MSP430, SiFive HiFive, Kendryte K210</p>
+<h3 id="-son-derece-kolay-Öğrenme"><a class="header" href="#-son-derece-kolay-Öğrenme">📚 Extremely Easy to Learn</a></h3>
+<ul>
+<li><strong>Intuitive Syntax</strong>: The simplicity of Python + the power of Rust</li>
+<li><strong>Turkish Documentation</strong>: 70+ pages comprehensive guide</li>
+<li><strong>Clear Error Messages</strong>: With solution suggestions</li>
+<li><strong>Learning Curve</strong>: Be productive in 1-2 weeks</li>
+</ul>
+<h3 id="-gömülü-sistem-kabiliyeti"><a class="header" href="#-gömülü-sistem-kabiliyeti">🔧 Advanced Embedded System Capability</a></h3>
+<ul>
+<li><strong>Bare-metal Programming</strong>: Hardware control (GPIO, UART, SPI, I2C) without RTOS</li>
+<li><strong>RTOS Integration</strong>: Works seamlessly with FreeRTOS, Zephyr, RIOT-OS</li>
+<li><strong>HAL Abstractions</strong>: Platform-agnostic hardware layer (ARM, RISC-V, AVR)</li>
+<li><strong>Interrupt Handling</strong>: Zero-overhead interrupt handlers, nested interrupts</li>
+<li><strong>DMA Support</strong>: Direct memory access, asynchronous data transfers</li>
+<li><strong>Power Management</strong>: Sleep modes, low-power optimization, battery-powered devices</li>
+<li><strong>Minimal Runtime</strong>: 2-5 KB overhead, works even on 8-bit MCUs</li>
+<li><strong>Bootloader Support</strong>: OTA updates, secure boot, firmware signing</li>
+</ul>
+<h2 id="neden-berk"><a class="header" href="#neden-berk">Why BERK?</a></h2>
+<h3 id="-akademisyenler-ve-araştırmacılar-İçin"><a class="header" href="#-akademisyenler-ve-araştırmacılar-İçin">🎯 For Academics and Researchers</a></h3>
+<ul>
+<li><strong>Scientific Calculation</strong>: NumPy/SciPy/MATLAB level libraries</li>
+<li><strong>Performance</strong>: C++ speed, Python ease</li>
+<li><strong>reproducibility</strong>: Deterministic compilation, reproducible builds</li>
+<li><strong>Publishing</strong>: Ideal for Turkish academic publications</li>
+</ul>
+<h3 id="-sektör-profesyonelleri-İçin"><a class="header" href="#-sektör-profesyonelleri-İçin">💼 For Industry Professionals</a></h3>
+<ul>
+<li><strong>Production-Ready</strong>: Performance comparable to C/C++/Rust</li>
+<li><strong>Cross-Platform</strong>: Single codebase, 19 platforms</li>
+<li><strong>Maintainability</strong>: Readable code, easy refactoring</li>
+<li><strong>interoperability</strong>: C/C++ FFI, integration into existing systems</li>
+<li><strong>Cost-Effective</strong>: Less bugs, faster development</li>
+</ul>
+<h3 id="-eğitimciler-ve-Öğrenciler-İçin"><a class="header" href="#-eğitimciler-ve-Öğrenciler-İçin">🎓 For Educators and Students</a></h3>
+<ul>
+<li><strong>Turkish Content</strong>: Learning programming in native language</li>
+<li><strong>Modern Concepts</strong>: Type safety, pattern matching, error handling</li>
+<li><strong>Easy Pass</strong>: Natural for coming from Python, bridge to C++</li>
+<li><strong>Practical Examples</strong>: Real world applications</li>
+</ul>
+<h3 id="1-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#1-dünyada-İlk-gerçek-Çift-dilli-syntax">1. <strong>World's First: True Bilingual Syntax</strong></a></h3>
+<pre><code class="language-berk">// Türkçe
+function selamla(isim: yazı) -&gt; yazı
+do
+    return "Merhaba, " + isim + "!"
+end
+
+// English (aynı derleyici!)
+function greet(name: string) -&gt; string
+do
+    return "Hello, " + name + "!"
+end
+
+// Karışık kullanım bile mümkün
+function hesapla(sayı: int) -&gt; int
+do
+    if sayı &gt; 0
+        return sayı * 2
+    else
+        return 0
+    end
+end
+</code></pre>
+<h3 id="2-modern-ve-güvenli"><a class="header" href="#2-modern-ve-güvenli">2. <strong>Modern and Safe</strong></a></h3>
+<ul>
+<li>✅ Powerful type system</li>
+<li>✅ Memory security</li>
+<li>✅ Null safety</li>
+<li>✅ Pattern matching</li>
+<li>✅ Error handling</li>
+</ul>
+<h3 id="3-yüksek-performans--llvm-backend"><a class="header" href="#3-yüksek-performans--llvm-backend">3. <strong>High Performance + LLVM Backend</strong></a></h3>
+<ul>
+<li>Native code generation -<strong>98-100% performance parity with C++</strong></li>
+<li>Support for 19 different architectures (x64, ARM, RISC-V, WebAssembly, ...)</li>
+<li>Optimization levels (O0-O3)</li>
+<li>Cross-compilation -<strong>one code, 19 platforms</strong></li>
+<li>Zero-cost abstractions</li>
+<li>Inline assembly support</li>
+</ul>
+<h3 id="4-bilimsel-hesaplama-stdlib-v094"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v094">4. <strong>Comprehensive Standard Library (stdlib v0.9.4)</strong></a></h3>
+<pre><code class="language-berk">use linalg, stats, optim
+
+// Linear Algebra
+let A = linalg.matris_oluştur([[1, 2], [3, 4]])
+let B = linalg.matris_çarp(A, linalg.transpose(A))
+let (L, U) = linalg.lu_ayrıştır(A)
+
+// İstatistik
+let veri = [1.2, 2.3, 3.4, 4.5, 5.6]
+let ort = stats.avg(veri)
+let std = stats.standart_sapma(veri)
+let (r, p) = stats.korelasyon(x, y)
+
+// Optimizasyon
+let minimum = optim.gradient_descent(function, x0, öğrenme=0.01)
+let sonuç = optim.bfgs(maliyet, başlangıç)
+</code></pre>
+<h3 id="4-geliştirici-dostu"><a class="header" href="#4-geliştirici-dostu">4. <strong>Developer Friendly</strong></a></h3>
+<ul>
+<li>Comprehensive documentation (<strong>70+ pages, Turkish</strong>)</li>
+<li>Clear error messages (with suggested solutions)</li>
+<li>VS Code plugin (syntax highlighting, autocomplete, debugging)</li>
+<li>REPL (interactive shell) - instant testing</li>
+<li>Rich testing infrastructure</li>
+<li><strong>easy learning</strong>: productive with 1-2 weeks</li>
+</ul>
+<h2 id="hızlı-başlangıç-1"><a class="header" href="#hızlı-başlangıç-1">Quick Start</a></h2>
+<h3 id="kurulum-1"><a class="header" href="#kurulum-1">Setup</a></h3>
+<pre><code class="language-bash"># Rust toolchain gerekli
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derle
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+
+# PATH'e ekle
+export PATH="$PWD/target/release:$PATH"
+</code></pre>
+<h3 id="İlk-programınız"><a class="header" href="#İlk-programınız">Your First Program</a></h3>
+<pre><code class="language-berk">// merhaba.berk
+function main() -&gt; int
+do
+    print("Merhaba, BERK!")
+    return 0
+end
+</code></pre>
+<pre><code class="language-bash"># Derle ve çalıştır
+BERK-lang merhaba.berk -o merhaba.exe
+./merhaba.exe
+# Çıktı: Merhaba, BERK!
+</code></pre>
+<h2 id="bu-kitap-hakkında"><a class="header" href="#bu-kitap-hakkında">About This Book</a></h2>
+<p>This book is a comprehensive resource for learning the BERK programming language.<a href="https://doc.rust-lang.org/book/">Rust Book</a>And<a href="https://docs.python.org/">Python Documentation</a>It has been prepared by bringing together the best aspects of resources such as.</p>
+<h3 id="hedef-kitle"><a class="header" href="#hedef-kitle">Target group</a></h3>
+<ul>
+<li>Beginners to programming</li>
+<li>Experienced developers</li>
+<li>System programmers</li>
+<li>Developers looking for Turkish content</li>
+</ul>
+<h3 id="kitabı-nasıl-kullanmalısınız"><a class="header" href="#kitabı-nasıl-kullanmalısınız">How Should You Use the Book?</a></h3>
+<ol>
+<li><strong>Sequential Reading</strong>: We recommend that you read it in order from beginning to end.</li>
+<li><strong>Try Examples</strong>: Run each example on your own computer</li>
+<li><strong>Exercises</strong>: Do the exercises at the end of each chapter</li>
+<li><strong>Reference</strong>: Return to the reference sections whenever you need</li>
+</ol>
+<h2 id="dil-felsefesi"><a class="header" href="#dil-felsefesi">Philosophy of Language</a></h2>
+<p>BERK's basic design principles:</p>
+<h3 id="1-erişilebilirlik"><a class="header" href="#1-erişilebilirlik">1. <strong>accessibility</strong></a></h3>
+<p>Thanks to Turkish keywords, entry into programming has been made easier for those who do not speak English.</p>
+<h3 id="2-güvenlik"><a class="header" href="#2-güvenlik">2. <strong>Security</strong></a></h3>
+<p>Catches memory errors at compile time. It minimizes runtime errors.</p>
+<h3 id="3-performans"><a class="header" href="#3-performans">3. <strong>Performance</strong></a></h3>
+<p>It offers C/C++ level performance thanks to the LLVM backend.</p>
+<h3 id="4-okunabilirlik"><a class="header" href="#4-okunabilirlik">4. <strong>Legibility</strong></a></h3>
+<p>Clear and understandable syntax. It is optimized for reading code rather than writing code.</p>
+<h3 id="5-İnterop"><a class="header" href="#5-İnterop">5. <strong>interop</strong></a></h3>
+<p>Compatible with C/C++ libraries. It can integrate into existing ecosystems.</p>
+<h2 id="Öne-Çıkan-Özellikler"><a class="header" href="#Öne-Çıkan-Özellikler">Highlights</a></h2>
+<h3 id="modern-type-system"><a class="header" href="#modern-type-system">Modern Type System</a></h3>
+<pre><code class="language-berk">let x: int = 42
+let isim: yazı = "Ahmet"
+let aktif: bool = true
+let sayılar: List&lt;int&gt; = [1, 2, 3]
+let nokta: Tuple&lt;int, int&gt; = (10, 20)
+</code></pre>
+<h3 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern Matching</a></h3>
+<pre><code class="language-berk">match case mesaj
+    case "başarılı":
+        print("İşlem tamamlandı!")
+    case "hata":
+        print("Bir hata oluştu!")
+    case _:
+        print("Bilinmeyen case")
+end
+</code></pre>
+<h3 id="string-İşlemleri-utf-8"><a class="header" href="#string-İşlemleri-utf-8">String Operations (UTF-8)</a></h3>
+<pre><code class="language-berk">let mesaj = "Merhaba Dünya! 🌍"
+let len = len(mesaj)
+let birleşik = "Hello " + "World"
+</code></pre>
+<h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">Error Management</a></h3>
+<pre><code class="language-berk">try
+    let dosya = aç("data.txt")
+    print(input(dosya))
+catch hata
+    print("Dosya açılamadı: " + hata)
+end
+</code></pre>
+<h2 id="derleyici-mimarisi"><a class="header" href="#derleyici-mimarisi">Compiler Architecture</a></h2>
+<p>The BERK compiler has a modern structure:</p>
+<pre><code>Kaynak Kod (.berk)
+    ↓
+Lexer (Token Üretimi)
+    ↓
+Parser (AST Oluşturma)
+    ↓
+Semantic Analysis (Tip Kontrolü)
+    ↓
+CFG Analysis (Dataflow Analysis)
+    ↓
+IR Generation (BERK IR)
+    ↓
+IR Optimization (O0-O3)
+    ↓
+LLVM IR Generation
+    ↓
+Machine Code (.exe/.o)
+</code></pre>
+<h3 id="proje-durumu"><a class="header" href="#proje-durumu">Project Status</a></h3>
+<p><strong>Current Version:</strong>v1.0.0<br>
+<strong>Last Update:</strong>18 November 2025<br>
+<strong>Situation:</strong>Active Development</p>
+<h3 id="tamamlanan-Özellikler-"><a class="header" href="#tamamlanan-Özellikler-">Completed Features ✅</a></h3>
+<ul>
+<li>Lexer &amp; Parser (100%)</li>
+<li>Type System (100%)</li>
+<li>LLVM Backend (100%)</li>
+<li>CFG Analysis (100%)</li>
+<li>IR Optimizer (100%)</li>
+<li>REPL (100%)</li>
+<li>VS Code Extension (100%)</li>
+</ul>
+<h3 id="devam-eden-Çalışmalar"><a class="header" href="#devam-eden-Çalışmalar">Ongoing Studies</a></h3>
+<ul>
+<li>Runtime Library</li>
+<li>Standard Library</li>
+<li>PackageManager</li>
+<li>Debugger Integration</li>
+</ul>
+<p>For detailed road map<a href="./en_roadmap.html">road map</a>see page.</p>
+<h2 id="topluluk-ve-katkı"><a class="header" href="#topluluk-ve-katkı">Community and Contribution</a></h2>
+<p>BERK is an open source project and contributions are welcome!</p>
+<ul>
+<li><strong>GitHub:</strong> <a href="https://github.com/ArslantasM/berk">ArslantasM/berk</a></li>
+<li><strong>Issues:</strong>Bug reports and feature requests</li>
+<li><strong>Discussions:</strong>community discussions</li>
+<li><strong>Contributing:</strong> <a href="./contributing/en_code.html">Contribution guide</a></li>
+</ul>
+<h2 id="ek-kaynaklar"><a class="header" href="#ek-kaynaklar">Additional Resources</a></h2>
+<ul>
+<li><a href="https://github.com/ArslantasM/berk">GitHub Repository</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=BERK.berk-lang">VS Code Extension</a></li>
+<li><a href="./en_changelog.html">CHANGELOG</a></li>
+<li><a href="./en_faq.html">FAQ</a></li>
+</ul>
+<hr>
+<p><strong>Are you ready?</strong> <a href="./en_installation.html">Setup</a>Let's start from the section!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="en_installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="en_installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

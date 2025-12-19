@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::pipe - 데이터 파이프 | 버크</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔀 상태::파이프</h1>
+<p>데이터 파이프 및 스트림 처리</p>
+<div style="margin-top:15px">
+<span class="stat-badge">369라인</span>
+<span class="stat-badge">스트리밍</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>데이터 파이프, 스트림 처리 및 버퍼링.</p>
+
+<h2>🚀 사용법</h2>
+<pre><code>import hal::pipe
+
+// Create pipe
+let pipe = pipe.create(1024)  // 1KB buffer
+
+// Write data
+pipe.write(pipe, [1, 2, 3, 4, 5])
+
+// Read data
+let data = pipe.read(pipe, 5)
+
+// Pipe status
+let available = pipe.available(pipe)
+let is_full = pipe.is_full(pipe)
+
+// Clear pipe
+pipe.clear(pipe)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

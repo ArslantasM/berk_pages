@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>csv - CSV Parser | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 csv - CSV Parser/Writer</h1>
+<p>Read, Write, Headers, Delimiter</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28</div><div>Function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">487</div><div>Line</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">15KB</div><div>Dimension</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import csv
+
+// Read CSV
+let satırlar = csv.input("data.csv")
+her satır in satırlar for do
+    print(satır[0] + ", " + satır[1])
+end
+
+// Read with headers
+let veri = csv.oku_başlıklı("users.csv")
+her kayıt in veri for do
+    print(kayıt["name"] + " - " + kayıt["age"])
+end
+
+// Write CSV
+let satırlar = [
+    ["Ali", "25", "İstanbul"],
+    ["Ayşe", "30", "Ankara"]
+]
+csv.print("output.csv", satırlar)</code></pre>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Data Processing Pipeline</h3>
+<pre><code>import csv, stats
+
+// CSV okuma and analiz
+let veri = csv.oku_başlıklı("sales.csv")
+
+let sales = []
+her kayıt in veri for do
+    sales.push(kayıt["amount"].kesir())
+end
+
+print("Ortalama: " + stats.avg(sales).yazıya())
+print("Toplam: " + stats.sum(sales).yazıya())
+
+// Filtered export
+let filtered = veri.filtrele(function(r) do
+    return r["amount"].kesir() &gt; 1000.0
+end)
+
+csv.yaz_başlıklı("high_sales.csv", filtered, ["date", "amount", "customer"])</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

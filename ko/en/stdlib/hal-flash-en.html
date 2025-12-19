@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::flash - 플래시 메모리 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💾 상태::플래시</h1>
+<p>플래시 메모리 프로그래밍 - 프로그램 저장 및 데이터 지속성</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~340줄</span>
+<span class="stat-badge">~15가지 기능</span>
+<span class="stat-badge">STM32/GD32</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>플래시 메모리 모듈을 사용하면 마이크로컨트롤러의 내부 플래시 메모리에 프로그램 코드를 쓰고, 읽고, 삭제할 수 있습니다. 지속적인 데이터 저장, 펌웨어 업데이트(OTA), 구성 설정 및 EEPROM 에뮬레이션에 사용됩니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>프로그램 메모리 읽기/쓰기/삭제</li>
+<li>페이지/섹터 기반 지우기 작업</li>
+<li>대량 삭제 지원</li>
+<li>쓰기 방지 메커니즘</li>
+<li>옵션 바이트 프로그래밍</li>
+<li>듀얼 뱅크 플래시(F4/F7)</li>
+<li>ECC 오류 감지</li>
+<li>플래시 메모리 잠금</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::flash
+
+// Unlock flash for writing
+flash.unlock()
+
+// Erase a page
+flash.erase_page(0x0801F800)  // Last page
+
+// Write data
+let data = [0x12345678, 0xABCDEF00, 0xDEADBEEF]
+flash.write(0x0801F800, data)
+
+// Lock flash
+flash.lock()
+
+// Read back
+let value = flash.read_word(0x0801F800)
+io.println("Okunan değer: 0x" + value.to_hex())</code></pre>
+
+<h2>📦 유형 및 열거형</h2>
+<pre><code>// Flash Latency
+enum Latency {
+    WS0,  // 0 wait state
+    WS1,  // 1 wait state
+    WS2,  // 2 wait states
+    WS3,  // 3 wait states
+    WS4,  // 4 wait states
+    WS5   // 5 wait states
+}
+
+// Flash Bank
+enum Bank {
+    BANK_1,
+    BANK_2
+}
+
+// Sector Size (STM32F4)
+enum SectorSize {
+    SECTOR_16K,
+    SECTOR_64K,
+    SECTOR_128K
+}
+
+struct FlashInfo do
+    total_size: int,      // Bytes
+    page_size: int,       // Bytes
+    num_pages: int,
+    write_alignment: int  // 1, 2, 4, 8 bytes
+end</code></pre>
+
+<h2>💡 예 1: EEPROM 에뮬레이션</h2>
+<div class="example-box">
+<h3>플래시의 키-값 저장 시스템</h3>
+<pre><code>import hal::flash
+
+const EEPROM_START = 0x0801F000  // Son 4KB
+const EEPROM_END = 0x08020000
+const MAGIC_HEADER = 0xDEADBEEF
+
+struct EEPROMEntry do
+    key: int,
+    value: int,
+    checksum: int
+end
+
+function eeprom_write(key: int, value: int) do
+    flash.unlock()
+    
+    // Boş slot bul
+    let addr = EEPROM_START
+    loop addr &lt; EEPROM_END for do
+        let magic = flash.read_word(addr)
+        if magic == 0xFFFFFFFF  do
+            // Boş slot bulundu
+            flash.write_word(addr, MAGIC_HEADER)
+            flash.write_word(addr + 4, key)
+            flash.write_word(addr + 8, value)
+            flash.write_word(addr + 12, key ^ value)  // Checksum
+            
+            çık
+        end
+        addr += 16  // Entry size
+    end
+    
+    flash.lock()
+end
+
+function eeprom_read(key: int) -&gt; Seçenek[int] do
+    let addr = EEPROM_START
+    loop addr &lt; EEPROM_END for do
+        let magic = flash.read_word(addr)
+        if magic == MAGIC_HEADER  do
+            let stored_key = flash.read_word(addr + 4)
+            if stored_key == key  do
+                let value = flash.read_word(addr + 8)
+                let checksum = flash.read_word(addr + 12)
+                
+                // Verify checksum
+                if checksum == (key ^ value)  do
+                    return Some(value)
+                end
+            end
+        end
+        addr += 16
+    end
+    
+    return Hiçbiri
+end
+
+function eeprom_format() do
+    flash.unlock()
+    flash.erase_page(EEPROM_START)
+    flash.lock()
+    
+    io.println("EEPROM formatted")
+end
+
+function main() do
+    // Write configuration
+    eeprom_write(1, 12345)  // key=1, value=12345
+    eeprom_write(2, 67890)
+    
+    // Read back
+    if let val = eeprom_read(1)  do
+        io.println("Key 1: " + val.yazıya())
+    end
+end</code></pre>
+</div>
+
+<h2>💡 예 2: 펌웨어 업데이트(부트로더)</h2>
+<div class="example-box">
+<h3>오타 펌웨어 업데이트</h3>
+<pre><code>import hal::flash, hal::crc
+
+const APP_START = 0x08010000  // Application start
+const APP_SIZE = 0x00030000   // 192 KB
+const UPDATE_START = 0x08040000  // Update area
+
+struct FirmwareHeader do
+    magic: int,        // 0x42455247 (BERK)
+    version: int,
+    size: int,
+    crc32: int
+end
+
+function firmware_validate(addr: int) -&gt; bool do
+    // Read header
+    let header = flash.read_struct::<firmwareheader>(addr)
+    
+    if header.magic != 0x42455247  do
+        return yanlış
+    end
+    
+    // Calculate CRC
+    let calculated_crc = crc.calculate(
+        addr + sizeofreşitli, 
+        header.size
+    )
+    
+    return calculated_crc == header.crc32
+end
+
+function firmware_copy(src: int, dest: int, size: int) do
+    flash.unlock()
+    
+    // Erase destination
+    let pages = (size + 2047) / 2048
+    for i in 0..pages for do
+        flash.erase_page(dest + i * 2048)
+    end
+    
+    // Copy data
+    let offset = 0
+    loop offset &lt; size for do
+        let data = flash.read_word(src + offset)
+        flash.write_word(dest + offset, data)
+        offset += 4
+    end
+    
+    flash.lock()
+end
+
+function bootloader_ana() do
+    io.println("Bootloader başlatılıyor...")
+    
+    // Check for update
+    if firmware_validate(UPDATE_START)  do
+        io.println("Yeni firmware bulundu, güncelleniyor...")
+        
+        let header = flash.read_struct::<firmwareheader>(UPDATE_START)
+        
+        // Copy new firmware to application area
+        firmware_copy(
+            UPDATE_START,
+            APP_START,
+            header.size
+        )
+        
+        // Verify
+        if firmware_validate(APP_START)  do
+            io.println("Güncelleme başarılı!")
+            
+            // Clear update area
+            flash.unlock()
+            flash.erase_sector(UPDATE_START)
+            flash.lock()
+        else do
+            io.println("Güncelleme başarısız!")
+            return
+        end
+    end
+    
+    // Jump to application
+    io.println("Uygulamaya atlanıyor...")
+    jump_to_application(APP_START)
+end
+
+function jump_to_application(addr: int) do
+    // Read stack pointer and reset vector
+    let sp = flash.read_word(addr)
+    let reset_handler = flash.read_word(addr + 4)
+    
+    // Disable interrupts
+    asm!("cpsid i")
+    
+    // Set stack pointer
+    asm!("msr msp, {}", in(reg) sp)
+    
+    // Jump to reset handler
+    let jump: function() = transmute(reset_handler)
+    jump()
+end</firmwareheader></firmwareheader></code></pre>
+</div>
+
+<h2>💡 예 3: 옵션 바이트 프로그래밍</h2>
+<div class="example-box">
+<h3>읽기 방지 및 쓰기 방지 설정</h3>
+<pre><code>import hal::flash
+
+enum ReadProtection {
+    LEVEL_0,  // No protection
+    LEVEL_1,  // Memory read protection
+    LEVEL_2   // Permanent protection (irreversible!)
+}
+
+function set_read_protection(level: ReadProtection) do
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    if level == ReadProtection.LEVEL_1  do
+        flash.set_option_byte(flash.OB_RDP, 0x00)
+        io.println("UYARI: Read protection Level 1 etkinleştirildi")
+    else if level == ReadProtection.LEVEL_2  do
+        io.println("UYARI: Level 2 GERİ ALINAMAZ! Devam edilsin mi? (y/n)")
+        // Level 2 is permanent - chip cannot be debugged anymore!
+    end
+    
+    flash.lock_option_bytes()
+    flash.lock()
+end
+
+function protect_bootloader() do
+    // Protect first 16KB (bootloader area)
+    flash.unlock()
+    flash.unlock_option_bytes()
+    
+    flash.set_write_protection(do
+        sectors: [flash.SECTOR_0, flash.SECTOR_1],
+        enable: doğru
+    end)
+    
+    flash.lock_option_bytes()
+    flash.lock()
+    
+    io.println("Bootloader koruması etkinleştirildi")
+end</code></pre>
+</div>
+
+<h2>📊 API 참조</h2>
+
+<h3>잠금/잠금 해제</h3>
+<pre><code>function unlock()
+function lock()
+function is_locked() -&gt; bool</code></pre>
+
+<h3>지우기 작업</h3>
+<pre><code>function erase_page(address: int)
+function erase_sector(sector: int)
+function mass_erase()
+function mass_erase_bank(bank: Bank)</code></pre>
+
+<h3>쓰기 작업</h3>
+<pre><code>function write_byte(address: int, data: u8)
+function write_halfword(address: int, data: u16)
+function write_word(address: int, data: u32)
+function write_doubleword(address: int, data: u64)
+function write(address: int, data: Dizi[u32])</code></pre>
+
+<h3>읽기 작업</h3>
+<pre><code>function read_byte(address: int) -&gt; u8
+function read_halfword(address: int) -&gt; u16
+function read_word(address: int) -&gt; u32
+function read(address: int, length: int) -&gt; Dizi[u8]</code></pre>
+
+<h3>옵션 바이트</h3>
+<pre><code>function unlock_option_bytes()
+function lock_option_bytes()
+function set_option_byte(option: int, value: int)
+function get_option_byte(option: int) -&gt; int</code></pre>
+
+<h2>⚙️ 플랫폼 지원</h2>
+<table>
+<tbody><tr><th>플랫폼</th><th>플래시 크기</th><th>페이지 크기</th><th>쓰기 정렬</th></tr>
+<tr><td>STM32F1</td><td>64~512KB</td><td>1~2KB</td><td>2바이트</td></tr>
+<tr><td>STM32F4</td><td>512KB~2MB</td><td>16~128KB</td><td>4바이트</td></tr>
+<tr><td>STM32F7</td><td>1~2MB</td><td>32~256KB</td><td>4바이트</td></tr>
+<tr><td>GD32VF103</td><td>64~128KB</td><td>1KB</td><td>4바이트</td></tr>
+</tbody></table>
+
+<h2>💡 모범 사례</h2>
+<ul>
+<li><strong>쓰기 정렬:</strong>데이터는 항상 지정된 정렬을 따라야 합니다.</li>
+<li><strong>쓰기 전에 지우기:</strong>플래시는 1 → 0만 쓸 수 있으며 먼저 지우기(0xFF)가 필요합니다.</li>
+<li><strong>웨어 레벨링:</strong>같은 페이지에 너무 자주 작성하면 안 됩니다. (100K 주기 제한)</li>
+<li><strong>전력 손실:</strong>쓰기 중 정전이 발생하면 데이터가 손상될 수 있습니다.</li>
+<li><strong>인터럽트:</strong>플래시를 프로그래밍할 때 인터럽트를 신중하게 사용하세요.</li>
+<li><strong>쓰기 중 읽기:</strong>일부 MCU는 쓰는 동안 읽을 수 없습니다.</li>
+</ul>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li>플래시 프로그래밍 블록 CPU(페이지당 ~20-50ms)</li>
+<li>옵션 바이트 레벨 2 읽기 보호<strong>뒤집을 수 없는!</strong></li>
+<li>플래시 내구성 일반 10K~100K 삭제 주기</li>
+<li>데이터 보존: 10년 이상(25°C에서)</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><a href="en_hal-crc-en.html">상태::crc</a>- 저장된 데이터에 대한 CRC 검증</li>
+<li><a href="en_hal-watchdog-en.html">상태::워치독</a>- 플래시 삭제 중에는 비활성화됩니다.</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-en.html">← HAL 모듈</a> | 
+<a href="en_hal-flash-en.html">🇬🇧 터키어</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

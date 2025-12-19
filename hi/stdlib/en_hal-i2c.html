@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>hal-i2c - I2C बस - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-i2c.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🔗 राज्य::i2c</h1>
+<p>इंटर-इंटीग्रेटेड सर्किट बस - I²C प्रोटोकॉल</p>
+<div style="margin-top:15px">
+<span class="stat-badge">396 पंक्तियाँ</span>
+<span class="stat-badge">~18 कार्य</span>
+<span class="stat-badge">बहु मास्टर</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>I2C (I²C, IIC) एक दो-तार तुल्यकालिक संचार प्रोटोकॉल है। इसका उपयोग सेंसर, EEPROM, RTC, OLED डिस्प्ले जैसी परिधीय इकाइयों से कनेक्शन के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>मास्टर/स्लेव मोड</li>
+<li>7-बिट/10-बिट एड्रेसिंग</li>
+<li>मानक मोड (100 kHz)</li>
+<li>तेज़ मोड (400 किलोहर्ट्ज़)</li>
+<li>फास्ट मोड प्लस (1 मेगाहर्ट्ज)</li>
+<li>मल्टी-मास्टर समर्थन</li>
+<li>घड़ी खिंचती हुई</li>
+<li>डीएमए समर्थन</li>
+</ul>
+
+<h2>🚀 तेजी से शुरुआत करना</h2>
+<pre><code>import hal::i2c, hal::gpio
+
+// Setup I2C pins (PB6=SCL, PB7=SDA)
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 6, do  // SCL
+    mode: gpio.MODE_AF_OD,
+    speed: gpio.SPEED_HIGH,
+    pull: gpio.PULL_UP,
+    af: 4
+end)
+gpio.pin_init(gpio.PORT_B, 7, do  // SDA
+    mode: gpio.MODE_AF_OD,
+    speed: gpio.SPEED_HIGH,
+    pull: gpio.PULL_UP,
+    af: 4
+end)
+
+// Initialize I2C
+variable i2c1 = i2c.init(i2c.I2C1, do
+    speed: i2c.SPEED_100KHZ,
+    mode: i2c.MODE_I2C
+end)
+
+// Write to device
+i2c.write(i2c1, 0x3C, [0x00, 0xAE])  // Address 0x3C
+
+// Read from device
+variable data = i2c.read(i2c1, 0x50, 16)  // Read 16 bytes</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: BMP280 तापमान/दबाव सेंसर</h3>
+<pre><code>import hal::i2c
+
+constant BMP280_ADDR = 0x76
+
+struct BMP280Data do
+    temperature: kesir,
+    pressure: kesir
+end
+
+function bmp280_init(i2c1: i2c.Handle) -&gt; Sonuç[None, Err] do
+    // Read chip ID (should be 0x58)
+    variable id = i2c.read_register(i2c1, BMP280_ADDR, 0xD0)?
+    if id != 0x58 then do
+        return Err("Invalid BMP280 chip ID")
+    end
+    
+    // Configure sensor (normal mode, oversampling x16)
+    i2c.write_register(i2c1, BMP280_ADDR, 0xF4, 0xB7)?  // ctrl_meas
+    i2c.write_register(i2c1, BMP280_ADDR, 0xF5, 0xA0)?  // config
+    
+    return Ok(None)
+end
+
+function bmp280_read(i2c1: i2c.Handle) -&gt; Sonuç[BMP280Data, Err] do
+    // Read raw data (6 bytes: press_msb, press_lsb, press_xlsb, temp_msb, temp_lsb, temp_xlsb)
+    variable data = i2c.read_bytes(i2c1, BMP280_ADDR, 0xF7, 6)?
+    
+    // Parse raw values
+    variable press_raw = (data[0] &lt;&lt; 12) | (data[1] &lt;&lt; 4) | (data[2] &gt;&gt; 4)
+    variable temp_raw = (data[3] &lt;&lt; 12) | (data[4] &lt;&lt; 4) | (data[5] &gt;&gt; 4)
+    
+    // Apply calibration (simplified)
+    variable temperature = temp_raw.kesir() / 100.0
+    variable pressure = press_raw.kesir() / 256.0
+    
+    return Ok(BMP280Data do
+        temperature: temperature,
+        pressure: pressure
+    end)
+end
+
+function main() do
+    variable i2c1 = i2c.init(i2c.I2C1, do
+        speed: i2c.SPEED_400KHZ
+    end)
+    
+    bmp280_init(i2c1)?
+    
+    loop do
+        variable data = bmp280_read(i2c1)?
+        io.println("Temp: {:.1f}°C  Pressure: {:.0f} Pa".formatla(
+            data.temperature, data.pressure
+        ))
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: एमपीयू6050 6-एक्सिस आईएमयू (एक्सेलेरोमीटर + जायरोस्कोप)</h3>
+<pre><code>import hal::i2c
+
+constant MPU6050_ADDR = 0x68
+
+struct MPU6050Data do
+    accel_x: kesir,
+    accel_y: kesir,
+    accel_z: kesir,
+    gyro_x: kesir,
+    gyro_y: kesir,
+    gyro_z: kesir,
+    temperature: kesir
+end
+
+function mpu6050_init(i2c1: i2c.Handle) -&gt; Sonuç[None, Err] do
+    // Wake up MPU6050 (PWR_MGMT_1 register = 0)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x6B, 0x00)?
+    core.delay_ms(100)
+    
+    // Configure accelerometer (±2g)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x1C, 0x00)?
+    
+    // Configure gyroscope (±250°/s)
+    i2c.write_register(i2c1, MPU6050_ADDR, 0x1B, 0x00)?
+    
+    return Ok(None)
+end
+
+function mpu6050_read(i2c1: i2c.Handle) -&gt; Sonuç[MPU6050Data, Err] do
+    // Read 14 bytes starting from ACCEL_XOUT_H (0x3B)
+    variable data = i2c.read_bytes(i2c1, MPU6050_ADDR, 0x3B, 14)?
+    
+    // Parse accelerometer data (raw values are signed 16-bit)
+    variable accel_x = ((data[0] as i16) &lt;&lt; 8 | data[1] as i16).kesir() / 16384.0
+    variable accel_y = ((data[2] as i16) &lt;&lt; 8 | data[3] as i16).kesir() / 16384.0
+    variable accel_z = ((data[4] as i16) &lt;&lt; 8 | data[5] as i16).kesir() / 16384.0
+    
+    // Parse temperature (°C = raw/340 + 36.53)
+    variable temp_raw = ((data[6] as i16) &lt;&lt; 8 | data[7] as i16)
+    variable temperature = temp_raw.kesir() / 340.0 + 36.53
+    
+    // Parse gyroscope data (°/s)
+    variable gyro_x = ((data[8] as i16) &lt;&lt; 8 | data[9] as i16).kesir() / 131.0
+    variable gyro_y = ((data[10] as i16) &lt;&lt; 8 | data[11] as i16).kesir() / 131.0
+    variable gyro_z = ((data[12] as i16) &lt;&lt; 8 | data[13] as i16).kesir() / 131.0
+    
+    return Ok(MPU6050Data do
+        accel_x: accel_x,
+        accel_y: accel_y,
+        accel_z: accel_z,
+        gyro_x: gyro_x,
+        gyro_y: gyro_y,
+        gyro_z: gyro_z,
+        temperature: temperature
+    end)
+end
+
+function main() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
+    mpu6050_init(i2c1)?
+    
+    loop do
+        variable data = mpu6050_read(i2c1)?
+        io.println("Accel: X={:.2f}g Y={:.2f}g Z={:.2f}g".formatla(
+            data.accel_x, data.accel_y, data.accel_z
+        ))
+        io.println("Gyro:  X={:.1f}°/s Y={:.1f}°/s Z={:.1f}°/s".formatla(
+            data.gyro_x, data.gyro_y, data.gyro_z
+        ))
+        io.println("Temp: {:.1f}°C".formatla(data.temperature))
+        io.println("---")
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: OLED डिस्प्ले (SSD1306)</h3>
+<pre><code>import hal::i2c
+
+constant SSD1306_ADDR = 0x3C
+
+function oled_command(i2c1: i2c.Handle, cmd: u8) -&gt; Sonuç[None, Err] do
+    i2c.write(i2c1, SSD1306_ADDR, [0x00, cmd])?  // 0x00 = command mode
+    return Ok(None)
+end
+
+function oled_data(i2c1: i2c.Handle, data: u8) -&gt; Sonuç[None, Err] do
+    i2c.write(i2c1, SSD1306_ADDR, [0x40, data])?  // 0x40 = data mode
+    return Ok(None)
+end
+
+function oled_init(i2c1: i2c.Handle) -&gt; Sonuç[None, Err] do
+    // Display off
+    oled_command(i2c1, 0xAE)?
+    
+    // Set display clock
+    oled_command(i2c1, 0xD5)?
+    oled_command(i2c1, 0x80)?
+    
+    // Set multiplex ratio
+    oled_command(i2c1, 0xA8)?
+    oled_command(i2c1, 0x3F)?
+    
+    // Set display offset
+    oled_command(i2c1, 0xD3)?
+    oled_command(i2c1, 0x00)?
+    
+    // Set start line
+    oled_command(i2c1, 0x40)?
+    
+    // Charge pump
+    oled_command(i2c1, 0x8D)?
+    oled_command(i2c1, 0x14)?
+    
+    // Memory mode
+    oled_command(i2c1, 0x20)?
+    oled_command(i2c1, 0x00)?
+    
+    // Set segment remap
+    oled_command(i2c1, 0xA1)?
+    
+    // Set COM output scan direction
+    oled_command(i2c1, 0xC8)?
+    
+    // Set COM pins
+    oled_command(i2c1, 0xDA)?
+    oled_command(i2c1, 0x12)?
+    
+    // Set contrast
+    oled_command(i2c1, 0x81)?
+    oled_command(i2c1, 0xCF)?
+    
+    // Set precharge
+    oled_command(i2c1, 0xD9)?
+    oled_command(i2c1, 0xF1)?
+    
+    // Set VCOMH
+    oled_command(i2c1, 0xDB)?
+    oled_command(i2c1, 0x40)?
+    
+    // Display on
+    oled_command(i2c1, 0xA4)?
+    oled_command(i2c1, 0xA6)?  // Normal display (not inverted)
+    oled_command(i2c1, 0xAF)?  // Turn on
+    
+    return Ok(None)
+end
+
+function oled_clear(i2c1: i2c.Handle) -&gt; Sonuç[None, Err] do
+    her page in 0..8 for do
+        oled_command(i2c1, 0xB0 + page)?  // Set page
+        oled_command(i2c1, 0x00)?          // Low column
+        oled_command(i2c1, 0x10)?          // High column
+        
+        her i in 0..128 for do
+            oled_data(i2c1, 0x00)?
+        end
+    end
+    return Ok(None)
+end
+
+function oled_print(i2c1: i2c.Handle, text: string) -&gt; Sonuç[None, Err] do
+    // Simple 5x8 font (implement font data)
+    // This is a simplified example
+    her char in text.harfler() for do
+        // Write character bitmap
+        oled_data(i2c1, 0xFF)?  // Example pixel data
+    end
+    return Ok(None)
+end
+
+function main() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_400KHZ end)
+    
+    oled_init(i2c1)?
+    oled_clear(i2c1)?
+    oled_print(i2c1, "BERK Embedded!")?
+    
+    loop do
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 4: I2C स्कैनर (डिवाइस डिस्कवरी)</h3>
+<pre><code>import hal::i2c
+
+function i2c_scan(i2c1: i2c.Handle) do
+    io.println("I2C Bus Taraması başlatılıyor...")
+    io.println("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F")
+    
+    her row in 0..8 for do
+        io.print("{:X}0: ".formatla(row))
+        
+        her col in 0..16 for do
+            variable addr = row * 16 + col
+            
+            if addr &lt; 0x08 or addr &gt; 0x77 then do
+                io.print("   ")
+                continue
+            end
+            
+            // Try to write 0 bytes (address ping)
+            eşle i2c.write(i2c1, addr as u8, []) do
+                Ok(_) =&gt; io.print("{:02X} ".formatla(addr)),
+                Err(_) =&gt; io.print("-- ")
+            end
+        end
+        io.println("")
+    end
+    
+    io.println("Tarama tamamlandı!")
+end
+
+function main() do
+    core.system_init()
+    
+    variable i2c1 = i2c.init(i2c.I2C1, do
+        speed: i2c.SPEED_100KHZ
+    end)
+    
+    i2c_scan(i2c1)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 5: मल्टी-डिवाइस संचार</h3>
+<pre><code>import hal::i2c
+
+constant EEPROM_ADDR = 0x50
+constant RTC_ADDR = 0x68
+constant TEMP_SENSOR_ADDR = 0x48
+
+function eeprom_write(i2c1: i2c.Handle, addr: u16, data: u8) -&gt; Sonuç[None, Err] do
+    variable addr_high = (addr &gt;&gt; 8) as u8
+    variable addr_low = (addr &amp; 0xFF) as u8
+    i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low, data])?
+    core.delay_ms(5)  // EEPROM write cycle time
+    return Ok(None)
+end
+
+function eeprom_read(i2c1: i2c.Handle, addr: u16) -&gt; Sonuç[u8, Err] do
+    variable addr_high = (addr &gt;&gt; 8) as u8
+    variable addr_low = (addr &amp; 0xFF) as u8
+    
+    // Write address
+    i2c.write(i2c1, EEPROM_ADDR, [addr_high, addr_low])?
+    
+    // Read data
+    variable data = i2c.read(i2c1, EEPROM_ADDR, 1)?
+    return Ok(data[0])
+end
+
+function rtc_set_time(i2c1: i2c.Handle, hour: u8, minute: u8, second: u8) -&gt; Sonuç[None, Err] do
+    // DS1307 RTC format (BCD encoding)
+    variable hour_bcd = ((hour / 10) &lt;&lt; 4) | (hour % 10)
+    variable min_bcd = ((minute / 10) &lt;&lt; 4) | (minute % 10)
+    variable sec_bcd = ((second / 10) &lt;&lt; 4) | (second % 10)
+    
+    i2c.write(i2c1, RTC_ADDR, [0x00, sec_bcd, min_bcd, hour_bcd])?
+    return Ok(None)
+end
+
+function temp_read(i2c1: i2c.Handle) -&gt; Sonuç[kesir, Err] do
+    // LM75 temperature sensor
+    variable data = i2c.read_bytes(i2c1, TEMP_SENSOR_ADDR, 0x00, 2)?
+    variable temp_raw = ((data[0] as i16) &lt;&lt; 8 | data[1] as i16) &gt;&gt; 5
+    variable temp = temp_raw.kesir() * 0.125
+    return Ok(temp)
+end
+
+function main() do
+    variable i2c1 = i2c.init(i2c.I2C1, do speed: i2c.SPEED_100KHZ end)
+    
+    // EEPROM test
+    eeprom_write(i2c1, 0x0000, 0xAB)?
+    variable value = eeprom_read(i2c1, 0x0000)?
+    io.println("EEPROM[0]: 0x{:02X}".formatla(value))
+    
+    // RTC set
+    rtc_set_time(i2c1, 14, 30, 0)?  // 14:30:00
+    io.println("RTC ayarlandı")
+    
+    // Temperature reading
+    loop do
+        variable temp = temp_read(i2c1)?
+        io.println("Sıcaklık: {:.2f}°C".formatla(temp))
+        core.delay_ms(2000)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// I2C Instance
+enum Instance {
+    I2C1, I2C2, I2C3
+}
+
+// I2C Speed Mode
+enum Speed {
+    SPEED_100KHZ,   // Standard mode (100 kHz)
+    SPEED_400KHZ,   // Fast mode (400 kHz)
+    SPEED_1MHZ      // Fast mode plus (1 MHz)
+}
+
+// Addressing Mode
+enum AddressMode {
+    ADDR_7BIT,   // 7-bit addressing (default)
+    ADDR_10BIT   // 10-bit addressing
+}
+
+// Duty Cycle (Fast mode)
+enum DutyCycle {
+    DUTY_2,      // Tlow/Thigh = 2
+    DUTY_16_9    // Tlow/Thigh = 16/9
+}
+
+struct Config do
+    speed: Speed,
+    mode: AddressMode,
+    duty_cycle: İsteğe_Bağlı[DutyCycle],
+    own_address: İsteğe_Bağlı[u8],  // For slave mode
+    ack_enable: boolean,
+    dma_enable: boolean
+end</code></pre>
+
+<h2>⚙️ कार्य</h2>
+
+<h3>प्रारंभ</h3>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+// Initialize I2C with configuration
+
+function deinit(handle: Handle)
+// Deinitialize I2C
+
+function enable(handle: Handle)
+// Enable I2C peripheral
+
+function disable(handle: Handle)
+// Disable I2C peripheral</code></pre>
+
+<h3>मास्टर मोड संचालन</h3>
+<pre><code>function write(handle: Handle, addr: u8, data: [u8]) -&gt; Sonuç[None, Err]
+// Write data to slave device
+
+function read(handle: Handle, addr: u8, len: sayı) -&gt; Sonuç[[u8], Err]
+// Read data from slave device
+
+function write_read(handle: Handle, addr: u8, write_data: [u8], read_len: sayı) -&gt; Sonuç[[u8], Err]
+// Combined write then read (repeated start)
+
+function write_register(handle: Handle, addr: u8, reg: u8, value: u8) -&gt; Sonuç[None, Err]
+// Write single byte to register
+
+function read_register(handle: Handle, addr: u8, reg: u8) -&gt; Sonuç[u8, Err]
+// Read single byte from register
+
+function read_bytes(handle: Handle, addr: u8, reg: u8, len: sayı) -&gt; Sonuç[[u8], Err]
+// Read multiple bytes from register</code></pre>
+
+<h3>स्थिति एवं नियंत्रण</h3>
+<pre><code>function is_device_ready(handle: Handle, addr: u8, trials: sayı) -&gt; boolean
+// Check if device is ready (ACK polling)
+
+function get_bus_state(handle: Handle) -&gt; BusState
+// Get current bus state
+
+enum BusState {
+    IDLE,
+    BUSY,
+    MASTER_TX,
+    MASTER_RX,
+    SLAVE_TX,
+    SLAVE_RX,
+    ERROR
+}</code></pre>
+
+<h3>त्रुटि प्रबंधन</h3>
+<pre><code>function get_error(handle: Handle) -&gt; İsteğe_Bağlı[I2CError]
+// Get last error
+
+enum I2CError {
+    NACK,           // No acknowledge
+    ARBITRATION_LOST, // Multi-master arbitration lost
+    BUS_ERROR,      // Bus error (misplaced start/stop)
+    OVERRUN,        // Data overrun
+    TIMEOUT         // Timeout occurred
+}
+
+function clear_error(handle: Handle)
+// Clear error flags</code></pre>
+
+<h3>डीएमए समर्थन</h3>
+<pre><code>function write_dma(handle: Handle, addr: u8, data: &amp;[u8]) -&gt; Sonuç[None, Err]
+// Write data using DMA
+
+function read_dma(handle: Handle, addr: u8, buffer: &amp;mut [u8]) -&gt; Sonuç[None, Err]
+// Read data using DMA</code></pre>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>पुल-अप प्रतिरोध:</strong>सामान्य उपयोग के लिए 4.7kΩ आदर्श (10kΩ के लिए 100 kHz, 2.2kΩ के लिए 400 kHz)</li>
+<li><strong>केबल लंबाई:</strong>छोटी केबलों (&lt;1m) का उपयोग करें, लंबी केबलों से धारिता बढ़ती है</li>
+<li><strong>बस की गति:</strong>सेंसर डेटाशीट के अनुसार चयन करें (अधिकांश समर्थन 100-400 kHz)</li>
+<li><strong>डीएमए उपयोग:</strong>बड़े डेटा ट्रांसफर में सीपीयू लोड कम करता है (&gt;10 बाइट्स)</li>
+<li><strong>त्रुटि प्रबंधन:</strong>प्रत्येक I2C लेनदेन के बाद त्रुटि जाँच</li>
+<li><strong>घड़ी का विस्तार:</strong>धीमे दासों के लिए सक्षम करें</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>एससीएल और एसडीए पिन पर<strong>बाहरी खिंचाव</strong>आवश्यकता (4.7kΩ)</li>
+<li>जीपीआईओ पिन<strong>MODE_AF_OD</strong>(ओपन-ड्रेन) के रूप में कॉन्फ़िगर करें</li>
+<li>बस में अधिकतम 112 डिवाइस (7-बिट) या 1024 डिवाइस (10-बिट)।</li>
+<li>प्रारंभ/रोक स्थिति समय संवेदनशीलता महत्वपूर्ण</li>
+<li>मल्टी-मास्टर मोड में मध्यस्थता हानि हो सकती है</li>
+<li>5V सहिष्णु पिन अन्यथा लेवल शिफ्टर का उपयोग करें</li>
+<li>ईएमआई/शोर के लिए ट्विस्टेड-पेयर केबल या शील्डिंग का उपयोग करें</li>
+</ul>
+
+<h2>🎯 सामान्य I2C डिवाइस</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#16a085;color:white">
+<th>उपकरण</th><th>पता</th><th>विवरण</th>
+</tr>
+<tr><td>पीसीएफ8574</td><td>0x20-0x27</td><td>8-बिट I/O विस्तारक</td></tr>
+<tr><td>एटी24सी256</td><td>0x50-0x57</td><td>256K ईईपीरोम</td></tr>
+<tr><td>एमपीयू6050</td><td>0x68, 0x69</td><td>6-अक्ष IMU</td></tr>
+<tr><td>बीएमपी280</td><td>0x76, 0x77</td><td>दाबानुकूलित संवेदक</td></tr>
+<tr><td>डीएस1307</td><td>0x68</td><td>आरटीसी (वास्तविक समय घड़ी)</td></tr>
+<tr><td>एसएसडी1306</td><td>0x3C, 0x3D</td><td>ओएलईडी डिस्प्ले</td></tr>
+<tr><td>एडीएस1115</td><td>0x48-0x4B</td><td>16-बिट एडीसी</td></tr>
+<tr><td>एलएम75</td><td>0x48-0x4F</td><td>तापमान संवेदक</td></tr>
+</tbody></table>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32:</strong>सभी श्रृंखलाओं पर I2C1/I2C2/I2C3</li>
+<li><strong>ईएसपी32:</strong>2x I2C (सॉफ़्टवेयर कॉन्फ़िगर करने योग्य पिन)</li>
+<li><strong>जीडी32वीएफ103:</strong>I2C0/I2C1 (आरआईएससी-वी)</li>
+<li><strong>एनआरएफ52:</strong>TWI (दो-तार इंटरफ़ेस)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- एससीएल/एसडीए पिन कॉन्फिगरेशन</li>
+<li><code data-no-translate="true">hal::dma</code>- डीएमए स्थानान्तरण</li>
+<li><code data-no-translate="true">hal::int</code>-हस्तक्षेप करना</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li>एनएक्सपी यूएम10204 - आई2सी-बस विशिष्टता और उपयोगकर्ता मैनुअल</li>
+<li>STM32 AN2824 - I2C अनुकूलित उदाहरण</li>
+<li>I2C बस पुल-अप रेसिस्टर गणना (टेक्सास इंस्ट्रूमेंट्स)</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="hi_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_hal-spi.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_hal-can.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_hal-spi.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_hal-can.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

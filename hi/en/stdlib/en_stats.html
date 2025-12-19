@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>आँकड़े - सांख्यिकी - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/stats.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+            <h1>📊 आँकड़े - सांख्यिकी और संभाव्यता</h1>
+            <p>वर्णनात्मक आँकड़े, परिकल्पना परीक्षण, वितरण, प्रतिगमन</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">92</div><div>समारोह</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">1024</div><div>पंक्तियां</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">24.5KB</div><div>आयाम</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 तेजी से शुरुआत करना</h2>
+        <pre><code>import stats
+
+variable data = [2.5, 3.1, 4.8, 5.2, 6.0, 7.3, 8.1]
+variable n = 7
+
+// Merkez eğilimi ölçüleri
+variable mean = stats_ortalama(data, n)           // 5.29
+variable median = stats_medyan(data, n)           // 5.2
+variable mode = stats_mod(data, n, 0.1)          // En sık değer
+
+// Yayılım ölçüleri
+variable variance = stats_varyans(data, n)        // 3.68
+variable std_dev = stats_standart_sapma(data, n) // 1.92
+variable range = stats_aralık(data, n)           // 5.6
+</code></pre>
+<h2 id="-api-Referenceı"><a class="header" href="#-api-Referenceı">📚एपीआई संदर्भ</a></h2>
+<h3 id="tanımlayıcı-İstatistikler"><a class="header" href="#tanımlayıcı-İstatistikler">वर्णनात्मक आँकड़े</a></h3>
+<h4 id="merkez-eğilimi"><a class="header" href="#merkez-eğilimi">केंद्रीय प्रवृत्ति</a></h4>
+<h5 id="stats_ortalamadata-float-n-tam_sayı---float"><a class="header" href="#stats_ortalamadata-float-n-tam_sayı---float"><code data-no-translate="true">stats_ortalama(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>अंकगणित माध्य: x̄ = (Σxᵢ) / n</p>
+<h5 id="stats_ağırlıklı_ortalamadata-float-weights-float-n-tam_sayı---float"><a class="header" href="#stats_ağırlıklı_ortalamadata-float-weights-float-n-tam_sayı---float"><code data-no-translate="true">stats_ağırlıklı_ortalama(data: [float], weights: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>भारित औसत: x̄ = (Σwᵢxᵢ) / (Σwᵢ)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable Notes = [70.0, 80.0, 90.0]
+variable ağırlıklar = [0.2, 0.3, 0.5]  // %20, %30, %50
+variable ort = stats_ağırlıklı_ortalama(Notes, ağırlıklar, 3)  // 82.0
+</code></pre>
+<h5 id="stats_geometrik_ortalamadata-float-n-tam_sayı---float"><a class="header" href="#stats_geometrik_ortalamadata-float-n-tam_sayı---float"><code data-no-translate="true">stats_geometrik_ortalama(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>ज्यामितीय माध्य: ⁿ√(x₁ × x₂ × ... × xₙ)</p>
+<p><strong>उपयोग:</strong>विकास दर, सूचकांक</p>
+<h5 id="stats_harmonik_ortalamadata-float-n-tam_sayı---float"><a class="header" href="#stats_harmonik_ortalamadata-float-n-tam_sayı---float"><code data-no-translate="true">stats_harmonik_ortalama(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>हार्मोनिक माध्य: n / (Σ(1/xᵢ))</p>
+<p><strong>उपयोग:</strong>गति, दरें</p>
+<h5 id="stats_medyandata-float-n-tam_sayı---float"><a class="header" href="#stats_medyandata-float-n-tam_sayı---float"><code data-no-translate="true">stats_medyan(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>माध्यिका मान (50वाँ प्रतिशतक)</p>
+<h5 id="stats_moddata-float-n-tam_sayı-tolerans-float---float"><a class="header" href="#stats_moddata-float-n-tam_sayı-tolerans-float---float"><code data-no-translate="true">stats_mod(data: [float], n: tam_sayı, tolerans: float) -&gt; float</code></a></h5>
+<p>सबसे सामान्य मूल्य</p>
+<h4 id="yayılım-Ölçüleri"><a class="header" href="#yayılım-Ölçüleri">फैलाव माप</a></h4>
+<h5 id="stats_varyansdata-float-n-tam_sayı---float"><a class="header" href="#stats_varyansdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_varyans(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>नमूना विचरण: s² = Σ(xᵢ - x̄)² / (n-1)</p>
+<h5 id="stats_popülasyon_varyansıdata-float-n-tam_sayı---float"><a class="header" href="#stats_popülasyon_varyansıdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_popülasyon_varyansı(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>जनसंख्या विचरण: σ² = Σ(xᵢ - μ)² / n</p>
+<h5 id="stats_standart_sapmadata-float-n-tam_sayı---float"><a class="header" href="#stats_standart_sapmadata-float-n-tam_sayı---float"><code data-no-translate="true">stats_standart_sapma(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>मानक विचलन: s = √(विचरण)</p>
+<h5 id="stats_ortalama_mutlak_sapmadata-float-n-tam_sayı---float"><a class="header" href="#stats_ortalama_mutlak_sapmadata-float-n-tam_sayı---float"><code data-no-translate="true">stats_ortalama_mutlak_sapma(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>MAD = (Σ|xᵢ - x̄|) / n</p>
+<h5 id="stats_aralıkdata-float-n-tam_sayı---float"><a class="header" href="#stats_aralıkdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_aralık(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>भिन्नता सीमा: अधिकतम - न्यूनतम</p>
+<h3 id="quantile-and-percentile"><a class="header" href="#quantile-and-percentile">मात्रात्मक और प्रतिशतक</a></h3>
+<h5 id="stats_quantiledata-float-n-tam_sayı-p-float---float"><a class="header" href="#stats_quantiledata-float-n-tam_sayı-p-float---float"><code data-no-translate="true">stats_quantile(data: [float], n: tam_sayı, p: float) -&gt; float</code></a></h5>
+<p>पी-क्वांटाइल मान की गणना करता है (0 ≤ पी ≤ 1)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable data = [1.0, 2.0, 3.0, 4.0, 5.0]
+variable q1 = stats_quantile(data, 5, 0.25)  // 2.0 (1. çeyrek)
+variable q2 = stats_quantile(data, 5, 0.50)  // 3.0 (medyan)
+variable q3 = stats_quantile(data, 5, 0.75)  // 4.0 (3. çeyrek)
+</code></pre>
+<h5 id="stats_percentiledata-float-n-tam_sayı-p-tam_sayı---float"><a class="header" href="#stats_percentiledata-float-n-tam_sayı-p-tam_sayı---float"><code data-no-translate="true">stats_percentile(data: [float], n: tam_sayı, p: tam_sayı) -&gt; float</code></a></h5>
+<p>पी-प्रतिशतक (0-100 के बीच)</p>
+<h5 id="stats_iqrdata-float-n-tam_sayı---float"><a class="header" href="#stats_iqrdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_iqr(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>अंतरचतुर्थक सीमा: IQR = Q3 - Q1</p>
+<p><strong>उपयोग:</strong>बाह्य पहचान</p>
+<h3 id="momentler"><a class="header" href="#momentler">क्षणों</a></h3>
+<h5 id="stats_skewnessdata-float-n-tam_sayı---float"><a class="header" href="#stats_skewnessdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_skewness(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>तिरछापन: वितरण की विषमता</p>
+<ul>
+<li>&lt; 0: बाएँ तिरछा</li>
+<li>= 0: सममित</li>
+<li>
+<blockquote>
+<p>0: दाहिनी ओर तिरछा</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="stats_kurtosisdata-float-n-tam_sayı---float"><a class="header" href="#stats_kurtosisdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_kurtosis(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>सपाटपन (कर्टोसिस): पूंछ की मोटाई</p>
+<ul>
+<li>&lt; 0: फ्लैट (प्लैटीकुर्टिक)</li>
+<li>= 0: सामान्य (मेसोकर्टिक)</li>
+<li>
+<blockquote>
+<p>0: नुकीला (लेप्टोकर्टिक)</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+variable skew = stats_skewness(data, 7)  // ≈ 0 (simetrik)
+variable kurt = stats_kurtosis(data, 7)  // Basıklık
+</code></pre>
+<h3 id="korelasyon-and-kovaryans"><a class="header" href="#korelasyon-and-kovaryans">सहसंबंध और सहप्रसरण</a></h3>
+<h5 id="stats_covariancex-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_covariancex-float-y-float-n-tam_sayı---float"><code data-no-translate="true">stats_covariance(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>सहप्रसरण: cov(X,Y) = Σ(xᵢ - x̄)(yᵢ - ȳ) / (n-1)</p>
+<h5 id="stats_correlationx-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_correlationx-float-y-float-n-tam_sayı---float"><code data-no-translate="true">stats_correlation(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>पियर्सन सहसंबंध गुणांक: r = cov(X,Y) / (σₓσᵧ)</p>
+<ul>
+<li>-1: पूर्ण नकारात्मक सहसंबंध</li>
+<li>0: कोई सहसंबंध नहीं</li>
+<li>+1: पूर्ण सकारात्मक सहसंबंध</li>
+</ul>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable boy = [160.0, 165.0, 170.0, 175.0, 180.0]
+variable kilo = [55.0, 60.0, 65.0, 75.0, 80.0]
+variable r = stats_correlation(boy, kilo, 5)  // ≈ 0.98 (güçlü pozitif)
+</code></pre>
+<h5 id="stats_r_squaredx-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_r_squaredx-float-y-float-n-tam_sayı---float"><code data-no-translate="true">stats_r_squared(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>निर्धारण का गुणांक: R² = r²</p>
+<p><strong>टिप्पणी:</strong>विचरण का अनुपात समझाया</p>
+<h3 id="doğrusal-regresyon"><a class="header" href="#doğrusal-regresyon">रेखीय प्रतिगमन</a></h3>
+<h5 id="stats_linear_regressionx-float-y-float-n-tam_sayı---float-float-float"><a class="header" href="#stats_linear_regressionx-float-y-float-n-tam_sayı---float-float-float"><code data-no-translate="true">stats_linear_regression(x: [float], y: [float], n: tam_sayı) -&gt; (float, float, float)</code></a></h5>
+<p>सरल रैखिक प्रतिगमन: y = a + bx</p>
+<p><strong>रिटर्न:</strong>(ए, बी, आर²)</p>
+<ul>
+<li>ए: वाई-अवरोधन</li>
+<li>बी: ढलान</li>
+<li>आर²: निर्धारण का गुणांक</li>
+</ul>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable X = [1.0, 2.0, 3.0, 4.0, 5.0]
+variable y = [2.1, 3.9, 6.2, 8.1, 9.8]
+
+variable (a, b, r2) = stats_linear_regression(X, y, 5)
+print("y = " + a + " + " + b + "x")
+print("R² = " + r2)
+// y = 0.2 + 1.96x
+// R² = 0.997
+</code></pre>
+<h5 id="stats_predict_linearx-float-a-float-b-float---float"><a class="header" href="#stats_predict_linearx-float-a-float-b-float---float"><code data-no-translate="true">stats_predict_linear(x: float, a: float, b: float) -&gt; float</code></a></h5>
+<p>मॉडल से भविष्यवाणी: ŷ = ए + बीएक्स</p>
+<h3 id="hipotez-testleri"><a class="header" href="#hipotez-testleri">परिकल्पना परीक्षण</a></h3>
+<h5 id="stats_t_scoredata-float-n-tam_sayı-μ0-float---float"><a class="header" href="#stats_t_scoredata-float-n-tam_sayı-μ0-float---float"><code data-no-translate="true">stats_t_score(data: [float], n: tam_sayı, μ0: float) -&gt; float</code></a></h5>
+<p>एकल उदाहरणलेम टी-स्कोर: t = (x̄ - μ₀) / (s / √n)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">// H₀: μ = 100
+variable scores = [105.0, 110.0, 95.0, 108.0, 102.0]
+variable t = stats_t_score(scores, 5, 100.0)
+
+if (math_mutlak(t) &gt; 2.776) ise do  // α = 0.05, df = 4
+    print("H₀ reddedildi!")
+end
+</code></pre>
+<h5 id="stats_t_test_independentx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_t_test_independentx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code data-no-translate="true">stats_t_test_independent(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
+<p>दो स्वतंत्र उदाहरणलेम टी-परीक्षण</p>
+<p><strong>उपयोग:</strong>दो समूहों के साधनों की तुलना करना</p>
+<h5 id="stats_t_test_pairedx-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_t_test_pairedx-float-y-float-n-tam_sayı---float"><code data-no-translate="true">stats_t_test_paired(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>युग्मित टी-परीक्षण</p>
+<p><strong>उपयोग:</strong>पहले-बाद की तुलना</p>
+<h5 id="stats_chi_squareobserved-float-expected-float-k-tam_sayı---float"><a class="header" href="#stats_chi_squareobserved-float-expected-float-k-tam_sayı---float"><code data-no-translate="true">stats_chi_square(observed: [float], expected: [float], k: tam_sayı) -&gt; float</code></a></h5>
+<p>ची-स्क्वायर परीक्षण: χ² = Σ((O - E)² / E)</p>
+<p><strong>उपयोग:</strong>श्रेणीबद्ध डेटा विश्लेषण, फिट की अच्छाई</p>
+<h5 id="stats_f_statisticbetween_var-float-within_var-float---float"><a class="header" href="#stats_f_statisticbetween_var-float-within_var-float---float"><code data-no-translate="true">stats_f_statistic(between_var: float, within_var: float) -&gt; float</code></a></h5>
+<p>एफ-सांख्यिकी (एनोवा के लिए)</p>
+<h3 id="güven-aralıkları"><a class="header" href="#güven-aralıkları">आत्मविश्वास अंतराल</a></h3>
+<h5 id="stats_confidence_intervaldata-float-n-tam_sayı-t_critical-float---float-float"><a class="header" href="#stats_confidence_intervaldata-float-n-tam_sayı-t_critical-float---float-float"><code data-no-translate="true">stats_confidence_interval(data: [float], n: tam_sayı, t_critical: float) -&gt; (float, float)</code></a></h5>
+<p>आत्मविश्वास अंतराल के लिए माध्य</p>
+<p><strong>रिटर्न:</strong>(निचली_सीमा, ऊपरी_सीमा)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable data = [23.0, 25.0, 27.0, 24.0, 26.0]
+variable t_crit = 2.776  // %95 güven, df=4
+variable (lower, upper) = stats_confidence_interval(data, 5, t_crit)
+print("95% CI: [" + lower + ", " + upper + "]")
+</code></pre>
+<h5 id="stats_standard_errordata-float-n-tam_sayı---float"><a class="header" href="#stats_standard_errordata-float-n-tam_sayı---float"><code data-no-translate="true">stats_standard_error(data: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>मानक त्रुटि: SE = s / √n</p>
+<h3 id="olasılık-dağılımları"><a class="header" href="#olasılık-dağılımları">संभाव्यता वितरण</a></h3>
+<h4 id="pdf-probability-density-function"><a class="header" href="#pdf-probability-density-function">पीडीएफ (संभावना घनत्व फ़ंक्शन)</a></h4>
+<h5 id="stats_normal_pdfx-float-μ-float-σ-float---float"><a class="header" href="#stats_normal_pdfx-float-μ-float-σ-float---float"><code data-no-translate="true">stats_normal_pdf(x: float, μ: float, σ: float) -&gt; float</code></a></h5>
+<p>सामान्य वितरण पीडीएफ: f(x) = (1/(σ√(2π))) exp(-(x-μ)²/(2σ²))</p>
+<h5 id="stats_standard_normal_pdfz-float---float"><a class="header" href="#stats_standard_normal_pdfz-float---float"><code data-no-translate="true">stats_standard_normal_pdf(z: float) -&gt; float</code></a></h5>
+<p>मानक सामान्य (μ=0, σ=1)</p>
+<h5 id="stats_exponential_pdfx-float-λ-float---float"><a class="header" href="#stats_exponential_pdfx-float-λ-float---float"><code data-no-translate="true">stats_exponential_pdf(x: float, λ: float) -&gt; float</code></a></h5>
+<p>घातीय वितरण: f(x) = λe^(-λx)</p>
+<h5 id="stats_uniform_pdfx-float-a-float-b-float---float"><a class="header" href="#stats_uniform_pdfx-float-a-float-b-float---float"><code data-no-translate="true">stats_uniform_pdf(x: float, a: float, b: float) -&gt; float</code></a></h5>
+<p>समान वितरण</p>
+<h4 id="cdf-cumulative-distribution-function"><a class="header" href="#cdf-cumulative-distribution-function">सीडीएफ (संचयी वितरण फ़ंक्शन)</a></h4>
+<h5 id="stats_normal_cdfx-float-μ-float-σ-float---float"><a class="header" href="#stats_normal_cdfx-float-μ-float-σ-float---float"><code data-no-translate="true">stats_normal_cdf(x: float, μ: float, σ: float) -&gt; float</code></a></h5>
+<p>सामान्य वितरण सीडीएफ: पी(एक्स ≤ एक्स)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">// IQ testinde 110'dan düşük olma olasılığı
+// IQ ~ N(100, 15)
+variable p = stats_normal_cdf(110.0, 100.0, 15.0)  // ≈ 0.747
+print("P(IQ ≤ 110) = " + (p * 100.0) + "%")
+</code></pre>
+<h5 id="stats_standard_normal_cdfz-float---float"><a class="header" href="#stats_standard_normal_cdfz-float---float"><code data-no-translate="true">stats_standard_normal_cdf(z: float) -&gt; float</code></a></h5>
+<p>मानक सामान्य सीडीएफ</p>
+<h5 id="stats_exponential_cdfx-float-λ-float---float"><a class="header" href="#stats_exponential_cdfx-float-λ-float---float"><code data-no-translate="true">stats_exponential_cdf(x: float, λ: float) -&gt; float</code></a></h5>
+<p>घातीय वितरण सीडीएफ</p>
+<h3 id="yeniden-Exampleleme"><a class="header" href="#yeniden-Exampleleme">पुनः उदाहरण</a></h3>
+<h5 id="stats_bootstrap_sampledata-float-n-tam_sayı-tohum-tam_sayı---float"><a class="header" href="#stats_bootstrap_sampledata-float-n-tam_sayı-tohum-tam_sayı---float"><code data-no-translate="true">stats_bootstrap_sample(data: [float], n: tam_sayı, tohum: tam_sayı) -&gt; [float]</code></a></h5>
+<p>बूटस्ट्रैप पुन: उदाहरण (प्रतिस्थापन के साथ)</p>
+<p><strong>उपयोग:</strong></p>
+<pre><code class="language-berk">// Bootstrap güven aralığı
+variable data = [...]
+variable n_bootstrap = 1000
+variable means = yeni_dizi(n_bootstrap)
+
+variable i = 0
+while (i &lt; n_bootstrap) do
+    variable sample = stats_bootstrap_sample(data, n, i)
+    means[i] = stats_ortalama(sample, n)
+    i = i + 1
+end
+
+// %95 bootstrap CI
+variable ci_lower = stats_quantile(means, n_bootstrap, 0.025)
+variable ci_upper = stats_quantile(means, n_bootstrap, 0.975)
+</code></pre>
+<h5 id="stats_jackknife_sampledata-float-n-tam_sayı-exclude_index-tam_sayı---float"><a class="header" href="#stats_jackknife_sampledata-float-n-tam_sayı-exclude_index-tam_sayı---float"><code data-no-translate="true">stats_jackknife_sample(data: [float], n: tam_sayı, exclude_index: tam_sayı) -&gt; [float]</code></a></h5>
+<p>जैकनाइफ पुनः उदाहरण (एक तत्व हटा दिया गया)</p>
+<h3 id="non-parametric-testler"><a class="header" href="#non-parametric-testler">गैर-पैरामीट्रिक परीक्षण</a></h3>
+<h5 id="stats_mann_whitney_ux-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_mann_whitney_ux-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code data-no-translate="true">stats_mann_whitney_u(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
+<p>मान-व्हिटनी यू परीक्षण (रैंक-योग परीक्षण)</p>
+<p><strong>उपयोग:</strong>दो समूहों की तुलना जो सामान्य रूप से वितरित नहीं हैं</p>
+<h5 id="stats_wilcoxon_signed_rankx-float-y-float-n-tam_sayı---float"><a class="header" href="#stats_wilcoxon_signed_rankx-float-y-float-n-tam_sayı---float"><code data-no-translate="true">stats_wilcoxon_signed_rank(x: [float], y: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>विलकॉक्सन हस्ताक्षरित-रैंक परीक्षण</p>
+<p><strong>उपयोग:</strong>युग्मित गैर-पैरामीट्रिक तुलना</p>
+<h3 id="histogram-and-binning"><a class="header" href="#histogram-and-binning">हिस्टोग्राम और बिनिंग</a></h3>
+<h5 id="stats_histogramdata-float-n-tam_sayı-bin_sayısı-tam_sayı---tam_sayı"><a class="header" href="#stats_histogramdata-float-n-tam_sayı-bin_sayısı-tam_sayı---tam_sayı"><code data-no-translate="true">stats_histogram(data: [float], n: tam_sayı, bin_sayısı: tam_sayı) -&gt; [tam_sayı]</code></a></h5>
+<p>एक हिस्टोग्राम बनाता है (समान चौड़ाई के हजारों)</p>
+<h5 id="stats_sturges_binsn-tam_sayı---tam_sayı"><a class="header" href="#stats_sturges_binsn-tam_sayı---tam_sayı"><code data-no-translate="true">stats_sturges_bins(n: tam_sayı) -&gt; tam_sayı</code></a></h5>
+<p>स्टर्गेस नियम के साथ डिब्बे की इष्टतम संख्या: k = ⌈log₂(n) + 1⌉</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable data = [1.2, 2.3, 1.8, 3.5, 2.1, ...]
+variable n = 100
+variable k = stats_sturges_bins(n)  // ≈ 8
+variable hist = stats_histogram(data, n, k)
+</code></pre>
+<h3 id="entropi"><a class="header" href="#entropi">एन्ट्रापी</a></h3>
+<h5 id="stats_entropyprobabilities-float-n-tam_sayı---float"><a class="header" href="#stats_entropyprobabilities-float-n-tam_sayı---float"><code data-no-translate="true">stats_entropy(probabilities: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>शैनन एन्ट्रापी: H = -Σ(pᵢ log₂(pᵢ))</p>
+<h5 id="stats_kl_divergencep-float-q-float-n-tam_sayı---float"><a class="header" href="#stats_kl_divergencep-float-q-float-n-tam_sayı---float"><code data-no-translate="true">stats_kl_divergence(p: [float], q: [float], n: tam_sayı) -&gt; float</code></a></h5>
+<p>कुल्बैक-लीबलर विचलन: D_KL(P||Q) = Σ pᵢ लॉग(pᵢ/qᵢ)</p>
+<h3 id="effect-sizes"><a class="header" href="#effect-sizes">प्रभाव आकार</a></h3>
+<h5 id="stats_cohens_dx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_cohens_dx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code data-no-translate="true">stats_cohens_d(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
+<p>कोहेन का डी प्रभाव आकार: डी = (x̄ - ų) / s_pooled</p>
+<p><strong>टिप्पणी:</strong></p>
+<ul>
+<li>|डी| &lt;0.2: छोटा</li>
+<li>|डी| ≈ 0.5: मध्यम</li>
+<li>|डी| &gt;0.8: बड़ा</li>
+</ul>
+<h5 id="stats_hedges_gx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><a class="header" href="#stats_hedges_gx-float-nx-tam_sayı-y-float-ny-tam_sayı---float"><code data-no-translate="true">stats_hedges_g(x: [float], nx: tam_sayı, y: [float], ny: tam_sayı) -&gt; float</code></a></h5>
+<p>हेज का जी (कोहेन का डी सही किया गया)</p>
+<h3 id="veri-normalizasyonu"><a class="header" href="#veri-normalizasyonu">डेटा सामान्यीकरण</a></h3>
+<h5 id="stats_normalizedata-float-n-tam_sayı---float"><a class="header" href="#stats_normalizedata-float-n-tam_sayı---float"><code data-no-translate="true">stats_normalize(data: [float], n: tam_sayı) -&gt; [float]</code></a></h5>
+<p>Z-स्कोर मानकीकरण: z = (x - μ) / σ</p>
+<h5 id="stats_min_max_normalizedata-float-n-tam_sayı---float"><a class="header" href="#stats_min_max_normalizedata-float-n-tam_sayı---float"><code data-no-translate="true">stats_min_max_normalize(data: [float], n: tam_sayı) -&gt; [float]</code></a></h5>
+<p>न्यूनतम-अधिकतम सामान्यीकरण: x' = (x - न्यूनतम) / (अधिकतम - न्यूनतम)</p>
+<h3 id="outlier-tespiti"><a class="header" href="#outlier-tespiti">बाह्य जांच</a></h3>
+<h5 id="stats_is_outlierx-float-data-float-n-tam_sayı-multiplier-float---boolean"><a class="header" href="#stats_is_outlierx-float-data-float-n-tam_sayı-multiplier-float---boolean"><code data-no-translate="true">stats_is_outlier(x: float, data: [float], n: tam_sayı, multiplier: float) -&gt; boolean</code></a></h5>
+<p>IQR पद्धति से बाहरी पता लगाना</p>
+<p><strong>नियम:</strong>x &lt; Q1 - k·IQR या x &gt; Q3 + k·IQR (आमतौर पर k=1.5)</p>
+<h3 id="utilities"><a class="header" href="#utilities">उपयोगिताओं</a></h3>
+<h5 id="stats_cumsumdata-float-n-tam_sayı---float"><a class="header" href="#stats_cumsumdata-float-n-tam_sayı---float"><code data-no-translate="true">stats_cumsum(data: [float], n: tam_sayı) -&gt; [float]</code></a></h5>
+<p>संचयी योग</p>
+<h5 id="stats_moving_averagedata-float-n-tam_sayı-pencere-tam_sayı---float"><a class="header" href="#stats_moving_averagedata-float-n-tam_sayı-pencere-tam_sayı---float"><code data-no-translate="true">stats_moving_average(data: [float], n: tam_sayı, pencere: tam_sayı) -&gt; [float]</code></a></h5>
+<p>औसत चलन</p>
+<h2 id="-Usage-Examplesi"><a class="header" href="#-Usage-Examplesi">🔬 उपयोग के उदाहरण</a></h2>
+<h3 id="Example-1-ab-testi"><a class="header" href="#Example-1-ab-testi">उदाहरण 1: ए/बी परीक्षण</a></h3>
+<pre><code class="language-berk">kullan stats
+
+// Versiyon A and B'nin conversion rate'lerini karşılaştır
+variable groupA = [0.12, 0.15, 0.11, 0.13, 0.14]
+variable groupB = [0.18, 0.20, 0.17, 0.19, 0.21]
+
+// t-testi
+variable t = stats_t_test_independent(groupA, 5, groupB, 5)
+print("t-istatistiği: " + t)
+
+// Effect size
+variable d = stats_cohens_d(groupA, 5, groupB, 5)
+print("Cohen's d: " + d)
+
+if (math_mutlak(t) &gt; 2.306) ise do  // α=0.05, df=8
+    print("Versiyon B anlamlı derecede daha iyi!")
+end
+</code></pre>
+<h3 id="Example-2-veri-kalite-kontrolü"><a class="header" href="#Example-2-veri-kalite-kontrolü">उदाहरण 2: डेटा गुणवत्ता नियंत्रण</a></h3>
+<pre><code class="language-berk">use stats
+
+function quality_check(data: [float], n: tam_sayı): hiçbir do
+    // Tanımlayıcı istatistikler
+    variable mean = stats_ortalama(data, n)
+    variable std = stats_standart_sapma(data, n)
+    variable median = stats_medyan(data, n)
+    
+    print("Ortalama: " + mean)
+    print("Std Dev: " + std)
+    print("Medyan: " + median)
+    
+    // Dağılım özellikleri
+    variable skew = stats_skewness(data, n)
+    variable kurt = stats_kurtosis(data, n)
+    
+    if (math_mutlak(skew) &gt; 1.0) then do
+        print("Warning: Yüksek çarpıklık tespit edildi!")
+    end
+    
+    // Outlier tespiti
+    variable outlier_count = 0
+    variable i = 0
+    while (i &lt; n) do
+        if (stats_is_outlier(data[i], data, n, 1.5)) then do
+            outlier_count = outlier_count + 1
+        end
+        i = i + 1
+    end
+    
+    if (outlier_count &gt; 0) then do
+        print("Outlier sayısı: " + outlier_count)
+    end
+end
+</code></pre>
+<h3 id="Example-3-regresyon-analizi"><a class="header" href="#Example-3-regresyon-analizi">उदाहरण 3: प्रतिगमन विश्लेषण</a></h3>
+<pre><code class="language-berk">use stats
+use fmt
+
+function regression_analysis(X: [float], y: [float], n: tam_sayı): hiçbir do
+    // Regresyon modelini fit et
+    variable (a, b, r2) = stats_linear_regression(X, y, n)
+    
+    print("\n=== REGRESYON ANALİZİ ===")
+    print("Model: y = " + fmt_float_precision(a, 3) + " + " + 
+           fmt_float_precision(b, 3) + "x")
+    print("R² = " + fmt_percent(r2))
+    
+    // Model kalitesi
+    if (r2 &gt; 0.9) then do
+        print("Model kalitesi: MÜKEMMELyazdır("Model kalitesi: ORTA")
+    end
+    
+    // Tahminler and residual'lar
+    variable residuals = yeni_dizi(n)
+    variable i = 0
+    while (i &lt; n) do
+        variable y_pred = stats_predict_linear(X[i], a, b)
+        residuals[i] = y[i] - y_pred
+        i = i + 1
+    end
+    
+    // Residual analizi
+    variable residual_mean = stats_ortalama(residuals, n)
+    if (math_mutlak(residual_mean) &gt; 0.1) then do
+        print("Warning: Residual ortalaması sıfırdan farklı!")
+    end
+end
+</code></pre>
+<h2 id="-İlgili-Moduleler"><a class="header" href="#-İlgili-Moduleler">🔗संबंधित मॉड्यूल</a></h2>
+<ul>
+<li><a href="./hi_en_math.html">अंक शास्त्र</a>- गणित के कार्य</li>
+<li><a href="./hi_en_linalg.html">linalg</a>-मैट्रिक्स संचालन</li>
+<li><a href="./hi_en_random.html">यादृच्छिक</a>- यादृच्छिक संख्या पीढ़ी</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 अधिक जानकारी</a></h2>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/stdlib/Statistics/">जूलिया सांख्यिकी</a></li>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html">SciPy.आँकड़े</a></li>
+<li><a href="https://www.r-project.org/">आर सांख्यिकीय कार्य</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_en_linalg.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_en_optim.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_en_linalg.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_en_optim.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

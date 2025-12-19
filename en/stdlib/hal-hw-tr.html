@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::hw - Hardware Utilities | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#34495e 0%,#2c3e50 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔧 state::hw</h1>
+<p>Hardware Utility Functions</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 lines</span>
+<span class="stat-badge">Utilities</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Hardware utilities: atomic operations, critical sections, memory barriers, watchdog</p>
+
+<h2>🚀 Usage</h2>
+<pre><code>import hal::hw
+
+// Critical section (disable interrupts)
+hw.enter_critical()
+// ... critical code ...
+hw.exit_critical()
+
+// Atomic operations
+hw.atomic_add(&amp;counter, 1)
+hw.atomic_sub(&amp;counter, 1)
+hw.atomic_exchange(&amp;value, new_value)
+
+// Memory barriers
+hw.memory_barrier()
+hw.data_sync_barrier()
+
+// Watchdog
+hw.watchdog_init(1000)  // 1 second timeout
+hw.watchdog_refresh()
+
+// Reset
+hw.reset()
+hw.reset_cause()  // Get last reset reason</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

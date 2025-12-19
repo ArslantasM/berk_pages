@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>हैल-इंट - इंटरप्ट मैनेजमेंट - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-int.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>⚡ राज्य::int</h1>
+<p>नेस्टेड वेक्टर्ड इंटरप्ट कंट्रोलर (एनवीआईसी)</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 पंक्तियाँ</span>
+<span class="stat-badge">~8 कार्य</span>
+<span class="stat-badge">एनवीआईसी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>इंटरप्ट नियंत्रक अतुल्यकालिक घटनाओं को संभालता है। यह GPIO, टाइमर, USART जैसी परिधीय इकाइयों के इंटरप्ट का प्रबंधन करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>प्राथमिकता स्तर (0-15)</li>
+<li>छूट और उप-प्राथमिकता</li>
+<li>व्यवधान सक्षम/अक्षम करें</li>
+<li>लंबित ध्वज प्रबंधन</li>
+<li>नेस्टेड व्यवधान समर्थन</li>
+</ul>
+
+<h2>🚀 तेजी से शुरुआत करना</h2>
+<pre><code>import hal::int
+
+// Enable interrupt
+int.enable(int.IRQ_TIM2)
+
+// Set priority
+int.set_priority(int.IRQ_TIM2, do
+    preempt: 2,  // Preemption priority
+    sub: 0       // Sub priority
+end)
+
+// Disable interrupt
+int.disable(int.IRQ_TIM2)
+
+// Global interrupt enable/disable
+int.global_enable()
+int.global_disable()</code></pre>
+
+<h2>⚙️ प्राथमिकता समूह</h2>
+<pre><code>// Configure priority grouping
+int.set_priority_grouping(int.PRIORITY_GROUP_4)
+
+// Groups:
+// GROUP_0: 0 bits preemption, 4 bits sub (16 sub-priorities)
+// GROUP_4: 4 bits preemption, 0 bits sub (16 preemption levels)</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: नेस्टेड इंटरप्ट्स (प्राथमिकता निवारण)</h3>
+<pre><code>import hal::int, hal::timer, hal::gpio
+
+variable high_priority_count = 0
+variable low_priority_count = 0
+
+function high_priority_isr() do
+    // High priority interrupt (timer)
+    high_priority_count += 1
+    io.println("HIGH priority ISR (count: {})", high_priority_count)
+    
+    // Simulate work
+    core.delay_ms(50)
+end
+
+function low_priority_isr() do
+    // Low priority interrupt (button)
+    low_priority_count += 1
+    io.println("  LOW priority ISR (count: {})", low_priority_count)
+    
+    // Simulate work
+    core.delay_ms(100)
+end
+
+function nested_interrupt_demo() do
+    // Set priority grouping (4 bits preemption, 0 bits sub)
+    int.set_priority_grouping(int.PRIORITY_GROUP_4)
+    
+    // Configure Timer2 interrupt (high priority)
+    timer.init(timer.TIM2, do
+        frequency: 10,  // 10Hz
+        callback: high_priority_isr
+    end)
+    
+    int.set_priority(int.IRQ_TIM2, do
+        preempt: 0,  // Highest priority
+        sub: 0
+    end)
+    int.enable(int.IRQ_TIM2)
+    
+    // Configure GPIO interrupt (low priority)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        interrupt: gpio.INT_RISING,
+        callback: low_priority_isr
+    end)
+    
+    int.set_priority(int.IRQ_EXTI0, do
+        preempt: 5,  // Lower priority
+        sub: 0
+    end)
+    int.enable(int.IRQ_EXTI0)
+    
+    io.println("Nested interrupt demo")
+    io.println("Timer interrupt can preempt button interrupt")
+    
+    timer.start(timer.TIM2)
+    
+    loop do
+        core.delay_ms(1000)
+    end
+end
+
+function ana() do
+    nested_interrupt_demo()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: बाहरी व्यवधान (EXTI)</h3>
+<pre><code>import hal::int, hal::gpio
+
+variable button1_pressed = 0
+variable button2_pressed = 0
+
+function button1_callback() do
+    button1_pressed += 1
+    io.println("Button 1 pressed (total: {})", button1_pressed)
+end
+
+function button2_callback() do
+    button2_pressed += 1
+    io.println("Button 2 pressed (total: {})", button2_pressed)
+end
+
+function multi_button_exti() do
+    // Button 1 on PA0 (EXTI0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_A, 0, button1_callback)
+    
+    int.set_priority(int.IRQ_EXTI0, do preempt: 5, sub: 0 end)
+    int.enable(int.IRQ_EXTI0)
+    
+    // Button 2 on PB1 (EXTI1)
+    gpio.clock_enable(gpio.PORT_B)
+    gpio.pin_init(gpio.PORT_B, 1, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_B, 1, button2_callback)
+    
+    int.set_priority(int.IRQ_EXTI1, do preempt: 5, sub: 0 end)
+    int.enable(int.IRQ_EXTI1)
+    
+    io.println("EXTI demo: Press buttons")
+    
+    loop do
+        core.delay_ms(100)
+    end
+end
+
+function ana() do
+    multi_button_exti()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: विलंबता माप को बाधित करें</h3>
+<pre><code>import hal::int, hal::timer, hal::gpio
+
+variable interrupt_timestamp = 0
+variable latency_us = 0
+
+function fast_isr() do
+    // Measure interrupt latency
+    variable now = core.uptime_us()
+    latency_us = now - interrupt_timestamp
+    
+    // Toggle LED as visual indicator
+    gpio.pin_toggle(gpio.PORT_C, 13)
+end
+
+function latency_test() do
+    // Configure GPIO interrupt on PA0
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        interrupt: gpio.INT_RISING,
+        callback: fast_isr
+    end)
+    
+    // Set highest priority
+    int.set_priority_grouping(int.PRIORITY_GROUP_4)
+    int.set_priority(int.IRQ_EXTI0, do preempt: 0, sub: 0 end)
+    int.enable(int.IRQ_EXTI0)
+    
+    // LED output
+    gpio.pin_init(gpio.PORT_C, 13, do mode: gpio.MODE_OUTPUT end)
+    
+    io.println("Interrupt latency test")
+    io.println("Trigger PA0 rising edge")
+    
+    loop do
+        // Wait for interrupt
+        if latency_us &gt; 0 ise do
+            io.println("Interrupt latency: {}μs", latency_us)
+            latency_us = 0
+        end
+        
+        core.delay_ms(100)
+    end
+end
+
+function ana() do
+    latency_test()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: सॉफ्टवेयर इंटरप्ट ट्रिगर</h3>
+<pre><code>import hal::int
+
+variable software_int_count = 0
+
+function software_isr() do
+    software_int_count += 1
+    io.println("Software interrupt triggered! ({})", software_int_count)
+end
+
+function software_interrupt_demo() do
+    // Configure software interrupt
+    int.set_callback(int.IRQ_PendSV, software_isr)
+    int.set_priority(int.IRQ_PendSV, do preempt: 15, sub: 0 end)
+    int.enable(int.IRQ_PendSV)
+    
+    io.println("Software interrupt demo")
+    
+    loop do
+        io.println("Triggering software interrupt...")
+        
+        // Trigger PendSV interrupt manually
+        int.set_pending(int.IRQ_PendSV)
+        
+        core.delay_ms(2000)
+    end
+end
+
+function ana() do
+    software_interrupt_demo()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: क्रिटिकल सेक्शन (इंटरप्ट डिसेबल)</h3>
+<pre><code>import hal::int
+
+variable shared_counter = 0
+
+function critical_section_demo() do
+    // Unsafe increment (race condition possible)
+    function unsafe_increment() do
+        variable temp = shared_counter
+        core.delay_us(10)  // Simulate work
+        shared_counter = temp + 1
+    end
+    
+    // Safe increment (atomic with interrupts disabled)
+    function safe_increment() do
+        // Enter critical section
+        int.global_disable()
+        
+        variable temp = shared_counter
+        core.delay_us(10)
+        shared_counter = temp + 1
+        
+        // Exit critical section
+        int.global_enable()
+    end
+    
+    // Better: use RAII-style guard
+    function best_increment() do
+        variable guard = int.critical_section()  // Auto disable
+        
+        variable temp = shared_counter
+        core.delay_us(10)
+        shared_counter = temp + 1
+        
+        // Auto enable on scope exit
+    end
+    
+    // Test
+    her i in 0..1000 for do
+        safe_increment()
+    end
+    
+    io.println("Counter: {}", shared_counter)  // Should be 1000
+end
+
+function main() do
+    critical_section_demo()
+end</code></pre>
+</div>
+
+<h2>⚙️ एनवीआईसी कॉन्फ़िगरेशन</h2>
+<pre><code>// Priority Configuration
+struct PriorityConfig do
+    preempt: sayı,  // Preemption priority (0-15)
+    sub: sayı       // Sub-priority (0-15)
+end
+
+// Priority Grouping
+enum PriorityGroup {
+    PRIORITY_GROUP_0,  // 0:4 (0 preemption, 16 sub)
+    PRIORITY_GROUP_1,  // 1:3 (2 preemption, 8 sub)
+    PRIORITY_GROUP_2,  // 2:2 (4 preemption, 4 sub)
+    PRIORITY_GROUP_3,  // 3:1 (8 preemption, 2 sub)
+    PRIORITY_GROUP_4   // 4:0 (16 preemption, 0 sub)
+}
+
+// Common IRQ Numbers (STM32F4)
+enum IRQ {
+    IRQ_WWDG          = 0,   // Window watchdog
+    IRQ_EXTI0         = 6,   // External line 0
+    IRQ_EXTI1         = 7,   // External line 1
+    IRQ_DMA1_STREAM0  = 11,  // DMA1 stream 0
+    IRQ_TIM2          = 28,  // Timer 2
+    IRQ_USART1        = 37,  // USART1
+    IRQ_EXTI15_10     = 40,  // External lines 10-15
+    IRQ_SPI1          = 35,  // SPI1
+    IRQ_PendSV        = -2,  // Pendable request
+    IRQ_SysTick       = -1   // System tick
+}</code></pre>
+
+<h2>📚 एनवीआईसी कार्य</h2>
+<pre><code>// Interrupt control
+function enable(irq: IRQ)
+function disable(irq: IRQ)
+function is_enabled(irq: IRQ) -&gt; bool
+
+// Priority management
+function set_priority(irq: IRQ, config: PriorityConfig)
+function get_priority(irq: IRQ) -&gt; PriorityConfig
+function set_priority_grouping(group: PriorityGroup)
+
+// Pending flags
+function set_pending(irq: IRQ)  // Software trigger
+function clear_pending(irq: IRQ)
+function is_pending(irq: IRQ) -&gt; bool
+
+// Global control
+function global_enable()  // Enable all interrupts
+function global_disable()  // Disable all interrupts
+function critical_section() -&gt; Guard  // RAII-style
+
+// Callback registration
+function set_callback(irq: IRQ, callback: fn())</code></pre>
+
+<h2>📊 प्राथमिकता स्तर के सुझाव</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">प्राथमिकता</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">उदाहरण</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">उदाहरण</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">0-2 (सर्वोच्च)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">समय-महत्वपूर्ण, वास्तविक समय</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">मोटर एनकोडर, हाई-स्पीड एडीसी</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">3-7 (उच्च)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">तेज़ परिधीय</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">USART, SPI, I2C, टाइमर</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">8-11 (मध्यम)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सामान्य परिधीय</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">जीपीआईओ, एडीसी, आरटीसी अलार्म</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">12-15 (कम)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">नेपथ्य कार्य</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सॉफ़्टवेयर व्यवधान, कम-प्राथमिकता वाला IO</td>
+</tr>
+</tbody></table>
+
+<h2>⚡अच्छे आचरण</h2>
+<ul>
+<li><strong>आईएसआर लघु</strong>: इंटरप्ट हैंडलर को छोटा रखें (&lt;10μs आदर्श)</li>
+<li><strong>कार्य टालें</strong>: मुख्य लूप (ध्वज सेट) में भारी प्रसंस्करण में देरी करें</li>
+<li><strong>परिवर्तनशील</strong>: ISR से पढ़े गए वेरिएबल अस्थिर होने चाहिए</li>
+<li><strong>प्राथमिकता योजना</strong>: समय-महत्वपूर्ण नौकरियां उच्च प्राथमिकता हैं</li>
+<li><strong>घोंसला करने की क्रिया</strong>: ग्रुप_4 का उपयोग करें (प्रीएम्प्शन लेवल 16)</li>
+<li><strong>महत्वपूर्ण अनुभाग</strong>: साझा डेटा एक्सेस में व्यवधान अक्षम करें</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>प्राथमिकता संख्या</strong>: कम संख्या = उच्च प्राथमिकता (0 उच्चतम है)</li>
+<li><strong>हथियाना</strong>: भिन्न प्रीएम्प्शन प्राथमिकता → नेस्टिंग संभव</li>
+<li><strong>उप-प्राथमिकता</strong>: निर्धारित करता है कि समान प्रीएम्पशन में पहले किस पर कार्रवाई की जाएगी</li>
+<li><strong>आईएसआर विलंबता</strong>: विशिष्ट 10-20 चक्र (~12 चक्र पुश/पॉप रजिस्टर)</li>
+<li><strong>पूँछ की चेनिंग</strong>: बैक-टू-बैक इंटरप्ट में पुश/पॉप स्किप (6 चक्र बचाए गए)।</li>
+<li><strong>बेसपरी</strong>: मास्किंग एक निश्चित प्राथमिकता के तहत बाधित होती है</li>
+<li><strong>दोष संचालक</strong>: हार्डफॉल्ट, मेममैनेज, बसफॉल्ट (प्राथमिकता -1, -2, -3)</li>
+<li><strong>सिस्टिक</strong>: विशिष्ट प्राथमिकता 15 (न्यूनतम, समय-महत्वपूर्ण नोट)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- EXTI बाहरी व्यवधान</li>
+<li><code data-no-translate="true">hal::timer</code>- टाइमर व्यवधान (अतिप्रवाह, कैप्चर)</li>
+<li><code data-no-translate="true">hal::usart</code>- USART TX/RX बाधित होता है</li>
+<li><code data-no-translate="true">hal::dma</code>- डीएमए स्थानांतरण पूर्ण व्यवधान</li>
+<li><code data-no-translate="true">hal::rtc</code>- आरटीसी अलार्म बाधित होता है</li>
+<li><code data-no-translate="true">hal::core</code>- स्लीप मोड वेकअप</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4044: STM32 इंटरप्ट का उपयोग करना</a></li>
+<li><a href="https://www.arm.com/technologies/cmsis">एआरएम सीएमएसआईएस दस्तावेज़ीकरण: एनवीआईसी</a></li>
+<li>कॉर्टेक्स-एम प्रोग्रामिंग मैनुअल: नेस्टेड वेक्टर्ड इंटरप्ट कंट्रोलर</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_hal-nvic.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_hal-systick.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_hal-nvic.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_hal-systick.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>yaml - YAML पार्सर | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📝 yaml - YAML पार्सर/सीरियलाइज़र</h1>
+<p>पार्स, डंप, सुरक्षित लोड</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">34</div><div>कार्य</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">601</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">19KB</div><div>आप</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import yaml
+
+// Parse YAML
+let yaml_str = "
+name: BERK
+version: 1.0
+features:
+  - fast
+  - safe
+  - modern
+"
+
+let config = yaml.parse(yaml_str)
+print(config["name"])  // "BERK"
+print(config["features"][0])  // "fast"
+
+// Dump to YAML
+let veri = do
+    "database": do
+        "host": "localhost",
+        "port": 5432
+    end,
+    "enabled": true
+end
+
+let yaml_output = yaml.dump(veri)
+print(yaml_output)</code></pre>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>कॉन्फ़िग फ़ाइल प्रबंधक</h3>
+<pre><code>import yaml, io
+
+function config_load(dosya: yazı) -&gt; Sonuç do
+    try do
+        let içerik = io.fs::read(dosya)
+        let config = yaml.parse(içerik)
+        return Ok(config)
+    end catch hata do
+        return Err("Config yüklenemedi: " + hata.mesaj())
+    end
+end
+
+function config_save(dosya: yazı, config: herhangi) do
+    let yaml_str = yaml.dump(config)
+    io.dosya_yaz(dosya, yaml_str)
+end
+
+let cfg = config_load("app.yaml")
+if cfg.tamam_mı() then do
+    let config = cfg.pop()
+    config["last_run"] = time.now().yazıya()
+    config_save("app.yaml", config)
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

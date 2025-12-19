@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>json - JSON 파서 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📋 json - JSON 파서/시리얼라이저</h1>
+<p>JSON 구문 분석, 직렬화, 예쁜 인쇄</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">51</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,204</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">37KB</div><div>너</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import json
+
+// JSON parse
+let veri = '{"name":"BERK","version":"1.0","active":true}'
+let obj = json.parse(veri)
+print(obj["name"])  // "BERK"
+
+// JSON stringify
+let kullanıcı = {"id": 1, "isim": "Ali", "yaş": 25}
+let json_str = json.stringify(kullanıcı)
+print(json_str)  // {"id":1,"isim":"Ali","yaş":25}
+
+// Pretty print
+let güzel = json.stringify_pretty(kullanıcı, 2)
+print(güzel)
+// {
+//   "id": 1,
+//   "isim": "Ali",
+//   "yaş": 25
+// }</code></pre>
+<h2>📚특징</h2>
+<ul>
+<li>JSON 구문 분석(RFC 8259 준수)</li>
+<li>JSON 직렬화</li>
+<li>예쁜 프린팅</li>
+<li>UTF-8 지원</li>
+<li>숫자, 문자열, 부울, Null, 배열, 객체</li>
+<li>오류 처리</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>API 응답 처리</h3>
+<pre><code>import json, http
+
+let yanıt = http.get("https://api.github.com/users/arslantasm")
+let veri = json.parse(yanıt.gövde)
+
+print("Kullanıcı: " + veri["login"])
+print("Repos: " + veri["public_repos"].yazıya())
+print("Followers: " + veri["followers"].yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>구성 파일</h3>
+<pre><code>import json, io
+
+// Load config
+let config_str = io.fs::read("config.json")
+let config = json.parse(config_str)
+
+// Use config
+let host = config["database"]["host"]
+let port = config["database"]["port"]
+
+// Save config
+config["last_updated"] = time.now()
+io.dosya_yaz("config.json", json.stringify_pretty(config, 2))</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

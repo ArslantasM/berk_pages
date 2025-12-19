@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::can - Controller Area Network | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#d35400 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#d35400;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🚗 state::can</h1>
+<p>Controller Area Network - Automotive Communication</p>
+<div style="margin-top:15px">
+<span class="stat-badge">383 lines</span>
+<span class="stat-badge">~14 functions</span>
+<span class="stat-badge">Automotive</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>CAN (Controller Area Network) is a reliable communication protocol used in automotive and industrial applications. It provides communication between ECU (Engine Control Unit), sensors and actuators.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>CAN 2.0A (11-bit ID) / 2.0B (29-bit ID)</li>
+<li>Up to 1 Mbps bitrate</li>
+<li>Error detection/correction</li>
+<li>Message filtering (28 filters)</li>
+<li>3TX mailboxes</li>
+<li>2 RX FIFOs</li>
+<li>Priority-based arbitration</li>
+<li>automatic retransmission</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::can, hal::gpio
+
+// CAN pins: PB8=RX, PB9=TX
+gpio.clock_enable(gpio.PORT_B)
+gpio.pin_init(gpio.PORT_B, 8, do mode: gpio.MODE_AF, af: 9 end)
+gpio.pin_init(gpio.PORT_B, 9, do mode: gpio.MODE_AF, af: 9 end)
+
+// Initialize CAN (500 kbps)
+let can1 = can.init(can.CAN1, do
+    bitrate: 500_000,
+    mode: can.MODE_NORMAL
+end)
+
+// Send message
+can.send(can1, do
+    id: 0x123,
+    data: [0x01, 0x02, 0x03],
+    extended_id: false
+end)
+
+// Receive message
+if msg = can.receive(can1, 100) ise do
+    io.println("Received ID: 0x{:X}".formatla(msg.id))
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: ECU Simulator</h3>
+<pre><code>import hal::can, hal::core
+
+const ENGINE_RPM = 0x100
+const VEHICLE_SPEED = 0x101
+const COOLANT_TEMP = 0x102
+const THROTTLE_POS = 0x103
+
+function send_rpm(can1: can.Handle, rpm: int) do
+    let data = [
+        (rpm &gt;&gt; 8) &amp; 0xFF,
+        rpm &amp; 0xFF
+    ]
+    
+    can.send(can1, do
+        id: ENGINE_RPM,
+        data: data,
+        extended_id: false
+    end)
+end
+
+function send_speed(can1: can.Handle, speed: int) do
+    can.send(can1, do
+        id: VEHICLE_SPEED,
+        data: [speed &amp; 0xFF],
+        extended_id: false
+    end)
+end
+
+function send_temp(can1: can.Handle, temp: int) do
+    // Temperature in Celsius + 40
+    let temp_byte = (temp + 40) &amp; 0xFF
+    
+    can.send(can1, do
+        id: COOLANT_TEMP,
+        data: [temp_byte],
+        extended_id: false
+    end)
+end
+
+function ana() do
+    core.system_init()
+    
+    // Setup CAN
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Configure filter (accept all)
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,  // Accept all IDs
+        fifo: can.FIFO0
+    end)
+    
+    // Simulate ECU data
+    let rpm = 800  // Idle RPM
+    let speed = 0
+    let temp = 20
+    
+    loop do
+        // Send telemetry at 10Hz
+        send_rpm(can1, rpm)
+        send_speed(can1, speed)
+        send_temp(can1, temp)
+        
+        // Simulate acceleration
+        if rpm &lt; 6000 ise do
+            rpm += 100
+            speed = (rpm / 100)  // Simplified
+            temp += 1  // Engine heats up
+        değilse do
+            rpm = 800  // Back to idle
+            speed = 0
+            temp = 20
+        end
+        
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: CAN Bus Monitor</h3>
+<pre><code>import hal::can
+
+function message_name(id: u32) -&gt; str do
+    return match id do
+        0x100 =&gt; "Engine RPM",
+        0x101 =&gt; "Vehicle Speed",
+        0x102 =&gt; "Coolant Temp",
+        0x103 =&gt; "Throttle Pos",
+        0x200 =&gt; "Brake Status",
+        0x300 =&gt; "Door Status",
+        _ =&gt; "Unknown"
+    end
+end
+
+function parse_data(msg: can.Message) do
+    io.print("0x{:03X} [{}] ".formatla(msg.id, msg.dlc))
+    
+    // Print data bytes
+    each byte forde msg.data[0..msg.dlc] for do
+        io.print("{:02X} ".formatla(byte))
+    end
+    
+    // Interpret known messages
+    let name = message_name(msg.id)
+    io.print(" // {}", name)
+    
+    match msg.id do
+        0x100 =&gt; do  // RPM
+            let rpm = (msg.data[0] &lt;&lt; 8) | msg.data[1]
+            io.print(" = {} RPM", rpm)
+        end,
+        0x101 =&gt; do  // Speed
+            io.print(" = {} km/h", msg.data[0])
+        end,
+        0x102 =&gt; do  // Temp
+            let temp = msg.data[0].int() - 40
+            io.print(" = {}°C", temp)
+        end,
+        _ =&gt; do end
+    end
+    
+    io.println()
+end
+
+function ana() do
+    let can1 = can.init(can.CAN1, do
+        bitrate: 500_000,
+        mode: can.MODE_NORMAL
+    end)
+    
+    // Accept all messages
+    can.filter_config(can1, do
+        filter_id: 0,
+        id: 0x000,
+        mask: 0x000,
+        fifo: can.FIFO0
+    end)
+    
+    io.println("CAN Bus Monitor Started (500 kbps)")
+    io.println("Press Ctrl+C to exit\n")
+    
+    loop do
+        // Check for messages (non-blocking)
+        if msg = can.receive(can1, 10) ise do
+            parse_data(msg)
+        end
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example 3: OBD-II Diagnostics</h3>
+<pre><code>import hal::can
+
+const OBD_REQUEST = 0x7DF
+const OBD_RESPONSE = 0x7E8
+const PID_ENGINE_RPM = 0x0C
+const PID_VEHICLE_SPEED = 0x0D
+
+function obd_request(can1: can.Handle, pid: u8) -&gt; Result[int, Error] do
+    can.send(can1, do
+        id: OBD_REQUEST,
+        data: [0x02, 0x01, pid, 0, 0, 0, 0, 0],
+        dlc: 8
+    end)?
+    
+    if response = can.receive(can1, 100) ise do
+        if response.id == OBD_RESPONSE ise do
+            return Ok(match pid do
+                PID_ENGINE_RPM =&gt; ((response.data[3] &lt;&lt; 8) | response.data[4]) / 4,
+                PID_VEHICLE_SPEED =&gt; response.data[3].int(),
+                _ =&gt; 0
+            end)
+        end
+    end
+    
+    return Error("Timeout")
+end
+
+function ana() do
+    let can1 = can.init(can.CAN1, do bitrate: 500_000 end)
+    
+    loop do
+        if rpm = obd_request(can1, PID_ENGINE_RPM)? ise do
+            io.println("RPM: {}", rpm)
+        end
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 Types</h2>
+<pre><code>struct Message do
+    id: u32,
+    data: [u8; 8],
+    dlc: u8,
+    extended_id: bool
+end
+
+struct Config do
+    bitrate: int,
+    mode: Mode
+end</code></pre>
+
+<h2>⚙️ functions</h2>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+function send(handle: Handle, msg: Message) -&gt; Result[None, Error]
+function receive(handle: Handle, timeout_ms: int) -&gt; Optional[Message]
+function filter_config(handle: Handle, config: FilterConfig)</code></pre>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>CAN transceiver (TJA1050, MCP2551) required</li>
+<li>120Ω termination resistors required (at both ends of the bus)</li>
+<li>Max bus length: 40m (1 Mbps), 500m (125 kbps)</li>
+<li>Use twisted-pair cable (CAN_H, CAN_L)</li>
+<li>Filter configuration is important (in high traffic)</li>
+<li>ISO 11898 standard is used</li>
+</ul>
+
+<h2>🎯 Application Scenarios</h2>
+<ul>
+<li>Automotive ECU communication</li>
+<li>OBD-II diagnostics</li>
+<li>Industrial automation (CANopen)</li>
+<li>Maritime (NMEA 2000)</li>
+</ul>
+
+<h2>📚 Platform Support</h2>
+<ul>
+<li><strong>STM32 F1/F4:</strong>bxCAN (2x CAN)</li>
+<li><strong>STM32 H7:</strong>CAN-FD</li>
+<li><strong>ESP32:</strong>TWAI</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- CAN TX/RX pins</li>
+<li><code data-no-translate="true">hal::int</code>- CAN interrupts</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a> | 
+<a href="en_index-tr.html">All Modules</a> | 
+<a href="../en_index-tr.html">Home Page</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

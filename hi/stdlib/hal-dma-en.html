@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::dma - डायरेक्ट मेमोरी एक्सेस | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#c0392b;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💾 राज्य::dma</h1>
+<p>डायरेक्ट मेमोरी एक्सेस - उच्च प्रदर्शन डेटा ट्रांसफर</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 पंक्तियाँ</span>
+<span class="stat-badge">~15 कार्य</span>
+<span class="stat-badge">शून्य-प्रतिलिपि</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>डीएमए (डायरेक्ट मेमोरी एक्सेस) सीपीयू हस्तक्षेप के बिना मेमोरी और पेरिफेरल्स के बीच डेटा ट्रांसफर की अनुमति देता है। इसका उपयोग ADC, USART, SPI जैसे मॉड्यूल के साथ हाई स्पीड डेटा ट्रांसफर के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>मेमोरी-टू-मेमोरी स्थानांतरण</li>
+<li>परिधीय-से-स्मृति स्थानांतरण</li>
+<li>मेमोरी-टू-परिधीय स्थानांतरण</li>
+<li>परिपत्र/सामान्य मोड</li>
+<li>प्राथमिकता स्तर (4)</li>
+<li>8/16/32-बिट डेटा चौड़ाई</li>
+<li>पूर्ण व्यवधान स्थानांतरण</li>
+<li>एकाधिक चैनल/धाराएँ</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::dma
+
+// Memory-to-memory transfer
+let src = [1, 2, 3, 4, 5]
+let dst = [0; 5]
+
+let dma_ch = dma.init(dma.DMA1, dma.CH1, do
+    direction: dma.M2M,  // Memory to Memory
+    src_increment: true,
+    dst_increment: true,
+    data_size: dma.SIZE_8BIT
+end)
+
+dma.transfer(dma_ch, src.as_ptr(), dst.as_ptr(), 5)
+dma.wait(dma_ch)  // Wait for completion</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: डीएमए के साथ एडीसी (सतत नमूनाकरण)</h3>
+<pre><code>import hal::dma, hal::adc
+
+const SAMPLE_COUNT = 1000
+
+let adc_buffer = [0u16; SAMPLE_COUNT]
+
+function adc_dma_init() do
+    // Initialize ADC
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: true,
+        dma_enable: true
+    end)
+    
+    adc.channel_config(adc1, adc.CHANNEL_0, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Setup DMA
+    dma.clock_enable(dma.DMA2)
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.P2M,  // Peripheral to Memory
+        src_address: adc.get_data_register(adc1),
+        dst_address: adc_buffer.as_ptr(),
+        data_count: SAMPLE_COUNT,
+        src_increment: false,  // Same ADC register
+        dst_increment: true,   // Increment buffer
+        circular: true,        // Continuous sampling
+        data_size: dma.SIZE_16BIT,
+        priority: dma.PRIORITY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+end
+
+function calculate_average() -&gt; float do
+    let toplam = 0
+    each sample forde adc_buffer for do
+        toplam += sample
+    end
+    return toplam.float() / SAMPLE_COUNT.float()
+end
+
+function ana() do
+    adc_dma_init()
+    
+    loop do
+        let avg = calculate_average()
+        let voltage = avg * 3.3 / 4095.0
+        io.println("Average voltage: {:.3f}V".formatla(voltage))
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: DMA के साथ USART TX</h3>
+<pre><code>import hal::dma, hal::usart
+
+let dma_complete = false
+
+function dma_complete_callback() do
+    dma_complete = true
+end
+
+function usart_dma_send(uart: usart.Handle, data: str) -&gt; Result[None, Error] do
+    // Setup DMA for USART TX
+    let dma_ch = dma.init(dma.DMA1, dma.CH4, do
+        direction: dma.M2P,  // Memory to Peripheral
+        src_address: data.as_ptr(),
+        dst_address: usart.get_tx_register(uart),
+        data_count: data.uzunluk(),
+        src_increment: true,
+        dst_increment: false,  // Same USART register
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM,
+        callback: dma_complete_callback
+    end)
+    
+    dma_complete = false
+    dma.start(dma_ch)
+    
+    // Enable USART DMA mode
+    usart.enable_dma_tx(uart)
+    
+    // Wait for completion
+    loop dma_complete değilse do
+        core.delay_ms(1)
+    end
+    
+    return Ok(None)
+end
+
+function ana() do
+    let uart = usart.init(usart.USART1, do
+        baud_rate: 115200
+    end)
+    
+    usart_dma_send(uart, "Hello from DMA!\n")?
+    io.println("DMA transfer complete!")
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: मेमोरी-टू-मेमोरी फास्ट कॉपी</h3>
+<pre><code>import hal::dma
+
+function fast_memcpy(dest: *let u8, src: *u8, size: int) do
+    // DMA memory-to-memory is much faster than CPU copy
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.M2M,  // Memory to Memory
+        src_address: src,
+        dst_address: dest,
+        data_count: size,
+        src_increment: true,
+        dst_increment: true,
+        data_size: dma.SIZE_32BIT,  // 32-bit for efficiency
+        priority: dma.PRIORITY_VERY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+end
+
+function ana() do
+    // Large buffer copy test
+    const SIZE = 10000
+    let src_buffer = [0u8; SIZE]
+    let dst_buffer = [0u8; SIZE]
+    
+    // Fill source with test data
+    each i forde 0..SIZE for do
+        src_buffer[i] = (i % 256).u8()
+    end
+    
+    // Benchmark
+    let start = core.uptime_us()
+    fast_memcpy(dst_buffer.as_mut_ptr(), src_buffer.as_ptr(), SIZE)
+    let elapsed = core.uptime_us() - start
+    
+    io.println("DMA copy {}KB in {}us", SIZE/1024, elapsed)
+    io.println("Speed: {:.2f}MB/s", SIZE.float() / elapsed.float())
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: डबल बफर (पिंग-पोंग)</h3>
+<pre><code>import hal::dma, hal::adc
+
+const BUFFER_SIZE = 512
+
+let buffer_a = [0u16; BUFFER_SIZE]
+let buffer_b = [0u16; BUFFER_SIZE]
+let current_buffer = 0
+
+function buffer_half_complete() do
+    // Buffer A is full, start processing while DMA fills B
+    process_samples(buffer_a)
+    current_buffer = 1
+end
+
+function buffer_complete() do
+    // Buffer B is full, start processing while DMA fills A
+    process_samples(buffer_b)
+    current_buffer = 0
+end
+
+function process_samples(buffer: []u16) do
+    let max_val = 0u16
+    each sample forde buffer for do
+        if sample &gt; max_val ise max_val = sample
+    end
+    io.println("Max value: {}", max_val)
+end
+
+function adc_double_buffer_init() do
+    // Init ADC
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: true,
+        dma_enable: true
+    end)
+    
+    // DMA double buffer mode
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.P2M,
+        src_address: adc.get_data_register(adc1),
+        dst_address_0: buffer_a.as_ptr(),  // Ping buffer
+        dst_address_1: buffer_b.as_ptr(),  // Pong buffer
+        data_count: BUFFER_SIZE,
+        circular: true,
+        double_buffer: true,
+        src_increment: false,
+        dst_increment: true,
+        data_size: dma.SIZE_16BIT,
+        half_complete_callback: buffer_half_complete,
+        complete_callback: buffer_complete
+    end)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+end
+
+function ana() do
+    adc_double_buffer_init()
+    
+    // Process in background via interrupts
+    loop do
+        core.sleep()  // CPU sleeps while DMA works
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: डीएमए बर्स्ट के साथ एसपीआई डिस्प्ले</h3>
+<pre><code>import hal::dma, hal::spi, hal::gpio
+
+// Display framebuffer (128x64 OLED = 1024 bytes)
+const WIDTH = 128
+const HEIGHT = 64
+let framebuffer = [0u8; (WIDTH * HEIGHT) / 8]
+
+function display_update() do
+    // CS low
+    gpio.pin_write(gpio.PORT_A, 4, gpio.LOW)
+    
+    // Command: set column/page address
+    spi.write_byte(spi1, 0x00)  // Command mode
+    
+    // DMA burst transfer entire framebuffer
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM3, do
+        direction: dma.M2P,
+        src_address: framebuffer.as_ptr(),
+        dst_address: spi.get_data_register(spi1),
+        data_count: framebuffer.uzunluk(),
+        src_increment: true,
+        dst_increment: false,
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+    
+    // CS high
+    gpio.pin_write(gpio.PORT_A, 4, gpio.HIGH)
+end
+
+function draw_pixel(x: int, y: int, color: bool) do
+    let byte_index = x + (y / 8) * WIDTH
+    let bit_index = y % 8
+    
+    if color ise do
+        framebuffer[byte_index] |= (1 &lt;&lt; bit_index)
+    end else do
+        framebuffer[byte_index] &amp;= ~(1 &lt;&lt; bit_index)
+    end
+end
+
+function ana() do
+    // Draw test pattern
+    each x forde 0..WIDTH for do
+        each y forde 0..HEIGHT for do
+            draw_pixel(x, y, (x + y) % 2 == 0)
+        end
+    end
+    
+    // Fast DMA update (instead of slow SPI byte-by-byte)
+    display_update()  // ~8ms with DMA vs 100ms+ without
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण: DMA सर्कुलर बफर के साथ USART RX</h3>
+<pre><code>import hal::dma, hal::usart
+
+const RX_BUFFER_SIZE = 256
+let rx_buffer = [0u8; RX_BUFFER_SIZE]
+let read_pos = 0
+
+function uart_dma_rx_init(uart: usart.Handle) do
+    // DMA in circular mode for continuous RX
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM5, do
+        direction: dma.P2M,
+        src_address: usart.get_rx_register(uart),
+        dst_address: rx_buffer.as_ptr(),
+        data_count: RX_BUFFER_SIZE,
+        src_increment: false,
+        dst_increment: true,
+        circular: true,  // Never stops, wraps around
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM
+    end)
+    
+    usart.enable_dma_rx(uart)
+    dma.start(dma_ch)
+end
+
+function available() -&gt; int do
+    // Get DMA write position
+    let write_pos = RX_BUFFER_SIZE - dma.get_counter(dma_ch)
+    
+    if write_pos &gt;= read_pos ise do
+        return write_pos - read_pos
+    end else do
+        return RX_BUFFER_SIZE - read_pos + write_pos
+    end
+end
+
+function read_byte() -&gt; Option[u8] do
+    if available() &gt; 0 ise do
+        let data = rx_buffer[read_pos]
+        read_pos = (read_pos + 1) % RX_BUFFER_SIZE
+        return Some(data)
+    end
+    return None
+end
+
+function ana() do
+    let uart = usart.init(usart.USART1, do
+        baud_rate: 115200
+    end)
+    
+    uart_dma_rx_init(uart)
+    
+    loop do
+        if available() &gt; 0 ise do
+            match read_byte() do
+                Some(byte) =&gt; io.print("{:c}", byte),
+                None =&gt; {}
+            end
+        end
+        core.delay_ms(10)
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ डीएमए संरचना प्रकार</h2>
+<pre><code>// DMA Direction
+enum Direction {
+    P2M,  // Peripheral to Memory (ADC, USART RX)
+    M2P,  // Memory to Peripheral (USART TX, DAC)
+    M2M   // Memory to Memory (fast copy)
+}
+
+// Data Size
+enum DataSize {
+    SIZE_8BIT,   // Byte
+    SIZE_16BIT,  // Half-word
+    SIZE_32BIT   // Word
+}
+
+// Priority
+enum Priority {
+    LOW,
+    MEDIUM,
+    HIGH,
+    VERY_HIGH
+}
+
+// DMA Configuration
+struct DMAConfig do
+    direction: Direction,
+    src_address: *u8,
+    dst_address: *u8,
+    data_count: int,
+    src_increment: bool,
+    dst_increment: bool,
+    circular: bool,
+    data_size: DataSize,
+    priority: Priority,
+    double_buffer: bool,         // Optional
+    dst_address_1: *u8,          // For double buffer
+    half_complete_callback: fn(), // Optional
+    complete_callback: fn()       // Optional
+end</code></pre>
+
+<h2>📚 डीएमए कार्य</h2>
+<pre><code>// DMA channel initialization
+function init(dma: DMAInstance, channel: Channel, config: DMAConfig) -&gt; Handle
+
+// Transfer control
+function start(handle: Handle)
+function stop(handle: Handle)
+function wait(handle: Handle)  // Blocking wait
+function is_complete(handle: Handle) -&gt; bool
+
+// Status queries
+function get_counter(handle: Handle) -&gt; int  // Remaining transfers
+function get_current_buffer(handle: Handle) -&gt; int  // 0 or 1 (double buffer)
+
+// Advanced
+function transfer(handle: Handle, src: *u8, dst: *u8, count: int)
+function circular_transfer(handle: Handle, src: *u8, dst: *u8, count: int)
+
+// Clock control
+function clock_enable(dma: DMAInstance)
+function clock_disable(dma: DMAInstance)</code></pre>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>32-बिट स्थानांतरण</strong>: संरेखित डेटा के लिए 8-बिट से 4x तेज़</li>
+<li><strong>गोलाकार मोड</strong>: सतत स्ट्रीमिंग के लिए शून्य ओवरहेड (एडीसी, यूएसएआरटी)</li>
+<li><strong>डबल बफ़र</strong>: एक बफ़र को संसाधित करते हुए दूसरे को भरें (शून्य डेटा हानि)</li>
+<li><strong>प्राथमिकता</strong>: समय-महत्वपूर्ण स्थानान्तरण के लिए VERY_HIGH सेट करें</li>
+<li><strong>बर्स्ट मोड</strong>: बड़े ब्लॉक ट्रांसफ़र (फ़्रेमबफ़र, फ़ाइलें) के लिए उपयोग करें</li>
+</ul>
+
+<h2>📊डीएमए उपयोग के मामले</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">परिदृश्य</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">दिशा</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">तरीका</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">फ़ायदा</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एडीसी सतत नमूनाकरण</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">पी2एम</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">परिपत्र</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सीपीयू-मुक्त डेटा अधिग्रहण</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">USART हाई-स्पीड TX</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एम2पी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सामान्य</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">नॉन-ब्लॉकिंग ट्रांसमिशन</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एसपीआई डिस्प्ले अपडेट</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एम2पी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सामान्य</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">10-20x तेज रिफ्रेश</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">ऑडियो स्ट्रीमिंग</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एम2पी (डीएसी)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">डबल बफ़र</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">गड़बड़ी मुक्त प्लेबैक</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">बड़ी बफर कॉपी</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">एम2एम</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">सामान्य</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">हार्डवेयर एक्सिलरेशन</td>
+</tr>
+</tbody></table>
+
+<h2>🖥️ प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>STM32F1</strong>: DMA1 (7 चैनल), DMA2 (5 चैनल)</li>
+<li><strong>STM32F4</strong>: DMA1/DMA2 (प्रत्येक 8 स्ट्रीम, फीफो समर्थन)</li>
+<li><strong>एसटीएम32एल4</strong>: DMA1/DMA2 (प्रत्येक 7 चैनल, कम-शक्ति)</li>
+<li><strong>जीडी32</strong>: STM32 DMA आर्किटेक्चर के साथ संगत</li>
+<li><strong>ईएसपी32</strong>: जीडीएमए (सामान्य प्रयोजन डीएमए)</li>
+</ul>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>स्मृति संरेखण</strong>: डीएमए बफ़र्स रैम में होने चाहिए (फ़्लैश/परिधीय मेमोरी नहीं)</li>
+<li><strong>परिपत्र मोड</strong>: अनंत लूप का उपयोग किया जाता है, ADC/USART स्ट्रीमिंग आदर्श है</li>
+<li><strong>एनवीआईसी सक्षम करें</strong>: डीएमए इंटरप्ट का उपयोग करते समय एनवीआईसी सक्षम होना चाहिए</li>
+<li><strong>डबल बफ़र</strong>: पिंग-पोंग बफरिंग के लिए शून्य डेटा हानि का उपयोग करें</li>
+<li><strong>बफ़र सुरक्षा</strong>: डीएमए स्थानांतरण के दौरान बफर को संशोधित नहीं किया जाना चाहिए</li>
+<li><strong>कैश सुसंगतता</strong>: STM32F7/H7 पर कैश अमान्यकरण आवश्यक है</li>
+<li><strong>डेटा चौड़ाई</strong>: SIZE_32BIT के लिए 32-बिट संरेखित डेटा का उपयोग करें (4x तेज़)</li>
+<li><strong>प्राथमिकता</strong>: मध्यस्थता तब होती है जब एक ही प्राथमिकता के साथ एकाधिक डीएमए का उपयोग किया जाता है।</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::adc</code>- डीएमए के साथ एडीसी (निरंतर नमूनाकरण)</li>
+<li><code data-no-translate="true">hal::dac</code>- डीएमए के साथ डीएसी (तरंग निर्माण)</li>
+<li><code data-no-translate="true">hal::usart</code>- डीएमए के साथ यूएआरटी (हाई-स्पीड सीरियल)</li>
+<li><code data-no-translate="true">hal::spi</code>- डीएमए के साथ एसपीआई (डिस्प्ले, एसडी कार्ड)</li>
+<li><code data-no-translate="true">hal::i2c</code>- डीएमए के साथ I2C (सेंसर रीडिंग)</li>
+<li><code data-no-translate="true">hal::int</code>- डीएमए व्यवधान (एनवीआईसी कॉन्फ़िगरेशन)</li>
+<li><code data-no-translate="true">hal::timer</code>- टाइमर-ट्रिगर डीएमए</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4031: STM32 DMA नियंत्रक का उपयोग करना</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00272912.pdf">AN4943: STM32F7 में डीएमए</a></li>
+<li>संदर्भ मैनुअल: डीएमए नियंत्रक (डीएमए) अध्याय</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

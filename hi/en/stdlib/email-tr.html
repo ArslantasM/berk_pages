@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>ईमेल - ईमेल क्लाइंट | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e74c3c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📧ईमेल</h1>
+<p>एसएमटीपी/आईएमएपी ईमेल क्लाइंट - ईमेल भेजना और प्राप्त करना</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~450 पंक्तियाँ</span>
+<span class="stat-badge">~30 कार्य</span>
+<span class="stat-badge">एसएमटीपी/आईएमएपी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>ईमेल मॉड्यूल SMTP और IMAP प्रोटोकॉल के माध्यम से ईमेल भेजने और प्राप्त करने के लिए कार्य प्रदान करता है। यह HTML सामग्री, फ़ाइल अनुलग्नक, एसएसएल/टीएलएस सुरक्षा और बहु-प्राप्तकर्ता समर्थन प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>एसएमटीपी क्लाइंट (ई-मेल भेजना)</li>
+<li>IMAP क्लाइंट (ई-मेल पढ़ना)</li>
+<li>HTML और सादा पाठ ईमेल</li>
+<li>फ़ाइल अनुलग्नक</li>
+<li>एसएसएल/टीएलएस और STARTTLS समर्थन</li>
+<li>एकाधिक प्राप्तकर्ता</li>
+<li>सीसी और बीसीसी समर्थन</li>
+<li>एमआईएमई एन्कोडिंग</li>
+<li>बेस64 अटैचमेंट एन्कोडिंग</li>
+<li>प्रमाणीकरण</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>içe_aktar email
+
+// Basit e-posta gönder
+email.quick_send(
+    smtp_server: "smtp.gmail.com",
+    port: 587,
+    username: "your-email@gmail.com",
+    password: "your-password",
+    from: "sender@example.com",
+    to: "recipient@example.com",
+    subject: "Test Email",
+    body: "Hello, this is a test email!"
+)?
+
+io.println("E-posta gönderildi!")</code></pre>
+
+<h2>📦 एक ईमेल बनाना</h2>
+<pre><code>// Email objesi oluştur
+let mail = email.new()
+
+// Başlık bilgileri
+mail.set_from("sender@example.com")
+mail.add_to("recipient1@example.com")
+mail.add_to("recipient2@example.com")
+mail.add_cc("cc@example.com")
+mail.add_bcc("bcc@example.com")
+mail.set_subject("İş Toplantısı")
+
+// İçerik
+mail.set_text_body("Merhaba,\n\nToplantı 14:00'te başlayacak.")
+
+// Dosya eki
+mail.add_attachment("document.pdf", "path/to/document.pdf")?</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण 1: HTML ईमेल भेजना</h3>
+<pre><code>import email
+
+function send_welcome_email(user_email: yazı, user_name: yazı) -&gt; Sonuç[None, Err] do
+    // HTML içerik
+    let html_body = "
+        &lt;html&gt;
+        &lt;head&gt;
+            &lt;style&gt;
+                body { font-family: Arial, sans-serif; }
+                .header { background: #4CAF50; color: white; padding: 20px; }
+                .content { padding: 20px; }
+                .button { background: #008CBA; color: white; padding: 10px 20px;
+                         text-decoration: none; border-radius: 5px; }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;div class='header'&gt;
+                &lt;h1&gt;Hoş Geldiniz, {}!&lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;div class='content'&gt;
+                &lt;p&gt;BERK platformuna katıldığınız for teşekkürler.&lt;/p&gt;
+                &lt;p&gt;Hesabınızı aktive etmek for aşağıdaki butona tıklayın:&lt;/p&gt;
+                &lt;p&gt;
+                    &lt;a href='https://example.com/activate' class='button'&gt;
+                        Hesabı Aktive Et
+                    &lt;/a&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    ".formatla(user_name)
+    
+    // SMTP setup
+    let smtp = email.smtp_new(do
+        server: "smtp.gmail.com",
+        port: 587,
+        username: "noreply@example.com",
+        password: "app-password",
+        use_tls: true
+    end)
+    
+    // Email oluştur
+    let mail = email.new()
+    mail.set_from("noreply@example.com")
+    mail.add_to(user_email)
+    mail.set_subject("Hoş Geldiniz - Hesabınızı Aktive Edin")
+    mail.set_html_body(html_body)
+    
+    // Alternative plain text
+    mail.set_text_body("Hoş geldiniz! Hesabınızı aktive etmek for: https://example.com/activate")
+    
+    // Gönder
+    smtp.send(mail)?
+    smtp.disconnect()
+    
+    return Ok(None)
+end
+
+function main() do
+    send_welcome_email("user@example.com", "Ahmet Yılmaz")?
+    io.println("Hoş geldin e-postası gönderildi!")
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: थोक ईमेल भेजना (न्यूज़लेटर)</h3>
+<pre><code>import email, fs, csv
+
+function send_newsletter(subscribers_file: yazı, template_file: yazı) -&gt; Sonuç[sayı, Err] do
+    // Email template input
+    let template = fs.read_to_string(template_file)?
+    
+    // SMTP bağlantısı
+    let smtp = email.smtp_new(do
+        server: "smtp.mailgun.org",
+        port: 587,
+        username: "postmaster@example.com",
+        password: "mailgun-api-key",
+        use_tls: true
+    end)
+    
+    smtp.connect()?
+    
+    // Abone listesi input
+    let subscribers = csv.read_file(subscribers_file)?
+    let sent_count = 0
+    
+    her subscriber in subscribers for do
+        let email_addr = subscriber["email"]
+        let name = subscriber["name"]
+        
+        // Template'i kişiselleştir
+        let body = template
+            .replace("{name}", name)
+            .replace("{email}", email_addr)
+        
+        // Email gönder
+        let mail = email.new()
+        mail.set_from("newsletter@example.com")
+        mail.add_to(email_addr)
+        mail.set_subject("BERK v1.0.0 Yayınlandı! 🎉")
+        mail.set_html_body(body)
+        
+        try do
+            smtp.send(mail)?
+            sent_count += 1
+            io.println("✓ Gönderildi: {}", email_addr)
+        catch e do
+            io.eprintln("✗ Başarısız: {} - {}", email_addr, e)
+        end
+        
+        // Rate limiting (saniyede 5 email)
+        thread.sleep_ms(200)
+    end
+    
+    smtp.disconnect()
+    return Ok(sent_count)
+end
+
+function main() do
+    eşle send_newsletter("subscribers.csv", "newsletter_template.html") do
+        Ok(count) =&gt; io.println("Newsletter gönderildi: {} subscriber", count),
+        Err(e) =&gt; io.eprintln("Err: {}", e)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: IMAP ईमेल पढ़ना</h3>
+<pre><code>import email
+
+function check_new_orders() -&gt; Sonuç[Vektör[Order], Err] do
+    // IMAP bağlantısı
+    let imap = email.imap_new(do
+        server: "imap.gmail.com",
+        port: 993,
+        username: "orders@example.com",
+        password: "app-password",
+        use_ssl: true
+    end)
+    
+    imap.connect()?
+    
+    // INBOX match
+    imap.select_folder("INBOX")?
+    
+    // Okunmamış mesajları getir
+    let messages = imap.search("UNSEEN")?
+    
+    let orders = []
+    
+    her msg_id in messages for do
+        let msg = imap.fetch_message(msg_id)?
+        
+        // Subject'te "Order #" var mı kontrol et
+        if msg.subject.contains("Order #") then do
+            // Email body'from sipariş detaylarını parse et
+            let order = parse_order_email(msg)?
+            orders.push(order)
+            
+            // Mesajı okundu işaretle
+            imap.mark_read(msg_id)?
+            
+            // Siparişler klasörüne taşı
+            imap.move_message(msg_id, "Orders")?
+            
+            io.println("Yeni sipariş: #{}", order.order_id)
+        end
+    end
+    
+    imap.disconnect()
+    return Ok(orders)
+end
+
+struct Order do
+    order_id: yazı,
+    customer_email: yazı,
+    total_amount: kesir,
+    items: Vektör[yazı]
+end
+
+function parse_order_email(msg: email.Message) -&gt; Sonuç[Order, Err] do
+    // Email body'from sipariş bilgilerini parse et
+    let body = msg.text_body
+    
+    // Basitleştirilmiş parsing örneği
+    let order_id = regex.find(body, r"Order #(\d+)")?.group(1)
+    let amount_str = regex.find(body, r"Total: \$([0-9.]+)")?.group(1)
+    
+    return Ok(Order do
+        order_id: order_id,
+        customer_email: msg.from,
+        total_amount: amount_str.parse_float()?,
+        items: []
+    end)
+end
+
+function main() do
+    // Her 5 dakikada new siparişleri kontrol et
+    for do
+        eşle check_new_orders() do
+            Ok(orders) =&gt; do
+                if orders.len() &gt; 0 then do
+                    io.println("✓ {} new sipariş bulundu", orders.len())
+                    // Process orders...
+                end
+            end,
+            Err(e) =&gt; io.eprintln("Email kontrolü başarısız: {}", e)
+        end
+        
+        thread.sleep(300_000)  // 5 dakika
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 4: स्वचालित रिपोर्ट ईमेल (संलग्नक के साथ)</h3>
+<pre><code>import email, time, fs
+
+function generate_daily_report() -&gt; Sonuç[yazı, Err] do
+    // Rapor oluştur
+    let report = "
+        Günlük Sistem Raporu - {}
+        ========================
+        
+        Sistem Durumu: ✓ Normal
+        İşlem Sayısı: 1,234
+        Kullanıcı Sayısı: 567
+        Err Sayısı: 3
+        
+        Detaylar for ek dosyaya bakınız.
+    ".formatla(time.now().format("%Y-%m-%d"))
+    
+    // Raporu dosyaya kaydet
+    let filename = "report_{}.txt".formatla(time.now().format("%Y%m%d"))
+    fs.write(filename, report)?
+    
+    return Ok(filename)
+end
+
+function send_daily_report() -&gt; Sonuç[None, Err] do
+    // Rapor oluştur
+    let report_file = generate_daily_report()?
+    
+    // Email hazırla
+    let mail = email.new()
+    mail.set_from("system@example.com")
+    mail.add_to("admin@example.com")
+    mail.add_to("manager@example.com")
+    mail.set_subject("Günlük Sistem Raporu - {}", time.now().format("%Y-%m-%d"))
+    
+    let body = "
+        Merhaba,
+        
+        Günlük sistem raporunu ekte bulabilirsiniz.
+        
+        Herhangi bir sorun for lütfen sistem ekibiyle iletişime geçiniz.
+        
+        İyi çalışmalar,
+        Otomatik Rapor Sistemi
+    "
+    mail.set_text_body(body)
+    
+    // Raporu ek as push
+    mail.add_attachment("daily_report.txt", report_file)?
+    
+    // CSV formatında detaylı log push
+    mail.add_attachment("transaction_log.csv", "logs/transactions.csv")?
+    
+    // SMTP ile gönder
+    email.quick_send_with_attachments(
+        smtp_server: "smtp.office365.com",
+        port: 587,
+        username: "system@example.com",
+        password: "system-password",
+        mail: mail
+    )?
+    
+    io.println("Günlük rapor emaili gönderildi")
+    return Ok(None)
+end
+
+function main() do
+    // Her gün saat 09:00'da rapor gönder
+    for do
+        let now = time.now()
+        
+        if now.hour() == 9 and now.minute() == 0 then do
+            send_daily_report()?
+            thread.sleep(60_000)  // 1 dakika sleep (tekrar gönderme)
+        end
+        
+        thread.sleep(30_000)  // 30 saniye
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ एसएमटीपी कॉन्फ़िगरेशन</h2>
+<pre><code>// Gmail
+smtp_server: "smtp.gmail.com"
+port: 587  // TLS
+username: "your-email@gmail.com"
+password: "app-specific-password"  // 2FA enabled accounts
+
+// Outlook/Office365
+smtp_server: "smtp.office365.com"
+port: 587
+
+// Yahoo
+smtp_server: "smtp.mail.yahoo.com"
+port: 587
+
+// Custom SMTP
+smtp_server: "mail.example.com"
+port: 25   // Plain
+port: 465  // SSL
+port: 587  // TLS/STARTTLS</code></pre>
+
+<h2>📬 IMAP कॉन्फ़िगरेशन</h2>
+<pre><code>// Gmail IMAP
+imap_server: "imap.gmail.com"
+port: 993  // SSL
+use_ssl: doğru
+
+// Outlook IMAP
+imap_server: "outlook.office365.com"
+port: 993
+
+// Common IMAP Folders
+"INBOX"      // Gelen kutusu
+"Sent"       // Gönderilmiş
+"Drafts"     // Taslaklar
+"Trash"      // Çöp kutusu
+"Spam"       // Spam</code></pre>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li><strong>जीमेल लगीं:</strong>यदि 2FA सक्रिय है, तो "ऐप पासवर्ड" का उपयोग करें</li>
+<li><strong>दर सीमित करना:</strong>बल्क ईमेल के लिए प्रतीक्षा समय जोड़ें</li>
+<li><strong>अनुलग्नक:</strong>बड़ी फ़ाइलों के लिए आकार सीमा पर ध्यान दें</li>
+<li><strong>HTML ईमेल:</strong>इनलाइन सीएसएस का उपयोग करें, बाहरी सीएसएस समर्थित नहीं है</li>
+<li><strong>एसएमटीपी पोर्ट:</strong>25 (सादा), 465 (एसएसएल), 587 (टीएलएस)</li>
+<li><strong>त्रुटि प्रबंधन:</strong>नेटवर्क त्रुटियों को पकड़ें और पुनः प्रयास करें</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">http</code>- HTTP क्लाइंट</li>
+<li><code data-no-translate="true">network</code>-सॉकेट संचालन</li>
+<li><code data-no-translate="true">crypto</code>- एसएसएल/टीएलएस एन्क्रिप्शन</li>
+<li><code data-no-translate="true">encoding</code>- बेस64 एन्कोडिंग</li>
+<li><code data-no-translate="true">template</code>- ईमेल टेम्पलेट इंजन</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a> | 
+<a href="../hi_en_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

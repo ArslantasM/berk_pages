@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>सीएलआई - कमांड-लाइन पार्सर | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #3498db;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⌨️ सीएलआई</h1>
+<p>कमांड-लाइन तर्क पार्सर - जंग ताली-प्रेरित</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~300 पंक्तियाँ</span>
+<span class="stat-badge">~25 कार्य</span>
+<span class="stat-badge">ऑटो-HELP</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>सीएलआई मॉड्यूल एक आधुनिक कमांड लाइन तर्क पार्सर है जो रस्ट की क्लैप लाइब्रेरी से प्रेरित है। स्वचालित सहायता सृजन, उपआदेश, सत्यापन और प्रकार-सुरक्षित पार्सिंग प्रदान करता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>झंडे (बूलियन विकल्प): --verbose, -v</li>
+<li>विकल्प (कुंजी-मान): --आउटपुट=फ़ाइल.txt</li>
+<li>स्थितीय तर्क: &lt;इनपुट&gt; &lt;आउटपुट&gt;</li>
+<li>उपकमांड: गिट कमिट, गिट पुश</li>
+<li>स्वचालित --सहायता और --संस्करण</li>
+<li>डिफ़ॉल्ट मान और पर्यावरण चर</li>
+<li>मूल्य सत्यापन और अनुमत मूल्य</li>
+<li>स्पष्ट संदेशों के साथ त्रुटि प्रबंधन</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import cli
+
+function main(args: Vektör[yazı]) do
+    // CLI oluştur
+    let app = cli.new("myapp", "1.0.0", "My awesome application")
+    
+    // Arguments tanımla
+    app.add_flag("verbose", 'v', "Enable verbose output")
+    app.add_option("output", 'o', "Output file", varsayılan: "out.txt")
+    app.add_positional("input", "Input file", gerekli: true)
+    
+    // Parse et (otomatik --help çıkışı)
+    let parsed = app.parse(args)?
+    
+    // Değerleri use
+    if parsed.get_flag("verbose") then do
+        io.println("Verbose mode enabled")
+    end
+    
+    let input = parsed.get_positional(0)
+    let output = parsed.get_option("output")
+    io.println("Processing {} -&gt; {}", input, output)
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण 1: फ़ाइल कनवर्टर</h3>
+<pre><code>import cli, fs
+
+function main(args: Vektör[yazı]) do
+    let app = cli.new("converter", "1.0.0", "File format converter")
+    
+    // Flags
+    app.add_flag("overwrite", 'f', "Force overwrite existing files")
+    app.add_flag("verbose", 'v', "Verbose output")
+    app.add_flag("quiet", 'q', "Suppress output")
+    
+    // Options with validation
+    app.add_option("format", 't', "Target format", do
+        varsayılan: "json",
+        allowed_values: ["json", "xml", "yaml", "toml"]
+    end)
+    
+    app.add_option("output", 'o', "Output directory", do
+        varsayılan: ".",
+        env: "OUTPUT_DIR"  // Env variable fallback
+    end)
+    
+    // Positional
+    app.add_positional("files", "Input files", do
+        gerekli: true,
+        multiple: true  // Accept multiple files
+    end)
+    
+    let parsed = app.parse(args)?
+    
+    // Get values
+    let format = parsed.get_option("format")
+    let output_dir = parsed.get_option("output")
+    let files = parsed.get_positional_all("files")
+    let verbose = parsed.get_flag("verbose")
+    let overwrite = parsed.get_flag("overwrite")
+    
+    // Process files
+    her file in files for do
+        if verbose then do
+            io.println("Converting {} to {}...", file, format)
+        end
+        
+        let output_path = "{}/{}.{}".formatla(output_dir, 
+            fs.stem(file), format)
+        
+        if fs.exists(output_path) and overwrite else do
+            io.eprintln("Error: {} exists (use -f to overwrite)", output_path)
+            devam et
+        end
+        
+        // Convert file...
+        convert_file(file, output_path, format)?
+        
+        if verbose else and parsed.get_flag("quiet") else do
+            io.println("✓ {}", output_path)
+        end
+    end
+end
+
+// Output:
+// $ converter --help
+// converter 1.0.0
+// File format converter
+// 
+// USAGE:
+//     converter [OPTIONS] &lt;files&gt;...
+// 
+// OPTIONS:
+//     -t, --format &lt;value&gt;     Target format [default: json] [possible: json, xml, yaml, toml]
+//     -o, --output &lt;value&gt;     Output directory [default: .] [env: OUTPUT_DIR]
+//     -f, --overwrite          Force overwrite existing files
+//     -v, --verbose            Verbose output
+//     -q, --quiet              Suppress output
+//     -h, --help               Print help
+//     -V, --version            Print version</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: गिट-शैली उपकमांड</h3>
+<pre><code>import cli
+
+function main(args: Vektör[yazı]) do
+    let app = cli.new("git-like", "1.0.0", "Git-style CLI tool")
+    
+    // Global flags
+    app.add_flag("verbose", 'v', "Verbose output")
+    
+    // Subcommands
+    let commit = app.add_subcommand("commit", "Record changes")
+    commit.add_option("message", 'm', "Commit message", gerekli: true)
+    commit.add_flag("amend", to', "Amend previous commit")
+    commit.add_flag("all", 'A', "Stage all changes")
+    
+    let push = app.add_subcommand("push", "Push to remote")
+    push.add_option("remote", 'r', "Remote name", varsayılan: "origin")
+    push.add_option("branch", 'b', "Branch name")
+    push.add_flag("force", 'f', "Force push")
+    
+    let log = app.add_subcommand("log", "Show commit history")
+    log.add_option("limit", 'n', "Number of commits", varsayılan: "10")
+    log.add_flag("oneline", None, "One commit per line")
+    
+    // Parse
+    let parsed = app.parse(args)?
+    
+    // Handle subcommands
+    eşle parsed.subcommand() do
+        Some("commit") =&gt; do
+            let msg = parsed.get_option("message")
+            let amend = parsed.get_flag("amend")
+            let all = parsed.get_flag("all")
+            
+            if all then do
+                io.println("Staging all changes...")
+            end
+            
+            if amend then do
+                io.println("Amending commit: {}", msg)
+            else do
+                io.println("Creating commit: {}", msg)
+            end
+        end,
+        
+        Some("push") =&gt; do
+            let remote = parsed.get_option("remote")
+            let branch = parsed.get_option_or("branch", "main")
+            let force = parsed.get_flag("force")
+            
+            if force then do
+                io.println("Force pushing to {}/{}", remote, branch)
+            else do
+                io.println("Pushing to {}/{}", remote, branch)
+            end
+        end,
+        
+        Some("log") =&gt; do
+            let limit = parsed.get_option("limit").parse_int()?
+            let oneline = parsed.get_flag("oneline")
+            
+            io.println("Showing last {} commits:", limit)
+            // Show log...
+        end,
+        
+        None =&gt; do
+            io.eprintln("No subcommand provided. Use --help for usage.")
+            sys.exit(1)
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ तर्क प्रकार</h2>
+<pre><code>// Flag (boolean)
+app.add_flag(name: yazı, short: char, help: yazı)
+
+// Option (string value)
+app.add_option(name: yazı, short: char, help: yazı, config: OptionConfig)
+
+struct OptionConfig do
+    varsayılan: İsteğe_Bağlı[yazı],
+    gerekli: bool,
+    env: İsteğe_Bağlı[yazı],
+    allowed_values: İsteğe_Bağlı[Vektör[yazı]]
+end
+
+// Positional (required arguments)
+app.add_positional(name: yazı, help: yazı, config: PositionalConfig)
+
+struct PositionalConfig do
+    gerekli: bool,
+    multiple: bool  // Accept multiple values
+end</code></pre>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">sys</code>- कमांड-लाइन तर्क</li>
+<li><code data-no-translate="true">terminal</code>- रंगीन आउटपुट</li>
+<li><code data-no-translate="true">string</code>- स्ट्रिंग पार्सिंग</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

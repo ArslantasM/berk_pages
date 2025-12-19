@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>एचएएल - हार्डवेयर एब्स्ट्रैक्शन लेयर | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.hal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin:30px 0}
+.hal-card{background:var(--sidebar-bg);padding:20px;border-radius:8px;border-left:4px solid #e74c3c;transition:transform 0.2s}
+.hal-card:hover{transform:translateY(-5px)}
+.hal-card h3{margin:0 0 10px 0;color:var(--fg)}
+.hal-card p{margin:5px 0;font-size:0.9em;color:var(--fg)}
+.platform-badge{display:inline-block;background:#e74c3c;color:white;padding:3px 10px;border-radius:12px;font-size:0.8em;margin:2px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔧 एचएएल - हार्डवेयर एब्स्ट्रैक्शन लेयर</h1>
+<p>एंबेडेड सिस्टम के लिए हार्डवेयर एब्स्ट्रैक्शन परत</p>
+<div style="margin-top:20px">
+<span class="platform-badge">एसटीएम32</span>
+<span class="platform-badge">ईएसपी32</span>
+<span class="platform-badge">एआरएम कॉर्टेक्स-एम</span>
+<span class="platform-badge">RISC-वी</span>
+<span class="platform-badge">नंगे धातु</span>
+</div>
+</div>
+
+<h2>📋 एचएएल मॉड्यूल (21 मॉड्यूल)</h2>
+
+<div class="hal-grid">
+<div class="hal-card">
+<h3>🔌 जीपीओ</h3>
+<p><strong>381 पंक्तियाँ</strong>- जीपीआईओ पिन नियंत्रण</p>
+<p>डिजिटल I/O, इनपुट/आउटपुट मोड, इंटरप्ट, पुल-अप/डाउन</p>
+</div>
+
+<div class="hal-card">
+<h3>📊 एडीसी</h3>
+<p><strong>400 पंक्तियाँ</strong>- एनॉलॉग से डिजिटल परिवर्तित करने वाला उपकरण</p>
+<p>एडीसी चैनल, नमूनाकरण, रिज़ॉल्यूशन, डीएमए समर्थन</p>
+</div>
+
+<div class="hal-card">
+<h3>📈 डैक</h3>
+<p><strong>391 पंक्तियाँ</strong>- डिजिटल-टू-एनालॉग कनवर्टर</p>
+<p>डीएसी आउटपुट, तरंगरूप उत्पादन, वोल्टेज नियंत्रण</p>
+</div>
+
+<div class="hal-card">
+<h3>🔄 एस.पी.आई</h3>
+<p><strong>394 पंक्तियाँ</strong>- सीरियल परिधीय इंटरफ़ेस</p>
+<p>एसपीआई मास्टर/स्लेव, फुल-डुप्लेक्स, डीएमए ट्रांसफर</p>
+</div>
+
+<div class="hal-card">
+<h3>🔗 i2c</h3>
+<p><strong>396 पंक्तियाँ</strong>- अंतर-एकीकृत सर्किट</p>
+<p>I2C बस, मल्टी-मास्टर, 7/10-बिट एड्रेसिंग</p>
+</div>
+
+<div class="hal-card">
+<h3>📡usart</h3>
+<p><strong>407 पंक्तियाँ</strong>-यूनिवर्सल सीरियल कम्युनिकेशन</p>
+<p>यूएआरटी/यूएसएआरटी, बॉड दरें, समता, डीएमए</p>
+</div>
+
+<div class="hal-card">
+<h3>🚗जिंदगी</h3>
+<p><strong>383 पंक्तियाँ</strong>- नियंत्रक क्षेत्र नेटवर्क</p>
+<p>CAN बस, फ़िल्टर, संदेश कतार, त्रुटि प्रबंधन</p>
+</div>
+
+<div class="hal-card">
+<h3>⏱️ टाइमर</h3>
+<p><strong>366 पंक्तियाँ</strong>- हार्डवेयर टाइमर</p>
+<p>पीडब्लूएम, इनपुट कैप्चर, आउटपुट तुलना, एनकोडर मोड</p>
+</div>
+
+<div class="hal-card">
+<h3>🕐आरटीसी</h3>
+<p><strong>379 पंक्तियाँ</strong>- वास्तविक समय घड़ी</p>
+<p>दिनांक/समय, अलार्म, कैलेंडर, बैकअप रजिस्टर</p>
+</div>
+
+<div class="hal-card">
+<h3>💾dma</h3>
+<p><strong>391 पंक्तियाँ</strong>- प्रत्यक्ष मेमोरी एक्सेस</p>
+<p>मेमोरी-टू-मेमोरी, पेरिफेरल-टू-मेमोरी स्थानांतरण</p>
+</div>
+
+<div class="hal-card">
+<h3>⚡ इंट</h3>
+<p><strong>366 पंक्तियाँ</strong>- व्यवधान नियंत्रक</p>
+<p>एनवीआईसी, प्राथमिकताओं को बाधित करना, सक्षम/अक्षम करना</p>
+</div>
+
+<div class="hal-card">
+<h3>🧠कोर</h3>
+<p><strong>367 पंक्तियाँ</strong>- सीपीयू कोर फ़ंक्शंस</p>
+<p>सिस्टम इनिट, क्लॉक कॉन्फ़िगरेशन, पावर मोड</p>
+</div>
+
+<div class="hal-card">
+<h3>🎛️ रज्स</h3>
+<p><strong>366 पंक्तियाँ</strong>- प्रवेश रजिस्टर करें</p>
+<p>मेमोरी-मैप्ड रजिस्टर, बिट हेरफेर</p>
+</div>
+
+<div class="hal-card">
+<h3>🔧 कैसे</h3>
+<p><strong>366 पंक्तियाँ</strong>-हार्डवेयर उपयोगिताएँ</p>
+<p>देरी, परमाणु संचालन, महत्वपूर्ण अनुभाग</p>
+</div>
+
+<div class="hal-card">
+<h3>📦विशाल</h3>
+<p><strong>371 पंक्तियाँ</strong>-डिवाइस प्रबंधन</p>
+<p>डिवाइस ट्री, संसाधन आवंटन</p>
+</div>
+
+<div class="hal-card">
+<h3>🖥️मेज़बान</h3>
+<p><strong>367 पंक्तियाँ</strong>-मेजबान संचार</p>
+<p>यूएसबी होस्ट, डिबगिंग इंटरफ़ेस</p>
+</div>
+
+<div class="hal-card">
+<h3>🔀पाइप</h3>
+<p><strong>369 पंक्तियाँ</strong>-डेटा पाइप्स</p>
+<p>स्ट्रीम प्रोसेसिंग, बफरिंग</p>
+</div>
+
+<div class="hal-card">
+<h3>📝 enum</h3>
+<p><strong>366 पंक्तियाँ</strong>- गिनती</p><p>हार्डवेयर एनम, स्थिरांक</p>
+</div>
+
+<div class="hal-card">
+<h3>⚠️ यानी</h3>
+<p><strong>366 पंक्तियाँ</strong>- व्यवधान की घटनाएँ</p>
+<p>इवेंट हैंडलिंग, कॉलबैक</p>
+</div>
+
+<div class="hal-card">
+<h3>🎵ट्रांसक</h3>
+<p><strong>366 पंक्तियाँ</strong>- ट्रांसीवर</p>
+<p>आरएफ ट्रांसीवर, वायरलेस संचार</p>
+</div>
+
+<div class="hal-card">
+<h3>📚 एसटीडी</h3>
+<p><strong>366 पंक्तियाँ</strong>-मानक एचएएल लाइब्रेरी</p>
+<p>सामान्य प्रकार, उपयोगिताएँ</p>
+</div>
+</div>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::gpio, hal::timer
+
+// GPIO LED blink
+let led_pin = gpio.pin_init(gpio.PORT_A, 5, gpio.MODE_OUTPUT)
+gpio.pin_write(led_pin, gpio.HIGH)
+
+// Timer PWM
+let pwm = timer.pwm_init(timer.TIM1, timer.CH1, 1000)  // 1kHz
+timer.pwm_set_duty(pwm, 50)  // 50% duty cycle
+timer.pwm_start(pwm)</code></pre>
+
+<h2>💡 उदाहरण: STM32 LED ब्लिंक</h2>
+<pre><code>import hal::core, hal::gpio, hal::timer
+
+function main() do
+    // System initialization
+    core.system_init()
+    core.clock_config(72_000_000)  // 72MHz
+    
+    // GPIO setup
+    gpio.clock_enable(gpio.PORT_C)
+    let led = gpio.pin_init(gpio.PORT_C, 13, do
+        mode: gpio.MODE_OUTPUT,
+        speed: gpio.SPEED_LOW,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Blink loop
+    loop do
+        gpio.pin_toggle(led)
+        core.delay_ms(500)
+    end
+end</code></pre>
+
+<h2>💡 उदाहरण: एडीसी रीडिंग</h2>
+<pre><code>import hal::adc, hal::gpio, hal::core
+
+function read_temperature() -&gt; float do
+    // ADC setup
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    end)
+    
+    // GPIO for analog input
+    let pin = gpio.pin_init(gpio.PORT_A, 0, gpio.MODE_ANALOG)
+    
+    // Configure channel
+    adc.channel_config(adc1, adc.CHANNEL_0, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Read value
+    adc.start(adc1)
+    let raw = adc.read(adc1)
+    
+    // Convert to temperature (example)
+    let voltage = raw.float() * 3.3 / 4095.0
+    let temp = (voltage - 0.76) / 0.0025 + 25.0
+    
+    return temp
+end
+
+function main() do
+    core.system_init()
+    
+    loop do
+        let temp = read_temperature()
+        io.println("Temperature: " + temp.to_string() + "°C")
+        core.delay_ms(1000)
+    end
+end</code></pre>
+
+<h2>💡 उदाहरण: I2C OLED डिस्प्ले</h2>
+<pre><code>import hal::i2c, hal::gpio
+
+const OLED_ADDR = 0x3C
+
+function oled_init(i2c: I2CHandle) do
+    // Initialization sequence
+    let init_cmds = [
+        0xAE,  // Display off
+        0xD5, 0x80,  // Clock divide
+        0xA8, 0x3F,  // Multiplex
+        0xD3, 0x00,  // Display offset
+        0x40,  // Start line
+        0x8D, 0x14,  // Charge pump
+        0x20, 0x00,  // Memory mode
+        0xA1,  // Segment remap
+        0xC8,  // COM scan direction
+        0xDA, 0x12,  // COM pins
+        0x81, 0xCF,  // Contrast
+        0xD9, 0xF1,  // Pre-charge
+        0xDB, 0x40,  // VCOMH deselect
+        0xA4,  // Display resume
+        0xA6,  // Normal display
+        0xAF   // Display on
+    ]
+    
+    for cmd in init_cmds do
+        i2c.write_byte(i2c, OLED_ADDR, 0x00, cmd)
+    end
+end
+
+function main() do
+    // I2C setup
+    gpio.pin_init(gpio.PORT_B, 6, gpio.MODE_AF_OD)  // SCL
+    gpio.pin_init(gpio.PORT_B, 7, gpio.MODE_AF_OD)  // SDA
+    
+    let i2c1 = i2c.init(i2c.I2C1, do
+        speed: i2c.SPEED_100KHZ,
+        mode: i2c.MODE_I2C
+    end)
+    
+    oled_init(i2c1)
+    
+    // Display text
+    oled_print(i2c1, "BERK v1.0.0")
+    oled_print(i2c1, "Embedded!")
+end</code></pre>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32:</strong>F0, F1, F2, F3, F4, F7, H7, L0, L1, L4, L5</li>
+<li><strong>ईएसपी32:</strong>ईएसपी32, ईएसपी32-एस2, ईएसपी32-एस3, ईएसपी32-सी3</li>
+<li><strong>नॉर्डिक:</strong>एनआरएफ51, एनआरएफ52, एनआरएफ53</li>
+<li><strong>जोखिम-V:</strong>जीडी32वीएफ103, सीएच32वी103</li>
+<li><strong>एआरएम कॉर्टेक्स-एम:</strong>M0, M0+, M3, M4, M7, M33</li>
+</ul>
+
+<h2>🔗संबंधित संसाधन</h2>
+<ul>
+<li><a href="../docs/hi_en_hal-guide.html">एचएएल डेवलपर गाइड</a></li>
+<li><a href="../docs/hi_en_embedded-systems.html">एंबेडेड सिस्टम दस्तावेज़ीकरण</a></li>
+<li><a href="../docs/hi_en_platform-support.html">प्लेटफ़ॉर्म समर्थन मैट्रिक्स</a></li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← सभी मॉड्यूल</a> | 
+<a href="../hi_en_index-en.html">घर</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

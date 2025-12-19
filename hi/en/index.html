@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BERK - Modern systems programming language with groundbreaking performance. Choose your language to get started.">
+    <meta name="keywords" content="BERK, programming language, systems programming, LLVM, performance, bilingual">
+    <meta name="theme-color" content="#1a1d2e">
+    <title>बर्क - अपनी भाषा चुनें</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&amp;display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e8eaed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .gradient-1 {
+            background: radial-gradient(circle, #4a90e2 0%, transparent 70%);
+            top: -250px;
+            left: -250px;
+            animation-delay: 0s;
+        }
+
+        .gradient-2 {
+            background: radial-gradient(circle, #5ba3f5 0%, transparent 70%);
+            bottom: -250px;
+            right: -250px;
+            animation-delay: 5s;
+        }
+
+        .gradient-3 {
+            background: radial-gradient(circle, #764ba2 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-30px, 50px) scale(0.9);
+            }
+            75% {
+                transform: translate(40px, 30px) scale(1.05);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo */
+        .logo-container {
+            margin-bottom: 30px;
+            animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            filter: drop-shadow(0 10px 40px rgba(74, 144, 226, 0.4));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+            filter: drop-shadow(0 15px 50px rgba(74, 144, 226, 0.6));
+        }
+
+        /* Text Content */
+        .title {
+            font-size: clamp(4rem, 10vw, 7rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #4a90e2 0%, #5ba3f5 50%, #88c4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2);
+            }
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: #b8bcc8;
+            font-weight: 400;
+            margin-bottom: 50px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Language Cards */
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .lang-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(74, 144, 226, 0.3);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .lang-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .lang-card:hover::before {
+            left: 100%;
+        }
+
+        .lang-card:hover {
+            transform: translateY(-5px);
+            border-color: #4a90e2;
+            background: rgba(74, 144, 226, 0.12);
+            box-shadow: 0 10px 40px rgba(74, 144, 226, 0.4);
+        }
+
+        .lang-flag {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .lang-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e8eaed;
+            letter-spacing: 0.5px;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #5ba3f5;
+            margin-bottom: 30px;
+            font-weight: 600;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+            }
+        }
+
+        /* Container spacing */
+        .container {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                width: 140px;
+                height: 140px;
+            }
+
+            .title {
+                font-size: 3.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                padding: 0 30px;
+            }
+
+            .cta-button {
+                padding: 16px 40px;
+                font-size: 1.1rem;
+            }
+
+            .version-badge {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                padding: 0 20px;
+            }
+
+            .language-selector {
+                gap: 15px;
+            }
+
+            .lang-card {
+                padding: 14px 28px;
+                min-width: 100px;
+            }
+
+            .lang-flag {
+                font-size: 1.3rem;
+            }
+
+            .lang-name {
+                font-size: 1rem;
+            }
+        }
+
+        /* Accessibility */
+        .lang-card:focus {
+            outline: 3px solid #4a90e2;
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-gradient gradient-1"></div>
+        <div class="bg-gradient gradient-2"></div>
+        <div class="bg-gradient gradient-3"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="version-badge">v1.0.0 Production Ready</div>
+        
+        <div class="logo-container">
+            <svg class="logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <!-- Left Brace -->
+                <path d="M 80 128 Q 60 128 60 148 L 60 210 Q 60 230 40 230 Q 60 230 60 250 L 60 312 Q 60 332 80 332" fill="none" stroke="#5ba3f5" stroke-width="24" stroke-linecap="round"></path>
+                
+                <!-- Right Brace -->
+                <path d="M 432 128 Q 452 128 452 148 L 452 210 Q 452 230 472 230 Q 452 230 452 250 L 452 312 Q 452 332 432 332" fill="none" stroke="#5ba3f5" stroke-width="24" stroke-linecap="round"></path>
+                
+                <!-- Lightning Bolt (10% larger, centered) -->
+                <g transform="translate(256, 240) scale(1.10) translate(-256, -240)">
+                    <path d="M 280 100 L 200 250 L 250 250 L 230 380 L 340 200 L 280 200 Z" fill="url(#lightning-gradient)" stroke="#ffffff" stroke-width="4"></path>
+                </g>
+                
+                <!-- Gradient Definition -->
+                <defs>
+                    <linearGradient id="lightning-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1"></stop>
+                        <stop offset="50%" style="stop-color:#5ba3f5;stop-opacity:1"></stop>
+                        <stop offset="100%" style="stop-color:#4a90e2;stop-opacity:1"></stop>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+
+        <h1 class="title">BERK</h1>
+        <p class="subtitle">MODERN SYSTEMS PROGRAMMING LANGUAGE</p>
+
+        <div class="language-selector">
+            <a href="en_intro.html" class="lang-card" aria-label="Continue in English">
+                <span class="lang-name">EN</span>
+            </a>
+
+            <a href="en_intro.html" class="lang-card" aria-label="Türkçe olarak devam et">
+                <span class="lang-name">TR</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Keyboard navigation for language cards
+        document.querySelectorAll('.lang-card').forEach(card => {
+            card.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.location.href = this.getAttribute('href');
+                }
+            });
+        });
+
+        // Detect browser language and highlight preferred option
+        const userLang = navigator.language || navigator.userLanguage;
+        if (userLang.startsWith('tr')) {
+            document.querySelector('a[href="intro.html"]').style.borderColor = '#4a90e2';
+            document.querySelector('a[href="intro.html"]').style.background = 'rgba(74, 144, 226, 0.08)';
+        } else {
+            document.querySelector('a[href="en_intro.html"]').style.borderColor = '#4a90e2';
+            document.querySelector('a[href="en_intro.html"]').style.background = 'rgba(74, 144, 226, 0.08)';
+        }
+    </script>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

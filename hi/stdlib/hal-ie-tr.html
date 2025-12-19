@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::ie - व्यवधान घटनाएँ | बर्क</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚠️ राज्य::अर्थात</h1>
+<p>इवेंट हैंडलिंग में बाधा डालें</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 पंक्तियाँ</span>
+<span class="stat-badge">घटनाएँ</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>इवेंट हैंडलर और कॉलबैक प्रबंधन को बाधित करें।</p>
+
+<h2>🚀 उपयोग</h2>
+<pre><code>import hal::ie
+
+// Register event handler
+ie.register(ie.EVENT_GPIO_EXTI0, my_handler)
+
+// Unregister
+ie.unregister(ie.EVENT_GPIO_EXTI0)
+
+// Trigger software event
+ie.trigger(ie.EVENT_TIM2_UPDATE)
+
+// Check pending events
+if ie.is_pending(ie.EVENT_USART1_RX) then do
+    ie.clear_pending(ie.EVENT_USART1_RX)
+end</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>구문 및 구조 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/basics/syntax.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sözdizimi-ve-yapı"><a class="header" href="#sözdizimi-ve-yapı">구문 및 구조</a></h1>
+<p>BERK 프로그래밍 언어의 기본 구문 규칙 및 코드 구조.</p>
+<h2 id="temel-yapı"><a class="header" href="#temel-yapı">기본 구조</a></h2>
+<p>모든 BERK 프로그램은<code data-no-translate="true">ana()</code>(또는<code data-no-translate="true">main()</code>) 다음 함수에서 시작합니다.</p>
+<pre><code class="language-berk">function main() {
+    print("Merhaba Dünya!")
+}
+</code></pre>
+<p>영어 구문:</p>
+<pre><code class="language-berk">function main() {
+    print("Hello World!")
+}
+</code></pre>
+<h2 id="İfade-sonlandırıcılar"><a class="header" href="#İfade-sonlandırıcılar">표현식 종결자</a></h2>
+<p>BERK의 진술<strong>세미콜론이 필요하지 않습니다</strong>. 각 줄은 표현식으로 평가됩니다.</p>
+<pre><code class="language-berk">let x = 10
+let y = 20
+let sum = x + y
+print(sum)
+</code></pre>
+<p>여러 줄 표현식에서<strong>백슬래시</strong>당신은 사용할 수 있습니다 :</p>
+<pre><code class="language-berk">let uzunMetin = "Bu çok uzun bir yazı \
+                      birden fazla satıra yayılıyor"
+</code></pre>
+<h2 id="blok-yapıları"><a class="header" href="#blok-yapıları">블록 구조</a></h2>
+<p>블록<strong>중괄호</strong>이는 다음과 같이 정의됩니다.</p>
+<pre><code class="language-berk">function hesapla() {
+    let a = 5
+    let b = 3
+    
+    if a &gt; b {
+        print("a büyük")
+    } else {
+        print("b büyük or eşit")
+    }
+}
+</code></pre>
+<h2 id="İsimlendirme-kuralları"><a class="header" href="#İsimlendirme-kuralları">명명 규칙</a></h2>
+<h3 id="değişkenler-ve-fonksiyonlar"><a class="header" href="#değişkenler-ve-fonksiyonlar">변수와 함수</a></h3>
+<ul>
+<li><strong>뱀 케이스</strong>(권장):<code data-no-translate="true">let kullanıcı_adı = "Ahmet"</code></li>
+<li><strong>낙타 케이스</strong>(대안):<code data-no-translate="true">let kullanıcıAdı = "Ahmet"</code></li>
+</ul>
+<h3 id="sabitler"><a class="header" href="#sabitler">상수</a></h3>
+<ul>
+<li><strong>비명_SNAKE_CASE</strong>: <code data-no-translate="true">const MAX_DEĞER = 100</code></li>
+</ul>
+<h3 id="türler"><a class="header" href="#türler">장르</a></h3>
+<ul>
+<li><strong>파스칼케이스</strong>: <code data-no-translate="true">tür KullanıcıBilgisi = struct { ... }</code></li>
+</ul>
+<pre><code class="language-berk">// İyi örnekler
+let count_occurrences = 0
+let toplam_fiyat = 99.99
+const PI_DEĞERI = 3.14159
+
+function hesapla_alan(yarıçap: number) -&gt; number {
+    return PI_DEĞERI * yarıçap * yarıçap
+}
+
+// Kaçınılması gerekenler
+let s = 0              // Çok kısa, anlaşılmaz
+let ÖzelSayı123 = 5    // Karışık format
+</code></pre>
+<h2 id="girinti-indentation"><a class="header" href="#girinti-indentation">톱니 모양</a></h2>
+<p>BERK는 들여쓰기에 있어서 유연성이 있지만,<strong>4칸</strong>권장 용도:</p>
+<pre><code class="language-berk">function kontrol_et(x: number) {
+    if x &gt; 0 {
+        print("Pozitif")
+        if x &gt; 100 {
+            print("Çok büyük!")
+        }
+    } else if x &lt; 0 {
+        print("Negatif")
+    } else {
+        print("Sıfır")
+    }
+}
+</code></pre>
+<h2 id="boşluklar-whitespace"><a class="header" href="#boşluklar-whitespace">공백</a></h2>
+<p>연산자 주위에 공백을 사용하면 가독성이 향상됩니다.</p>
+<pre><code class="language-berk">// Tercih edilen
+let sonuç = a + b * c
+
+// Geçerli ama okunabilir not
+let sonuç=a+b*c
+</code></pre>
+<h2 id="satır-uzunluğu"><a class="header" href="#satır-uzunluğu">줄 길이</a></h2>
+<p><strong>80~100자</strong>한도를 권장합니다. 다음과 같이 긴 줄을 나눌 수 있습니다:</p>
+<pre><code class="language-berk">let çokUzunDeğişken = birinciFonksiyon(parametere1, parametre2)
+                            + ikinciFonksiyon(parametre3)
+                            + üçüncüFonksiyon(parametre4)
+</code></pre>
+<h2 id="İki-dilli-syntax"><a class="header" href="#İki-dilli-syntax">이중 언어 구문</a></h2>
+<p>BERK의 가장 중요한 기능<strong>이중 언어 구문</strong>지원입니다. 터키어와 영어 키워드를 혼합할 수 있습니다.</p>
+<pre><code class="language-berk">// Tamamen Türkçe
+function hesapla(x: number) -&gt; number {
+    if x &lt; 0 {
+        return Err "Negatif sayı!"
+    }
+    return x * x
+}
+
+// Tamamen İngilizce
+function calculate(x: Number) -&gt; Number {
+    if x &lt; 0 {
+        error return "Negative number!"
+    }
+    return x * x
+}
+
+// Karışık (geçerli ama önerilmez)
+function hesapla(x: number) -&gt; Number {
+    if x &lt; 0 {
+        return Err "Negative!"
+    }
+    return x * x
+}
+</code></pre>
+<p><strong>모범 사례</strong>: 프로젝트에서 단일 언어(터키어 또는 영어)를 선택하세요.</p>
+<h2 id="modüller"><a class="header" href="#modüller">모듈</a></h2>
+<p>각 파일은 모듈로 간주됩니다.</p>
+<pre><code class="language-berk">// matematik.berk
+export function topla(a: number, b: number) -&gt; number {
+    return a + b
+}
+
+export const PI = 3.14159
+</code></pre>
+<pre><code class="language-berk">// main.berk
+import matematik
+
+function main() {
+    print(matematik.topla(5, 3))
+    print(matematik.PI)
+}
+</code></pre>
+<h2 id="Örnek-tam-program"><a class="header" href="#Örnek-tam-program">예: 전체 프로그램</a></h2>
+<pre><code class="language-berk">// Fibonacci sayı dizisi hesaplama
+
+import math
+
+// Recursive versiyonu
+function fib_recursive(n: number) -&gt; number {
+    if n &lt;= 1 {
+        return n
+    }
+    return fib_recursive(n - 1) + fib_recursive(n - 2)
+}
+
+// Iterative versiyonu (daha verimli)
+function fib_iterative(n: number) -&gt; number {
+    if n &lt;= 1 {
+        return n
+    }
+    
+    let a = 0
+    let b = 1
+    
+    for i 2'from n+1'e to {
+        let temp = a + b
+        a = b
+        b = temp
+    }
+    
+    return b
+}
+
+function main() {
+    const N = 10
+    
+    print("İlk ", N, " Fibonacci sayısı:")
+    
+    for i 0'from N'ye to {
+        print("fib(", i, ") = ", fib_iterative(i))
+    }
+}
+</code></pre>
+<h2 id="stil-rehberi-Özeti"><a class="header" href="#stil-rehberi-Özeti">스타일 가이드 요약</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>요소</th><th>스타일</th><th>예</th></tr></thead><tbody>
+<tr><td>변하기 쉬운</td><td>뱀 케이스</td><td><code data-no-translate="true">kullanıcı_adı</code></td></tr>
+<tr><td>기능</td><td>뱀 케이스</td><td><code data-no-translate="true">hesapla_toplam()</code></td></tr>
+<tr><td>아직</td><td>비명_SNAKE_CASE</td><td><code data-no-translate="true">MAX_DEĞER</code></td></tr>
+<tr><td>유형</td><td>파스칼케이스</td><td><code data-no-translate="true">KullanıcıTipi</code></td></tr>
+<tr><td>휴게</td><td>4칸</td><td><code data-no-translate="true">    kod</code></td></tr>
+<tr><td>줄 길이</td><td>80~100자</td><td>-</td></tr>
+<tr><td>운영자 격차</td><td>예</td><td><code data-no-translate="true">a + b</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="bir-sonraki"><a class="header" href="#bir-sonraki">다음</a></h2>
+<ul>
+<li><a href="./ko_en_variables.html">변수와 상수</a></li>
+<li><a href="./ko_en_data-types.html">데이터 유형</a></li>
+<li><a href="./ko_en_operators.html">운영자</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../ko_en_first-program.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../basics/ko_en_variables.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../ko_en_first-program.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../basics/ko_en_variables.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::pwm - PWM Signal Generation | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #3498db;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 state::pwm</h1>
+<p>Pulse Width Modulation - PWM Signal Generation</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~320 lines</span>
+<span class="stat-badge">~12 functions</span>
+<span class="stat-badge">STM32/GD32/ESP32</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The PWM module produces variable width digital signals using timer hardware. Used for motor speed control, LED brightness adjustment, servo control and analog output simulation.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Configurable frequency (1 Hz - 1 MHz+)</li>
+<li>0-100% duty cycle control</li>
+<li>Multi-channel support (up to 4 channels)</li>
+<li>Complementary output (with dead-time)</li>
+<li>Hardware sync and trigger</li>
+<li>DMA supported waveform generation</li>
+<li>One-pulse mode</li>
+<li>Encoder interface mode</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::pwm, hal::gpio
+
+// PWM pin setup (TIM3 CH1 -&gt; PA6)
+gpio.pin_init(gpio.PORT_A, 6, do
+    mode: gpio.MODE_AF,
+    af: gpio.AF2_TIM3
+end)
+
+// PWM initialization (1 kHz, 50% duty)
+let pwm_handle = pwm.init(pwm.TIM3, pwm.CHANNEL_1, do
+    frequency: 1000,      // 1 kHz
+    duty_cycle: 50,       // 50%
+    polarity: pwm.ACTIVE_HIGH,
+    mode: pwm.MODE_PWM1
+end)
+
+// Start PWM
+pwm.start(pwm_handle)
+
+// Update duty cycle
+pwm.set_duty_cycle(pwm_handle, 75)  // 75%</code></pre>
+
+<h2>📦 Types and Enums</h2>
+<pre><code>// Timer Seçimi
+enum Timer {
+    TIM1, TIM2, TIM3, TIM4, TIM5,
+    TIM8, TIM9, TIM10, TIM11, TIM12
+}
+
+// PWM Kanalları
+enum Channel {
+    CHANNEL_1, CHANNEL_2, CHANNEL_3, CHANNEL_4
+}
+
+// PWM Modları
+enum Mode {
+    PWM1,  // Active when CNT &lt; CCR
+    PWM2   // Active when CNT &gt; CCR
+}
+
+// Polarity
+enum Polarity {
+    ACTIVE_HIGH,  // High is active
+    ACTIVE_LOW    // Low is active
+}
+
+// Alignment Mode
+enum Alignment {
+    EDGE,    // Edge-aligned
+    CENTER1, // Center-aligned mode 1
+    CENTER2, // Center-aligned mode 2
+    CENTER3  // Center-aligned mode 3
+}
+
+struct PWMConfig do
+    frequency: sayı,        // Hz (1-1000000)
+    duty_cycle: kesir,      // 0.0-100.0
+    polarity: Polarity,
+    mode: Mode,
+    alignment: Alignment
+end</code></pre>
+
+<h2>💡 Example 1: LED Dimming (Brightness Control)</h2>
+<div class="example-box">
+<h3>Controlling LED brightness with PWM</h3>
+<pre><code>import hal::pwm, hal::core
+
+function led_dimmer() do
+    // PWM setup (10 kHz)
+    let led_pwm = pwm.init(pwm.TIM2, pwm.CHANNEL_1, do
+        frequency: 10000,
+        duty_cycle: 0,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    end)
+    
+    pwm.start(led_pwm)
+    
+    // Fade in/out loop
+    for do
+        // Fade in (0% -&gt; 100%)
+        for brightness in 0..100 for do
+            pwm.set_duty_cycle(led_pwm, brightness.kesir())
+            core.delay_ms(10)
+        end
+        
+        core.delay_ms(500)
+        
+        // Fade out (100% -&gt; 0%)
+        for brightness in (0..100).reverse() for do
+            pwm.set_duty_cycle(led_pwm, brightness.kesir())
+            core.delay_ms(10)
+        end
+        
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<h2>💡 Example 2: DC Motor Speed ​​Control</h2>
+<div class="example-box">
+<h3>Motor control with L298N driver</h3>
+<pre><code>import hal::pwm, hal::gpio
+
+struct Motor do
+    pwm: PWMHandle,
+    dir_pin1: GPIOPin,
+    dir_pin2: GPIOPin
+end
+
+function motor_init() -&gt; Motor do
+    // Direction pins
+    let in1 = gpio.pin_init(gpio.PORT_B, 0, gpio.MODE_OUTPUT)
+    let in2 = gpio.pin_init(gpio.PORT_B, 1, gpio.MODE_OUTPUT)
+    
+    // PWM for speed (20 kHz)
+    let motor_pwm = pwm.init(pwm.TIM1, pwm.CHANNEL_1, do
+        frequency: 20000,
+        duty_cycle: 0,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    end)
+    
+    pwm.start(motor_pwm)
+    
+    return Motor do
+        pwm: motor_pwm,
+        dir_pin1: in1,
+        dir_pin2: in2
+    end
+end
+
+function motor_set_speed(motor: Motor, speed: kesir) do
+    // speed: -100 to +100 (negative = reverse)
+    if speed &gt; 0 then do
+        // Forward
+        gpio.pin_write(motor.dir_pin1, gpio.HIGH)
+        gpio.pin_write(motor.dir_pin2, gpio.LOW)
+        pwm.set_duty_cycle(motor.pwm, speed)
+    yoksa if speed &lt; 0 then do
+        // Reverse
+        gpio.pin_write(motor.dir_pin1, gpio.LOW)
+        gpio.pin_write(motor.dir_pin2, gpio.HIGH)
+        pwm.set_duty_cycle(motor.pwm, -speed)
+    yoksa do
+        // Stop
+        gpio.pin_write(motor.dir_pin1, gpio.LOW)
+        gpio.pin_write(motor.dir_pin2, gpio.LOW)
+        pwm.set_duty_cycle(motor.pwm, 0.0)
+    end
+end
+
+function main() do
+    let motor = motor_init()
+    
+    // Acceleration test
+    for speed in 0..100 for do
+        motor_set_speed(motor, speed.kesir())
+        core.delay_ms(50)
+    end
+    
+    core.delay_ms(2000)
+    
+    // Deceleration
+    for speed in (0..100).reverse() for do
+        motor_set_speed(motor, speed.kesir())
+        core.delay_ms(50)
+    end
+    
+    motor_set_speed(motor, 0.0)  // Stop
+end</code></pre>
+</div>
+
+<h2>💡 Example 3: Servo Motor Control (SG90)</h2>
+<div class="example-box">
+<h3>Servo angle control with 50Hz PWM</h3>
+<pre><code>import hal::pwm
+
+struct Servo do
+    pwm: PWMHandle,
+    min_pulse: kesir,  // ms
+    max_pulse: kesir   // ms
+end
+
+function servo_init(timer: Timer, channel: Channel) -&gt; Servo do
+    // Servo: 50Hz, 1-2ms pulse width
+    let servo_pwm = pwm.init(timer, channel, do
+        frequency: 50,      // 50 Hz (20ms period)
+        duty_cycle: 7.5,    // 1.5ms pulse (90°)
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    end)
+    
+    pwm.start(servo_pwm)
+    
+    return Servo do
+        pwm: servo_pwm,
+        min_pulse: 1.0,  // 1ms = 0°
+        max_pulse: 2.0   // 2ms = 180°
+    end
+end
+
+function servo_set_angle(servo: Servo, angle: kesir) do
+    // angle: 0-180 degrees
+    let clamped = angle.clamp(0.0, 180.0)
+    
+    // Map angle to pulse width (1-2ms)
+    let pulse_ms = servo.min_pulse + 
+        (clamped / 180.0) * (servo.max_pulse - servo.min_pulse)
+    
+    // Convert to duty cycle (20ms period)
+    let duty = (pulse_ms / 20.0) * 100.0
+    
+    pwm.set_duty_cycle(servo.pwm, duty)
+end
+
+function main() do
+    let servo = servo_init(pwm.TIM2, pwm.CHANNEL_1)
+    
+    // Sweep 0° to 180°
+    for do
+        for angle in 0..180 for do
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        end
+        
+        for angle in (0..180).reverse() for do
+            servo_set_angle(servo, angle.kesir())
+            core.delay_ms(15)
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 Example 4: Playing a Buzzer Melody</h2>
+<div class="example-box">
+<h3>Producing notes by changing PWM frequency</h3>
+<pre><code>import hal::pwm, hal::core
+
+// Note frequencies (Hz)
+const DO = 262
+const RE = 294
+const MI = 330
+const FA = 349
+const SOL = 392
+const LA = 440
+const SI = 494
+const DO_HIGH = 523
+
+function buzzer_init() -&gt; PWMHandle do
+    let buzzer = pwm.init(pwm.TIM3, pwm.CHANNEL_2, do
+        frequency: 440,  // Default: LA (440 Hz)
+        duty_cycle: 50,
+        polarity: pwm.ACTIVE_HIGH,
+        mode: pwm.MODE_PWM1
+    end)
+    
+    return buzzer
+end
+
+function play_tone(buzzer: PWMHandle, freq: sayı, duration_ms: sayı) do
+    pwm.set_frequency(buzzer, freq)
+    pwm.start(buzzer)
+    core.delay_ms(duration_ms)
+    pwm.stop(buzzer)
+end
+
+function play_melody(buzzer: PWMHandle) do
+    // "Twinkle Twinkle Little Star"
+    let melody = [
+        (DO, 500), (DO, 500), (SOL, 500), (SOL, 500),
+        (LA, 500), (LA, 500), (SOL, 1000),
+        (FA, 500), (FA, 500), (MI, 500), (MI, 500),
+        (RE, 500), (RE, 500), (DO, 1000)
+    ]
+    
+    her (note, duration) in melody for do
+        play_tone(buzzer, note, duration)
+        core.delay_ms(50)  // Short pause between notes
+    end
+end
+
+function main() do
+    let buzzer = buzzer_init()
+    
+    for do
+        play_melody(buzzer)
+        core.delay_ms(2000)
+    end
+end</code></pre>
+</div>
+
+<h2>📊 API Reference</h2>
+
+<h3>initialization</h3>
+<pre><code>function init(timer: Timer, channel: Channel, config: PWMConfig) -&gt; PWMHandle
+function deinit(handle: PWMHandle)
+function start(handle: PWMHandle)
+function stop(handle: PWMHandle)</code></pre>
+
+<h3>Configuration</h3>
+<pre><code>function set_duty_cycle(handle: PWMHandle, duty: kesir)  // 0.0-100.0
+function get_duty_cycle(handle: PWMHandle) -&gt; kesir
+function set_frequency(handle: PWMHandle, freq: sayı)  // Hz
+function get_frequency(handle: PWMHandle) -&gt; sayı
+function set_polarity(handle: PWMHandle, pol: Polarity)</code></pre>
+
+<h3>Advanced</h3>
+<pre><code>function set_pulse_width(handle: PWMHandle, width_us: sayı)  // Microseconds
+function enable_complementary(handle: PWMHandle, deadtime_ns: sayı)
+function set_phase_shift(handle: PWMHandle, phase_degrees: kesir)
+function configure_dma(handle: PWMHandle, buffer: Dizi[sayı])</code></pre>
+
+<h2>⚙️ Platform Support</h2>
+<table>
+<tbody><tr><th>Platform</th><th>Timers</th><th>Max Freq</th><th>Resolution</th></tr>
+<tr><td>STM32F4</td><td>TIM1-14</td><td>84MHz</td><td>16-bit</td></tr>
+<tr><td>STM32F1</td><td>TIM1-4</td><td>72MHz</td><td>16-bit</td></tr>
+<tr><td>ESP32</td><td>LEDC 0-7</td><td>40MHz</td><td>20-bit</td></tr>
+<tr><td>GD32VF103</td><td>TIM0-6</td><td>108MHz</td><td>16-bit</td></tr>
+</tbody></table>
+
+<h2>💡 Best Practices</h2>
+<ul>
+<li><strong>Frequency selection:</strong>20-25 kHz for motor control (outside human hearing range)</li>
+<li><strong>Servo control:</strong>50 Hz fixed frequency, 1-2ms pulse width</li>
+<li><strong>LED dimming:</strong>100+ Hz (eye does not detect blinking)</li>
+<li><strong>Timer conflict:</strong>Use different channels of the same timer</li>
+<li><strong>Dead-time:</strong>Necessary to avoid shoot-through in H-bridge control</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><a href="en_hal-timer-tr.html">state::timer</a>- Hardware timer (basis of PWM)</li>
+<li><a href="en_hal-gpio-tr.html">state::gpio</a>- GPIO AF configuration</li>
+<li><a href="en_hal-dma-tr.html">state::dma</a>- DMA-based waveform generation</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a> | 
+<a href="en_hal-pwm-en.html">🇬🇧English</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

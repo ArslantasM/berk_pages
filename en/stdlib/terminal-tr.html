@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>terminal - Terminal UI | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖥️ terminal - Terminal UI</h1>
+<p>Colors, Cursor, Input, Progress Bar</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>Function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">645</div><div>Line</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">20KB</div><div>Dimension</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import terminal
+
+// Colors
+terminal.println(terminal.red("Err!"))
+terminal.println(terminal.green("Başarılı!"))
+terminal.println(terminal.bold("Kalın yazı"))
+
+// Cursor movement
+terminal.clear()
+terminal.cursor_move(10, 5)
+terminal.print("(10, 5) konumunda")
+
+// Progress bar
+let progress = terminal.progress_bar_new(100)
+her i in range(0, 101) for do
+    terminal.progress_bar_set(progress, i)
+    time.sleep(50)
+end</code></pre>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Download Progress</h3>
+<pre><code>import terminal, http
+
+function dosya_indir(url: yazı, dosya: yazı) do
+    let sum = 10485760  // 10MB
+    let progress = terminal.progress_bar_new(sum)
+    
+    let indirilen = 0
+    for do
+        // Simulate download chunk
+        let chunk_size = 65536  // 64KB
+        indirilen = indirilen + chunk_size
+        
+        terminal.progress_bar_set(progress, indirilen)
+        
+        if indirilen &gt;= sum then do
+            kır
+        end
+        
+        time.sleep(10)
+    end
+    
+    terminal.println(terminal.green("✓ İndirme tamamlandı!"))
+end
+
+dosya_indir("https://example.com/file.zip", "file.zip")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

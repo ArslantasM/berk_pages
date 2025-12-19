@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>हेल-स्पी - एसपीआई बस - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/hal-spi.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+<h1>🔄 राज्य::स्पि</h1>
+<p>सीरियल पेरिफेरल इंटरफ़ेस - हाई स्पीड संचार</p>
+<div style="margin-top:15px">
+<span class="stat-badge">394 पंक्तियाँ</span>
+<span class="stat-badge">~16 कार्य</span>
+<span class="stat-badge">पूर्ण दुमंजिला घर</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>SPI (सीरियल पेरिफेरल इंटरफ़ेस) एक हाई-स्पीड सिंक्रोनस फुल-डुप्लेक्स संचार प्रोटोकॉल है। इसका उपयोग एसडी कार्ड, फ्लैश मेमोरी, एलसीडी डिस्प्ले और आरएफ मॉड्यूल के लिए किया जाता है।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>मास्टर/स्लेव मोड</li>
+<li>पूर्ण-द्वैध संचार</li>
+<li>उच्च गति (18 एमबीपीएस तक)</li>
+<li>8/16 बिट डेटा फ़्रेम</li>
+<li>एमएसबी/एलएसबी प्रथम</li>
+<li>4 क्लॉक मोड (CPOL/CPHA)</li>
+<li>हार्डवेयर एनएसएस/सीएस प्रबंधन</li>
+<li>डीएमए समर्थन</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import hal::spi, hal::gpio
+
+// SPI pins: SCK=PA5, MISO=PA6, MOSI=PA7, CS=PA4
+gpio.clock_enable(gpio.PORT_A)
+gpio.pin_init(gpio.PORT_A, 5, do mode: gpio.MODE_AF, af: 5 end)  // SCK
+gpio.pin_init(gpio.PORT_A, 6, do mode: gpio.MODE_AF, af: 5 end)  // MISO
+gpio.pin_init(gpio.PORT_A, 7, do mode: gpio.MODE_AF, af: 5 end)  // MOSI
+gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)     // CS
+
+// Initialize SPI
+let spi1 = spi.init(spi.SPI1, do
+    mode: spi.MODE_MASTER,
+    speed: spi.SPEED_1MHZ,
+    clock_mode: spi.MODE_0,
+    data_size: spi.DATA_8BIT
+end)
+
+// Transfer data
+gpio.pin_write(cs, gpio.LOW)  // Select device
+let response = spi.transfer(spi1, [0x03, 0x00, 0x00])
+gpio.pin_write(cs, gpio.HIGH)  // Deselect</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: एसडी कार्ड रीडर</h3>
+<pre><code>import hal::spi, hal::gpio
+
+const CMD0 = 0    // GO_IDLE_STATE
+const CMD8 = 8    // SEND_IF_COND
+const CMD17 = 17  // READ_SINGLE_BLOCK
+
+struct SDCard do
+    spi: spi.Handle,
+    cs: gpio.Pin
+end
+
+function sd_send_cmd(sd: SDCard, cmd: sayı, arg: u32) -&gt; u8 do
+    // Select card
+    gpio.pin_write(sd.cs, gpio.LOW)
+    
+    // Send command
+    spi.transfer_byte(sd.spi, 0x40 | cmd)
+    spi.transfer_byte(sd.spi, (arg &gt;&gt; 24) &amp; 0xFF)
+    spi.transfer_byte(sd.spi, (arg &gt;&gt; 16) &amp; 0xFF)
+    spi.transfer_byte(sd.spi, (arg &gt;&gt; 8) &amp; 0xFF)
+    spi.transfer_byte(sd.spi, arg &amp; 0xFF)
+    spi.transfer_byte(sd.spi, 0x95)  // CRC (dummy for most commands)
+    
+    // Wait for response
+    let response = 0xFF
+    her i in 0..10 for do
+        response = spi.transfer_byte(sd.spi, 0xFF)
+        if response != 0xFF then do
+            kır
+        end
+    end
+    
+    // Deselect card
+    gpio.pin_write(sd.cs, gpio.HIGH)
+    
+    return response
+end
+
+function sd_init() -&gt; Sonuç[SDCard, Err] do
+    // SPI setup
+    let spi1 = spi.init(spi.SPI1, do
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_400KHZ,  // Start with low speed
+        clock_mode: spi.MODE_0
+    end)
+    
+    // CS pin
+    let cs = gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    let sd = SDCard do spi: spi1, cs: cs end
+    
+    // Send 80 clock pulses
+    her i in 0..10 for do
+        spi.transfer_byte(sd.spi, 0xFF)
+    end
+    
+    // Send CMD0 (reset)
+    if sd_send_cmd(sd, CMD0, 0) != 0x01 then do
+        return Err("SD card init failed")
+    end
+    
+    // Increase speed
+    spi.set_speed(sd.spi, spi.SPEED_18MHZ)
+    
+    return Ok(sd)
+end
+
+function sd_read_block(sd: SDCard, block: u32, buffer: [u8; 512]) -&gt; Sonuç[None, Err] do
+    // Send CMD17 (read single block)
+    gpio.pin_write(sd.cs, gpio.LOW)
+    
+    sd_send_cmd(sd, CMD17, block)
+    
+    // Wait for data token
+    let token = 0xFF
+    her i in 0..1000 for do
+        token = spi.transfer_byte(sd.spi, 0xFF)
+        if token == 0xFE then do kır end
+    end
+    
+    if token != 0xFE then do
+        gpio.pin_write(sd.cs, gpio.HIGH)
+        return Err("SD read timeout")
+    end
+    
+    // Read data
+    her i in 0..512 for do
+        buffer[i] = spi.transfer_byte(sd.spi, 0xFF)
+    end
+    
+    // Read CRC (2 bytes, ignore)
+    spi.transfer_byte(sd.spi, 0xFF)
+    spi.transfer_byte(sd.spi, 0xFF)
+    
+    gpio.pin_write(sd.cs, gpio.HIGH)
+    return Ok(None)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 2: NRF24L01+ वायरलेस मॉड्यूल</h3>
+<pre><code>import hal::spi, hal::gpio
+
+const NRF24_CONFIG = 0x00
+const NRF24_EN_AA = 0x01
+const NRF24_RF_CH = 0x05
+const NRF24_RF_SETUP = 0x06
+const NRF24_STATUS = 0x07
+const NRF24_TX_ADDR = 0x10
+const NRF24_RX_ADDR_P0 = 0x0A
+
+struct NRF24 do
+    spi: spi.Handle,
+    cs: gpio.Pin,
+    ce: gpio.Pin
+end
+
+function nrf24_write_reg(nrf: NRF24, reg: u8, value: u8) -&gt; Sonuç[None, Err] do
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, 0x20 | reg)  // W_REGISTER command
+    spi.transfer_byte(nrf.spi, value)
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    return Ok(None)
+end
+
+function nrf24_read_reg(nrf: NRF24, reg: u8) -&gt; u8 do
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, reg &amp; 0x1F)  // R_REGISTER command
+    let value = spi.transfer_byte(nrf.spi, 0x00)
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    return value
+end
+
+function nrf24_init() -&gt; Sonuç[NRF24, Err] do
+    let spi1 = spi.init(spi.SPI1, do
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_8MHZ,
+        clock_mode: spi.MODE_0
+    end)
+    
+    let cs = gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)
+    let ce = gpio.pin_init(gpio.PORT_A, 3, do mode: gpio.MODE_OUTPUT end)
+    
+    gpio.pin_write(cs, gpio.HIGH)
+    gpio.pin_write(ce, gpio.LOW)
+    
+    let nrf = NRF24 do spi: spi1, cs: cs, ce: ce end
+    
+    core.delay_ms(100)  // Power-on reset delay
+    
+    // Configure
+    nrf24_write_reg(nrf, NRF24_CONFIG, 0x0E)?       // PWR_UP, CRC enabled
+    nrf24_write_reg(nrf, NRF24_EN_AA, 0x01)?        // Enable auto-ack pipe 0
+    nrf24_write_reg(nrf, NRF24_RF_CH, 76)?          // Channel 76 (2.476 GHz)
+    nrf24_write_reg(nrf, NRF24_RF_SETUP, 0x06)?    // 1Mbps, 0dBm
+    
+    core.delay_ms(5)
+    
+    return Ok(nrf)
+end
+
+function nrf24_transmit(nrf: NRF24, data: [u8]) -&gt; Sonuç[None, Err] do
+    gpio.pin_write(nrf.cs, gpio.LOW)
+    spi.transfer_byte(nrf.spi, 0xA0)  // W_TX_PAYLOAD command
+    
+    her byte in data for do
+        spi.transfer_byte(nrf.spi, byte)
+    end
+    
+    gpio.pin_write(nrf.cs, gpio.HIGH)
+    
+    // Pulse CE to start transmission
+    gpio.pin_write(nrf.ce, gpio.HIGH)
+    core.delay_us(15)
+    gpio.pin_write(nrf.ce, gpio.LOW)
+    
+    // Wait for TX complete (max 1ms)
+    her i in 0..100 for do
+        let status = nrf24_read_reg(nrf, NRF24_STATUS)
+        if (status &amp; 0x20) != 0 then do  // TX_DS bit
+            nrf24_write_reg(nrf, NRF24_STATUS, 0x20)?  // Clear flag
+            return Ok(None)
+        end
+        core.delay_us(10)
+    end
+    
+    return Err("TX timeout")
+end
+
+function main() do
+    let nrf = nrf24_init()?
+    
+    for do
+        let message = "Hello NRF24!".baytlar()
+        nrf24_transmit(nrf, message)?
+        io.println("Gönderildi")
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 3: MAX7219 LED मैट्रिक्स ड्राइवर</h3>
+<pre><code>import hal::spi, hal::gpio
+
+const MAX7219_NOOP = 0x00
+const MAX7219_DIGIT0 = 0x01
+const MAX7219_DECODE_MODE = 0x09
+const MAX7219_INTENSITY = 0x0A
+const MAX7219_SCAN_LIMIT = 0x0B
+const MAX7219_SHUTDOWN = 0x0C
+const MAX7219_DISPLAY_TEST = 0x0F
+
+struct MAX7219 do
+    spi: spi.Handle,
+    cs: gpio.Pin
+end
+
+function max7219_write(max: MAX7219, reg: u8, data: u8) do
+    gpio.pin_write(max.cs, gpio.LOW)
+    spi.transfer_byte(max.spi, reg)
+    spi.transfer_byte(max.spi, data)
+    gpio.pin_write(max.cs, gpio.HIGH)
+end
+
+function max7219_init() -&gt; MAX7219 do
+    let spi1 = spi.init(spi.SPI1, do
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_1MHZ,
+        clock_mode: spi.MODE_0
+    end)
+    
+    let cs = gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    let max = MAX7219 do spi: spi1, cs: cs end
+    
+    // Initialize display
+    max7219_write(max, MAX7219_SHUTDOWN, 0x01)      // Normal operation
+    max7219_write(max, MAX7219_DECODE_MODE, 0x00)   // No decode (raw mode)
+    max7219_write(max, MAX7219_SCAN_LIMIT, 0x07)    // Display all 8 digits
+    max7219_write(max, MAX7219_INTENSITY, 0x08)     // Medium brightness
+    max7219_write(max, MAX7219_DISPLAY_TEST, 0x00)  // Normal mode
+    
+    return max
+end
+
+function max7219_clear(max: MAX7219) do
+    her i in 1..9 for do
+        max7219_write(max, i as u8, 0x00)
+    end
+end
+
+function max7219_draw_pattern(max: MAX7219, pattern: [u8; 8]) do
+    her i in 0..8 for do
+        max7219_write(max, (i + 1) as u8, pattern[i])
+    end
+end
+
+function main() do
+    let max = max7219_init()
+    
+    // Smiley face pattern
+    let smiley = [
+        0b00111100,
+        0b01000010,
+        0b10100101,
+        0b10000001,
+        0b10100101,
+        0b10011001,
+        0b01000010,
+        0b00111100
+    ]
+    
+    max7219_draw_pattern(max, smiley)
+    
+    for do
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 4: W25Q128 फ्लैश मेमोरी</h3>
+<pre><code>import hal::spi, hal::gpio
+
+const W25Q_WRITE_ENABLE = 0x06
+const W25Q_READ_DATA = 0x03
+const W25Q_PAGE_PROGRAM = 0x02
+const W25Q_SECTOR_ERASE = 0x20
+const W25Q_READ_STATUS = 0x05
+const W25Q_CHIP_ID = 0x9F
+
+struct W25Q do
+    spi: spi.Handle,
+    cs: gpio.Pin
+end
+
+function w25q_wait_busy(w25q: W25Q) do
+    for do
+        gpio.pin_write(w25q.cs, gpio.LOW)
+        spi.transfer_byte(w25q.spi, W25Q_READ_STATUS)
+        let status = spi.transfer_byte(w25q.spi, 0x00)
+        gpio.pin_write(w25q.cs, gpio.HIGH)
+        
+        if (status &amp; 0x01) == 0 then do kır end  // BUSY bit
+        core.delay_ms(1)
+    end
+end
+
+function w25q_write_enable(w25q: W25Q) do
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_WRITE_ENABLE)
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+end
+
+function w25q_read_id(w25q: W25Q) -&gt; [u8; 3] do
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_CHIP_ID)
+    
+    let id = [0u8; 3]
+    id[0] = spi.transfer_byte(w25q.spi, 0x00)  // Manufacturer
+    id[1] = spi.transfer_byte(w25q.spi, 0x00)  // Memory type
+    id[2] = spi.transfer_byte(w25q.spi, 0x00)  // Capacity
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    return id
+end
+
+function w25q_read(w25q: W25Q, addr: u32, buffer: &amp;mut [u8]) -&gt; Sonuç[None, Err] do
+    w25q_wait_busy(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_READ_DATA)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 16) as u8)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 8) as u8)
+    spi.transfer_byte(w25q.spi, addr as u8)
+    
+    her i in 0..buffer.len() for do
+        buffer[i] = spi.transfer_byte(w25q.spi, 0x00)
+    end
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    return Ok(None)
+end
+
+function w25q_write_page(w25q: W25Q, addr: u32, data: [u8]) -&gt; Sonuç[None, Err] do
+    w25q_wait_busy(w25q)
+    w25q_write_enable(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_PAGE_PROGRAM)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 16) as u8)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 8) as u8)
+    spi.transfer_byte(w25q.spi, addr as u8)
+    
+    her byte in data for do
+        spi.transfer_byte(w25q.spi, byte)
+    end
+    
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    w25q_wait_busy(w25q)
+    
+    return Ok(None)
+end
+
+function w25q_erase_sector(w25q: W25Q, addr: u32) -&gt; Sonuç[None, Err] do
+    w25q_wait_busy(w25q)
+    w25q_write_enable(w25q)
+    
+    gpio.pin_write(w25q.cs, gpio.LOW)
+    spi.transfer_byte(w25q.spi, W25Q_SECTOR_ERASE)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 16) as u8)
+    spi.transfer_byte(w25q.spi, (addr &gt;&gt; 8) as u8)
+    spi.transfer_byte(w25q.spi, addr as u8)
+    gpio.pin_write(w25q.cs, gpio.HIGH)
+    
+    w25q_wait_busy(w25q)  // Sector erase takes ~20-200ms
+    return Ok(None)
+end
+
+function main() do
+    let spi1 = spi.init(spi.SPI1, do
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_8MHZ,
+        clock_mode: spi.MODE_0
+    end)
+    
+    let cs = gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)
+    gpio.pin_write(cs, gpio.HIGH)
+    
+    let w25q = W25Q do spi: spi1, cs: cs end
+    
+    // Read chip ID
+    let id = w25q_read_id(w25q)
+    io.println("Flash ID: {:02X} {:02X} {:02X}".formatla(id[0], id[1], id[2]))
+    
+    // Erase sector 0
+    w25q_erase_sector(w25q, 0x000000)?
+    io.println("Sector erased")
+    
+    // Write data
+    let data = "BERK Flash Test!".baytlar()
+    w25q_write_page(w25q, 0x000000, data)?
+    io.println("Data written")
+    
+    // Read back
+    let buffer = [0u8; 32]
+    w25q_read(w25q, 0x000000, &amp;mut buffer)?
+    io.println("Read: {}", yazı.utf8_çöz(buffer)?)
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 उदाहरण 5: ILI9341 TFT LCD (240x320 डिस्प्ले)</h3>
+<pre><code>import hal::spi, hal::gpio
+
+struct ILI9341 do
+    spi: spi.Handle,
+    cs: gpio.Pin,
+    dc: gpio.Pin,   // Data/Command
+    rst: gpio.Pin   // Reset
+end
+
+function ili9341_cmd(lcd: ILI9341, cmd: u8) do
+    gpio.pin_write(lcd.dc, gpio.LOW)   // Command mode
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    spi.transfer_byte(lcd.spi, cmd)
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+end
+
+function ili9341_data(lcd: ILI9341, data: u8) do
+    gpio.pin_write(lcd.dc, gpio.HIGH)  // Data mode
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    spi.transfer_byte(lcd.spi, data)
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+end
+
+function ili9341_init() -&gt; ILI9341 do
+    let spi1 = spi.init(spi.SPI1, do
+        mode: spi.MODE_MASTER,
+        speed: spi.SPEED_18MHZ,  // High speed for display
+        clock_mode: spi.MODE_0
+    end)
+    
+    let cs = gpio.pin_init(gpio.PORT_A, 4, do mode: gpio.MODE_OUTPUT end)
+    let dc = gpio.pin_init(gpio.PORT_A, 3, do mode: gpio.MODE_OUTPUT end)
+    let rst = gpio.pin_init(gpio.PORT_A, 2, do mode: gpio.MODE_OUTPUT end)
+    
+    let lcd = ILI9341 do spi: spi1, cs: cs, dc: dc, rst: rst end
+    
+    // Hardware reset
+    gpio.pin_write(lcd.rst, gpio.HIGH)
+    core.delay_ms(10)
+    gpio.pin_write(lcd.rst, gpio.LOW)
+    core.delay_ms(20)
+    gpio.pin_write(lcd.rst, gpio.HIGH)
+    core.delay_ms(150)
+    
+    // Software reset
+    ili9341_cmd(lcd, 0x01)
+    core.delay_ms(150)
+    
+    // Power control
+    ili9341_cmd(lcd, 0xC0)
+    ili9341_data(lcd, 0x23)
+    
+    ili9341_cmd(lcd, 0xC1)
+    ili9341_data(lcd, 0x10)
+    
+    // Memory access control
+    ili9341_cmd(lcd, 0x36)
+    ili9341_data(lcd, 0x48)  // RGB order
+    
+    // Pixel format
+    ili9341_cmd(lcd, 0x3A)
+    ili9341_data(lcd, 0x55)  // 16-bit RGB565
+    
+    // Display on
+    ili9341_cmd(lcd, 0x11)  // Sleep out
+    core.delay_ms(120)
+    ili9341_cmd(lcd, 0x29)  // Display on
+    
+    return lcd
+end
+
+function ili9341_fill_screen(lcd: ILI9341, color: u16) do
+    // Set window (0,0)-(239,319)
+    ili9341_cmd(lcd, 0x2A)  // Column address
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0xEF)
+    
+    ili9341_cmd(lcd, 0x2B)  // Row address
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x00)
+    ili9341_data(lcd, 0x01)
+    ili9341_data(lcd, 0x3F)
+    
+    ili9341_cmd(lcd, 0x2C)  // Write memory
+    
+    // Fill with color (240 * 320 pixels)
+    gpio.pin_write(lcd.dc, gpio.HIGH)
+    gpio.pin_write(lcd.cs, gpio.LOW)
+    
+    her i in 0..(240 * 320) for do
+        spi.transfer_byte(lcd.spi, (color &gt;&gt; 8) as u8)
+        spi.transfer_byte(lcd.spi, color as u8)
+    end
+    
+    gpio.pin_write(lcd.cs, gpio.HIGH)
+end
+
+function main() do
+    let lcd = ili9341_init()
+    
+    // RGB565 colors
+    const RED = 0xF800
+    const GREEN = 0x07E0
+    const BLUE = 0x001F
+    const WHITE = 0xFFFF
+    
+    for do
+        ili9341_fill_screen(lcd, RED)
+        core.delay_ms(1000)
+        ili9341_fill_screen(lcd, GREEN)
+        core.delay_ms(1000)
+        ili9341_fill_screen(lcd, BLUE)
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 प्रकार और एनम</h2>
+<pre><code>// SPI Instance
+enum Instance {
+    SPI1, SPI2, SPI3, SPI4, SPI5, SPI6
+}
+
+// SPI Mode
+enum Mode {
+    MODE_MASTER,  // Master mode
+    MODE_SLAVE    // Slave mode
+}
+
+// Clock Mode (CPOL/CPHA)
+enum ClockMode {
+    MODE_0,  // CPOL=0, CPHA=0 (idle low, sample on rising)
+    MODE_1,  // CPOL=0, CPHA=1 (idle low, sample on falling)
+    MODE_2,  // CPOL=1, CPHA=0 (idle high, sample on falling)
+    MODE_3   // CPOL=1, CPHA=1 (idle high, sample on rising)
+}
+
+// Data Size
+enum DataSize {
+    DATA_8BIT,   // 8-bit data frame
+    DATA_16BIT   // 16-bit data frame
+}
+
+// Bit Order
+enum BitOrder {
+    MSB_FIRST,  // Most significant bit first (default)
+    LSB_FIRST   // Least significant bit first
+}
+
+// Speed (Baud Rate)
+enum Speed {
+    SPEED_100KHZ,
+    SPEED_400KHZ,
+    SPEED_1MHZ,
+    SPEED_2MHZ,
+    SPEED_4MHZ,
+    SPEED_8MHZ,
+    SPEED_18MHZ,
+    SPEED_42MHZ   // Max speed (platform dependent)
+}
+
+struct Config do
+    mode: Mode,
+    speed: Speed,
+    clock_mode: ClockMode,
+    data_size: DataSize,
+    bit_order: BitOrder,
+    nss_mode: NSSMode
+end
+
+enum NSSMode {
+    NSS_SOFT,     // Software NSS management (manual CS)
+    NSS_HARD_IN,  // Hardware NSS input (slave mode)
+    NSS_HARD_OUT  // Hardware NSS output (master mode)
+}</code></pre>
+
+<h2>⚙️ कार्य</h2>
+
+<h3>प्रारंभ</h3>
+<pre><code>function init(instance: Instance, config: Config) -&gt; Handle
+// Initialize SPI with configuration
+
+function deinit(handle: Handle)
+// Deinitialize SPI
+
+function enable(handle: Handle)
+// Enable SPI peripheral
+
+function disable(handle: Handle)
+// Disable SPI peripheral</code></pre>
+
+<h3>स्थानांतरण संचालन</h3>
+<pre><code>function transfer_byte(handle: Handle, data: u8) -&gt; u8
+// Transfer single byte (blocking)
+
+function transfer(handle: Handle, data: [u8]) -&gt; [u8]
+// Transfer multiple bytes (blocking)
+
+function write(handle: Handle, data: [u8])
+// Write only (ignore received data)
+
+function read(handle: Handle, len: sayı) -&gt; [u8]
+// Read only (send dummy bytes)
+
+function transfer_16(handle: Handle, data: u16) -&gt; u16
+// Transfer 16-bit data</code></pre>
+
+<h3>डीएमए समर्थन</h3>
+<pre><code>function transfer_dma(handle: Handle, tx_buffer: &amp;[u8], rx_buffer: &amp;mut [u8]) -&gt; Sonuç[None, Err]
+// Transfer using DMA (non-blocking)
+
+function write_dma(handle: Handle, data: &amp;[u8]) -&gt; Sonuç[None, Err]
+// Write using DMA
+
+function is_transfer_complete(handle: Handle) -&gt; bool
+// Check if DMA transfer is complete</code></pre>
+
+<h3>विन्यास</h3>
+<pre><code>function set_speed(handle: Handle, speed: Speed)
+// Change SPI speed dynamically
+
+function set_data_size(handle: Handle, size: DataSize)
+// Change data size (8/16 bit)
+
+function set_clock_mode(handle: Handle, mode: ClockMode)
+// Change clock polarity/phase</code></pre>
+
+<h2>⚡ प्रदर्शन युक्तियाँ</h2>
+<ul>
+<li><strong>डीएमए उपयोग:</strong>बड़े डेटा स्थानांतरण (&gt;64 बाइट्स) के लिए डीएमए का उपयोग करें</li>
+<li><strong>घडी की गति:</strong>केबल की लंबाई के अनुसार समायोजित करें (छोटी केबल = उच्च गति)</li>
+<li><strong>सीएस नियंत्रण:</strong>यथासंभव कम समय के लिए सीएस पिन को कम रखें</li>
+<li><strong>पूर्ण दुमंजिला घर:</strong>एक साथ भेजने/प्राप्त करने से गति बढ़ाएं</li>
+<li><strong>बर्स्ट स्थानांतरण:</strong>एक साथ कई बाइट्स ट्रांसफर करें</li>
+</ul>
+
+<h2>⚙️ SPI क्लॉक मोड</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#e67e22;color:white">
+<th>तरीका</th><th>सीपीओएल</th><th>सीपीएचए</th><th>निष्क्रिय अवस्था</th><th>नमूना किनारा</th><th>विशिष्ट उपकरण</th>
+</tr>
+<tr><td>0</td><td>0</td><td>0</td><td>कम</td><td>बढ़ रहा है</td><td>एसडी कार्ड, W25Q, ILI9341</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>कम</td><td>गिरना</td><td>-</td></tr>
+<tr><td>2</td><td>1</td><td>0</td><td>उच्च</td><td>गिरना</td><td>-</td></tr>
+<tr><td>3</td><td>1</td><td>1</td><td>उच्च</td><td>बढ़ रहा है</td><td>MAX7219, NRF24L01</td></tr>
+</tbody></table>
+
+<h2>⚠️ महत्वपूर्ण नोट्स</h2>
+<ul>
+<li>सीएस (चिप चयन) पिन<strong>मैन्युअल नियंत्रण</strong>(NSS_SOFT मोड) होना चाहिए</li>
+<li>MISO लाइन को पुल-अप की आवश्यकता हो सकती है (ओपन-कलेक्टर स्लेव के लिए)</li>
+<li>छोटी केबल का उपयोग करें - उच्च गति पर सिग्नल अखंडता महत्वपूर्ण (&lt;30 सेमी &gt;10 मेगाहर्ट्ज के लिए)</li>
+<li>मल्टी-स्लेव के लिए प्रत्येक उपकरण<strong>अलग सीएस पिन</strong>होना ही चाहिए</li>
+<li>एससीके, एमओएसआई, मिसो पिन<strong>सभी गुलामों के बीच साझा किया गया</strong></li>
+<li>पूर्ण-डुप्लेक्स मोड में, भेजे गए प्रत्येक बाइट को एक बाइट प्राप्त होता है।</li>
+<li>डीएमए का उपयोग करते समय बफर संरेखण (4-बाइट सीमा) से सावधान रहें</li>
+<li>घड़ी की ध्रुवीयता/चरण डिवाइस डेटाशीट के अनुसार सेट करें</li>
+</ul>
+
+<h2>🎯आवेदन परिदृश्य</h2>
+<ul>
+<li><strong>भंडारण:</strong>एसडी/माइक्रोएसडी कार्ड, एसपीआई फ्लैश (डब्ल्यू25क्यू, एटी25)</li>
+<li><strong>प्रदर्शन:</strong>टीएफटी एलसीडी (ILI9341, ST7735), OLED, ई-पेपर</li>
+<li><strong>वायरलेस:</strong>NRF24L01+, RFM69, लोरा (SX1278)</li>
+<li><strong>सेंसर:</strong>BME280, MAX6675 (थर्मोकपल), ADXL345</li>
+<li><strong>एडीसी/डीएसी:</strong>एमसीपी3008, एमसीपी4922</li>
+<li><strong>एलईडी मैट्रिक्स:</strong>MAX7219, WS2812 (डीएमए के माध्यम से)</li>
+</ul>
+
+<h2>📚 प्लेटफार्म समर्थन</h2>
+<ul>
+<li><strong>एसटीएम32 एफ1:</strong>SPI1/SPI2, 18Mbps तक</li>
+<li><strong>एसटीएम32एफ4:</strong>SPI1-3, 42Mbps तक</li>
+<li><strong>एसटीएम32एफ7:</strong>SPI1-6, 54Mbps तक</li>
+<li><strong>एसटीएम32 एच7:</strong>SPI1-6, 100Mbps तक</li>
+<li><strong>ईएसपी32:</strong>SPI2/SPI3 (HSPI/VSPI), 80 मेगाहर्ट्ज तक</li>
+<li><strong>जीडी32वीएफ103:</strong>SPI0/SPI1/SPI2 (RISC-V)</li>
+</ul>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- SCK/MISO/MOSI/CS पिन कॉन्फ़िगरेशन</li>
+<li><code data-no-translate="true">hal::dma</code>- हाई-स्पीड डेटा के लिए डीएमए ट्रांसफर</li>
+<li><code data-no-translate="true">hal::int</code>- एसपीआई इंटरप्ट हैंडलिंग</li>
+</ul>
+
+<h2>📖 सन्दर्भ</h2>
+<ul>
+<li>मोटोरोला एसपीआई ब्लॉक गाइड (मूल विनिर्देश)</li>
+<li>STM32 AN4286 - STM32 में प्रयुक्त SPI प्रोटोकॉल</li>
+<li>एसडी कार्ड भौतिक परत विशिष्टता</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← एचएएल मॉड्यूल</a> | 
+<a href="en_index-tr.html">सभी मॉड्यूल</a> | 
+<a href="../hi_en_index-tr.html">होम पेज</a>
+</p>
+</main>
+</div>
+
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_en_hal-usart.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_en_hal-i2c.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_en_hal-usart.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_en_hal-i2c.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

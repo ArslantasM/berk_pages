@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::ie - Interrupt Events | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚠️ state::ie</h1>
+<p>Interrupt Event Handling</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 lines</span>
+<span class="stat-badge">events</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Interrupt event handlers and callback management.</p>
+
+<h2>🚀 Usage</h2>
+<pre><code>import hal::ie
+
+// Register event handler
+ie.register(ie.EVENT_GPIO_EXTI0, my_handler)
+
+// Unregister
+ie.unregister(ie.EVENT_GPIO_EXTI0)
+
+// Trigger software event
+ie.trigger(ie.EVENT_TIM2_UPDATE)
+
+// Check pending events
+if ie.is_pending(ie.EVENT_USART1_RX) then do
+    ie.clear_pending(ie.EVENT_USART1_RX)
+end</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

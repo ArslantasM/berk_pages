@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>लाइब्रेरी अवलोकन - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/overview.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="standart-kütüphane-v094"><a class="header" href="#standart-kütüphane-v094">मानक पुस्तकालय v0.9.4</a></h1>
+<p>बीईआरके स्टैंडर्ड लाइब्रेरी आधुनिक सॉफ्टवेयर विकास के लिए आवश्यक सभी बुनियादी कार्य प्रदान करती है।<strong>v0.9.4</strong>संस्करण के साथ<strong>75 मॉड्यूल</strong>(42 एसटीडीलिब + 33 एचएएल) और<strong>4100+ फ़ंक्शन</strong>यह एक व्यापक पारिस्थितिकी तंत्र प्रदान करता है।</p>
+<blockquote>
+<p><strong>🎯 एंबेडेड-प्रथम दृष्टिकोण:</strong>BERK stdlib एम्बेडेड सिस्टम और AI/ML एज परिनियोजन के लिए अनुकूलित है। बेयर-मेटल प्रोग्रामिंग, आरटीओएस एकीकरण और वास्तविक समय एआई अनुमान 33 एचएएल मॉड्यूल के साथ संभव है जो 7 अलग-अलग एमसीयू प्लेटफार्मों का समर्थन करते हैं।</p>
+</blockquote>
+<h2 id="-İstatistikler"><a class="header" href="#-İstatistikler">📊सांख्यिकी</a></h2>
+<ul>
+<li><strong>75 मॉड्यूल</strong>- 42 stdlib + 33 HAL (एम्बेडेड सिस्टम)</li>
+<li><strong>1140KB</strong>- Stdlib कोड आकार (न्यूनतम रनटाइम: 2-5 KB)</li>
+<li><strong>4100+ फ़ंक्शन</strong>- व्यापक एपीआई (NumPy/SciPy/जूलिया स्तर)</li>
+<li><strong>7 एम्बेडेड प्लेटफार्म</strong>- ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
+<li><strong>एआई/एमएल तैयार</strong>- ONNX रनटाइम एकीकरण, TinyML समर्थन</li>
+<li><strong>शून्य निर्भरता</strong>- केवल बर्क में लिखा गया, पोर्टेबल</li>
+</ul>
+<h2 id="-modül-kategorileri"><a class="header" href="#-modül-kategorileri">🎯मॉड्यूल श्रेणियाँ</a></h2>
+<h3 id="1-temel-modüller-core"><a class="header" href="#1-temel-modüller-core">1. कोर मॉड्यूल (कोर)</a></h3>
+<p>सभी BERK कार्यक्रमों की बुनियादी ज़रूरतों को पूरा करता है:</p>
+<div class="table-wrapper"><table><thead><tr><th>मॉड्यूल</th><th>आयाम</th><th>स्पष्टीकरण</th></tr></thead><tbody>
+<tr><td><strong>आईओ</strong></td><td>3.9KB</td><td>चेक-इन/चेक-आउट प्रक्रियाएँ</td></tr>
+<tr><td><strong>डोरी</strong></td><td>7.5KB</td><td>स्ट्रिंग हेरफेर</td></tr>
+<tr><td><strong>संग्रह</strong></td><td>7.5KB</td><td>डेटा संरचनाएं (सूची, मानचित्र, सेट)</td></tr>
+<tr><td><strong>परिणाम</strong></td><td>7.4KB</td><td>त्रुटि प्रबंधन (विकल्प, परिणाम)</td></tr>
+<tr><td><strong>समय</strong></td><td>6.6KB</td><td>तिथि और समय</td></tr>
+</tbody></table>
+</div>
+<h3 id="2-sistem-programlama-system"><a class="header" href="#2-sistem-programlama-system">2. सिस्टम प्रोग्रामिंग (सिस्टम)</a></h3>
+<p>निम्न स्तरीय सिस्टम इंटरैक्शन:</p>
+<div class="table-wrapper"><table><thead><tr><th>मॉड्यूल</th><th>आयाम</th><th>स्पष्टीकरण</th></tr></thead><tbody>
+<tr><td><strong>एफ.एस</strong></td><td>7.8KB</td><td>फ़ाइल सिस्टम संचालन</td></tr>
+<tr><td><strong>धागा</strong></td><td>13.8KB</td><td>मल्टी-थ्रेडिंग, म्यूटेक्स, एटमिक्स</td></tr>
+<tr><td><strong>sys</strong></td><td>17.5KB</td><td>सिस्टम जानकारी (सीपीयू, रैम, ओएस)</td></tr>
+<tr><td><strong>टर्मिनल</strong></td><td>15.6KB</td><td>एएनएसआई टर्मिनल नियंत्रण</td></tr>
+</tbody></table>
+</div>
+<h3 id="3-fonksiyonel-programlama-functional"><a class="header" href="#3-fonksiyonel-programlama-functional">3. कार्यात्मक प्रोग्रामिंग</a></h3>
+<p>जूलिया और रस्ट शैली कार्यात्मक प्रोग्रामिंग:</p>
+<div class="table-wrapper"><table><thead><tr><th>मॉड्यूल</th><th>आयाम</th><th>स्पष्टीकरण</th></tr></thead><tbody>
+<tr><td><strong>धक्का</strong></td><td>19.7KB</td><td>पुनरावर्तक, मानचित्र, फ़िल्टर, कम करना, संचय करना</td></tr>
+<tr><td><strong>एफएमटी</strong></td><td>17.9KB</td><td>प्रिंटफ-शैली स्वरूपण, प्रगति पट्टियाँ</td></tr>
+</tbody></table>
+</div>
+<h3 id="4-bilimsel-hesaplama-scientific-computing-"><a class="header" href="#4-bilimsel-hesaplama-scientific-computing-">4. वैज्ञानिक कंप्यूटिंग 🔬</a></h3>
+<p><strong>v1.4 का तारा!</strong>विश्वविद्यालय और अनुसंधान स्तर पर गणित:</p>
+<div class="table-wrapper"><table><thead><tr><th>मॉड्यूल</th><th>आयाम</th><th>स्पष्टीकरण</th><th>प्रेरणा</th></tr></thead><tbody>
+<tr><td><strong>अंक शास्त्र</strong></td><td>27.5KB</td><td>150+ गणित कार्य</td><td>जूलिया मठ, न्यूमपी, जीएसएल</td></tr>
+<tr><td><strong>भौतिक विज्ञान</strong></td><td>25.5KB</td><td>क्लासिक भौतिकी सिमुलेशन</td><td>MATLAB, SciPy</td></tr>
+<tr><td><strong>जटिल</strong></td><td>15.9KB</td><td>जटिल संख्या अंकगणित</td><td>जूलिया कॉम्प्लेक्स.जे.एल</td></tr>
+<tr><td><strong>यादृच्छिक</strong></td><td>15.1केबी</td><td>Xoshiro256++, 20+ वितरण</td><td>जूलिया रैंडम</td></tr>
+<tr><td><strong>linalg</strong></td><td>25.4KB</td><td>मैट्रिक्स संचालन, अपघटन</td><td>जूलिया रेखीय बीजगणित, नालजेब्रा</td></tr>
+<tr><td><strong>आँकड़े</strong></td><td>29.8KB</td><td>सांख्यिकी और मशीन लर्निंग</td><td>जूलिया सांख्यिकी, SciPy.stats</td></tr>
+<tr><td><strong>कथानक</strong></td><td>56.3KB</td><td>डेटा विज़ुअलाइज़ेशन</td><td>matplotlib, प्लॉटली</td></tr>
+<tr><td><strong>अनुकूलतम</strong></td><td>26.6KB</td><td>अनुकूलन एल्गोरिदम</td><td>SciPy.ऑप्टिमाइज़, ऑप्टिमाइज़.jl</td></tr>
+</tbody></table>
+</div>
+<h3 id="5-yapay-zeka-ve-makine-öğrenmesi-aiml"><a class="header" href="#5-yapay-zeka-ve-makine-öğrenmesi-aiml">5. आर्टिफिशियल इंटेलिजेंस और मशीन लर्निंग (एआई/एमएल) 🤖</a></h3>
+<p><strong>एज एआई और एंबेडेड एमएल</strong>पुस्तकालयों को इसके लिए अनुकूलित किया गया है:</p>
+<div class="table-wrapper"><table><thead><tr><th>मॉड्यूल</th><th>आयाम</th><th>स्पष्टीकरण</th><th>प्लेटफार्म समर्थन</th></tr></thead><tbody>
+<tr><td><strong>ai_rl</strong></td><td>28.7KB</td><td>सुदृढीकरण सीखना (क्यू-लर्निंग, एसएआरएसए, डीक्यूएन)</td><td>सभी प्लेटफार्म</td></tr>
+<tr><td><strong>एमएल</strong></td><td>35.2KB</td><td>शास्त्रीय एमएल (रैखिक/लॉजिस्टिक रिग्रेशन, केएनएन, निर्णय वृक्ष)</td><td>डेस्कटॉप + किनारा</td></tr>
+<tr><td><strong>एन</strong></td><td>42.6KB</td><td>तंत्रिका नेटवर्क (एमएलपी, सीएनएन परतें, बैकप्रॉप)</td><td>डेस्कटॉप + एआरएम कॉर्टेक्स-एम7</td></tr>
+<tr><td><strong>onnx</strong></td><td>18.3KB</td><td>ONNX रनटाइम एकीकरण (मॉडल अनुमान)</td><td>डेस्कटॉप + ESP32/STM32F4</td></tr>
+<tr><td><strong>tinyml</strong></td><td>12.8KB</td><td>TinyML (परिमाणीकरण, छंटाई, मॉडल संपीड़न)</td><td>सभी एम्बेडेड</td></tr>
+</tbody></table>
+</div>
+<p><strong>एआई/एमएल विशेषताएं:</strong></p>
+<ul>
+<li><strong>मॉडल प्रशिक्षण</strong>: Python/PyTorch, ONNX निर्यात के साथ प्रशिक्षण</li>
+<li><strong>किनारे का अनुमान</strong>: &lt;एआरएम कॉर्टेक्स-एम, ईएसपी32, आरआईएससी-वी पर 10 एमएस विलंबता</li>
+<li><strong>परिमाणीकरण</strong>: INT8/INT16 मॉडल अनुकूलन</li>
+<li><strong>हार्डवेयर एक्सिलरेशन</strong>: एनपीयू, डीएसपी ऑफलोडिंग समर्थन</li>
+<li><strong>रियल टाइम</strong>: नियतात्मक अनुमान, आरटीओएस संगत</li>
+</ul>
+<h3 id="6-gömülü-sistemler-hal-hardware-abstraction-layer"><a class="header" href="#6-gömülü-sistemler-hal-hardware-abstraction-layer">6. एंबेडेड सिस्टम - एचएएल (हार्डवेयर एब्स्ट्रैक्शन लेयर) ⚡</a></h3>
+<p><strong>33 एचएएल मॉड्यूल</strong>यह 7 विभिन्न प्लेटफार्मों का समर्थन करता है:</p>
+<div class="table-wrapper"><table><thead><tr><th>वर्ग</th><th>मॉड्यूल</th><th>समर्थित प्लेटफार्म</th></tr></thead><tbody>
+<tr><td><strong>बुनियादी परिधीय</strong></td><td>GPIO, UART, SPI, I2C, ADC, DAC, PWM</td><td>सभी प्लेटफार्म</td></tr>
+<tr><td><strong>टाइमर</strong></td><td>टाइमर, डब्लूडीटी, आरटीसी</td><td>सभी प्लेटफार्म</td></tr>
+<tr><td><strong>डीएमए और मेमोरी</strong></td><td>डीएमए, फ्लैश, ईईपीरोम</td><td>STM32F4, ESP32, nRF52</td></tr>
+<tr><td><strong>नेटवर्क</strong></td><td>वाईफाई, ब्लूटूथ, ईथरनेट, कैन</td><td>ESP32, STM32F4 (ईथरनेट)</td></tr>
+<tr><td><strong>बिजली प्रबंधन</strong></td><td>पावर, स्लीप मोड</td><td>सभी प्लेटफार्म</td></tr>
+<tr><td><strong>स्क्रीन</strong></td><td>एलसीडी, ओएलईडी, टीएफटी</td><td>SPI/I2C के माध्यम से</td></tr>
+</tbody></table>
+</div>
+<p><strong>समर्थित प्लेटफ़ॉर्म:</strong></p>
+<ul>
+<li>✅ <strong>ईएसपी32</strong>- वाईफाई/बीटी, 240 मेगाहर्ट्ज डुअल-कोर</li>
+<li>✅ <strong>STM32F4</strong>- 168 मेगाहर्ट्ज एआरएम कॉर्टेक्स-एम4, एफपीयू</li>
+<li>✅ <strong>आरपी2040</strong>- रास्पबेरी पाई पिको, 133 मेगाहर्ट्ज डुअल-कोर</li>
+<li>✅ <strong>एनआरएफ52</strong>- नॉर्डिक बीएलई, अल्ट्रा-लो पावर</li>
+<li>✅ <strong>जीडी32</strong>- गीगाडिवाइस एआरएम कॉर्टेक्स-एम</li>
+<li>✅ <strong>नुवोटन</strong>- औद्योगिक एमसीयू</li>
+<li>✅ <strong>Arduino</strong>- एवीआर/एआरएम संगत</li>
+</ul>
+<h2 id="-hızlı-başlangıç"><a class="header" href="#-hızlı-başlangıç">🚀 त्वरित शुरुआत</a></h2>
+<h3 id="basit-kullanım"><a class="header" href="#basit-kullanım">सरल ऑपरेशन</a></h3>
+<pre><code class="language-berk">// Matematik
+use math
+
+let sonuç = math_sin(math_PI / 2.0)  // 1.0
+let faktöriyel = math_factorial(5)     // 120
+</code></pre>
+<h3 id="İteratörler"><a class="header" href="#İteratörler">पुनरावर्तक</a></h3>
+<pre><code class="language-berk">use iter
+
+let sayılar = [1, 2, 3, 4, 5]
+let kareler = iter_map(sayılar, function(x) do return x * x end)
+let sum = iter_sum(kareler)  // 55
+</code></pre>
+<h3 id="doğrusal-cebir"><a class="header" href="#doğrusal-cebir">लीनियर अलजेब्रा</a></h3>
+<pre><code class="language-berk">use linalg
+
+// 3×3 birim matris
+let I = linalg_birim_mat(3)
+
+// Matris çarpımı
+let A = [1.0, 2.0, 3.0, 4.0]  // 2×2
+let B = [5.0, 6.0, 7.0, 8.0]
+let C = linalg_mat_çarp(A, B, 2, 2, 2)
+</code></pre>
+<h3 id="İstatistik"><a class="header" href="#İstatistik">आंकड़े</a></h3>
+<pre><code class="language-berk">use stats
+
+let data = [1.5, 2.3, 3.1, 4.8, 5.2]
+let avg = stats_ortalama(data, 5)       // 3.38
+let std_dev = stats_standart_sapma(data, 5)  // 1.52
+let medyan = stats_medyan(data, 5)           // 3.1
+</code></pre>
+<h3 id="optimizasyon"><a class="header" href="#optimizasyon">अनुकूलन</a></h3>
+<pre><code class="language-berk">use optim
+
+// f(x) = x² - 4x + 4 fonksiyonunun minimumunu bul
+function f(x: float): float do
+    return x * x - 4.0 * x + 4.0
+end
+
+let minimum = optim_golden_section(f, 0.0, 5.0, 0.001)
+// minimum ≈ 2.0
+</code></pre>
+<h2 id="-detaylı-dokümantasyon"><a class="header" href="#-detaylı-dokümantasyon">📚 विस्तृत दस्तावेज़ीकरण</a></h2>
+<p>प्रत्येक मॉड्यूल के लिए विस्तृत दस्तावेज़ अलग-अलग पृष्ठों पर उपलब्ध है:</p>
+<h3 id="temel-modüller"><a class="header" href="#temel-modüller">बुनियादी मॉड्यूल</a></h3>
+<ul>
+<li><a href="./hi_en_io.html">आईओ - इनपुट/आउटपुट</a></li>
+<li><a href="./hi_en_string.html">स्ट्रिंग - स्ट्रिंग ऑपरेशंस</a></li>
+<li><a href="./hi_en_collections.html">संग्रह</a></li>
+<li><a href="./hi_en_result.html">परिणाम - त्रुटि प्रबंधन</a></li>
+<li><a href="./hi_en_time.html">समय - समय संचालन</a></li>
+</ul>
+<h3 id="sistem-programlama"><a class="header" href="#sistem-programlama">सिस्टम प्रोग्रामिंग</a></h3>
+<ul>
+<li><a href="./hi_en_fs.html">एफएस - फाइल सिस्टम</a></li>
+<li><a href="./hi_en_thread.html">थ्रेड - मल्टी-थ्रेडिंग</a></li>
+<li><a href="./hi_en_sys.html">sys - सिस्टम सूचना</a></li>
+<li><a href="./hi_en_terminal.html">टर्मिनल - टर्मिनल नियंत्रण</a></li>
+</ul>
+<h3 id="fonksiyonel-programlama"><a class="header" href="#fonksiyonel-programlama">कार्यात्मक प्रोग्रामिंग</a></h3>
+<ul>
+<li><a href="./hi_en_iter.html">iter - पुनरावर्तक</a></li>
+<li><a href="./hi_en_fmt.html">एफएमटी - उन्नत स्वरूपण</a></li>
+</ul>
+<h3 id="bilimsel-hesaplama"><a class="header" href="#bilimsel-hesaplama">वैज्ञानिक गणना</a></h3>
+<ul>
+<li><a href="./hi_en_math.html">गणित - गणित</a></li>
+<li><a href="./hi_en_physics.html">भौतिकी - भौतिक विज्ञान</a></li>
+<li><a href="./hi_en_complex.html">जटिल - जटिल संख्याएँ</a></li>
+<li><a href="./hi_en_random.html">यादृच्छिक - यादृच्छिक संख्याएँ</a></li>
+<li><a href="./hi_en_linalg.html">लिनालग - रैखिक बीजगणित</a></li>
+<li><a href="./hi_en_stats.html">आँकड़े - सांख्यिकी</a></li>
+<li><a href="./hi_en_optim.html">अनुकूलन - अनुकूलन</a></li>
+</ul>
+<h3 id="web-ve-veri"><a class="header" href="#web-ve-veri">वेब और डेटा</a></h3>
+<ul>
+<li><a href="./hi_en_http.html">http - HTTP क्लाइंट/सर्वर</a></li>
+<li><a href="./hi_en_json.html">json - JSON प्रोसेसिंग</a></li>
+<li><a href="./hi_en_regex.html">रेगेक्स - नियमित अभिव्यक्ति</a></li>
+<li><a href="./hi_en_testing.html">परीक्षण - परीक्षण रूपरेखा</a></li>
+<li><a href="./hi_en_logging.html">लॉगिंग - लॉगिंग</a></li>
+<li><a href="./hi_en_network.html">नेटवर्क - नेटवर्क संचालन</a></li>
+<li><a href="./hi_en_async.html">async - अतुल्यकालिक प्रोग्रामिंग</a></li>
+<li><a href="./hi_en_xml.html">एक्सएमएल - एक्सएमएल संचालन</a></li>
+<li><a href="./hi_en_yaml.html">yaml - YAML संचालन</a></li>
+<li><a href="./hi_en_csv.html">सीएसवी - सीएसवी फ़ाइल संचालन</a></li>
+<li><a href="./hi_en_encoding.html">एन्कोडिंग - एन्कोडिंग रूपांतरण</a></li>
+<li><a href="./hi_en_compression.html">संपीड़न - डेटा संपीड़न</a></li>
+<li><a href="./hi_en_crypto.html">क्रिप्टो - क्रिप्टोग्राफी</a></li>
+<li><a href="./hi_en_sqlite.html">एसक्लाइट - एसक्यूलाइट डेटाबेस</a></li>
+</ul>
+<h3 id="grafik-ve-oyun"><a class="header" href="#grafik-ve-oyun">ग्राफिक्स और गेमप्ले</a></h3>
+<ul>
+<li><a href="./hi_en_gui.html">जीयूआई - ग्राफिकल यूजर इंटरफ़ेस</a></li>
+<li><a href="./hi_en_graphics.html">ग्राफ़िक्स - 2डी ग्राफ़िक्स</a></li>
+<li><a href="./hi_en_audio.html">ऑडियो - ध्वनि प्रसंस्करण</a></li>
+<li><a href="./hi_en_image.html">छवि - छवि प्रसंस्करण</a></li>
+<li><a href="./hi_en_physics2d.html">फिजिक्स2डी - 2डी फिजिक्स इंजन</a></li>
+<li><a href="./hi_en_cad3d.html">कैड3डी - 3डी सीएडी मॉडलिंग</a></li>
+<li><a href="./hi_en_mesh.html">जाल - 3डी जाल प्रक्रियाएं</a></li>
+<li><a href="./hi_en_math_3d.html">गणित_3डी - 3डी गणित</a></li>
+<li><a href="./hi_en_color.html">रंग - रंग संचालन</a></li>
+</ul>
+<h3 id="ileri-seviye"><a class="header" href="#ileri-seviye">विकसित</a></h3>
+<ul>
+<li><a href="./hi_en_rules.html">नियम - नियम आधारित प्रणालियाँ</a></li>
+</ul>
+<h2 id="-kullanım-senaryoları"><a class="header" href="#-kullanım-senaryoları">🎓 उपयोग परिदृश्य</a></h2>
+<h3 id="bilimsel-araştırma"><a class="header" href="#bilimsel-araştırma">वैज्ञानिक अनुसंधान</a></h3>
+<pre><code class="language-berk">// İstatistiksel analiz
+let veriler = veri_oku("deney.csv")
+let avg = stats_ortalama(veriler)
+let t_skoru = stats_t_score(veriler, 0.0)
+
+// Hipotez testi
+if math_mutlak(t_skoru) &gt; 2.0 then do
+    print("İstatistiksel as anlamlı!")
+end
+</code></pre>
+<h3 id="makine-Öğrenmesi-temelleri"><a class="header" href="#makine-Öğrenmesi-temelleri">मशीन लर्निंग की बुनियादी बातें</a></h3>
+<pre><code class="language-berk">// Doğrusal regresyon
+let X = [1.0, 2.0, 3.0, 4.0, 5.0]
+let y = [2.1, 3.9, 6.2, 8.1, 9.8]
+
+let (a, b, r2) = stats_linear_regression(X, y, 5)
+print("y = " + a + " + " + b + "x")
+print("R² = " + r2)
+</code></pre>
+<h3 id="nümerik-simülasyon"><a class="header" href="#nümerik-simülasyon">संख्यात्मक सिमुलेशन</a></h3>
+<pre><code class="language-berk">// Monte Carlo π tahmini
+use random
+
+let içerde = 0
+let sum = 1000000
+
+let rng = random_xoshiro_seed(12345)
+
+let i = 0
+while (i &lt; sum) do
+    let x = random_xoshiro_next_float(rng)
+    let y = random_xoshiro_next_float(rng)
+    
+    if (x*x + y*y &lt; 1.0) then do
+        içerde = içerde + 1
+    end
+    
+    i = i + 1
+end
+
+let pi_tahmini = 4.0 * içerde / sum
+print("π ≈ " + pi_tahmini)  // ~3.14159
+</code></pre>
+<h3 id="optimizasyon-problemleri"><a class="header" href="#optimizasyon-problemleri">अनुकूलन समस्याएँ</a></h3>
+<pre><code class="language-berk">// Gradyan inişi ile function minimizasyonu
+use optim
+use linalg
+
+// f(x, y) = x² + y² - 2x - 4y + 5
+function gradyan(pos: [float], n: tam_sayı): [float] do
+    let grad = [2.0 * pos[0] - 2.0, 2.0 * pos[1] - 4.0]
+    return grad
+end
+
+let başlangıç = [0.0, 0.0]
+let minimum = optim_gradient_descent(gradyan, başlangıç, 2, 0.1, 100, 0.001)
+
+print("Minimum nokta: (" + minimum[0] + ", " + minimum[1] + ")")
+// Beklenen: (1.0, 2.0)
+</code></pre>
+<h3 id="yapay-zeka-ve-makine-öğrenmesi"><a class="header" href="#yapay-zeka-ve-makine-öğrenmesi">आर्टिफिशियल इंटेलिजेंस और मशीन लर्निंग</a></h3>
+<pre><code class="language-berk">// Reinforcement Learning - Q-Learning
+use ai_rl
+
+// Labirent problemi for Q-learning
+let ortam = ai_rl_ortam_oluştur(durum_sayısı: 16, eylem_sayısı: 4)
+let ajan = ai_rl_q_learning_ajan(
+    öğrenme_oranı: 0.1,
+    keşif_oranı: 0.2,
+    indirim: 0.95
+)
+
+// Eğitim
+let bölüm = 0
+while (bölüm &lt; 1000) do
+    let case = ortam_sıfırla(ortam)
+    let toplam_ödül = 0.0
+    
+    while (durum_terminal_mi(case) yok then) do
+        let eylem = ajan_eylem_seç(ajan, case)
+        let (yeni_durum, ödül) = ortam_adım(ortam, eylem)
+        ajan_güncelle(ajan, case, eylem, ödül, yeni_durum)
+        
+        case = yeni_durum
+        toplam_ödül = toplam_ödül + ödül
+    end
+    
+    bölüm = bölüm + 1
+end
+
+print("Eğitim tamamlandı! Ortalama ödül: " + toplam_ödül / 1000.0)
+</code></pre>
+<pre><code class="language-berk">// Neural Network - MLP Classification
+use nn
+use linalg
+
+// 2-katmanlı sinir ağı (784 → 128 → 10)
+let model = nn_mlp_oluştur([784, 128, 10])
+
+// MNIST veri seti yükleme
+let (X_train, y_train) = veri_yükle("mnist_train.csv")
+let (X_test, y_test) = veri_yükle("mnist_test.csv")
+
+// Eğitim
+let dönem = 0
+while (dönem &lt; 10) do
+    let kayıp = nn_mlp_eğit(
+        model, 
+        X_train, 
+        y_train,
+        öğrenme_oranı: 0.01,
+        batch_boyutu: 32
+    )
+    
+    // Test doğruluğu
+    let doğruluk = nn_mlp_değerlendir(model, X_test, y_test)
+    print("Dönem " + dönem + ": Kayıp=" + kayıp + ", Doğruluk=" + doğruluk)
+    
+    dönem = dönem + 1
+end
+</code></pre>
+<pre><code class="language-berk">// Edge AI - ONNX Model Inference (ESP32/STM32)
+use onnx
+use hal_gpio
+
+// ONNX modelini yükle (quantized INT8)
+let model = onnx_model_yükle("mobilenet_v2_int8.onnx")
+
+// Kamera görüntüsü receive (ESP32-CAM)
+let görüntü = kamera_çek()  // 224x224 RGB
+
+// Ön işleme
+let giriş = görüntü_normalize(görüntü, avg: 0.5, std: 0.5)
+
+// Inference (tipik: 5-8ms ESP32 üzerinde)
+let çıktı = onnx_inference(model, giriş)
+
+// Sonucu işle
+let sınıf = argmax(çıktı)
+let güven = çıktı[sınıf]
+
+print("Tespit edilen: " + sınıf_isimleri[sınıf])
+print("Güven: " + (güven * 100.0) + "%")
+
+// LED ile görsel geri bildirim
+if güven &gt; 0.8 then do
+    hal_gpio_yaz(LED_PIN, YÜKSEK)  // Yeşil LED
+end
+</code></pre>
+<h2 id="-implementation-status"><a class="header" href="#-implementation-status">🔧 कार्यान्वयन स्थिति (v0.9.4)</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>वर्ग</th><th>मॉड्यूल</th><th>परिस्थिति</th><th>बैकएंड/नोट्स</th></tr></thead><tbody>
+<tr><td rowspan="5"><strong>आधार</strong></td><td>आईओ</td><td>✅</td><td>एलएलवीएम आंतरिक</td></tr>
+<tr><td>डोरी</td><td>✅</td><td>यूटीएफ-8 समर्थन</td></tr>
+<tr><td>संग्रह</td><td>✅</td><td>ढेर आवंटन</td></tr>
+<tr><td>परिणाम</td><td>✅</td><td>एनम समर्थन</td></tr>
+<tr><td>समय</td><td>✅</td><td>ओएस समय एपीआई</td></tr>
+<tr><td rowspan="4"><strong>प्रणाली</strong></td><td>एफ.एस</td><td>🟡</td><td>POSIX/Win32 एपीआई</td></tr>
+<tr><td>धागा</td><td>🟡</td><td>पाथ्रेड/विनथ्रेड्स</td></tr>
+<tr><td>sys</td><td>🟡</td><td>प्लेटफ़ॉर्म-विशिष्ट</td></tr>
+<tr><td>टर्मिनल</td><td>🟡</td><td>एएनएसआई/वीटी100</td></tr>
+<tr><td rowspan="2"><strong>कार्यात्मक</strong></td><td>धक्का</td><td>✅</td><td>सूची संचालन</td></tr>
+<tr><td>एफएमटी</td><td>✅</td><td>प्रिंटफ-शैली</td></tr>
+<tr><td rowspan="8"><strong>वैज्ञानिक</strong></td><td>अंक शास्त्र</td><td>🟡</td><td>libm + LLVM आंतरिक</td></tr>
+<tr><td>भौतिक विज्ञान</td><td>🟡</td><td>ओडीई सॉल्वर</td></tr>
+<tr><td>जटिल</td><td>🟡</td><td>संरचनात्मक समर्थन</td></tr>
+<tr><td>यादृच्छिक</td><td>🟡</td><td>ज़ोशिरो256++</td></tr>
+<tr><td>linalg</td><td>🟡</td><td>ब्लास/लैपैक (वैकल्पिक)</td></tr>
+<tr><td>आँकड़े</td><td>🟡</td><td>वितरण + प्रतिगमन</td></tr>
+<tr><td>अनुकूलतम</td><td>🟡</td><td>संख्यात्मक अनुकूलन</td></tr>
+<tr><td>कथानक</td><td>🟡</td><td>टर्मिनल ग्राफ़िक्स</td></tr>
+<tr><td rowspan="5"><strong>एआई/एमएल</strong></td><td>ai_rl</td><td>🟡</td><td>क्यू-लर्निंग, डीक्यूएन</td></tr>
+<tr><td>एमएल</td><td>🟡</td><td>शास्त्रीय एल्गोरिदम</td></tr>
+<tr><td>एन</td><td>🟡</td><td>बैकप्रॉप + ऑटोडिफ़</td></tr>
+<tr><td>onnx</td><td>🔴</td><td>ONNX रनटाइम सी एपीआई</td></tr>
+<tr><td>tinyml</td><td>🔴</td><td>मॉडल संपीड़न</td></tr>
+<tr><td rowspan="7"><strong>वेब/डेटा</strong></td><td>http</td><td>🟡</td><td>टीसीपी सॉकेट + पार्सर</td></tr>
+<tr><td>json</td><td>🟡</td><td>पार्सर + सीरिएलाइज़र</td></tr>
+<tr><td>एक्सएमएल</td><td>🟡</td><td>SAX/DOM पार्सर</td></tr>
+<tr><td>yaml</td><td>🔴</td><td>लीबियामल बाइंडिंग</td></tr>
+<tr><td>सीएसवी</td><td>✅</td><td>शुद्ध बर्क</td></tr>
+<tr><td>regex</td><td>🟡</td><td>एनएफए/डीएफए इंजन</td></tr>
+<tr><td>SQLite</td><td>🔴</td><td>libsqlite3 एफएफआई</td></tr>
+<tr><td rowspan="7"><strong>एचएएल (एम्बेडेड)</strong></td><td>जीपीआईओ</td><td>✅</td><td>7 प्लेटफार्म</td></tr>
+<tr><td>यूएआरटी/एसपीआई/आई2सी</td><td>✅</td><td>7 प्लेटफार्म</td></tr>
+<tr><td>टाइमर/पीडब्लूएम</td><td>✅</td><td>हार्डवेयर टाइमर</td></tr>
+<tr><td>एडीसी/डीएसी</td><td>✅</td><td>एनालॉग I/O</td></tr>
+<tr><td>वाईफाई/बीटी</td><td>✅</td><td>ईएसपी32, एनआरएफ52</td></tr>
+<tr><td>डीएमए</td><td>🟡</td><td>एसटीएम32, ईएसपी32</td></tr>
+<tr><td>फ्लैश/ईईपीरोम</td><td>🟡</td><td>गैर-वाष्पशील भंडारण</td></tr>
+</tbody></table>
+</div>
+<p><strong>स्थिति विवरण:</strong></p>
+<ul>
+<li>✅ <strong>स्थिर</strong>- एपीआई को अंतिम रूप दिया गया, उत्पादन के लिए तैयार</li>
+<li>🟡 <strong>बीटा</strong>- एपीआई स्थिर, कार्यान्वयन प्रगति पर है</li>
+<li>🔴 <strong>अल्फा</strong>- प्रायोगिक, एपीआई बदल सकता है</li>
+<li>⏳ <strong>अनुसूचित</strong>- डिजाइन चरण में</li>
+</ul>
+<h2 id="-v10-roadmap"><a class="header" href="#-v10-roadmap">🎯v1.0 रोडमैप (जनवरी 2026)</a></h2>
+<p>v1.0 के लिए शेष सुधार:</p>
+<ol>
+<li><strong>मैक्रोसिस्टम</strong>- संकलन-समय कोड जनरेशन</li>
+<li><strong>डेटा फ़्रेम</strong>- पांडा जैसी स्तंभ डेटा संरचनाएं</li>
+<li><strong>सार्वजनिक रजिस्ट्री</strong>- berk.dev पैकेज रजिस्ट्री लॉन्च</li>
+<li><strong>पैकेज सत्यापन</strong>- सुरक्षा के लिए डिजिटल हस्ताक्षर</li>
+<li><strong>लिनक्स और मैकओएस</strong>- क्रॉस-प्लेटफ़ॉर्म समर्थन</li>
+</ol>
+<h3 id="gelecek-sürümler-v15-v20"><a class="header" href="#gelecek-sürümler-v15-v20">भविष्य की रिलीज़ (v1.5, v2.0+)</a></h3>
+<ul>
+<li><strong>संकेत</strong>- सिग्नल प्रोसेसिंग (एफएफटी, फ़िल्टरिंग, वर्णक्रमीय विश्लेषण)</li>
+<li><strong>विरल</strong>- विरल मैट्रिक्स (सीओओ, सीएसआर, सीएससी प्रारूप)</li>
+<li><strong>स्तोत्र</strong>- विभेदक समीकरण (आरके4, बीडीएफ, अनुकूली)</li>
+<li><strong>एफपीजीए संश्लेषण</strong>- हार्डवेयर विवरण, वेरिलॉग/वीएचडीएल पीढ़ी</li>
+<li><strong>औपचारिक सत्यापन</strong>- प्रमाण सहायक एकीकरण</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 अधिक जानकारी</a></h2>
+<ul>
+<li><a href="https://github.com/ArslantasM/berk">गिटहब रिपॉजिटरी</a></li>
+<li><a href="../reference/hi_en_std-library.html">एपीआई संदर्भ</a></li>
+<li><a href="../contributing/hi_en_code.html">योगदान मार्गदर्शिका</a></li>
+<li><a href="../hi_en_changelog.html">चैंज</a></li>
+</ul>
+<hr>
+<p><strong>क्या आप तैयार हैं?</strong>आइए अगले भाग में मॉड्यूल की विस्तार से जाँच करें!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../examples/hi_en_web-server.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_en_io.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../examples/hi_en_web-server.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_en_io.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

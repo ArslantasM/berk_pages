@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>भौतिकी - भौतिकी सिमुलेशन | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚛️भौतिकी</h1>
+<p>भौतिकी सिमुलेशन इंजन</p>
+<div style="margin-top:15px">
+<span class="stat-badge">103 कार्य</span>
+<span class="stat-badge">748 पंक्तियाँ</span>
+<span class="stat-badge">शास्त्रीय यांत्रिकी</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>भौतिकी सिमुलेशन: गतिकी, गतिकी, टकराव का पता लगाना, बल, ऊर्जा गणना।</p>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import physics
+
+let world = physics.World.new()
+world.set_gravity(0.0, -9.81, 0.0)
+
+let body = world.create_body()
+body.set_position(0.0, 10.0, 0.0)
+body.set_mass(1.0)
+
+world.step(0.016)  // 60 FPS</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-en.html">← सभी मॉड्यूल</a> | <a href="hi_physics-tr.html">🇹🇷तुर्की</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

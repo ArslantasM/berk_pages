@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+    <meta charset="UTF-8">
+    <title>문자열 - 문자열 처리 | 버크 표준립</title>
+    <meta name="description" content="BERK string modülü - 127 function ile UTF-8 string işlemleri, pattern matching, formatting">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>📝 string - 문자열 처리 모듈</h1>
+            <p>UTF-8, 패턴 일치, 서식 지정</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">127</div><div>기능</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">953</div><div>윤곽</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26KB</div><div>차원</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 빠른 시작</h2>
+        <pre><code>import string
+
+// Temel işlemler
+let uzunluk = string.uzunluk("Merhaba")  // 7
+let büyük = string.büyük_harf("merhaba") // "MERHABA"
+let küçük = string.küçük_harf("MERHABA") // "merhaba"
+
+// Arama and değiştirme
+let içerir = string.içerir_mi("Hello World", "World") // true
+let değişti = string.değiştir("foo bar", "foo", "baz") // "baz bar"
+
+// Bölme and birleştirme
+let parçalar = string.böl("a,b,c", ",")  // ["a", "b", "c"]
+let birleşik = string.birleştir(["a","b"], "-") // "a-b"
+
+// Whitespace temizleme
+let temiz = string.temizle("  hello  ") // "hello"</code></pre>
+
+        <h2>📚 기능 카테고리</h2>
+
+        <div class="function-group">
+            <h3>기본 작업</h3>
+            <p><code data-no-translate="true">uzunluk()</code>, <code data-no-translate="true">birleştir()</code>, <code data-no-translate="true">alt_yazı()</code>, <code data-no-translate="true">kopyala()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>캐릭터 변신</h3>
+            <p><code data-no-translate="true">büyük_harf()</code>, <code data-no-translate="true">küçük_harf()</code>, <code data-no-translate="true">ilk_harf_büyük()</code>, <code data-no-translate="true">başlık_hali()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>검색 및 비교</h3>
+            <p><code data-no-translate="true">eşit_mi()</code>, <code data-no-translate="true">içerir_mi()</code>, <code data-no-translate="true">başlar_mı()</code>, <code data-no-translate="true">biter_mi()</code>, <code data-no-translate="true">bul()</code>, <code data-no-translate="true">bul_hepsi()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>문자열 조작</h3>
+            <p><code data-no-translate="true">değiştir()</code>, <code data-no-translate="true">değiştir_hepsi()</code>, <code data-no-translate="true">böl()</code>, <code data-no-translate="true">birleştir()</code>, <code data-no-translate="true">temizle()</code>, <code data-no-translate="true">ters_çevir()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>UTF-8 및 유니코드</h3>
+            <p><code data-no-translate="true">karakter_sayısı()</code>, <code data-no-translate="true">bayt_sayısı()</code>, <code data-no-translate="true">utf8_geçerli_mi()</code>, <code data-no-translate="true">unicode_normalize()</code></p>
+        </div>
+
+        <h2>💡 예</h2>
+
+        <div class="example-box">
+            <h3>예 1: 이메일 검증</h3>
+            <pre><code>import string
+
+function email_geçerli_mi(email: str) -&gt; bool do
+    if string.içerir_mi(email, "@") else return false end
+    
+    let parçalar = string.split(email, "@")
+    if string.len(parçalar) != 2  return false end
+    
+    let local = parçalar[0]
+    let domain = parçalar[1]
+    
+    if string.len(local) == 0  return false end
+    if string.len(domain) == 0  return false end
+    if string.içerir_mi(domain, ".") else return false end
+    
+    return true
+end
+
+print(email_geçerli_mi("user@example.com"))  // true
+print(email_geçerli_mi("invalid"))           // false</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>예 2: CSV 파서</h3>
+            <pre><code>import string
+
+function csv_parse(lines: str) -&gt; List[str] do
+    let Result = []
+    let volatile = ""
+    let tırnak_içinde = false
+    
+    for char_at in string.chars(lines) do
+        if char_at == '"'  do
+            tırnak_içinde = !tırnak_içinde
+        end else if char_at == ',' and !tırnak_içinde  do
+            liste_ekle(Result, string.temizle(volatile))
+            volatile = ""
+        end else do
+            volatile += char_at
+        end
+    end
+    
+    liste_ekle(Result, string.temizle(volatile))
+    return Result
+end
+
+let veri = 'John,Doe,"123 Main St",30'
+print(csv_parse(veri))  // ["John", "Doe", "123 Main St", "30"]</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="en_index-tr.html">← 모든 모듈</a> | 
+            <a href="../ko_en_index-tr.html">홈 페이지</a>
+        </p>
+    </main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

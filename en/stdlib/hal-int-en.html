@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::int - Interrupt Controller | BERK</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ state::int</h1>
+<p>Nested Vectored Interrupt Controller (NVIC)</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 lines</span>
+<span class="stat-badge">~8 functions</span>
+<span class="stat-badge">NVIC</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The interrupt controller handles asynchronous events. It manages interrupts of peripheral units such as GPIO, Timer, USART.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Priority levels (0-15)</li>
+<li>Preemption &amp; sub-priority</li>
+<li>Enable/Disable interrupts</li>
+<li>Pending flag management</li>
+<li>Nested interrupt support</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::int
+
+// Enable interrupt
+int.enable(int.IRQ_TIM2)
+
+// Set priority
+int.set_priority(int.IRQ_TIM2, do
+    preempt: 2,  // Preemption priority
+    sub: 0       // Sub priority
+end)
+
+// Disable interrupt
+int.disable(int.IRQ_TIM2)
+
+// Global interrupt enable/disable
+int.global_enable()
+int.global_disable()</code></pre>
+
+<h2>⚙️ Priority Groups</h2>
+<pre><code>// Configure priority grouping
+int.set_priority_grouping(int.PRIORITY_GROUP_4)
+
+// Groups:
+// GROUP_0: 0 bits preemption, 4 bits sub (16 sub-priorities)
+// GROUP_4: 4 bits preemption, 0 bits sub (16 preemption levels)</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: Nested Interrupts (Priority Preemption)</h3>
+<pre><code>import hal::int, hal::timer, hal::gpio
+
+let high_priority_count = 0
+let low_priority_count = 0
+
+function high_priority_isr() do
+    // High priority interrupt (timer)
+    high_priority_count += 1
+    io.println("HIGH priority ISR (count: {})", high_priority_count)
+    
+    // Simulate work
+    core.delay_ms(50)
+end
+
+function low_priority_isr() do
+    // Low priority interrupt (button)
+    low_priority_count += 1
+    io.println("  LOW priority ISR (count: {})", low_priority_count)
+    
+    // Simulate work
+    core.delay_ms(100)
+end
+
+function nested_interrupt_demo() do
+    // Set priority grouping (4 bits preemption, 0 bits sub)
+    int.set_priority_grouping(int.PRIORITY_GROUP_4)
+    
+    // Configure Timer2 interrupt (high priority)
+    timer.init(timer.TIM2, do
+        frequency: 10,  // 10Hz
+        callback: high_priority_isr
+    end)
+    
+    int.set_priority(int.IRQ_TIM2, do
+        preempt: 0,  // Highest priority
+        sub: 0
+    end)
+    int.enable(int.IRQ_TIM2)
+    
+    // Configure GPIO interrupt (low priority)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        interrupt: gpio.INT_RISING,
+        callback: low_priority_isr
+    end)
+    
+    int.set_priority(int.IRQ_EXTI0, do
+        preempt: 5,  // Lower priority
+        sub: 0
+    end)
+    int.enable(int.IRQ_EXTI0)
+    
+    io.println("Nested interrupt demo")
+    io.println("Timer interrupt can preempt button interrupt")
+    
+    timer.start(timer.TIM2)
+    
+    loop do
+        core.delay_ms(1000)
+    end
+end
+
+function ana() do
+    nested_interrupt_demo()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: External Interrupts (EXTI)</h3>
+<pre><code>import hal::int, hal::gpio
+
+let button1_pressed = 0
+let button2_pressed = 0
+
+function button1_callback() do
+    button1_pressed += 1
+    io.println("Button 1 pressed (total: {})", button1_pressed)
+end
+
+function button2_callback() do
+    button2_pressed += 1
+    io.println("Button 2 pressed (total: {})", button2_pressed)
+end
+
+function multi_button_exti() do
+    // Button 1 on PA0 (EXTI0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_A, 0, button1_callback)
+    
+    int.set_priority(int.IRQ_EXTI0, do preempt: 5, sub: 0 end)
+    int.enable(int.IRQ_EXTI0)
+    
+    // Button 2 on PB1 (EXTI1)
+    gpio.clock_enable(gpio.PORT_B)
+    gpio.pin_init(gpio.PORT_B, 1, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN,
+        interrupt: gpio.INT_RISING
+    end)
+    
+    gpio.set_callback(gpio.PORT_B, 1, button2_callback)
+    
+    int.set_priority(int.IRQ_EXTI1, do preempt: 5, sub: 0 end)
+    int.enable(int.IRQ_EXTI1)
+    
+    io.println("EXTI demo: Press buttons")
+    
+    loop do
+        core.delay_ms(100)
+    end
+end
+
+function ana() do
+    multi_button_exti()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Interrupt Latency Measurement</h3>
+<pre><code>import hal::int, hal::timer, hal::gpio
+
+let interrupt_timestamp = 0
+let latency_us = 0
+
+function fast_isr() do
+    // Measure interrupt latency
+    let now = core.uptime_us()
+    latency_us = now - interrupt_timestamp
+    
+    // Toggle LED as visual indicator
+    gpio.pin_toggle(gpio.PORT_C, 13)
+end
+
+function latency_test() do
+    // Configure GPIO interrupt on PA0
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        interrupt: gpio.INT_RISING,
+        callback: fast_isr
+    end)
+    
+    // Set highest priority
+    int.set_priority_grouping(int.PRIORITY_GROUP_4)
+    int.set_priority(int.IRQ_EXTI0, do preempt: 0, sub: 0 end)
+    int.enable(int.IRQ_EXTI0)
+    
+    // LED output
+    gpio.pin_init(gpio.PORT_C, 13, do mode: gpio.MODE_OUTPUT end)
+    
+    io.println("Interrupt latency test")
+    io.println("Trigger PA0 rising edge")
+    
+    loop do
+        // Wait for interrupt
+        if latency_us &gt; 0 ise do
+            io.println("Interrupt latency: {}μs", latency_us)
+            latency_us = 0
+        end
+        
+        core.delay_ms(100)
+    end
+end
+
+function ana() do
+    latency_test()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Software Interrupt Trigger</h3>
+<pre><code>import hal::int
+
+let software_int_count = 0
+
+function software_isr() do
+    software_int_count += 1
+    io.println("Software interrupt triggered! ({})", software_int_count)
+end
+
+function software_interrupt_demo() do
+    // Configure software interrupt
+    int.set_callback(int.IRQ_PendSV, software_isr)
+    int.set_priority(int.IRQ_PendSV, do preempt: 15, sub: 0 end)
+    int.enable(int.IRQ_PendSV)
+    
+    io.println("Software interrupt demo")
+    
+    loop do
+        io.println("Triggering software interrupt...")
+        
+        // Trigger PendSV interrupt manually
+        int.set_pending(int.IRQ_PendSV)
+        
+        core.delay_ms(2000)
+    end
+end
+
+function ana() do
+    software_interrupt_demo()
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Critical Section (Interrupt Disable)</h3>
+<pre><code>import hal::int
+
+let shared_counter = 0
+
+function critical_section_demo() do
+    // Unsafe increment (race condition possible)
+    function unsafe_increment() do
+        let temp = shared_counter
+        core.delay_us(10)  // Simulate work
+        shared_counter = temp + 1
+    end
+    
+    // Safe increment (atomic with interrupts disabled)
+    function safe_increment() do
+        // Enter critical section
+        int.global_disable()
+        
+        let temp = shared_counter
+        core.delay_us(10)
+        shared_counter = temp + 1
+        
+        // Exit critical section
+        int.global_enable()
+    end
+    
+    // Better: use RAII-style guard
+    function best_increment() do
+        let guard = int.critical_section()  // Auto disable
+        
+        let temp = shared_counter
+        core.delay_us(10)
+        shared_counter = temp + 1
+        
+        // Auto enable on scope exit
+    end
+    
+    // Test
+    each i forde 0..1000 for do
+        safe_increment()
+    end
+    
+    io.println("Counter: {}", shared_counter)  // Should be 1000
+end
+
+function ana() do
+    critical_section_demo()
+end</code></pre>
+</div>
+
+<h2>⚙️ NVIC structuring</h2>
+<pre><code>// Priority Configuration
+struct PriorityConfig do
+    preempt: int,  // Preemption priority (0-15)
+    sub: int       // Sub-priority (0-15)
+end
+
+// Priority Grouping
+enum PriorityGroup {
+    PRIORITY_GROUP_0,  // 0:4 (0 preemption, 16 sub)
+    PRIORITY_GROUP_1,  // 1:3 (2 preemption, 8 sub)
+    PRIORITY_GROUP_2,  // 2:2 (4 preemption, 4 sub)
+    PRIORITY_GROUP_3,  // 3:1 (8 preemption, 2 sub)
+    PRIORITY_GROUP_4   // 4:0 (16 preemption, 0 sub)
+}
+
+// Common IRQ Numbers (STM32F4)
+enum IRQ {
+    IRQ_WWDG          = 0,   // Window watchdog
+    IRQ_EXTI0         = 6,   // External line 0
+    IRQ_EXTI1         = 7,   // External line 1
+    IRQ_DMA1_STREAM0  = 11,  // DMA1 stream 0
+    IRQ_TIM2          = 28,  // Timer 2
+    IRQ_USART1        = 37,  // USART1
+    IRQ_EXTI15_10     = 40,  // External lines 10-15
+    IRQ_SPI1          = 35,  // SPI1
+    IRQ_PendSV        = -2,  // Pendable request
+    IRQ_SysTick       = -1   // System tick
+}</code></pre>
+
+<h2>📚 NVIC functions</h2>
+<pre><code>// Interrupt control
+function enable(irq: IRQ)
+function disable(irq: IRQ)
+function is_enabled(irq: IRQ) -&gt; bool
+
+// Priority management
+function set_priority(irq: IRQ, config: PriorityConfig)
+function get_priority(irq: IRQ) -&gt; PriorityConfig
+function set_priority_grouping(group: PriorityGroup)
+
+// Pending flags
+function set_pending(irq: IRQ)  // Software trigger
+function clear_pending(irq: IRQ)
+function is_pending(irq: IRQ) -&gt; bool
+
+// Global control
+function global_enable()  // Enable all interrupts
+function global_disable()  // Disable all interrupts
+function critical_section() -&gt; Guard  // RAII-style
+
+// Callback registration
+function set_callback(irq: IRQ, callback: fn())</code></pre>
+
+<h2>📊 Priority Level Suggestions</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">priority</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Use Case</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">examples</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">0-2 (Highest)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Time-critical, real-time</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Motor encoder, high-speed ADC</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">3-7 (High)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Fast peripherals</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">USART, SPI, I2C, timers</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">8-11 (Medium)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">normal peripherals</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">GPIO, ADC, RTC alarms</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">12-15 (Low)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Background tasks</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Software interrupts, low-priority IO</td>
+</tr>
+</tbody></table>
+
+<h2>⚡ Good Practices</h2>
+<ul>
+<li><strong>ISR Short</strong>: Keep interrupt handlers short (&lt;10μs ideal)</li>
+<li><strong>Defer Work</strong>: Delay heavy processing to main loop (flag set)</li>
+<li><strong>volatile</strong>: Lets read from ISR must be volatile</li>
+<li><strong>Priority Planning</strong>: Time-critical jobs are high priority</li>
+<li><strong>Nesting</strong>: Use GROUP_4 (preemption level 16)</li>
+<li><strong>Critical Sections</strong>: Disable interrupts in shared data access</li>
+</ul>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li><strong>Priority Number</strong>: Lower number = Higher priority (0 is the highest)</li>
+<li><strong>Preemption</strong>: Different preemption priority → nesting possible</li>
+<li><strong>sub-priority</strong>: Determines which will be processed first in the same preemption</li>
+<li><strong>ISR Latency</strong>: Typical 10-20 cycles (~12 cycle push/pop registers)</li>
+<li><strong>Tail Chaining</strong>: Push/pop skip (6 cycle saved) in back-to-back interrupts</li>
+<li><strong>BASEPRI</strong>: Masking interrupts under a certain priority</li>
+<li><strong>Fault Handlers</strong>: HardFault, MemManage, BusFault (priority -1, -2, -3)</li>
+<li><strong>Systick</strong>: Typical priority 15 (lowest, not timing-critical)</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- EXTI external interrupts</li>
+<li><code data-no-translate="true">hal::timer</code>- Timer interrupts (overflow, capture)</li>
+<li><code data-no-translate="true">hal::usart</code>- USART TX/RX interrupts</li>
+<li><code data-no-translate="true">hal::dma</code>- DMA transfer complete interrupts</li>
+<li><code data-no-translate="true">hal::rtc</code>- RTC alarm interrupts</li>
+<li><code data-no-translate="true">hal::core</code>- Sleep mode wakeup</li>
+</ul>
+
+<h2>📖 References</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4044: Using STM32 Interrupts</a></li>
+<li><a href="https://www.arm.com/technologies/cmsis">ARM CMSIS Documentation: NVIC</a></li>
+<li>Cortex-M Programming Manual: Nested Vectored Interrupt Controller</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

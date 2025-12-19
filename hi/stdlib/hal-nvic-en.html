@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::nvic - इंटरप्ट कंट्रोलर | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #9b59b6;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>राज्य::एनविक</h1>
+<p>नेस्टेड वेक्टर्ड इंटरप्ट कंट्रोलर - एआरएम कॉर्टेक्स-एम</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~380 पंक्तियाँ</span>
+<span class="stat-badge">~18 कार्य</span>
+<span class="stat-badge">एआरएम कॉर्टेक्स-एम</span>
+</div>
+</div>
+
+<h2>सिंहावलोकन</h2>
+<p>एनवीआईसी मॉड्यूल एआरएम कॉर्टेक्स-एम श्रृंखला प्रोसेसर पर इंटरप्ट प्रबंधन प्रदान करता है। यह 16 प्राथमिकता स्तरों के साथ 240+ इंटरप्ट स्रोतों का प्रबंधन करता है, नेस्टेड इंटरप्ट का समर्थन करता है और महत्वपूर्ण क्षेत्र सुरक्षा तंत्र प्रदान करता है। यह वास्तविक समय एम्बेडेड सिस्टम की रीढ़ है।</p>
+
+<h2>प्रमुख विशेषताऐं</h2>
+<ul>
+<li><strong>240+ व्यवधान:</strong>STM32F4 में 82 IRQ, F7 में 97, H7 में 150+ IRQ</li>
+<li><strong>16 प्राथमिकता स्तर:</strong>4-बिट प्राथमिकता (0=उच्चतम)</li>
+<li><strong>निवारण:</strong>उच्च प्राथमिकता वाला व्यवधान निम्न प्राथमिकता में प्रवेश कर सकता है</li>
+<li><strong>उप-प्राथमिकता:</strong>कतार को समान प्राथमिकता के साथ क्रमबद्ध करना</li>
+<li><strong>मास्किंग:</strong>प्राइमास्क, फॉल्टमास्क, बेसप्री के साथ शटडाउन को बाधित करें</li>
+<li><strong>पूँछ जंजीर:</strong>व्यवधान संक्रमण के दौरान कोई स्थिति सहेजी/पुनर्स्थापित नहीं की गई</li>
+<li><strong>देरी से आगमन:</strong>यदि स्टैक प्रक्रिया में कोई उच्च प्राथमिकता वाला व्यवधान आता है, तो यह तुरंत चलता है।</li>
+<li><strong>वेक्टर तालिका:</strong>फ्लैश/रैम से स्थानांतरित करने योग्य इंटरप्ट वैक्टर</li>
+</ul>
+
+<h2>त्वरित शुरुआत</h2>
+<pre><code>import hal::nvic
+
+// Simple interrupt enable
+nvic.enable_irq(nvic.USART1_IRQn, do
+    priority: 5  // 0-15 range
+end)
+
+// Priority grouping (preemption vs sub-priority)
+nvic.set_priority_grouping(nvic.PRIGROUP_4_4)  // 4 bit preempt, 4 bit sub
+
+// Preemption priority 2, sub-priority 1
+nvic.set_priority(nvic.TIM2_IRQn, do
+    preempt: 2,
+    sub: 1
+end)
+
+// Disable interrupt
+nvic.disable_irq(nvic.USART1_IRQn)
+
+// Software trigger interrupt
+nvic.set_pending_irq(nvic.EXTI0_IRQn)</code></pre>
+
+<h2>प्रकार और एनुम</h2>
+<pre><code>// Priority Grouping
+enum PriorityGroup {
+    PRIGROUP_0_4,  // 0 bit preempt, 4 bit sub
+    PRIGROUP_1_3,  // 1 bit preempt, 3 bit sub
+    PRIGROUP_2_2,  // 2 bit preempt, 2 bit sub
+    PRIGROUP_3_1,  // 3 bit preempt, 1 bit sub
+    PRIGROUP_4_0   // 4 bit preempt, 0 bit sub (default)
+}
+
+// IRQ Numbers (platform-specific)
+enum IRQn {
+    // Cortex-M core exceptions
+    NMI_IRQn = -14,
+    HardFault_IRQn = -13,
+    MemManage_IRQn = -12,
+    BusFault_IRQn = -11,
+    UsageFault_IRQn = -10,
+    SVCall_IRQn = -5,
+    PendSV_IRQn = -2,
+    SysTick_IRQn = -1,
+    
+    // STM32-specific interrupts (0+)
+    WWDG_IRQn = 0,
+    PVD_IRQn = 1,
+    TAMP_STAMP_IRQn = 2,
+    RTC_WKUP_IRQn = 3,
+    FLASH_IRQn = 4,
+    RCC_IRQn = 5,
+    EXTI0_IRQn = 6,
+    EXTI1_IRQn = 7,
+    // ... 80+ more
+    USART1_IRQn = 37,
+    TIM2_IRQn = 28,
+    DMA1_Stream0_IRQn = 11
+}
+
+struct NVICConfig do
+    irq: IRQn,
+    priority: int,        // Combined or preemption priority
+    sub_priority: int = 0, // Sub-priority (if grouping allows)
+    enabled: bool = true
+end</code></pre>
+
+<h2>उदाहरण 1: प्राथमिकता समूहन और प्रीएम्प्शन</h2>
+<div class="example-box">
+<h3>समस्या: USART और टाइमर का प्राथमिकता प्रबंधन बाधित होता है</h3>
+<pre><code>import hal::nvic, hal::usart, hal::timer
+
+function interrupt_sistemi_init() do
+    // Set priority grouping: 3-bit preempt, 1-bit sub
+    nvic.set_priority_grouping(nvic.PRIGROUP_3_1)
+    
+    // USART1 (high priority, preempt=1, sub=0)
+    nvic.enable_irq(nvic.USART1_IRQn, do
+        priority: 1,      // Preemption priority
+        sub_priority: 0
+    end)
+    
+    // Timer2 (medium priority, preempt=3, sub=0)
+    nvic.enable_irq(nvic.TIM2_IRQn, do
+        priority: 3,
+        sub_priority: 0
+    end)
+    
+    // ADC (low priority, preempt=5, sub=1)
+    nvic.enable_irq(nvic.ADC_IRQn, do
+        priority: 5,
+        sub_priority: 1
+    end)
+end
+
+// USART handler (can preempt TIM2 and ADC)
+function USART1_IRQHandler() do
+    if usart.get_flag(usart.USART1, usart.FLAG_RXNE) do
+        let data = usart.receive_data(usart.USART1)
+        buffer_yaz(data)
+        usart.clear_flag(usart.USART1, usart.FLAG_RXNE)
+    end
+end
+
+// Timer handler (can preempt ADC, but NOT USART)
+function TIM2_IRQHandler() do
+    if timer.get_flag(timer.TIM2, timer.FLAG_UPDATE) do
+        // Timer tick processing
+        systick_emulate()
+        timer.clear_flag(timer.TIM2, timer.FLAG_UPDATE)
+    end
+end
+
+// ADC handler (lowest priority, cannot preempt anyone)
+function ADC_IRQHandler() do
+    if adc.get_flag(adc.ADC1, adc.FLAG_EOC) do
+        let value = adc.read_value(adc.ADC1)
+        sensor_buffer[buffer_idx] = value
+        buffer_idx = (buffer_idx + 1) % 32
+        adc.clear_flag(adc.ADC1, adc.FLAG_EOC)
+    end
+end</code></pre>
+<p><strong>आउटपुट:</strong>USART व्यवधान TIM2 को रोक सकता है, लेकिन TIM2 USART में प्रवेश नहीं कर सकता। एडीसी को दोनों द्वारा छूट दी जा सकती है।</p>
+</div>
+
+<h2>उदाहरण 2: महत्वपूर्ण अनुभाग (सभी व्यवधान अक्षम करें)</h2>
+<div class="example-box">
+<h3>समस्या: साझा संदेश की सुरक्षा (थ्रेड-सुरक्षित पहुंच)</h3>
+<pre><code>import hal::nvic
+
+let paylasilanOlan sayac: int = 0
+
+function kritik_islem() do
+    // Disable all interrupts (PRIMASK = 1)
+    nvic.disable_all_interrupts()
+    
+    // Critical section (atomic operation)
+    sayac = sayac + 1
+    let local_sayac = sayac
+    
+    // Re-enable interrupts
+    nvic.enable_all_interrupts()
+    
+    return local_sayac
+end
+
+// Alternative: BASEPRI (disable interrupts with priority &gt;= threshold)
+function basepri_koruma() do
+    // Disable interrupts with priority &gt;= 3 (only allow 0-2)
+    nvic.set_basepri(3)
+    
+    // Critical section
+    paylasilanOlan veri = veri_oku()
+    veri_isle(veri)
+    
+    // Restore (allow all)
+    nvic.set_basepri(0)
+end</code></pre>
+<p><strong>आउटपुट:</strong>प्रतिसंदेश व्यवधानों से सुरक्षित है. दौड़ की स्थिति को रोका जाता है.</p>
+</div>
+
+<h2>उदाहरण 3: वेक्टर तालिका स्थानांतरण (बूटलोडर)</h2>
+<div class="example-box">
+<h3>समस्या: बूटलोडर से एप्लिकेशन पर स्विच करना</h3>
+<pre><code>import hal::nvic, hal::flash
+
+const BOOTLOADER_BASE: int = 0x0800_0000
+const APP_BASE: int = 0x0800_8000  // 32 KB offset
+
+function jump_to_application() do
+    // Read application's stack pointer
+    let app_sp = *(APP_BASE cast int*)
+    
+    // Read application's reset handler
+    let app_reset = *((APP_BASE + 4) cast int*)
+    
+    io.yazdir_satır('Jumping to application at 0x' + APP_BASE.onaltılıya())
+    
+    // Disable all interrupts
+    nvic.disable_all_interrupts()
+    
+    // Relocate vector table to application address
+    nvic.set_vector_table(APP_BASE)
+    
+    // Set stack pointer
+    asm do
+        'MSR MSP, r0' // Set Main Stack Pointer
+    end with app_sp
+    
+    // Jump to application reset handler
+    let app_func = app_reset cast function()
+    app_func()
+end
+
+// Bootloader mode check
+function bootloader_mode() -&gt; bool do
+    // Check if user button pressed during reset
+    gpio.pin_init(gpio.PORT_A, 0, do mode: gpio.MODE_INPUT end)
+    
+    let buton = gpio.pin_read(gpio.PORT_A, 0)
+    
+    if (buton == 1) do
+        io.yazdir_satır('Bootloader mode (button pressed)')
+        return true
+    end
+    
+    // Check if application is valid (stack pointer in RAM)
+    let app_sp = *(APP_BASE cast int*)
+    if (app_sp &gt;= 0x2000_0000 and app_sp &lt; 0x2002_0000) do
+        io.yazdir_satır('Valid application found')
+        return false  // Jump to app
+    end
+    
+    io.yazdir_satır('No valid application, staying in bootloader')
+    return true
+end</code></pre>
+<p><strong>आउटपुट:</strong>बूटलोडर 0x0800_0000 से चलता है, एप्लिकेशन 0x0800_8000 पर लोड होता है। रीसेट एंड्रा ट्रू वेक्टर तालिका का उपयोग किया जाता है।</p>
+</div>
+
+<h2>एपीआई संदर्भ</h2>
+<h3>मूलभूत प्रकार्य</h3>
+<pre><code>// Interrupt enable/disable
+function enable_irq(irq: IRQn, config: NVICConfig)
+function disable_irq(irq: IRQn)
+
+// Priority configuration
+function set_priority_grouping(group: PriorityGroup)
+function set_priority(irq: IRQn, preempt: int, sub: int)
+function get_priority(irq: IRQn) -&gt; (int, int)
+
+// Pending management
+function set_pending_irq(irq: IRQn)
+function clear_pending_irq(irq: IRQn)
+function is_pending_irq(irq: IRQn) -&gt; bool
+
+// Active status
+function is_active_irq(irq: IRQn) -&gt; bool
+
+// Global interrupt control
+function disable_all_interrupts()  // PRIMASK = 1
+function enable_all_interrupts()   // PRIMASK = 0
+function set_basepri(priority: int)  // Disable pri &gt;= threshold
+function get_basepri() -&gt; int
+
+// Vector table relocation
+function set_vector_table(offset: int)
+function get_vector_table() -&gt; int
+
+// System reset
+function system_reset()</code></pre>
+
+<div class="warning">
+<strong>महत्वपूर्ण टिप्पणियाँ:</strong>
+<ul>
+<li><strong>प्राथमिकता उलटा:</strong>यदि कम प्राथमिकता वाले व्यवधान में अधिक समय लगता है, तो उच्च प्राथमिकता प्रतीक्षा करती है</li>
+<li><strong>साझा परिधीय:</strong>समान परिधीय का उपयोग करने वाले इंटरप्ट की प्राथमिकता को सावधानीपूर्वक समायोजित किया जाना चाहिए।</li>
+<li><strong>स्टैक ओवरफ़्लो:</strong>यदि नेस्टेड व्यवधान बहुत गहरा हो जाता है, तो स्टैक ओवरफ़्लो हो सकता है</li>
+<li><strong>वेक्टर तालिका:</strong>RAM में स्थानांतरित करते समय संरेखण (0x200) आवश्यक है</li>
+</ul>
+</div>
+
+<h2>प्लेटफार्म समर्थन</h2>
+<table>
+<tbody><tr>
+<th>प्लैटफ़ॉर्म</th>
+<th>मुख्य</th>
+<th>आईआरक्यू गिनती</th>
+<th>प्राथमिकता बिट्स</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>कॉर्टेक्स- एम 3</td>
+<td>60</td>
+<td>4 बिट्स (16 स्तर)</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>कॉर्टेक्स- M4F</td>
+<td>82</td>
+<td>4 बिट्स</td>
+</tr>
+<tr>
+<td>STM32F7</td>
+<td>कॉर्टेक्स- M7</td>
+<td>97</td>
+<td>4 बिट्स</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>कॉर्टेक्स- M7</td>
+<td>150</td>
+<td>4 बिट्स</td>
+</tr>
+<tr>
+<td>GD32VF103</td>
+<td>RISC-वी</td>
+<td>87 (ईसीएलआईसी)</td>
+<td>4 बिट्स</td>
+</tr>
+</tbody></table>
+
+<h2>सर्वोत्तम प्रथाएं</h2>
+<ul>
+<li> <strong>प्राथमिकता डिज़ाइन:</strong>महत्वपूर्ण ऑपरेशन 0-3, सामान्य 4-10, पृष्ठभूमि 11-15</li>
+<li> <strong>लघु संचालक:</strong>आईएसआर में न्यूनतम प्रसंस्करण, ध्वज सेट + मुख्य में प्रक्रिया</li>
+<li> <strong>उप-प्राथमिकता का उपयोग करें:</strong>व्यवधानों को समान प्राथमिकता से क्रमबद्ध करें</li>
+<li> <strong>लंबित स्पष्ट:</strong>हैंडलर एंड पेंडिंग बिट को साफ़ किया जाना चाहिए</li>
+<li> <strong>फ्लोट का उपयोग करना:</strong>Cortex-M4F पर FPU आलसी स्टैकिंग महंगी है</li>
+<li> <strong>लंबा महत्वपूर्ण क्षेत्र:</strong>disable_all_interpts() न्यूनतम समय</li>
+</ul>
+
+<h2>संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="hi_hal-exti-en.html">राज्य::exti</a>- बाहरी व्यवधान</li>
+<li><a href="hi_hal-systick-en.html">राज्य::सिस्टिक</a>- SysTick व्यवधान</li>
+<li><a href="hi_hal-timer-en.html">राज्य::टाइमर</a>- टाइमर बाधित होता है</li>
+<li><a href="hi_hal-usart-en.html">राज्य::usart</a>- यूएसएआरटी बीच में आता है</li>
+<li><a href="hi_hal-dma-en.html">राज्य::डीएमए</a>- डीएमए व्यवधान डालता है</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_hal-index-en.html">एचएएल मॉड्यूल</a> | 
+<a href="hi_hal-nvic-en.html">तुर्की</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

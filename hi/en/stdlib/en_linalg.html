@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>लिनालग - रैखिक बीजगणित - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programming Language</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/stdlib/linalg.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+            <h1>🔢 लाइनलग - रैखिक बीजगणित</h1>
+            <p>मैट्रिक्स, वेक्टर, एलयू/क्यूआर अपघटन, आइजेनवैल्यू</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">86</div><div>समारोह</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">958</div><div>पंक्तियां</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">25.4KB</div><div>आयाम</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 तेजी से शुरुआत करना</h2>
+        <pre><code>import linalg
+
+// 3×3 birim matris
+variable I = linalg_birim_mat(3)
+
+// Sıfır matrisi
+variable Z = linalg_sıfır_mat(2, 3)
+
+// Birler matrisi
+variable O = linalg_birler_mat(4, 4)
+
+// Diyagonal matris
+variable d = [1.0, 2.0, 3.0]
+variable D = linalg_diyagonal_mat(d, 3)
+
+// Rastgele matris
+variable R = linalg_rastgele_mat(3, 3, 12345)
+</code></pre>
+<h3 id="matris-İşlemleri"><a class="header" href="#matris-İşlemleri">मैट्रिक्स संचालन</a></h3>
+<pre><code class="language-berk">// Transpoze
+variable A = [1.0, 2.0, 3.0, 4.0]  // 2×2
+variable AT = linalg_transpoz(A, 2, 2)
+
+// Matris toplama
+variable C = linalg_mat_topla(A, B, 2, 2)
+
+// Skaler çarpma
+variable D = linalg_mat_skaler(2.0, A, 2, 2)
+
+// Matris çarpımı (A: 2×3, B: 3×2 → C: 2×2)
+variable C = linalg_mat_çarp(A, B, 2, 3, 2)
+</code></pre>
+<h2 id="-api-Referenceı"><a class="header" href="#-api-Referenceı">📚एपीआई संदर्भ</a></h2>
+<h3 id="matris-oluşturma-1"><a class="header" href="#matris-oluşturma-1">मैट्रिक्स निर्माण</a></h3>
+<h4 id="linalg_birim_matn-tam_sayı---float"><a class="header" href="#linalg_birim_matn-tam_sayı---float"><code data-no-translate="true">linalg_birim_mat(n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>यह आकार n×n का एक पहचान मैट्रिक्स बनाता है।</p>
+<p><strong>पैरामीटर:</strong></p>
+<ul>
+<li><code data-no-translate="true">n</code>:मैट्रिक्स आकार</li>
+</ul>
+<p><strong>रिटर्न:</strong>पहचान मैट्रिक्स (सादे सरणी प्रारूप में)</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable I3 = linalg_birim_mat(3)
+// I3 = [1, 0, 0,
+//       0, 1, 0,
+//       0, 0, 1]
+</code></pre>
+<h4 id="linalg_sıfır_matm-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_sıfır_matm-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_sıfır_mat(m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>यह m×n आकार का एक शून्य मैट्रिक्स बनाता है।</p>
+<h4 id="linalg_birler_matm-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_birler_matm-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_birler_mat(m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>यह सभी तत्वों 1 के साथ आकार m×n का एक मैट्रिक्स बनाता है।</p>
+<h4 id="linalg_diyagonal_matd-float-n-tam_sayı---float"><a class="header" href="#linalg_diyagonal_matd-float-n-tam_sayı---float"><code data-no-translate="true">linalg_diyagonal_mat(d: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>विकर्ण तत्व<code data-no-translate="true">d</code>यह एक n×n मैट्रिक्स बनाता है, जो एक सरणी है।</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable d = [2.0, 3.0, 5.0]
+variable D = linalg_diyagonal_mat(d, 3)
+// D = [2, 0, 0,
+//      0, 3, 0,
+//      0, 0, 5]
+</code></pre>
+<h3 id="matris-aritmetiği"><a class="header" href="#matris-aritmetiği">मैट्रिक्स अंकगणित</a></h3>
+<h4 id="linalg_mat_toplaa-float-b-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_mat_toplaa-float-b-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_mat_topla(A: [float], B: [float], m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>दो m×n आव्यूह जोड़ता है: C = A + B</p>
+<h4 id="linalg_mat_çıkara-float-b-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_mat_çıkara-float-b-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_mat_çıkar(A: [float], B: [float], m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>दो m×n आव्यूहों को घटाता है: C = A - B</p>
+<h4 id="linalg_mat_skalerα-float-a-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_mat_skalerα-float-a-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_mat_skaler(α: float, A: [float], m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>मैट्रिक्स को अदिश से गुणा करता है: B = α · A</p>
+<h4 id="linalg_mat_çarpa-float-b-float-m-tam_sayı-k-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_mat_çarpa-float-b-float-m-tam_sayı-k-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_mat_çarp(A: [float], B: [float], m: tam_sayı, k: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>मैट्रिक्स गुणन: C = A × B</p>
+<ul>
+<li>ए: एम×के</li>
+<li>बी: के×एन</li>
+<li>सी: एम×एन</li>
+</ul>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">// 2×2 matris çarpımı
+variable A = [1.0, 2.0,
+              3.0, 4.0]
+variable B = [5.0, 6.0,
+              7.0, 8.0]
+variable C = linalg_mat_çarp(A, B, 2, 2, 2)
+// C = [19, 22,
+//      43, 50]
+</code></pre>
+<h4 id="linalg_mat_hadamarda-float-b-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_mat_hadamarda-float-b-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_mat_hadamard(A: [float], B: [float], m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>तत्व-वार उत्पाद (हैडमार्ड उत्पाद): C[i,j] = A[i,j] × B[i,j]</p>
+<h3 id="vektör-İşlemleri"><a class="header" href="#vektör-İşlemleri">वेक्टर संचालन</a></h3>
+<h4 id="linalg_iç_çarpımu-float-v-float-n-tam_sayı---float"><a class="header" href="#linalg_iç_çarpımu-float-v-float-n-tam_sayı---float"><code data-no-translate="true">linalg_iç_çarpım(u: [float], v: [float], n: tam_sayı) -&gt; float</code></a></h4>
+<p>डॉट उत्पाद: u · v = Σ(u[i] × v[i])</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable u = [1.0, 2.0, 3.0]
+variable v = [4.0, 5.0, 6.0]
+variable dot = linalg_iç_çarpım(u, v, 3)  // 32.0
+</code></pre>
+<h4 id="linalg_norm2v-float-n-tam_sayı---float"><a class="header" href="#linalg_norm2v-float-n-tam_sayı---float"><code data-no-translate="true">linalg_norm2(v: [float], n: tam_sayı) -&gt; float</code></a></h4>
+<p>L2 मानदंड (यूक्लिडियन मानदंड): ||v|| = √(Σv[i]²)</p>
+<h4 id="linalg_norm1v-float-n-tam_sayı---float"><a class="header" href="#linalg_norm1v-float-n-tam_sayı---float"><code data-no-translate="true">linalg_norm1(v: [float], n: tam_sayı) -&gt; float</code></a></h4>
+<p>L1 मानदंड (मैनहट्टन मानदंड): ||v||₁ = Σ|v[i]|</p>
+<h4 id="linalg_norm_infv-float-n-tam_sayı---float"><a class="header" href="#linalg_norm_infv-float-n-tam_sayı---float"><code data-no-translate="true">linalg_norm_inf(v: [float], n: tam_sayı) -&gt; float</code></a></h4>
+<p>L∞ मानदंड (अधिकतम मानदंड): ||v||∞ = अधिकतम(|v[i]|)</p>
+<h4 id="linalg_normalizev-float-n-tam_sayı---float"><a class="header" href="#linalg_normalizev-float-n-tam_sayı---float"><code data-no-translate="true">linalg_normalize(v: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>वेक्टर को सामान्यीकृत करता है: v̂ = v / ||v||</p>
+<h4 id="linalg_dış_çarpımu-float-v-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_dış_çarpımu-float-v-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_dış_çarpım(u: [float], v: [float], m: tam_sayı, n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>बाहरी उत्पाद: ए[आई,जे] = यू[आई] × वी[जे]</p>
+<h4 id="linalg_cross_3du-float-v-float---float"><a class="header" href="#linalg_cross_3du-float-v-float---float"><code data-no-translate="true">linalg_cross_3d(u: [float], v: [float]) -&gt; [float]</code></a></h4>
+<p>3डी वेक्टर क्रॉस उत्पाद: डब्ल्यू = यू × वी</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable u = [1.0, 0.0, 0.0]
+variable v = [0.0, 1.0, 0.0]
+variable w = linalg_cross_3d(u, v)  // [0, 0, 1]
+</code></pre>
+<h3 id="matris-Özellikleri"><a class="header" href="#matris-Özellikleri">मैट्रिक्स गुण</a></h3>
+<h4 id="linalg_iza-float-n-tam_sayı---float"><a class="header" href="#linalg_iza-float-n-tam_sayı---float"><code data-no-translate="true">linalg_iz(A: [float], n: tam_sayı) -&gt; float</code></a></h4>
+<p>ट्रेस: ​​tr(A) = Σ A[i,i]</p>
+<h4 id="linalg_frobenius_norma-float-m-tam_sayı-n-tam_sayı---float"><a class="header" href="#linalg_frobenius_norma-float-m-tam_sayı-n-tam_sayı---float"><code data-no-translate="true">linalg_frobenius_norm(A: [float], m: tam_sayı, n: tam_sayı) -&gt; float</code></a></h4>
+<p>फ्रोबेनियस मानदंड: ||A||_F = √(Σ Σ A[i,j]²)</p>
+<h4 id="linalg_determinant_2x2a-float---float"><a class="header" href="#linalg_determinant_2x2a-float---float"><code data-no-translate="true">linalg_determinant_2x2(A: [float]) -&gt; float</code></a></h4>
+<p>2×2 मैट्रिक्स निर्धारक: det(A) = a₁₁a₂₂ - a₁₂a₂₁</p>
+<h4 id="linalg_determinant_3x3a-float---float"><a class="header" href="#linalg_determinant_3x3a-float---float"><code data-no-translate="true">linalg_determinant_3x3(A: [float]) -&gt; float</code></a></h4>
+<p>3×3 मैट्रिक्स निर्धारक (सारस नियम)</p>
+<h3 id="matris-tersi"><a class="header" href="#matris-tersi">मैट्रिक्स व्युत्क्रम</a></h3>
+<h4 id="linalg_inverse_2x2a-float---float"><a class="header" href="#linalg_inverse_2x2a-float---float"><code data-no-translate="true">linalg_inverse_2x2(A: [float]) -&gt; [float]</code></a></h4>
+<p>2×2 मैट्रिक्स व्युत्क्रम की गणना करता है: A⁻¹</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable A = [4.0, 7.0,
+              2.0, 6.0]
+variable A_inv = linalg_inverse_2x2(A)
+// det(A) = 10
+// A_inv = [0.6, -0.7,
+//         -0.2,  0.4]
+</code></pre>
+<h4 id="linalg_inverse_3x3a-float---float"><a class="header" href="#linalg_inverse_3x3a-float---float"><code data-no-translate="true">linalg_inverse_3x3(A: [float]) -&gt; [float]</code></a></h4>
+<p>3×3 मैट्रिक्स व्युत्क्रम (सहकारक विस्तार) की गणना करता है</p>
+<h3 id="doğrusal-sistemler"><a class="header" href="#doğrusal-sistemler">रैखिक प्रणाली</a></h3>
+<h4 id="linalg_gauss_çöza-float-b-float-n-tam_sayı---float"><a class="header" href="#linalg_gauss_çöza-float-b-float-n-tam_sayı---float"><code data-no-translate="true">linalg_gauss_çöz(A: [float], b: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>गॉस उन्मूलन द्वारा रैखिक प्रणाली Ax = b को हल करें।</p>
+<p><strong>विशेषताएँ:</strong></p>
+<ul>
+<li>आंशिक धुरी</li>
+<li>आगे उन्मूलन</li>
+<li>पिछला प्रतिस्थापन</li>
+</ul>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">// 3x + 2y = 7
+// 2x + 5y = 12
+variable A = [3.0, 2.0,
+              2.0, 5.0]
+variable b = [7.0, 12.0]
+variable x = linalg_gauss_çöz(A, b, 2)
+// x = [1, 2]
+</code></pre>
+<h3 id="matris-ayrıştırmaları"><a class="header" href="#matris-ayrıştırmaları">मैट्रिक्स अपघटन</a></h3>
+<h4 id="linalg_lu_decomposea-float-n-tam_sayı---float"><a class="header" href="#linalg_lu_decomposea-float-n-tam_sayı---float"><code data-no-translate="true">linalg_lu_decompose(A: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>एलयू अपघटन: ए = एल × यू</p>
+<ul>
+<li>एल: निचला त्रिकोणीय मैट्रिक्स (विकर्ण 1)</li>
+<li>यू: ऊपरी त्रिकोणीय मैट्रिक्स</li>
+</ul>
+<p><strong>उपयोग:</strong>रैखिक प्रणालियों को शीघ्रता से हल करना</p>
+<h4 id="linalg_qr_gram_schmidta-float-m-tam_sayı-n-tam_sayı---float-float"><a class="header" href="#linalg_qr_gram_schmidta-float-m-tam_sayı-n-tam_sayı---float-float"><code data-no-translate="true">linalg_qr_gram_schmidt(A: [float], m: tam_sayı, n: tam_sayı) -&gt; ([float], [float])</code></a></h4>
+<p>क्यूआर अपघटन: ए = क्यू × आर</p>
+<ul>
+<li>प्रश्न: ऑर्थोगोनल मैट्रिक्स</li>
+<li>आर: ऊपरी त्रिकोणीय मैट्रिक्स</li>
+</ul>
+<p><strong>एल्गोरिथम:</strong>ग्राम-श्मिट ऑर्थोगोनलाइज़ेशन</p>
+<p><strong>रिटर्न:</strong>(क्यू,आर) टपल</p>
+<h4 id="linalg_choleskya-float-n-tam_sayı---float"><a class="header" href="#linalg_choleskya-float-n-tam_sayı---float"><code data-no-translate="true">linalg_cholesky(A: [float], n: tam_sayı) -&gt; [float]</code></a></h4>
+<p>चोलेस्की अपघटन: ए = एल × एलᵀ</p>
+<p><strong>ज़रूरत:</strong>A एक सकारात्मक निश्चित सममित मैट्रिक्स होना चाहिए</p>
+<p><strong>उपयोग:</strong>सहप्रसरण मैट्रिक्स, अनुकूलन</p>
+<h3 id="ÖzdeğerÖzvektör"><a class="header" href="#ÖzdeğerÖzvektör">आइजेनवैल्यू/आइजेनवेक्टर</a></h3>
+<h4 id="linalg_power_iterationa-float-n-tam_sayı-max_iter-tam_sayı-tolerans-float---float-float"><a class="header" href="#linalg_power_iterationa-float-n-tam_sayı-max_iter-tam_sayı-tolerans-float---float-float"><code data-no-translate="true">linalg_power_iteration(A: [float], n: tam_sayı, max_iter: tam_sayı, tolerans: float) -&gt; ([float], float)</code></a></h4>
+<p>शक्ति पुनरावृत्ति के साथ प्रमुख आइजनवेक्टर ढूँढना।</p>
+<p><strong>रिटर्न:</strong>(eigenvector, eigenvalue) टुपल</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable A = [4.0, 1.0,
+              1.0, 3.0]
+variable (v, λ) = linalg_power_iteration(A, 2, 100, 1e-6)
+// λ ≈ 4.618 (dominant eigenvalue)
+// v: karşılık gelen eigenvector
+</code></pre>
+<h3 id="matris-testleri"><a class="header" href="#matris-testleri">मैट्रिक्स परीक्षण</a></h3>
+<h4 id="linalg_simetrik_mia-float-n-tam_sayı-tolerans-float---boolean"><a class="header" href="#linalg_simetrik_mia-float-n-tam_sayı-tolerans-float---boolean"><code data-no-translate="true">linalg_simetrik_mi(A: [float], n: tam_sayı, tolerans: float) -&gt; boolean</code></a></h4>
+<p>जाँचता है कि मैट्रिक्स सममित है या नहीं: Aᵢⱼ = Aⱼᵢ</p>
+<h4 id="linalg_diagonal_mia-float-n-tam_sayı-tolerans-float---boolean"><a class="header" href="#linalg_diagonal_mia-float-n-tam_sayı-tolerans-float---boolean"><code data-no-translate="true">linalg_diagonal_mi(A: [float], n: tam_sayı, tolerans: float) -&gt; boolean</code></a></h4>
+<p>विकर्ण मैट्रिक्स नियंत्रण</p>
+<h4 id="linalg_üst_üçgen_mia-float-n-tam_sayı-tolerans-float---boolean"><a class="header" href="#linalg_üst_üçgen_mia-float-n-tam_sayı-tolerans-float---boolean"><code data-no-translate="true">linalg_üst_üçgen_mi(A: [float], n: tam_sayı, tolerans: float) -&gt; boolean</code></a></h4>
+<p>ऊपरी त्रिकोणीय मैट्रिक्स नियंत्रण</p>
+<h4 id="linalg_alt_üçgen_mia-float-n-tam_sayı-tolerans-float---boolean"><a class="header" href="#linalg_alt_üçgen_mia-float-n-tam_sayı-tolerans-float---boolean"><code data-no-translate="true">linalg_alt_üçgen_mi(A: [float], n: tam_sayı, tolerans: float) -&gt; boolean</code></a></h4>
+<p>निचला त्रिकोणीय मैट्रिक्स नियंत्रण</p>
+<h3 id="matris-rankı"><a class="header" href="#matris-rankı">मैट्रिक्स रैंक</a></h3>
+<h4 id="linalg_ranka-float-m-tam_sayı-n-tam_sayı-tolerans-float---tam_sayı"><a class="header" href="#linalg_ranka-float-m-tam_sayı-n-tam_sayı-tolerans-float---tam_sayı"><code data-no-translate="true">linalg_rank(A: [float], m: tam_sayı, n: tam_sayı, tolerans: float) -&gt; tam_sayı</code></a></h4>
+<p>गाऊसी उन्मूलन का उपयोग करके मैट्रिक्स रैंक की गणना करता है।</p>
+<p><strong>उदाहरण:</strong></p>
+<pre><code class="language-berk">variable A = [1.0, 2.0, 3.0,
+              2.0, 4.0, 6.0,
+              3.0, 6.0, 9.0]
+variable r = linalg_rank(A, 3, 3, 1e-10)  // r = 1
+</code></pre>
+<h2 id="-Usage-Examplesi"><a class="header" href="#-Usage-Examplesi">🔬 उपयोग के उदाहरण</a></h2>
+<h3 id="Example-1-doğrusal-regresyon"><a class="header" href="#Example-1-doğrusal-regresyon">उदाहरण 1: रैखिक प्रतिगमन</a></h3>
+<pre><code class="language-berk">use linalg
+use stats
+
+// y = ax + b modelini fit et
+function linear_fit(X: [float], y: [float], n: tam_sayı): (float, float) do
+    // X matrix: [ones, x_values]
+    variable A = yeni_dizi(n * 2)
+    variable i = 0
+    while (i &lt; n) do
+        A[i * 2] = 1.0
+        A[i * 2 + 1] = X[i]
+        i = i + 1
+    end
+    
+    // Normal equations: (A^T A) β = A^T y
+    variable params = linalg_least_squares(A, y, n, 2)
+    return (params[0], params[1])  // (b, a)
+end
+</code></pre>
+<h3 id="Example-2-pca-principal-component-analysis"><a class="header" href="#Example-2-pca-principal-component-analysis">उदाहरण 2: पीसीए (प्रमुख घटक विश्लेषण)</a></h3>
+<pre><code class="language-berk">use linalg
+
+// Veriyi merkeze receive
+function center_data(data: [float], m: tam_sayı, n: tam_sayı): [float] do
+    variable centered = linalg_mat_kopyala(data, m, n)
+    
+    // Her sütun for ortalamayı pop
+    variable j = 0
+    while (j &lt; n) do
+        variable avg = 0.0
+        variable i = 0
+        while (i &lt; m) do
+            avg = avg + linalg_mat_al(data, i, j, n)
+            i = i + 1
+        end
+        avg = avg / m
+        
+        i = 0
+        while (i &lt; m) do
+            variable değer = linalg_mat_al(centered, i, j, n) - avg
+            linalg_mat_yaz(centered, i, j, n, değer)
+            i = i + 1
+        end
+        
+        j = j + 1
+    end
+    
+    return centered
+end
+
+// Kovaryans matrisini hesapla
+function covariance_matrix(data: [float], m: tam_sayı, n: tam_sayı): [float] do
+    variable centered = center_data(data, m, n)
+    variable CT = linalg_transpoz(centered, m, n)
+    variable cov = linalg_mat_çarp(CT, centered, n, m, n)
+    
+    // (n-1) ile split
+    variable i = 0
+    while (i &lt; n * n) do
+        cov[i] = cov[i] / (m - 1)
+        i = i + 1
+    end
+    
+    return cov
+end
+</code></pre>
+<h3 id="Example-3-matris-normu-and-condition-number"><a class="header" href="#Example-3-matris-normu-and-condition-number">उदाहरण 3: मैट्रिक्स नॉर्म और कंडीशन नंबर</a></h3>
+<pre><code class="language-berk">use linalg
+
+function analyze_matrix(A: [float], n: tam_sayı): hiçbir do
+    // Frobenius norm
+    variable norm = linalg_frobenius_norm(A, n, n)
+    print("||A||_F = " + norm)
+    
+    // Determinant
+    if (n == 2) then do
+        variable det = linalg_determinant_2x2(A)
+        print("det(A) = " + det)
+        
+        // Inverse and condition number
+        if (math_mutlak(det) &gt; 1e-10) then do
+            variable A_inv = linalg_inverse_2x2(A)
+            variable κ = linalg_condition_frobenius(A, A_inv, n)
+            print("κ(A) = " + κ)
+            
+            if (κ &gt; 100.0) then do
+                print("Warning: Matris kötü koşullu!")
+            end
+        end
+    end
+    
+    // Simetri kontrolü
+    if (linalg_simetrik_mi(A, n, 1e-10)) then do
+        print("Matris simetriktir")
+    end
+end
+</code></pre>
+<h2 id="-performans-Notesı"><a class="header" href="#-performans-Notesı">⚡ प्रदर्शन नोट</a></h2>
+<h3 id="kompleksite"><a class="header" href="#kompleksite">जटिलता</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>संचालन</th><th>जटिलता</th><th>टिप्पणियाँ</th></tr></thead><tbody>
+<tr><td>मैट्रिक्स गुणन</td><td>ओ(एन³)</td><td>अनुभवहीन एल्गोरिथ्म</td></tr>
+<tr><td>एलयू अपघटन</td><td>ओ(एन³)</td><td>गाउस विलोपन</td></tr>
+<tr><td>क्यूआर अपघटन</td><td>ओ(एमएन²)</td><td>ग्राम-श्मिट</td></tr>
+<tr><td>चोलेस्की</td><td>ओ(n³/3)</td><td>सममित सकारात्मक निश्चित</td></tr>
+<tr><td>निर्धारक (n×n)</td><td>ओ(एन³)</td><td>एलयू का उपयोग करना</td></tr>
+<tr><td>रैखिक हल</td><td>ओ(एन³)</td><td>गाउस विलोपन</td></tr>
+</tbody></table>
+</div>
+<h3 id="optimizasyon-İpuçları"><a class="header" href="#optimizasyon-İpuçları">अनुकूलन युक्तियाँ</a></h3>
+<ol>
+<li>
+<p><strong>ब्लास/लैपैक का प्रयोग करें</strong>(अगला संस्करण):</p>
+<pre><code class="language-berk">// Native BLAS matris çarpımı
+variable C = linalg_gemm_blas(A, B, m, k, n)
+</code></pre>
+</li>
+<li>
+<p><strong>विरल मैट्रिक्स</strong>कस्टम एल्गोरिदम के लिए (v1.5):</p>
+<pre><code class="language-berk">kullan sparse
+variable A_sparse = sparse_csr(A, m, n)
+</code></pre>
+</li>
+<li>
+<p><strong>जीपीयू त्वरण</strong>(योजनाबद्ध):</p>
+<pre><code class="language-berk">kullan cuda
+variable C = cuda_matmul(A, B, m, k, n)
+</code></pre>
+</li>
+</ol>
+<h2 id="-İlgili-Moduleler"><a class="header" href="#-İlgili-Moduleler">🔗संबंधित मॉड्यूल</a></h2>
+<ul>
+<li><a href="./hi_en_stats.html">आँकड़े</a>- सांख्यिकीय गणना के लिए लिनालग का उपयोग करता है</li>
+<li><a href="./hi_en_optim.html">अनुकूलतम</a>- मैट्रिक्स संचालन के लिए अनुकूलन एल्गोरिदम</li>
+<li><a href="./hi_en_math.html">अंक शास्त्र</a>- बुनियादी गणित कार्य</li>
+</ul>
+<h2 id="-daha-fazla-bilgi"><a class="header" href="#-daha-fazla-bilgi">📖 अधिक जानकारी</a></h2>
+<ul>
+<li><a href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/">जूलिया रैखिक बीजगणित</a></li>
+<li><a href="https://numpy.org/doc/stable/reference/routines.linalg.html">न्यूमपी रैखिक बीजगणित</a></li>
+<li><a href="https://nalgebra.org/">जंग नालजेब्रा</a></li>
+<li><a href="http://www.netlib.org/lapack/lug/">लैपैक उपयोगकर्ता मार्गदर्शिका</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stdlib/hi_en_random.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../stdlib/hi_en_stats.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stdlib/hi_en_random.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../stdlib/hi_en_stats.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

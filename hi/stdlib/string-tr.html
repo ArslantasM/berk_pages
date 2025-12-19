@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+    <meta charset="UTF-8">
+    <title>स्ट्रिंग - स्ट्रिंग प्रोसेसिंग | बर्क स्टैडलिब</title>
+    <meta name="description" content="BERK string modülü - 127 fonksiyon ile UTF-8 string işlemleri, pattern matching, formatting">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>📝 स्ट्रिंग - स्ट्रिंग प्रोसेसिंग मॉड्यूल</h1>
+            <p>यूटीएफ-8, पैटर्न मिलान, फ़ॉर्मेटिंग</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">127</div><div>समारोह</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">953</div><div>रेखा</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">26KB</div><div>आयाम</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 त्वरित शुरुआत</h2>
+        <pre><code>import string
+
+// Temel işlemler
+let len = string.len("Merhaba")  // 7
+let büyük = string.to_uppercase("merhaba") // "MERHABA"
+let küçük = string.to_lowercase("MERHABA") // "merhaba"
+
+// Arama and değiştirme
+let contains = string.içerir_mi("Hello World", "World") // true
+let değişti = string.borrow_mut("foo bar", "foo", "baz") // "baz bar"
+
+// Bölme and birleştirme
+let parçalar = string.split("a,b,c", ",")  // ["a", "b", "c"]
+let birleşik = string.join(["a","b"], "-") // "a-b"
+
+// Whitespace temizleme
+let temiz = string.temizle("  hello  ") // "hello"</code></pre>
+
+        <h2>📚कार्य श्रेणियाँ</h2>
+
+        <div class="function-group">
+            <h3>बुनियादी संचालन</h3>
+            <p><code data-no-translate="true">uzunluk()</code>, <code data-no-translate="true">birleştir()</code>, <code data-no-translate="true">alt_yazı()</code>, <code data-no-translate="true">kopyala()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>चरित्र परिवर्तन</h3>
+            <p><code data-no-translate="true">büyük_harf()</code>, <code data-no-translate="true">küçük_harf()</code>, <code data-no-translate="true">ilk_harf_büyük()</code>, <code data-no-translate="true">başlık_hali()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>खोजें और तुलना करें</h3>
+            <p><code data-no-translate="true">eşit_mi()</code>, <code data-no-translate="true">içerir_mi()</code>, <code data-no-translate="true">başlar_mı()</code>, <code data-no-translate="true">biter_mi()</code>, <code data-no-translate="true">bul()</code>, <code data-no-translate="true">bul_hepsi()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>स्ट्रिंग हेरफेर</h3>
+            <p><code data-no-translate="true">değiştir()</code>, <code data-no-translate="true">değiştir_hepsi()</code>, <code data-no-translate="true">böl()</code>, <code data-no-translate="true">birleştir()</code>, <code data-no-translate="true">temizle()</code>, <code data-no-translate="true">ters_çevir()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>यूटीएफ-8 और यूनिकोड</h3>
+            <p><code data-no-translate="true">karakter_sayısı()</code>, <code data-no-translate="true">bayt_sayısı()</code>, <code data-no-translate="true">utf8_geçerli_mi()</code>, <code data-no-translate="true">unicode_normalize()</code></p>
+        </div>
+
+        <h2>💡उदाहरण</h2>
+
+        <div class="example-box">
+            <h3>उदाहरण 1: ईमेल सत्यापन</h3>
+            <pre><code>import string
+
+function email_geçerli_mi(email: yazı) -&gt; bool do
+    if string.içerir_mi(email, "@") else return false end
+    
+    let parçalar = string.split(email, "@")
+    if string.len(parçalar) != 2 then return false end
+    
+    let local = parçalar[0]
+    let domain = parçalar[1]
+    
+    if string.len(local) == 0 then return false end
+    if string.len(domain) == 0 then return false end
+    if string.içerir_mi(domain, ".") else return false end
+    
+    return true
+end
+
+print(email_geçerli_mi("user@example.com"))  // true
+print(email_geçerli_mi("invalid"))           // false</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>उदाहरण 2: सीएसवी पार्सर</h3>
+            <pre><code>import string
+
+function csv_parse(satır: yazı) -&gt; List[yazı] do
+    let sonuç = []
+    let volatile = ""
+    let tırnak_içinde = false
+    
+    for char_at in string.chars(satır) do
+        if char_at == '"' then do
+            tırnak_içinde = !tırnak_içinde
+        end else if char_at == ',' and !tırnak_içinde then do
+            liste_ekle(sonuç, string.temizle(volatile))
+            volatile = ""
+        end else do
+            volatile += char_at
+        end
+    end
+    
+    liste_ekle(sonuç, string.temizle(volatile))
+    return sonuç
+end
+
+let veri = 'John,Doe,"123 Main St",30'
+print(csv_parse(veri))  // ["John", "Doe", "123 Main St", "30"]</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="hi_index-tr.html">← सभी मॉड्यूल</a> | 
+            <a href="../hi_index-tr.html">होम पेज</a>
+        </p>
+    </main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

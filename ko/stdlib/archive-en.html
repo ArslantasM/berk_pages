@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>아카이브 - ZIP/TAR 아카이브 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 아카이브</h1>
+<p>ZIP/TAR 아카이브 지원</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350줄</span>
+<span class="stat-badge">~25개 기능</span>
+<span class="stat-badge">우편번호/TAR</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>ZIP 및 TAR 형식에 대한 아카이브 생성 및 추출. DEFLATE, gzip 및 bzip2 압축을 지원합니다.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import archive
+
+// Create ZIP
+let zip = archive.new_zip()
+zip.add_file("data.txt", "path/to/data.txt")?
+zip.add_memory("config.json", "{}")?
+zip.save("output.zip")?
+
+// Extract
+archive.unzip("archive.zip", "output_dir")?
+
+// Quick functions
+archive.zip_directory("my_folder", "backup.zip")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a> | <a href="ko_archive-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

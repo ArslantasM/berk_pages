@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>sys - सिस्टम सूचना | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️sys</h1>
+<p>सिस्टम सूचना एवं नियंत्रण</p>
+<div style="margin-top:15px">
+<span class="stat-badge">82 कार्य</span>
+<span class="stat-badge">607 पंक्तियाँ</span>
+<span class="stat-badge">क्रॉस-प्लेटफॉर्म</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>सिस्टम जानकारी: ओएस विवरण, सीपीयू/मेमोरी/डिस्क उपयोग, पर्यावरण चर, प्रक्रिया नियंत्रण, सिस्टम निगरानी।</p>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import sys
+
+// System info
+println("OS: {}", sys.os_name())
+println("CPU: {}%", sys.cpu_usage())
+println("Memory: {} MB", sys.memory_usage())
+
+// Environment
+let home = sys.env("HOME")?
+sys.set_env("MY_VAR", "value")</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-en.html">← सभी मॉड्यूल</a> | <a href="hi_sys-tr.html">🇹🇷तुर्की</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

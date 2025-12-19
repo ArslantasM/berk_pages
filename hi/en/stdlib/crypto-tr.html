@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>क्रिप्टो - क्रिप्टोग्राफी | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔐 क्रिप्टो - क्रिप्टोग्राफी</h1>
+<p>हैश, एईएस, आरएसए, एसएचए, एचएमएसी, डिजिटल हस्ताक्षर</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">48</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">950</div><div>पंक्तियां</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">28KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import crypto
+
+// Hash fonksiyonları
+let veri = "Merhaba BERK"
+let md5 = crypto.md5(veri)
+let sha256 = crypto.sha256(veri)
+let sha512 = crypto.sha512(veri)
+
+// HMAC (keyed hash)
+let anahtar = "secret_key"
+let hmac = crypto.hmac_sha256(veri, anahtar)
+
+// AES şifreleme (simetrik)
+let aes_key = crypto.aes_key_generate(256)
+let şifreli = crypto.aes_encrypt(veri, aes_key)
+let çözülmüş = crypto.aes_decrypt(şifreli, aes_key)
+
+// RSA şifreleme (asimetrik)
+let (public_key, private_key) = crypto.rsa_keypair_generate(2048)
+let encrypted = crypto.rsa_encrypt(veri, public_key)
+let decrypted = crypto.rsa_decrypt(encrypted, private_key)
+
+// Digital signature
+let imza = crypto.rsa_sign(veri, private_key)
+let geçerli = crypto.rsa_verify(veri, imza, public_key)
+
+// Random bytes (güvenli)
+let random = crypto.random_bytes(32)</code></pre>
+<h2>📚 क्रिप्टोग्राफी एल्गोरिदम</h2>
+<ul>
+<li><strong>हैश:</strong>एमडी5, एसएचए-1, एसएचए-256, एसएचए-512, एसएचए-3, ब्लेक2</li>
+<li><strong>सममित:</strong>एईएस-128/192/256 (सीबीसी, जीसीएम), चाचा20</li>
+<li><strong>असममित:</strong>आरएसए-2048/4096, ईसीसी (secp256k1, ed25519)</li>
+<li><strong>एचएमएसी:</strong>एचएमएसी-एसएचए256, एचएमएसी-एसएचए512</li>
+<li><strong>मुख्य व्युत्पत्ति:</strong>पीबीकेडीएफ2, आर्गन2, स्क्रिप्ट</li>
+<li><strong>यादृच्छिक:</strong>सीएसपीआरएनजी (क्रिप्टोग्राफ़िक रूप से सुरक्षित)</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>पासवर्ड हैशिंग (आर्गन2)</h3>
+<pre><code>import crypto
+
+function şifre_hash(şifre: yazı) -&gt; yazı do
+    // Argon2id (memory-hard, GPU resistant)
+    let salt = crypto.random_bytes(16)
+    let hash = crypto.argon2id(şifre, salt, do
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,  // 64 MB
+        parallellik: 4
+    end)
+    
+    // Salt + hash'i join
+    return crypto.encode_base64(salt) + "$" + crypto.encode_base64(hash)
+end
+
+function şifre_doğrula(şifre: yazı, hash: yazı) -&gt; bool do
+    let parçalar = hash.split("$")
+    let salt = crypto.decode_base64(parçalar[0])
+    let beklenen = crypto.decode_base64(parçalar[1])
+    
+    let hesaplanan = crypto.argon2id(şifre, salt, do
+        zaman_maliyeti: 3,
+        bellek_maliyeti: 65536,
+        parallellik: 4
+    end)
+    
+    return crypto.constant_time_compare(hesaplanan, beklenen)
+end
+
+// Kullanım
+let hash = şifre_hash("güçlü_şifre_123")
+print("Hash: " + hash)
+
+let geçerli = şifre_doğrula("güçlü_şifre_123", hash)
+print("Doğrulama: " + geçerli.yazıya())  // true</code></pre>
+</div>
+<div class="example-box">
+<h3>सुरक्षित संदेश विनिमय (आरएसए + एईएस हाइब्रिड)</h3>
+<pre><code>import crypto, json
+
+function şifreli_mesaj_gönder(mesaj: yazı, alıcı_public_key: RSAPublicKey) -&gt; yazı do
+    // 1. Random AES anahtarı oluştur
+    let aes_key = crypto.aes_key_generate(256)
+    
+    // 2. Mesajı AES ile şifrele (hızlı)
+    let şifreli_mesaj = crypto.aes_gcm_encrypt(mesaj, aes_key)
+    
+    // 3. AES anahtarını RSA ile şifrele (güvenli)
+    let şifreli_key = crypto.rsa_encrypt(aes_key, alıcı_public_key)
+    
+    // 4. Paket oluştur
+    let paket = do
+        "encrypted_message": crypto.encode_base64(şifreli_mesaj),
+        "encrypted_key": crypto.encode_base64(şifreli_key)
+    end
+    
+    return json.stringify(paket)
+end
+
+function şifreli_mesaj_al(paket_json: yazı, private_key: RSAPrivateKey) -&gt; yazı do
+    // 1. Paketi parse et
+    let paket = json.parse(paket_json)
+    let şifreli_mesaj = crypto.decode_base64(paket["encrypted_message"])
+    let şifreli_key = crypto.decode_base64(paket["encrypted_key"])
+    
+    // 2. AES anahtarını çöz
+    let aes_key = crypto.rsa_decrypt(şifreli_key, private_key)
+    
+    // 3. Mesajı çöz
+    let mesaj = crypto.aes_gcm_decrypt(şifreli_mesaj, aes_key)
+    
+    return mesaj
+end
+
+// Kullanım
+let (alice_pub, alice_priv) = crypto.rsa_keypair_generate(2048)
+let (bob_pub, bob_priv) = crypto.rsa_keypair_generate(2048)
+
+// Alice -&gt; Bob
+let paket = şifreli_mesaj_gönder("Gizli mesaj!", bob_pub)
+let mesaj = şifreli_mesaj_al(paket, bob_priv)
+print(mesaj)  // "Gizli mesaj!"</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

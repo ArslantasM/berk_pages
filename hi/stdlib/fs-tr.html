@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>एफएस - फाइल सिस्टम | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📁 एफएस - फाइल सिस्टम</h1>
+<p>फ़ाइल, निर्देशिका, पथ, मेटाडेटा, अनुमतियाँ</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">78</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">892</div><div>रेखा</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">26KB</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import fs
+
+// Dosya işlemleri
+fs.dosya_oluştur("test.txt")
+fs.dosya_yaz("test.txt", "Merhaba BERK")
+let içerik = fs.fs::read("test.txt")
+fs.dosya_sil("test.txt")
+
+// Dizin işlemleri
+fs.dizin_oluştur("yeni_klasör")
+let dosyalar = fs.dizin_listele(".")
+fs.dizin_sil("yeni_klasör")
+
+// Path işlemleri
+let tam_yol = fs.path_join("/home/user", "documents", "file.txt")
+let dizin = fs.path_dirname(tam_yol)  // "/home/user/documents"
+let dosya = fs.path_basename(tam_yol)  // "file.txt"
+let uzantı = fs.path_extension(tam_yol)  // ".txt"
+
+// Metadata
+let meta = fs.metadata("config.json")
+print("Boyut: " + meta.len.yazıya() + " bytes")
+print("Dosya mı: " + meta.dosya_mı.yazıya())
+print("Dizin mi: " + meta.dizin_mi.yazıya())
+
+// Var mı kontrol
+if fs.var_mı("config.json") then do
+    print("Config dosyası mevcut")
+end</code></pre>
+<h2>📚कार्य श्रेणियाँ</h2>
+<ul>
+<li><strong>फ़ाइल:</strong>बनाएं, पढ़ें, लिखें, हटाएं, कॉपी करें, स्थानांतरित करें, नाम बदलें</li>
+<li><strong>अनुक्रमणिका:</strong>बनाएं, सूचीबद्ध करें, हटाएं, पुनरावर्ती संचालन</li>
+<li><strong>पथ:</strong>शामिल हों, विभाजित करें, dirname, बेसनेम, एक्सटेंशन, सामान्यीकृत करें</li>
+<li><strong>मेटाडेटा:</strong>आकार, अनुमतियाँ, निर्माण_तिथि, संशोधित_तिथि</li>
+<li><strong>नियंत्रण:</strong>क्या वहां_फ़ाइल_है_है_निर्देशिका_है_क्या_है_चाहे_प्रतीकात्मक_लिंक_है?</li>
+</ul>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>पुनरावर्ती फ़ाइल खोज</h3>
+<pre><code>import fs, string
+
+function dosya_bul(dizin: yazı, pattern: yazı) -&gt; Dizi do
+    let sonuçlar = []
+    let entries = fs.dizin_listele(dizin)
+    
+    her entry in entries for do
+        let tam_yol = fs.path_join(dizin, entry)
+        let meta = fs.metadata(tam_yol)
+        
+        if meta.dizin_mi then do
+            // Recursive arama
+            let alt_sonuçlar = dosya_bul(tam_yol, pattern)
+            sonuçlar = sonuçlar + alt_sonuçlar
+        end else if string.içerir_mi(entry, pattern) then do
+            sonuçlar.push(tam_yol)
+        end
+    end
+    
+    return sonuçlar
+end
+
+// Tüm .berk dosyalarını bul
+let berk_dosyaları = dosya_bul(".", ".berk")
+her dosya in berk_dosyaları for do
+    print(dosya)
+end</code></pre>
+</div>
+<div class="example-box">
+<h3>बैकअप उपयोगिता</h3>
+<pre><code>import fs, time
+
+function yedek_al(kaynak_dizin: yazı, hedef_dizin: yazı) do
+    let zaman_damgası = time.format(time.now(), "%Y%m%d_%H%M%S")
+    let yedek_adı = "backup_" + zaman_damgası
+    let yedek_yolu = fs.path_join(hedef_dizin, yedek_adı)
+    
+    fs.dizin_oluştur(yedek_yolu)
+    
+    function kopyala_recursive(kaynak: yazı, hedef: yazı) do
+        let entries = fs.dizin_listele(kaynak)
+        
+        her entry in entries for do
+            let kaynak_yol = fs.path_join(kaynak, entry)
+            let hedef_yol = fs.path_join(hedef, entry)
+            let meta = fs.metadata(kaynak_yol)
+            
+            if meta.dizin_mi then do
+                fs.dizin_oluştur(hedef_yol)
+                kopyala_recursive(kaynak_yol, hedef_yol)
+            end else do
+                fs.dosya_kopyala(kaynak_yol, hedef_yol)
+                print("Kopyalandı: " + kaynak_yol)
+            end
+        end
+    end
+    
+    kopyala_recursive(kaynak_dizin, yedek_yolu)
+    print("Yedek tamamlandı: " + yedek_yolu)
+end
+
+yedek_al("./proje", "./yedekler")</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

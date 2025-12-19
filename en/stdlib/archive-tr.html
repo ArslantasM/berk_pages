@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>archive - ZIP/TAR Archive | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 archive</h1>
+<p>ZIP/TAR Archive Support - Compression &amp; Extraction</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350 lines</span>
+<span class="stat-badge">~25 functions</span>
+<span class="stat-badge">ZIP/TAR</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Archive module provides archive creation and extraction in ZIP and TAR formats. DEFLATE supports gzip and bzip2 compression.</p>
+
+<h2>🚀 Usage</h2>
+<pre><code>import archive
+
+// Create ZIP
+let zip = archive.new_zip()
+zip.add_file("data.txt", "path/to/data.txt")?
+zip.add_memory("config.json", "{}")?
+zip.save("output.zip")?
+
+// Extract
+archive.unzip("archive.zip", "output_dir")?
+
+// Quick functions
+archive.zip_directory("my_folder", "backup.zip")?</code></pre>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">compression</code>- Compression algorithms</li>
+<li><code data-no-translate="true">fs</code>-File operations</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

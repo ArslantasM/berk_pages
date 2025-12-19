@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>vision - Computer Vision - BERK Programming Language</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+            .model-card { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; border: 2px solid var(--links); }
+            .model-card h3 { margin-top: 0; color: var(--links); }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../en_print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="go repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>vision - Computer Vision</h1>
+                        <p>ResNet, YOLO, UNet and image processing models</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">8</div><div>Model</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">pre-trained</div><div>weights</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">ImageNet</div><div>Transfer</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">real time</div><div>inference</div></div>
+                        </div>
+                    </div>
+
+                    <h2>Overview</h2>
+                    <p>vision module provides popular deep learning architectures for image classification, object detection and segmentation.</p>
+
+                    <div class="model-grid">
+                        <div class="model-card">
+                            <h3>ResNet</h3>
+                            <p>Image classification</p>
+                            <ul>
+                                <li>ResNet-18, 34, 50, 101, 152</li>
+                                <li>ImageNet pre-trained</li>
+                                <li>transfer learning</li>
+                            </ul>
+                        </div>
+                        <div class="model-card">
+                            <h3>YOLO</h3>
+                            <p>object detection</p>
+                            <ul>
+                                <li>YOLOv5, YOLOv8</li>
+                                <li>Real-time detection</li>
+                                <li>80 COCO class</li>
+                            </ul>
+                        </div>
+                        <div class="model-card">
+                            <h3>UNet</h3>
+                            <p>segmentation</p>
+                            <ul>
+                                <li>Medical image analysis</li>
+                                <li>Pixel-wise classification</li>
+                                <li>Skip connections</li>
+                            </ul>
+                        </div>
+                        <div class="model-card">
+                            <h3>EfficientNet</h3>
+                            <p>Efficient classification</p>
+                            <ul>
+                                <li>B0-B7 variants</li>
+                                <li>Compound scaling</li>
+                                <li>low parameter</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>ResNet - Image Classification</h2>
+
+                    <div class="example-box">
+                        <h3>ImageNet Classification</h3>
+                        <pre><code class="language-berk">use ai/vision;
+use ai/tensor;
+
+// Pre-trained ResNet-50 yükle
+let model = ResNet::new(
+    architecture: "resnet50",
+    pretrained: true,
+    num_classes: 1000  // ImageNet
+);
+
+// Görüntü yükle and preprocess
+let img = vision::load_image("cat.jpg")?;
+let img_tensor = vision::preprocess(
+    img,
+    size: [224, 224],
+    normalize: true
+);
+
+// Inference
+model.değerlendirme();
+let logits = model.ileri(img_tensor);
+let probs = softmax(logits);
+let top5 = probs.topk(5);
+
+her (idx, prob) in top5 for do
+    let label = IMAGENET_LABELS[idx];
+    print("{}: {:.2f}%", label, prob * 100.0);
+end
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Transfer Learning</h3>
+                        <pre><code class="language-berk">use ai/vision;
+use ai/nn;
+
+// ResNet-18 backbone, custom classifier
+let model = ResNet::new(
+    architecture: "resnet18",
+    pretrained: true,
+    num_classes: 10  // Kendi dataset'iniz
+);
+
+// Feature extractor'ı dondur
+her param in model.backbone.parametreler() for do
+    param.requires_grad = false;
+end
+
+// Sadece classifier'ı eğit
+let optimizer = Adam::new(
+    model.classifier.parametreler(),
+    lr: 0.001
+);
+
+// Fine-tuning
+her epoch in range(20) for do
+    let loss = train_epoch(model, train_loader);
+    print("Epoch {}: Loss = {:.4f}", epoch, loss);
+end
+</code></pre>
+                    </div>
+
+                    <h2>YOLO - Object Detection</h2>
+
+                    <div class="example-box">
+                        <h3>YOLOv8 Object Detection</h3>
+                        <pre><code class="language-berk">use ai/vision;
+
+// YOLOv8 medium model
+let detector = YOLO::new(
+    version: "v8m",
+    pretrained: true,
+    conf_threshold: 0.25,
+    iou_threshold: 0.45
+);
+
+let img = vision::load_image("street.jpg")?;
+let detections = detector.detect(img)?;
+
+print("{} nesne tespit edildi", detections.len());
+
+her det in detections for do
+    print!("Sınıf: {}, Güven: {:.2f}%, ", 
+            COCO_LABELS[det.class_id], 
+            det.confidence * 100.0);
+    print!("Bbox: ({}, {}, {}, {})", 
+            det.x, det.y, det.width, det.height);
+end
+
+// Bounding box çizimi
+let img_with_boxes = vision::draw_boxes(img, detections);
+vision::save_image(img_with_boxes, "output.jpg")?;
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>Real-time Video Detection</h3>
+                        <pre><code class="language-berk">use ai/vision;
+use std/video;
+
+let detector = YOLO::new(version: "v8n", pretrained: true);
+let video = video::capture(0)?;  // Webcam
+
+çevrim do
+    let frame = video.read()?;
+    if frame.is_empty() then do
+        kır;
+    end
+    
+    // Detect
+    let detections = detector.detect(frame)?;
+    let annotated = vision::draw_boxes(frame, detections);
+    
+    // FPS hesapla
+    let fps = video.get_fps();
+    vision::put_text(annotated, f"FPS: {fps:.1f}", (10, 30));
+    
+    // Göster
+    video::show("YOLO Detection", annotated);
+    
+    if video::wait_key(1) == 'q' then do
+        kır;
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>UNet - Segmentation</h2>
+
+                    <div class="example-box">
+                        <h3>Semantic Segmentation</h3>
+                        <pre><code class="language-berk">use ai/vision;
+
+// UNet model
+let model = UNet::new(
+    in_channels: 3,
+    num_classes: 21,  // Pascal VOC
+    pretrained: true
+);
+
+let img = vision::load_image("scene.jpg")?;
+let img_tensor = vision::preprocess(img, size: [512, 512]);
+
+// Segmentation
+model.değerlendirme();
+let mask = model.ileri(img_tensor);
+let predicted_mask = mask.argmax(dim: 1);
+
+// Renklendirme
+let colored_mask = vision::colorize_mask(
+    predicted_mask,
+    palette: PASCAL_VOC_COLORS
+);
+
+// Overlay
+let overlay = vision::overlay(img, colored_mask, alpha: 0.5);
+vision::save_image(overlay, "segmented.jpg")?;
+</code></pre>
+                    </div>
+
+                    <h2>Image Transformations</h2>
+
+                    <div class="function-group">
+                        <h3>Data Augmentation</h3>
+                        <pre><code class="language-berk">use ai/vision;
+
+let transforms = vision::Compose([
+    vision::RandomResizedCrop(224),
+    vision::RandomHorizontalFlip(p: 0.5),
+    vision::RandomRotation(degrees: 15),
+    vision::ColorJitter(
+        brightness: 0.2,
+        contrast: 0.2,
+        saturation: 0.2,
+        hue: 0.1
+    ),
+    vision::ToTensor(),
+    vision::Normalize(
+        mean: [0.485, 0.456, 0.406],
+        std: [0.229, 0.224, 0.225]
+    )
+]);
+
+// Uygula
+let img = vision::load_image("train_img.jpg")?;
+let augmented = transforms(img);
+</code></pre>
+                    </div>
+
+                    <h2>Pre-trained Models</h2>
+
+                    <div class="function-group">
+                        <h3>Model Zoo</h3>
+                        <pre><code class="language-berk">use ai/vision;
+
+// Mevcut modelleri listele
+let modeller = vision::list_models();
+her model in modeller for do
+    print!("{}: {} parametreler", 
+            model.name, 
+            model.num_params);
+end
+
+// Model indir and yükle
+let model = vision::load_model(
+    name: "resnet50",
+    source: "torchvision",
+    progress: true
+)?;
+
+// Model bilgisi
+print("Mimari: {}", model.architecture);
+print("Giriş boyutu: {:?}", model.input_size);
+print("Sınıf sayısı: {}", model.num_classes);
+</code></pre>
+                    </div>
+
+                    <h2>Custom Vision Model</h2>
+
+                    <div class="example-box">
+                        <h3>Create Your Own Model</h3>
+                        <pre><code class="language-berk">use ai/vision;
+use ai/nn;
+
+sınıf CustomClassifier {
+    let backbone: ResNet;
+    let classifier: Sequential;
+    
+    function new(num_classes: int) -&gt; CustomClassifier do
+        let backbone = ResNet::new("resnet34", pretrained: true);
+        
+        // Backbone'u dondur
+        her param in backbone.parametreler() for do
+            param.requires_grad = false;
+        end
+        
+        // Custom classifier
+        let classifier = Sequential::new([
+            Linear::new(512, 256),
+            ReLU::new(),
+            Dropout::new(0.5),
+            Linear::new(256, num_classes)
+        ]);
+        
+        return CustomClassifier { backbone, classifier };
+    end
+    
+    function ileri(let kendi, x: Tensor) -&gt; Tensor do
+        let features = kendi.backbone.extract_features(x);
+        let pooled = features.adaptive_avg_pool2d([1, 1]);
+        let flattened = pooled.flatten(1);
+        return kendi.classifier.ileri(flattened);
+    end
+}
+</code></pre>
+                    </div>
+
+                    <h2>Model Comparison</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>Model</th><th>Parameters</th><th>Top-1 Acc</th><th>FPS (GPU)</th><th>Use</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>ResNet-18</td><td>11.7M</td><td>69.8%</td><td>~350</td><td>Quick classification</td></tr>
+                            <tr><td>ResNet-50</td><td>25.6M</td><td>76.1%</td><td>~240</td><td>general purpose</td></tr>
+                            <tr><td>ResNet-152</td><td>60.2M</td><td>78.3%</td><td>~80</td><td>high accuracy</td></tr>
+                            <tr><td>EfficientNet-B0</td><td>5.3M</td><td>77.1%</td><td>~400</td><td>mobile/edge</td></tr>
+                            <tr><td>EfficientNet-B7</td><td>66M</td><td>84.3%</td><td>~40</td><td>SOTA accuracy</td></tr>
+                            <tr><td>YOLOv8n</td><td>3.2M</td><td>-</td><td>~450</td><td>Fast detection</td></tr>
+                            <tr><td>YOLOv8m</td><td>25.9M</td><td>-</td><td>~180</td><td>Balanced detection</td></tr>
+                            <tr><td>UNet</td><td>31M</td><td>-</td><td>~120</td><td>segmentation</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>API Reference</h2>
+
+                    <div class="function-group">
+                        <h3>vision module</h3>
+                        <ul>
+                            <li><code data-no-translate="true">load_image(path: dizgi) -&gt; Image</code>- Upload image</li>
+                            <li><code data-no-translate="true">save_image(img: Image, path: dizgi)</code>- Save image</li>
+                            <li><code data-no-translate="true">preprocess(img: Image, ...) -&gt; Tensor</code>- Preprocessing</li>
+                            <li><code data-no-translate="true">draw_boxes(img: Image, boxes: [Box]) -&gt; Image</code>- Draw Bbox</li>
+                            <li><code data-no-translate="true">overlay(img1: Image, img2: Image, alpha: ondalık) -&gt; Image</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>ResNet Class</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yeni(architecture: dizgi, pretrained: mantıksal, ...) -&gt; ResNet</code></li>
+                            <li><code data-no-translate="true">ileri(kendi, x: Tensor) -&gt; Tensor</code></li>
+                            <li><code data-no-translate="true">extract_features(kendi, x: Tensor) -&gt; Tensor</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>YOLO Class</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yeni(version: dizgi, ...) -&gt; YOLO</code></li>
+                            <li><code data-no-translate="true">detect(kendi, img: Image) -&gt; [Detection]</code></li>
+                            <li><code data-no-translate="true">detect_batch(kendi, imgs: [Image]) -&gt; [[Detection]]</code></li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/en_ai-metrics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/en_ai-nlp.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/en_ai-metrics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/en_ai-nlp.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+
+    <!-- Custom JS scripts -->
+
+
+
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

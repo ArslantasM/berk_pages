@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>linalg - Linear Algebra | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔢 linalg - Linear Algebra</h1>
+<p>Matrix, Vector, LU/QR/SVD, Eigenvalues</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">43</div><div>Function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">848</div><div>Line</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">25KB</div><div>Dimension</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import linalg
+
+// Matrix oluşturma
+let A = linalg.matris([[1, 2], [3, 4]])
+let B = linalg.matris([[5, 6], [7, 8]])
+
+// Matrix işlemleri
+let C = linalg.matris_topla(A, B)
+let D = linalg.matris_çarp(A, B)
+let A_ters = linalg.reverse(A)
+let det = linalg.determinant(A)
+
+// Vector işlemleri
+let v1 = [1.0, 2.0, 3.0]
+let v2 = [4.0, 5.0, 6.0]
+let nokta = linalg.nokta_çarpım(v1, v2)  // 32.0
+let norm = linalg.norm(v1)  // 3.742
+
+// Decomposition
+let (L, U) = linalg.lu_ayrıştır(A)
+let (Q, R) = linalg.qr_ayrıştır(A)
+let (U, S, Vt) = linalg.svd(A)
+
+// Eigenvalues
+let özdeğerler = linalg.eigenvalues(A)</code></pre>
+<h2>📚 Function Categories</h2>
+<ul>
+<li><strong>Basic Operations:</strong>add, subtract, multiply, transpose, inverse, determinant</li>
+<li><strong>Decomposition:</strong>LU, QR, Cholesky, SVD, Eigenvalue</li>
+<li><strong>Solvents:</strong>linear_system_solve, least_squares</li>
+<li><strong>Norm and Distance:</strong>norm, frobenius_norm, number_of-conditions</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Solving Linear System (Ax = b)</h3>
+<pre><code>import linalg
+
+// 2x + 3y = 8
+// 4x + 5y = 14
+
+let A = linalg.matris([[2, 3], [4, 5]])
+let b = [8, 14]
+
+let x = linalg.lineer_sistem_çöz(A, b)
+print("Çözüm: x = " + x[0].yazıya() + ", y = " + x[1].yazıya())</code></pre>
+</div>
+<div class="example-box">
+<h3>Principal Component Analysis (PCA)</h3>
+<pre><code>import linalg, stats
+
+function pca(X: Matris, n_bileşen: int) -&gt; Matris do
+    // Veriyi merkeze receive
+    let X_ortalanmış = stats.merkeze_al(X)
+    
+    // Kovaryans matrisi
+    let Σ = linalg.matris_çarp(linalg.transpoz(X_ortalanmış), X_ortalanmış)
+    
+    // Eigenvalue decomposition
+    let (özdeğerler, özvektörler) = linalg.eig(Σ)
+    
+    // En büyük n_bileşen'i match
+    let pc = linalg.alt_matris(özvektörler, 0, n_bileşen)
+    
+    // Transform
+    return linalg.matris_çarp(X_ortalanmış, pc)
+end
+
+let veri = linalg.matris([[1, 2], [3, 4], [5, 6]])
+let dönüştürülmüş = pca(veri, 1)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

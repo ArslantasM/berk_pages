@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>testing - Test Framework | BERK Stdlib</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>✅ testing - Test Framework</h1>
+<p>Unit Tests, Assertions, Mocking, Coverage</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">52</div><div>Function</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">712</div><div>Line</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">22KB</div><div>Dimension</div></div>
+</div>
+</div>
+<h2>🚀 Quick Start</h2>
+<pre><code>import testing
+
+test "toplama fonksiyonu" do
+    let sonuç = topla(2, 3)
+    testing.assert_eq(sonuç, 5)
+end
+
+test "bölme sıfıra" do
+    testing.assert_panic(function() do
+        let x = split(10, 0)
+    end)
+end
+
+// Test suite
+test_grubu "Matematik İşlemleri" do
+    test "toplama" do
+        testing.assert_eq(topla(1, 1), 2)
+        testing.assert_eq(topla(-1, 1), 0)
+    end
+    
+    test "çıkarma" do
+        testing.assert_eq(pop(5, 3), 2)
+        testing.assert_ne(pop(5, 3), 3)
+    end
+    
+    test "çarpma" do
+        testing.assert_eq(çarp(2, 3), 6)
+        testing.assert_eq(çarp(-2, 3), -6)
+    end
+end</code></pre>
+<h2>📚 Assertions</h2>
+<ul>
+<li><strong>assert_eq:</strong>Equality check</li>
+<li><strong>assert_ne:</strong>not equal</li>
+<li><strong>assert_true/false:</strong>boolean control</li>
+<li><strong>assert_close:</strong>Approximate equality (float)</li>
+<li><strong>assert_panic:</strong>Error throw control</li>
+<li><strong>assert_ok/err:</strong>Result type control</li>
+</ul>
+<h2>💡 Examples</h2>
+<div class="example-box">
+<h3>Comprehensive Test Suite</h3>
+<pre><code>import testing, collections
+
+// Test edilen fonksiyonlar
+function stack_new() -&gt; Stack do
+    return do içerik: [] end
+end
+
+function stack_push(s: Stack, value: herhangi) do
+    s.içerik.push(value)
+end
+
+function stack_pop(s: Stack) -&gt; Seçenek do
+    if s.içerik.len() &gt; 0 then do
+        return Some(s.içerik.pop())
+    end else do
+        return Hiç
+    end
+end
+
+// Test suite
+test_grubu "Stack Veri Yapısı" do
+    test "new stack null olmalı" do
+        let s = stack_new()
+        testing.assert_eq(s.içerik.len(), 0)
+    end
+    
+    test "push eleman eklemeli" do
+        let s = stack_new()
+        stack_push(s, 10)
+        stack_push(s, 20)
+        testing.assert_eq(s.içerik.len(), 2)
+    end
+    
+    test "pop end elemanı çıkarmalı" do
+        let s = stack_new()
+        stack_push(s, 10)
+        stack_push(s, 20)
+        
+        let popped = stack_pop(s)
+        testing.assert_some(popped)
+        testing.assert_eq(popped.pop(), 20)
+        testing.assert_eq(s.içerik.len(), 1)
+    end
+    
+    test "null stack'ten pop Hiç dönmeli" do
+        let s = stack_new()
+        let popped = stack_pop(s)
+        testing.assert_none(popped)
+    end
+    
+    test "LIFO sırası korunmalı" do
+        let s = stack_new()
+        stack_push(s, 1)
+        stack_push(s, 2)
+        stack_push(s, 3)
+        
+        testing.assert_eq(stack_pop(s).pop(), 3)
+        testing.assert_eq(stack_pop(s).pop(), 2)
+        testing.assert_eq(stack_pop(s).pop(), 1)
+    end
+end
+
+// Tüm testleri çalıştır
+testing.run_all()</code></pre>
+</div>
+<div class="example-box">
+<h3>Property-Based Testing</h3>
+<pre><code>import testing, random
+
+// Property: reverse(reverse(list)) == list
+test "reverse tersine çevirme idempotent" do
+    her i in range(0, 100) for do
+        // Random List oluştur
+        let len = random.range(0, 50)
+        let List = []
+        
+        her j in range(0, len) for do
+            List.push(random.range(0, 1000))
+        end
+        
+        // Property kontrolü
+        let ters1 = List.reverse()
+        let ters2 = ters1.reverse()
+        
+        testing.assert_eq(List, ters2)
+    end
+end
+
+// Property: sort(list) sıralı olmalı
+test "sort sıralama doğruluğu" do
+    her i in range(0, 100) for do
+        let len = random.range(1, 50)
+        let List = []
+        
+        her j in range(0, len) for do
+            List.push(random.range(0, 1000))
+        end
+        
+        let sıralı = List.sort()
+        
+        // Sıralı mı kontrol
+        her k in range(0, sıralı.len() - 1) for do
+            testing.assert_true(sıralı[k] &lt;= sıralı[k + 1])
+        end
+    end
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

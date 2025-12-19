@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <meta charset="UTF-8">
+        <title>मानक पुस्तकालय सूचकांक | बर्क v1.0.0</title>
+        
+        <meta name="description" content="BERK Standard Library - 74 modules, 3,701 functions, ~39,000 lines of code. Scientific computing, web, graphics, system programming, embedded systems, runtime extensions.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <style>
+            .hero {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 60px 20px;
+                margin: -20px -20px 40px -20px;
+                border-radius: 8px;
+                text-align: center;
+            }
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                margin: 30px 0;
+            }
+            .stat-card {
+                background: rgba(255,255,255,0.2);
+                padding: 20px;
+                border-radius: 8px;
+                text-align: center;
+            }
+            .stat-number {
+                font-size: 3em;
+                font-weight: bold;
+            }
+            .category-section {
+                margin: 40px 0;
+                padding: 25px;
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                border-left: 5px solid var(--links);
+            }
+            .module-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .module-card {
+                background: var(--theme-popup-bg);
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid var(--sidebar-fg);
+                transition: all 0.2s;
+                text-decoration: none;
+                display: block;
+            }
+            .module-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                border-color: var(--links);
+            }
+            .module-name {
+                font-size: 1.2em;
+                font-weight: bold;
+                color: var(--links);
+                margin-bottom: 8px;
+            }
+            .module-stats {
+                font-size: 0.85em;
+                opacity: 0.8;
+                margin-top: 8px;
+            }
+            .module-desc {
+                margin-top: 8px;
+                font-size: 0.9em;
+            }
+            .lang-switcher {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 100;
+                background: var(--sidebar-bg);
+                border: 1px solid var(--sidebar-fg);
+                border-radius: 5px;
+                padding: 8px 15px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="body-container">
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                    </div>
+                    <h1 class="menu-title">BERK v1.0.0 - Stdlib</h1>
+                    <div class="right-buttons">
+                        <a href="../hi_en_index-en.html" title="घर"><i class="fa fa-home"></i></a>
+                        <a href="https://github.com/ArslantasM/berk" title="GitHub" target="_blank"><i class="fa fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="lang-switcher">
+                    <a href="en_index-tr.html" title="तुर्की पर स्विच करें">🇹🇷 TR</a>
+                </div>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="hero">
+                            <h1>📦 बर्क स्टैंडर्ड लाइब्रेरी</h1>
+                            <p style="font-size: 1.3em; margin-top: 15px;">NumPy/SciPy-स्तर की वैज्ञानिक कंप्यूटिंग शक्ति</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-number">74</div>
+                                    <div>मॉड्यूल</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">3,701</div>
+                                    <div>कार्य</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">~39K</div>
+                                    <div>कोड की पंक्तियाँ</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">~1.3 एमबी</div>
+                                    <div>आप</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔧 कोर सिस्टम (14 मॉड्यूल)</h2>
+                            <p>फ़ाइल I/O, स्ट्रिंग ऑपरेशन, संग्रह, दिनांक/समय, थ्रेडिंग, टर्मिनल।</p>
+                            <div class="module-grid">
+                                <a href="en_io-en.html" class="module-card">
+                                    <div class="module-name">आईओ</div>
+                                    <div class="module-desc">फ़ाइल इनपुट/आउटपुट संचालन</div>
+                                    <div class="module-stats">64 कार्य · 449 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_fs-en.html" class="module-card">
+                                    <div class="module-name">एफ.एस</div>
+                                    <div class="module-desc">फ़ाइल सिस्टम संचालन</div>
+                                    <div class="module-stats">76 कार्य · 539 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_sys-en.html" class="module-card">
+                                    <div class="module-name">sys</div>
+                                    <div class="module-desc">सिस्टम सूचना और नियंत्रण</div>
+                                    <div class="module-stats">82 कार्य · 607 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_string-en.html" class="module-card">
+                                    <div class="module-name">डोरी</div>
+                                    <div class="module-desc">UTF-8 स्ट्रिंग ऑपरेशन</div>
+                                    <div class="module-stats">127 कार्य · 953 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_collections-en.html" class="module-card">
+                                    <div class="module-name">संग्रह</div>
+                                    <div class="module-desc">हैशमैप, हैशसेट, बीट्रीमैप</div>
+                                    <div class="module-stats">69 कार्य · 517 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_iter-en.html" class="module-card">
+                                    <div class="module-name">धक्का</div>
+                                    <div class="module-desc">इटरेटर और कॉम्बिनेटर</div>
+                                    <div class="module-stats">79 कार्य · 690 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_result-en.html" class="module-card">
+                                    <div class="module-name">परिणाम</div>
+                                    <div class="module-desc">त्रुटि प्रबंधन (परिणाम, विकल्प)</div>
+                                    <div class="module-stats">24 कार्य · 266 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_fmt-en.html" class="module-card">
+                                    <div class="module-name">एफएमटी</div>
+                                    <div class="module-desc">स्वरूपित आउटपुट और पार्सिंग</div>
+                                    <div class="module-stats">83 कार्य · 621 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_time-en.html" class="module-card">
+                                    <div class="module-name">समय</div>
+                                    <div class="module-desc">दिनांक, समय और समय क्षेत्र</div>
+                                    <div class="module-stats">76 कार्य · 540 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_random-en.html" class="module-card">
+                                    <div class="module-name">यादृच्छिक</div>
+                                    <div class="module-desc">यादृच्छिक संख्या पीढ़ी</div>
+                                    <div class="module-stats">44 कार्य · 474 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_thread-en.html" class="module-card">
+                                    <div class="module-name">धागा</div>
+                                    <div class="module-desc">मल्टीथ्रेडिंग और सिंक्रोनाइज़ेशन</div>
+                                    <div class="module-stats">88 कार्य · 604 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_terminal-en.html" class="module-card">
+                                    <div class="module-name">टर्मिनल</div>
+                                    <div class="module-desc">टर्मिनल नियंत्रण और रंग</div>
+                                    <div class="module-stats">77 कार्य · 703 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_math-en.html" class="module-card">
+                                    <div class="module-name">अंक शास्त्र</div>
+                                    <div class="module-desc">गणितीय कार्य</div>
+                                    <div class="module-stats">111 कार्य · 882 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_complex-en.html" class="module-card">
+                                    <div class="module-name">जटिल</div>
+                                    <div class="module-desc">जटिल संख्या अंकगणित</div>
+                                    <div class="module-stats">49 कार्य · 443 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔬 वैज्ञानिक कंप्यूटिंग (6 मॉड्यूल)</h2>
+                            <p>रैखिक बीजगणित, सांख्यिकी, अनुकूलन, भौतिकी सिमुलेशन, 3डी गणित।</p>
+                            <div class="module-grid">
+                                <a href="en_linalg-en.html" class="module-card">
+                                    <div class="module-name">linalg</div>
+                                    <div class="module-desc">रैखिक बीजगणित और आव्यूह</div>
+                                    <div class="module-stats">43 कार्य · 848 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_stats-en.html" class="module-card">
+                                    <div class="module-name">आँकड़े</div>
+                                    <div class="module-desc">सांख्यिकी और संभाव्यता</div>
+                                    <div class="module-stats">56 कार्य · 820 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_optim-en.html" class="module-card">
+                                    <div class="module-name">अनुकूलतम</div>
+                                    <div class="module-desc">अनुकूलन एल्गोरिदम</div>
+                                    <div class="module-stats">23 कार्य · 875 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_physics-en.html" class="module-card">
+                                    <div class="module-name">भौतिक विज्ञान</div>
+                                    <div class="module-desc">भौतिकी अनुकरण</div>
+                                    <div class="module-stats">103 कार्य · 748 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_math_3d-en.html" class="module-card">
+                                    <div class="module-name">गणित_3डी</div>
+                                    <div class="module-desc">3डी वेक्टर और मैट्रिक्स</div>
+                                    <div class="module-stats">63 कार्य · 593 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_color-en.html" class="module-card">
+                                    <div class="module-name">रंग</div>
+                                    <div class="module-desc">रंग स्थान और रूपांतरण</div>
+                                    <div class="module-stats">47 कार्य · 560 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🌐 वेब और डेटा (12 मॉड्यूल)</h2>
+                            <p>HTTP, JSON, डेटाबेस, क्रिप्टोग्राफी, नेटवर्क प्रोग्रामिंग, डेटा प्रारूप।</p>
+                            <div class="module-grid">
+                                <a href="http-en.html" class="module-card">
+                                    <div class="module-name">http</div>
+                                    <div class="module-desc">HTTP सर्वर/क्लाइंट</div>
+                                    <div class="module-stats">76 कार्य · 1,549 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_json-en.html" class="module-card">
+                                    <div class="module-name">json</div>
+                                    <div class="module-desc">JSON पार्सिंग और क्रमांकन</div>
+                                    <div class="module-stats">51 कार्य · 1,204 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_network-en.html" class="module-card">
+                                    <div class="module-name">नेटवर्क</div>
+                                    <div class="module-desc">टीसीपी/यूडीपी सॉकेट प्रोग्रामिंग</div>
+                                    <div class="module-stats">87 कार्य · 648 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_crypto-en.html" class="module-card">
+                                    <div class="module-name">क्रिप्टो</div>
+                                    <div class="module-desc">क्रिप्टोग्राफी (एईएस, आरएसए, एसएचए)</div>
+                                    <div class="module-stats">101 कार्य · 1,381 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_sqlite-en.html" class="module-card">
+                                    <div class="module-name">SQLite</div>
+                                    <div class="module-desc">SQLite डेटाबेस</div>
+                                    <div class="module-stats">62 कार्य · 1,296 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_xml-en.html" class="module-card">
+                                    <div class="module-name">एक्सएमएल</div>
+                                    <div class="module-desc">XML पार्सिंग और जनरेशन</div>
+                                    <div class="module-stats">55 कार्य · 510 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_yaml-en.html" class="module-card">
+                                    <div class="module-name">yaml</div>
+                                    <div class="module-desc">YAML पार्सिंग और क्रमांकन</div>
+                                    <div class="module-stats">59 कार्य · 595 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_csv-en.html" class="module-card">
+                                    <div class="module-name">सीएसवी</div>
+                                    <div class="module-desc">सीएसवी फ़ाइल प्रसंस्करण</div>
+                                    <div class="module-stats">53 कार्य · 809 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_encoding-en.html" class="module-card">
+                                    <div class="module-name">एन्कोडिंग</div>
+                                    <div class="module-desc">बेस64, हेक्स, यूआरएल एन्कोडिंग</div>
+                                    <div class="module-stats">79 कार्य · 832 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_compression-en.html" class="module-card">
+                                    <div class="module-name">COMPRESSION</div>
+                                    <div class="module-desc">जीज़िप, ज़्लिब, ब्रॉटली संपीड़न</div>
+                                    <div class="module-stats">67 कार्य · 472 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_logging-en.html" class="module-card">
+                                    <div class="module-name">काटना</div>
+                                    <div class="module-desc">लॉगिंग सिस्टम और प्रारूप</div>
+                                    <div class="module-stats">63 कार्य · 514 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_regex-en.html" class="module-card">
+                                    <div class="module-name">regex</div>
+                                    <div class="module-desc">नियमित अभिव्यक्ति</div>
+                                    <div class="module-stats">57 कार्य · 472 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🎮 ग्राफ़िक्स और गेम (7 मॉड्यूल)</h2>
+                            <p>2डी/3डी ग्राफिक्स, जीयूआई, ऑडियो प्रोसेसिंग, भौतिकी इंजन, इमेज प्रोसेसिंग, सीएडी।</p>
+                            <div class="module-grid">
+                                <a href="en_graphics-en.html" class="module-card">
+                                    <div class="module-name">GRAPHICS</div>
+                                    <div class="module-desc">2डी/3डी ग्राफिक्स रेंडरिंग</div>
+                                    <div class="module-stats">163 कार्य · 1,624 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_gui-en.html" class="module-card">
+                                    <div class="module-name">जीयूआई</div>
+                                    <div class="module-desc">जीयूआई विजेट और लेआउट</div>
+                                    <div class="module-stats">169 कार्य · 1,636 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_audio-en.html" class="module-card">
+                                    <div class="module-name">ऑडियो</div>
+                                    <div class="module-desc">ऑडियो प्रोसेसिंग और प्रभाव</div>
+                                    <div class="module-stats">163 कार्य · 1,669 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_physics2d-en.html" class="module-card">
+                                    <div class="module-name">भौतिकी2डी</div>
+                                    <div class="module-desc">2डी भौतिकी इंजन (बॉक्स2डी जैसा)</div>
+                                    <div class="module-stats">192 कार्य · 3,317 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_image-en.html" class="module-card">
+                                    <div class="module-name">छवि</div>
+                                    <div class="module-desc">छवि प्रसंस्करण और फ़िल्टर</div>
+                                    <div class="module-stats">77 कार्य · 1,770 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_mesh-en.html" class="module-card">
+                                    <div class="module-name">जाल</div>
+                                    <div class="module-desc">3डी जाल प्रसंस्करण</div>
+                                    <div class="module-stats">22 कार्य · 614 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_cad3d-en.html" class="module-card">
+                                    <div class="module-name">कैड3डी</div>
+                                    <div class="module-desc">3डी सीएडी और ज्यामिति</div>
+                                    <div class="module-stats">118 कार्य · 1,599 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>⚡ Async और परीक्षण (4 मॉड्यूल)</h2>
+                            <p>Async/प्रतीक्षा, मल्टीथ्रेडिंग, नियम-आधारित प्रणाली, परीक्षण ढांचा।</p>
+                            <div class="module-grid">
+                                <a href="en_async-en.html" class="module-card">
+                                    <div class="module-name">async</div>
+                                    <div class="module-desc">अतुल्यकालिक प्रोग्रामिंग</div>
+                                    <div class="module-stats">71 कार्य · 480 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_thread-en.html" class="module-card">
+                                    <div class="module-name">धागा</div>
+                                    <div class="module-desc">थ्रेडिंग और सिंक्रोनाइज़ेशन</div>
+                                    <div class="module-stats">88 कार्य · 604 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_rules-en.html" class="module-card">
+                                    <div class="module-name">नियम</div>
+                                    <div class="module-desc">नियम-आधारित AI इंजन</div>
+                                    <div class="module-stats">67 कार्य · 657 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_testing-en.html" class="module-card">
+                                    <div class="module-name">परीक्षण</div>
+                                    <div class="module-desc">इकाई परीक्षण रूपरेखा</div>
+                                    <div class="module-stats">50 कार्य · 460 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔌 रनटाइम एक्सटेंशन (11 मॉड्यूल)</h2>
+                            <p>डेटाबेस, क्रमांकन, ईमेल, वेबसोकेट, पार्सिंग, टेम्प्लेट, उपयोगिताएँ।</p>
+                            <div class="module-grid">
+                                <a href="en_email-en.html" class="module-card">
+                                    <div class="module-name">ईमेल</div>
+                                    <div class="module-desc">एसएमटीपी/आईएमएपी ईमेल क्लाइंट</div>
+                                    <div class="module-stats">~30 फ़ंक्शन · ~450 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_cli-en.html" class="module-card">
+                                    <div class="module-name">सीएलआई</div>
+                                    <div class="module-desc">कमांड-लाइन तर्क पार्सर</div>
+                                    <div class="module-stats">~25 फ़ंक्शन · ~300 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_markdown-en.html" class="module-card">
+                                    <div class="module-name">markdown</div>
+                                    <div class="module-desc">HTML पार्सर पर मार्कडाउन करें</div>
+                                    <div class="module-stats">~35 कार्य · ~400 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_msgpack-en.html" class="module-card">
+                                    <div class="module-name">संदेशपैक</div>
+                                    <div class="module-desc">मैसेजपैक बाइनरी क्रमांकन</div>
+                                    <div class="module-stats">~40 फ़ंक्शन · ~500 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_postgresql-en.html" class="module-card">
+                                    <div class="module-name">पोस्टग्रेस्क्ल</div>
+                                    <div class="module-desc">PostgreSQL डेटाबेस क्लाइंट</div>
+                                    <div class="module-stats">~50 फ़ंक्शन · ~600 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_redis-en.html" class="module-card">
+                                    <div class="module-name">रेडिस</div>
+                                    <div class="module-desc">रेडिस कैश क्लाइंट</div>
+                                    <div class="module-stats">~60 फ़ंक्शन · ~450 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_websocket-en.html" class="module-card">
+                                    <div class="module-name">वेबसोकेट</div>
+                                    <div class="module-desc">वेबसॉकेट आरएफसी 6455</div>
+                                    <div class="module-stats">~45 फ़ंक्शन · ~800 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_toml-en.html" class="module-card">
+                                    <div class="module-name">toml</div>
+                                    <div class="module-desc">TOML v1.0.0 पार्सर</div>
+                                    <div class="module-stats">~30 फ़ंक्शन · ~350 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_template-en.html" class="module-card">
+                                    <div class="module-name">खाका</div>
+                                    <div class="module-desc">टेम्पलेट इंजन (Jinja2-शैली)</div>
+                                    <div class="module-stats">~20 फ़ंक्शन · ~300 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_pdf-en.html" class="module-card">
+                                    <div class="module-name">पीडीएफ</div>
+                                    <div class="module-desc">पीडीएफ दस्तावेज़ निर्माण</div>
+                                    <div class="module-stats">~35 कार्य · ~400 पंक्तियाँ</div>
+                                </a>
+                                <a href="en_archive-en.html" class="module-card">
+                                    <div class="module-name">पुरालेख</div>
+                                    <div class="module-desc">ज़िप/टीएआर संग्रह समर्थन</div>
+                                    <div class="module-stats">~25 फ़ंक्शन · ~350 पंक्तियाँ</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <h2>🔩 एचएएल - एंबेडेड सिस्टम (21 मॉड्यूल)</h2>
+                            <p>एआरएम कॉर्टेक्स-एम, एसटीएम32, ईएसपी32 हार्डवेयर एब्स्ट्रैक्शन परत।</p>
+                            <div class="module-grid">
+                                <a href="../hal/hi_en_gpio-en.html" class="module-card">
+                                    <div class="module-name">राज्य::gpio</div>
+                                    <div class="module-desc">जीपीआईओ पिन नियंत्रण</div>
+                                    <div class="module-stats">~8 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_adc-en.html" class="module-card">
+                                    <div class="module-name">राज्य::एडीसी</div>
+                                    <div class="module-desc">एनॉलॉग से डिजिटल परिवर्तित करने वाला उपकरण</div>
+                                    <div class="module-stats">~6 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_dac-en.html" class="module-card">
+                                    <div class="module-name">राज्य::डीएसी</div>
+                                    <div class="module-desc">डिजिटल-से-एनालॉग कनवर्टर</div>
+                                    <div class="module-stats">~5 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_pwm-en.html" class="module-card">
+                                    <div class="module-name">राज्य::pwm</div>
+                                    <div class="module-desc">पीडब्लूएम सिग्नल जनरेशन</div>
+                                    <div class="module-stats">~7 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_usart-en.html" class="module-card">
+                                    <div class="module-name">राज्य::usart</div>
+                                    <div class="module-desc">यूएआरटी धारावाहिक संचार</div>
+                                    <div class="module-stats">~9 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_i2c-en.html" class="module-card">
+                                    <div class="module-name">राज्य::i2c</div>
+                                    <div class="module-desc">I2C बस संचार</div>
+                                    <div class="module-stats">~8 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_spi-en.html" class="module-card">
+                                    <div class="module-name">राज्य::स्पि</div>
+                                    <div class="module-desc">एसपीआई बस संचार</div>
+                                    <div class="module-stats">~7 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_timer-en.html" class="module-card">
+                                    <div class="module-name">राज्य::टाइमर</div>
+                                    <div class="module-desc">हार्डवेयर टाइमर</div>
+                                    <div class="module-stats">~7 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_can-en.html" class="module-card">
+                                    <div class="module-name">राज्य::कर सकते हैं</div>
+                                    <div class="module-desc">बस ऑटोमोटिव कर सकते हैं</div>
+                                    <div class="module-stats">~10 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_dma-en.html" class="module-card">
+                                    <div class="module-name">राज्य::डीएमए</div>
+                                    <div class="module-desc">प्रत्यक्ष मेमोरी एक्सेस</div>
+                                    <div class="module-stats">~6 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_rtc-en.html" class="module-card">
+                                    <div class="module-name">राज्य::rtc</div>
+                                    <div class="module-desc">वास्तविक समय घड़ी</div>
+                                    <div class="module-stats">~8 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_watchdog-en.html" class="module-card">
+                                    <div class="module-name">राज्य::प्रहरी</div>
+                                    <div class="module-desc">वॉचडॉग टाइमर</div>
+                                    <div class="module-stats">~5 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_flash-en.html" class="module-card">
+                                    <div class="module-name">राज्य::फ़्लैश</div>
+                                    <div class="module-desc">फ्लैश मेमोरी</div>
+                                    <div class="module-stats">~7 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_nvic-en.html" class="module-card">
+                                    <div class="module-name">राज्य::एनविक</div>
+                                    <div class="module-desc">नियंत्रक को बाधित करें</div>
+                                    <div class="module-stats">~6 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_systick-en.html" class="module-card">
+                                    <div class="module-name">राज्य::सिस्टिक</div>
+                                    <div class="module-desc">सिस्टम टिक टाइमर</div>
+                                    <div class="module-stats">~5 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_exti-en.html" class="module-card">
+                                    <div class="module-name">राज्य::exti</div>
+                                    <div class="module-desc">बाहरी रुकावट</div>
+                                    <div class="module-stats">~6 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_power-en.html" class="module-card">
+                                    <div class="module-name">राज्य::शक्ति</div>
+                                    <div class="module-desc">बिजली प्रबंधन</div>
+                                    <div class="module-stats">~7 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_clock-en.html" class="module-card">
+                                    <div class="module-name">राज्य::घड़ी</div>
+                                    <div class="module-desc">घड़ी विन्यास</div>
+                                    <div class="module-stats">~6 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_rng-en.html" class="module-card">
+                                    <div class="module-name">राज्य::आरएनजी</div>
+                                    <div class="module-desc">हार्डवेयर आरएनजी</div>
+                                    <div class="module-stats">~4 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_crc-en.html" class="module-card">
+                                    <div class="module-name">स्थिति::सीआरसी</div>
+                                    <div class="module-desc">हार्डवेयर सीआरसी</div>
+                                    <div class="module-stats">~5 कार्य</div>
+                                </a>
+                                <a href="../hal/hi_en_usb-en.html" class="module-card">
+                                    <div class="module-name">राज्य::यूएसबी</div>
+                                    <div class="module-desc">यूएसबी डिवाइस/होस्ट</div>
+                                    <div class="module-stats">~9 कार्य</div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <hr style="margin: 60px 0;">
+
+                        <h2 id="usage"><a class="header" href="#usage">📖कैसे उपयोग करें?</a></h2>
+
+                        <h3>1. मॉड्यूल आयात करना</h3>
+                        <pre><code class="language-berk">// Single module
+import math
+
+// Multiple modules
+import math, stats, linalg
+
+// Using alias
+import math as m
+import http as h</code></pre>
+
+                        <h3>2. फंक्शन कॉलिंग</h3>
+                        <pre><code class="language-berk">// Full name
+let result = math.sqrt(16.0)
+
+// With alias
+import math as m
+let result = m.sqrt(16.0)</code></pre>
+
+                        <h3>3. स्थिरांक का उपयोग करना</h3>
+                        <pre><code class="language-berk">import math
+
+print(math.PI)        // 3.14159...
+print(math.E)         // 2.71828...
+print(math.TAU)       // 6.28318... (2π)</code></pre>
+
+                        <hr style="margin: 60px 0;">
+
+                        <p style="text-align: center; font-size: 1.1em;">
+                            <strong>बर्क में नए हैं?</strong><br>
+                            <a href="../hi_en_intro.html">📚 बर्क परिचय गाइड</a> | 
+                            <a href="../examples/hi_en_index-en.html">💡उदाहरण</a> | 
+                            <a href="../hi_en_installation.html">⬇️ स्थापना</a>
+                        </p>
+
+                        <p style="text-align: center; color: #888; margin-top: 30px; font-size: 0.9em;">बर्क v1.0.0 मानक पुस्तकालय<br>74 मॉड्यूल (42 एसटीडीलिब + 21 एचएएल + 11 रनटाइम) · 3,701 फ़ंक्शन · ~39,000 लाइनें · ~1.3 एमबी<br>अंतिम अद्यतन: दिसंबर 2025</p>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

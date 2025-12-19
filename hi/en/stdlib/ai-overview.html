@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>एआई/एमएल अवलोकन - बर्क प्रोग्रामिंग भाषा</title>
+
+        <!-- Custom HTML head -->
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <style>
+            .module-header { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; 
+                padding: 40px 20px; 
+                margin: -20px -20px 30px -20px; 
+                border-radius: 8px; 
+            }
+            .module-stats { 
+                display: grid; 
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+                gap: 15px; 
+                margin-top: 20px; 
+            }
+            .stat-badge { 
+                background: rgba(255,255,255,0.2); 
+                padding: 10px; 
+                border-radius: 5px; 
+                text-align: center; 
+            }
+            .module-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
+            }
+            .module-card {
+                background: var(--sidebar-bg);
+                border-radius: 8px;
+                padding: 20px;
+                border-left: 4px solid var(--links);
+                transition: transform 0.2s;
+            }
+            .module-card:hover {
+                transform: translateY(-2px);
+            }
+            .module-card h3 {
+                margin-top: 0;
+                color: var(--links);
+            }
+            .example-box { 
+                background: var(--sidebar-bg); 
+                padding: 20px; 
+                border-radius: 8px; 
+                margin: 20px 0; 
+            }
+            .perf-table {
+                width: 100%;
+                margin: 20px 0;
+            }
+            .perf-table td, .perf-table th {
+                padding: 10px;
+                border-bottom: 1px solid var(--table-border-color);
+            }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <div class="module-header">
+                            <h1>एआई/एमएल और मशीन लर्निंग</h1>
+                            <p style="font-size: 1.2em; opacity: 0.9;">उच्च प्रदर्शन वाली कृत्रिम बुद्धिमत्ता और मशीन लर्निंग लाइब्रेरी</p>
+                            <div class="module-stats">
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">15</div><div>मॉड्यूल</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">28.8x</div><div>त्वरण</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">70GB/s</div><div>SIMD</div></div>
+                                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">882x</div><div>COMPRESSION</div></div>
+                            </div>
+                        </div>
+
+                        <h2>सिंहावलोकन</h2>
+
+                        <p>बर्क एआई/एमएल लाइब्रेरी आधुनिक कृत्रिम बुद्धिमत्ता और मशीन लर्निंग अनुप्रयोगों के लिए व्यापक उपकरण प्रदान करती है। PyTorch और TensorFlow के साथ संगत API डिज़ाइन SIMD अनुकूलन और समानांतर प्रसंस्करण समर्थन के साथ उच्च प्रदर्शन प्रदान करता है।</p>
+
+                        <div class="example-box">
+                            <h3>प्रमुख विशेषताऐं</h3>
+                            <ul>
+                                <li><strong>SIMD अनुकूलन:</strong>AVX2 समर्थन के साथ 70 जीबी/एस थ्रूपुट</li>
+                                <li><strong>समानांतर प्रसंस्करण:</strong>रेयान के साथ 4.96x त्वरण</li>
+                                <li><strong>LZ4 संपीड़न:</strong>मॉडल 28.8 गुना तेज, 882 गुना छोटी फ़ाइलें सहेज रहा है</li>
+                                <li><strong>कैश अनुकूलन:</strong>ब्लॉकी मैट्रिक्स गुणन के साथ 2.5x स्पीडअप</li>
+                                <li><strong>एलएलएम समर्थन:</strong>ओपनएआई, एंथ्रोपिक, जेमिनी, ओलामा एपीआई एकीकरण</li>
+                                <li><strong>शून्य निर्भरता:</strong>पूरी तरह से बर्क में लिखा गया, देशी प्रदर्शन</li>
+                            </ul>
+                        </div>
+
+                        <h2>प्रदर्शन मेट्रिक्स</h2>
+                        
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>अनुकूलन</th>
+                                    <th>पूर्व</th>
+                                    <th>डाक</th>
+                                    <th>सुधार</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>मैट्रिक्स गुणन (256×256)</strong></td>
+                                    <td>0.97GFLOPS</td>
+                                    <td>2.47 जीएलओपीएस</td>
+                                    <td><strong>2.5x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>मॉडल सहेजें (34.9 एमबी)</strong></td>
+                                    <td>880ms</td>
+                                    <td>30ms</td>
+                                    <td><strong>28.8x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>मॉडल फ़ाइल आकार</strong></td>
+                                    <td>131एमबी</td>
+                                    <td>0.15एमबी</td>
+                                    <td><strong>882x छोटा</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SIMD थ्रूपुट</strong></td>
+                                    <td>8.75GB/s</td>
+                                    <td>70GB/s</td>
+                                    <td><strong>8x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>प्रचय संसाधन</strong></td>
+                                    <td>4,410 बैच/सेकंड</td>
+                                    <td>18,546 बैच/सेकंड</td>
+                                    <td><strong>4.96x</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>मॉडल लोड हो रहा है</strong></td>
+                                    <td>~1000ms</td>
+                                    <td>99ms</td>
+                                    <td><strong>10.1x</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>एआई/एमएल मॉड्यूल</h2>
+
+
+                        <div class="module-grid">
+                            <div class="module-card">
+                                <h3><a href="en_ai-tensor.html">टेन्सर</a></h3>
+                                <p>टेन्सर संचालन और मैट्रिक्स संचालन</p>
+                                <p><small>ब्लॉकी एल्गोरिदम, SIMD (AVX2), प्रसारण</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-nn.html">एन</a></h3>
+                                <p>तंत्रिका नेटवर्क परतें और सक्रियण</p>
+                                <p><small>रैखिक, Conv2D, LSTM, बैचनॉर्म, ड्रॉपआउट</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-optim.html">अनुकूलतम</a></h3>
+                                <p>अनुकूलन एल्गोरिदम</p>
+                                <p><small>एडम, एडमडब्ल्यू, एसजीडी, आरएमएसप्रॉप, शेड्यूलर्स</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-train.html">रेलगाड़ी</a></h3>
+                                <p>मॉडल प्रशिक्षण और कॉलबैक प्रणाली</p>
+                                <p><small>ट्रेनिंग लूप्स, अर्लीस्टॉपिंग, चेकपॉइंटिंग</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-model.html">नमूना</a></h3>
+                                <p>मॉडल प्रबंधन और क्रमबद्धता</p>
+                                <p><small>LZ4 संपीड़न (28.8x तेज़), परिमाणीकरण</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-llm.html">ज़ोर-ज़ोर से हंसना</a></h3>
+                                <p>बड़े भाषा मॉडल एपीआई</p>
+                                <p><small>ओपनएआई, एंथ्रोपिक, जेमिनी, ओलामा</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-metrics.html">मेट्रिक्स</a></h3>
+                                <p>मूल्यांकन मेट्रिक्स</p>
+                                <p><small>सटीकता, परिशुद्धता, स्मरण, एफ1, एमएसई, आर²</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-vision.html">दृष्टि</a></h3>
+                                <p>कंप्यूटर विज़न मॉडल</p>
+                                <p><small>रेसनेट, योलो, यूनेट, इमेज प्रीप्रोसेसिंग</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-nlp.html">एनएलपी</a></h3>
+                                <p>प्राकृतिक भाषा प्रसंस्करण</p>
+                                <p><small>बर्ट, टोकनाइज़र, ध्यान, एनईआर</small></p>
+                            </div>
+
+                            <div class="module-card">
+                                <h3><a href="en_ai-rl.html">आर एल</a></h3>
+                                <p>सुदृढीकरण सीखना</p>
+                                <p><small>डीक्यूएन, पीपीओ, एसएसी, रिप्ले बफर</small></p>
+                            </div>
+                        </div>
+
+                        <h2>त्वरित शुरुआत</h2>
+
+                        <div class="example-box">
+                            <h3>सरल तंत्रिका नेटवर्क</h3>
+                            <pre><code class="language-berk">module use ai/tensor;
+use ai/nn;
+use ai/optim;
+
+// Model oluştur
+let model = Sequential::new([
+    Linear::new(784, 128),
+    ReLU::new(),
+    Dropout::new(0.2),
+    Linear::new(128, 10),
+    Softmax::new()
+]);
+
+// Optimizer
+let optimizer = Adam::new(model.parametreler(), lr: 0.001);
+
+// Eğitim döngüsü
+her epoch in range(10) for do
+    let çıktı = model.ileri(X_train);
+    let kayıp = cross_entropy(çıktı, y_train);
+    
+    optimizer.sıfırla();
+    kayıp.geri();
+    optimizer.adım();
+    
+    print("Epoch {}: Kayıp = {:.4f}", epoch, kayıp);
+end
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>एलएलएम एपीआई उपयोग</h3>
+                            <pre><code class="language-berk">use ai/llm;
+use async;
+
+async function sohbet() do
+    // OpenAI istemcisi
+    let client = OpenAI::new("api-key");
+    
+    // Chat tamamlama
+    let yanit = await client.chat([
+        { role: "user", content: "Merhaba!" }
+    ]);
+    
+    print(yanit.content);
+end
+</code></pre>
+                        </div>
+
+                        <div class="example-box">
+                            <h3>मॉडल सहेजें/लोड करें (LZ4)</h3>
+                            <pre><code class="language-berk">use ai/model;
+
+// Model kaydet (LZ4 compressed - 28.8x faster)
+model.kaydet("model.berk");  // 880ms → 30ms
+
+// Model yükle (10x faster)
+let loaded_model = Model::yukle("model.berk");  // 99ms vs 1000ms
+
+// Dosya boyutu: 131 MB → 0.15 MB (882x smaller)
+</code></pre>
+                        </div>
+
+                        <h2>टेक्निकल डिटेल</h2>
+
+                        <h3>SIMD अनुकूलन</h3>
+                        <p>AVX2 अनुदेश सेट के साथ 256-बिट वेक्टर संचालन:</p>
+                        <ul>
+                            <li>8 फ्लोट समानांतर जोड़/घटाव/गुणा/विभाजन</li>
+                            <li>रनटाइम सीपीयू सुविधा का पता लगाना</li>
+                            <li>यदि AVX2 उपलब्ध नहीं है तो स्वचालित स्केलर फ़ॉलबैक</li>
+                            <li>बड़े टेंसरों के लिए 70 जीबी/एस थ्रूपुट</li>
+                        </ul>
+
+                        <h3>ब्लॉकी मैट्रिक्स गुणन</h3>
+                        <p>L1 कैश-अनुकूलित टाइलिंग:</p>
+                        <ul>
+                            <li>32×32 ब्लॉक (4KB, L1 कैश: 32KB)</li>
+                            <li>कैश छूटने की दर को न्यूनतम करता है</li>
+                            <li>256×256 मैट्रिसेस के लिए 2.5x स्पीडअप</li>
+                            <li>512×512 मैट्रिसेस के लिए 1.8x स्पीडअप</li>
+                        </ul>
+
+                        <h3>LZ4 मॉडल संपीड़न</h3>
+                        <p>तेज़ दोषरहित संपीड़न:</p>
+                        <ul>
+                            <li>स्तर 1 (तेज) संपीड़न</li>
+                            <li>बाइनरी प्रारूप: बर्क मैजिक + संस्करण + डेटा</li>
+                            <li>28.8x तेज़ रिकॉर्डिंग</li>
+                            <li>882x छोटी फ़ाइलें</li>
+                            <li>100% सटीकता, डेटा अखंडता संरक्षित है</li>
+                        </ul>
+
+                        <h3>समानांतर बैच प्रसंस्करण</h3>
+                        <p>रेयॉन के साथ मल्टी-थ्रेडिंग:</p>
+                        <ul>
+                            <li>बैच प्रोसेसिंग 4.96 गुना तेज</li>
+                            <li>18,546 बैच/सेकंड (बनाम 4,410 अनुक्रमिक)</li>
+                            <li>काम चोरी के साथ लोड संतुलन</li>
+                            <li>स्वचालित थ्रेड पूल प्रबंधन</li>
+                        </ul>
+
+                        <h2>प्लेटफार्म समर्थन</h2>
+                        
+                        <table class="perf-table">
+                            <thead>
+                                <tr>
+                                    <th>प्लैटफ़ॉर्म</th>
+                                    <th>SIMD</th>
+                                    <th>समानांतर</th>
+                                    <th>एलजेड4</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>x86_64 (इंटेल/एएमडी)</td>
+                                    <td>✓AVX2</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>ARM64 (एप्पल सिलिकॉन)</td>
+                                    <td>✓ नियॉन</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>एआरएम32</td>
+                                    <td>अदिश</td>
+                                    <td>✓</td>
+                                    <td>✓</td>
+                                </tr>
+                                <tr>
+                                    <td>WASM</td>
+                                    <td>✓ SIMD128</td>
+                                    <td>सीमित</td>
+                                    <td>✓</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>अगले कदम</h2>
+                        <ul>
+                            <li><a href="en_ai-tensor.html">टेंसर - टेंसर संचालन सीखें</a></li>
+                            <li><a href="en_ai-nn.html">एनएन - तंत्रिका नेटवर्क परतों का अन्वेषण करें</a></li>
+                            <li><a href="en_ai-train.html">ट्रेन - एक मॉडल को प्रशिक्षित करें</a></li>
+                            <li><a href="en_ai-model.html">मॉडल - मॉडल सहेजें/लोड करें</a></li>
+                            <li><a href="en_ai-llm.html">एलएलएम - एलएलएम एपीआई का उपयोग करें</a></li>
+                            <li><a href="en_ai-metrics.html">मेट्रिक्स - मूल्यांकन मेट्रिक्स</a></li>
+                            <li><a href="en_ai-vision.html">दृष्टि - कंप्यूटर दृष्टि</a></li>
+                            <li><a href="en_ai-nlp.html">एनएलपी - प्राकृतिक भाषा प्रसंस्करण</a></li>
+                            <li><a href="en_ai-rl.html">आरएल - सुदृढीकरण सीखना</a></li>
+                        </ul>
+
+                        <div style="margin-top: 40px; padding: 20px; background: var(--sidebar-bg); border-radius: 8px;">
+                            <p><strong>टिप्पणियाँ:</strong>एआई/एमएल लाइब्रेरी सक्रिय विकास के अधीन है। नई सुविधाएँ और अनुकूलन नियमित रूप से जोड़े जाते हैं।</p>
+                            <p><strong>संस्करण:</strong>v0.9.0 (दिसंबर 2025)</p>
+                        </div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="en_rules.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="en_ai-tensor.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a href="en_rules.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                <a href="en_ai-tensor.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+    </div>
+    
+    <script src="lang-switcher.js"></script>
+</body></html>

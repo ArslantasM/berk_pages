@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+    <meta charset="UTF-8">
+    <title>आईओ - इनपुट/आउटपुट | बर्क स्टैडलिब</title>
+    <meta name="description" content="BERK io modülü - 64 fonksiyon ile dosya I/O, console, buffered okuma/yazma">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/chrome.css">
+    <style>
+        .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+        .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+        .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+        .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div id="content" class="content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main>
+        <div class="module-header">
+            <h1>📂 io - इनपुट/आउटपुट मॉड्यूल</h1>
+            <p>फ़ाइल I/O, कंसोल, बफ़र्ड पढ़ें/लिखें</p>
+            <div class="module-stats">
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">64</div><div>समारोह</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">449</div><div>पंक्तियां</div></div>
+                <div class="stat-badge"><div style="font-size:2em;font-weight:bold">12केबी</div><div>आयाम</div></div>
+            </div>
+        </div>
+
+        <h2>🚀 त्वरित शुरुआत</h2>
+        <pre><code>import io
+
+// Dosya okuma
+let içerik = io.fs::read("data.txt")
+print(içerik)
+
+// Dosya yazma
+io.dosya_yaz("output.txt", "Merhaba BERK!")
+
+// Satır satır okuma
+let satırlar = io.satırları_oku("data.txt")
+for satır in satırlar do
+    print(satır)
+end
+
+// Buffered okuma (büyük dosyalar for)
+let dosya = io.aç("büyük_dosya.txt", "r")
+let reader = io.buffered_reader(dosya)
+while true do
+    let satır = io.satır_oku(reader)
+    if satır.yok_mu() then kır end
+    print(satır)
+end
+io.kapat(dosya)</code></pre>
+
+        <h2>📚कार्य श्रेणियाँ</h2>
+
+        <div class="function-group">
+            <h3>सरल फ़ाइल संचालन</h3>
+            <p><code data-no-translate="true">dosya_oku()</code>, <code data-no-translate="true">dosya_yaz()</code>, <code data-no-translate="true">dosya_ekle()</code>, <code data-no-translate="true">satırları_oku()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>फ़ाइल प्रबंधन संचालन</h3>
+            <p><code data-no-translate="true">aç()</code>, <code data-no-translate="true">kapat()</code>, <code data-no-translate="true">oku()</code>, <code data-no-translate="true">print()</code>, <code data-no-translate="true">flush()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>बफ़र्ड I/O</h3>
+            <p><code data-no-translate="true">buffered_reader()</code>, <code data-no-translate="true">buffered_writer()</code>, <code data-no-translate="true">satır_oku()</code>, <code data-no-translate="true">buffer_flush()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>कंसोल I/O</h3>
+            <p><code data-no-translate="true">print()</code>, <code data-no-translate="true">yazdır_satır()</code>, <code data-no-translate="true">hata_yazdır()</code>, <code data-no-translate="true">girdi_al()</code></p>
+        </div>
+
+        <div class="function-group">
+            <h3>बाइनरी I/O</h3>
+            <p><code data-no-translate="true">bayt_oku()</code>, <code data-no-translate="true">bayt_yaz()</code>, <code data-no-translate="true">seek()</code>, <code data-no-translate="true">tell()</code></p>
+        </div>
+
+        <h2>💡उदाहरण</h2>
+
+        <div class="example-box">
+            <h3>उदाहरण 1: लॉग फ़ाइल लिखना</h3>
+            <pre><code>import io, time
+
+function log_yaz(mesaj: yazı) do
+    let zaman = time.şimdi_str()
+    let log_satır = "[" + zaman + "] " + mesaj + "\n"
+    io.dosya_ekle("app.log", log_satır)
+end
+
+log_yaz("Uygulama başlatıldı")
+log_yaz("Kullanıcı giriş yaptı")
+log_yaz("İşlem tamamlandı")</code></pre>
+        </div>
+
+        <div class="example-box">
+            <h3>उदाहरण 2: बड़ी फ़ाइल प्रोसेसिंग</h3>
+            <pre><code>import io, string
+
+function büyük_dosya_işle(girdi: yazı, çıktı: yazı) do
+    let girdi_dosya = io.aç(girdi, "r")
+    let çıktı_dosya = io.aç(çıktı, "w")
+    
+    let reader = io.buffered_reader(girdi_dosya, 8192)
+    let writer = io.buffered_writer(çıktı_dosya, 8192)
+    
+    while true do
+        let satır = io.satır_oku(reader)
+        if satır.yok_mu() then kır end
+        
+        // İşleme
+        let işlenmiş = string.to_uppercase(satır.değer())
+        io.buffer_yaz(writer, işlenmiş + "\n")
+    end
+    
+    io.buffer_flush(writer)
+    io.kapat(çıktı_dosya)
+    io.kapat(girdi_dosya)
+end
+
+büyük_dosya_işle("input.txt", "output.txt")</code></pre>
+        </div>
+
+        <p style="text-align:center;margin-top:40px;">
+            <a href="en_index-tr.html">← सभी मॉड्यूल</a> | 
+            <a href="../hi_en_index-tr.html">होम पेज</a>
+        </p>
+    </main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

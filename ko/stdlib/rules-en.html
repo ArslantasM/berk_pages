@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>규칙 - 규칙 엔진 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ 규칙 - 규칙 엔진</h1>
+<p>비즈니스 규칙, 패턴 일치, 추론</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">37</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">612</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">19KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import rules
+
+// Rule engine
+let engine = rules.engine_new()
+
+// Add rules
+rules.add_rule(engine, "discount_vip", function(facts) do
+    if facts["customer_type"] == "VIP"  do
+        facts["discount"] = 20.0
+        return true
+    end
+    return false
+end)
+
+rules.add_rule(engine, "discount_bulk", function(facts) do
+    if facts["quantity"] &gt; 100  do
+        facts["discount"] = 15.0
+        return true
+    end
+    return false
+end)
+
+// Execute
+let facts = do
+    "customer_type": "VIP",
+    "quantity": 50,
+    "price": 100.0
+end
+
+rules.execute(engine, facts)
+print("İndirim: %" + facts["discount"].yazıya())</code></pre>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>대출 승인 시스템</h3>
+<pre><code>import rules
+
+let loan_engine = rules.engine_new()
+
+rules.add_rule(loan_engine, "high_income", function(facts) do
+    if facts["annual_income"] &gt; 100000  do
+        facts["score"] = facts.get("score", 0) + 30
+        return true
+    end
+    return false
+end)
+
+rules.add_rule(loan_engine, "good_credit", function(facts) do
+    if facts["credit_score"] &gt; 700  do
+        facts["score"] = facts.get("score", 0) + 40
+        return true
+    end
+    return false
+end)
+
+rules.add_rule(loan_engine, "low_debt", function(facts) do
+    if facts["debt_ratio"] &lt; 0.3  do
+        facts["score"] = facts.get("score", 0) + 30
+        return true
+    end
+    return false
+end)
+
+rules.add_rule(loan_engine, "approve", function(facts) do
+    if facts.get("score", 0) &gt;= 70  do
+        facts["approved"] = true
+    end else do
+        facts["approved"] = false
+    end
+    return true
+end)
+
+// Test
+let application = do
+    "annual_income": 120000,
+    "credit_score": 750,
+    "debt_ratio": 0.25
+end
+
+rules.execute(loan_engine, application)
+print("Onaylandı: " + application["approved"].yazıya())
+print("Skor: " + application["score"].yazıya())</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>सम्मिश्र - सम्मिश्र संख्याएँ | बर्क स्टैडलिब</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔢 सम्मिश्र - सम्मिश्र संख्याएँ</h1>
+<p>जटिल अंकगणित, ध्रुवीय रूप, एफएफटी</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">39</div><div>समारोह</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">567</div><div>रेखा</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">18केबी</div><div>आयाम</div></div>
+</div>
+</div>
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import complex, math
+
+// Complex number (a + bi)
+let z1 = complex.new(3.0, 4.0)  // 3 + 4i
+let z2 = complex.new(1.0, -2.0)  // 1 - 2i
+
+// Arithmetic
+let sum = complex.add(z1, z2)
+let product = complex.mul(z1, z2)
+
+// Properties
+let mod = complex.abs(z1)  // |z| = sqrt(3²+4²) = 5
+let açı = complex.arg(z1)  // θ = atan2(4,3)
+let eşlenik = complex.conj(z1)  // 3 - 4i
+
+// Polar form
+let z_polar = complex.from_polar(5.0, math.PI/4)
+
+print(complex.to_string(z1))  // "3+4i"</code></pre>
+<h2>💡उदाहरण</h2>
+<div class="example-box">
+<h3>मैंडेलब्रॉट सेट</h3>
+<pre><code>import complex, graphics
+
+function mandelbrot(c: Complex, max_iter: int) -&gt; int do
+    let z = complex.new(0.0, 0.0)
+    
+    her i in range(0, max_iter) for do
+        z = complex.add(complex.mul(z, z), c)
+        
+        if complex.abs(z) &gt; 2.0 then do
+            return i
+        end
+    end
+    
+    return max_iter
+end
+
+// Render Mandelbrot
+her y in range(0, 600) for do
+    her x in range(0, 800) for do
+        let re = (x.kesir() - 400.0) / 200.0
+        let im = (y.kesir() - 300.0) / 200.0
+        
+        let c = complex.new(re, im)
+        let iterations = mandelbrot(c, 100)
+        
+        let renk = iterations.kesir() / 100.0
+        graphics.set_pixel(x, y, renk, renk, renk)
+    end
+end</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

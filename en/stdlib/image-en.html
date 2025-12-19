@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>image - Image Processing | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖼️ image</h1>
+<p>Image Processing &amp; Filters</p>
+<div style="margin-top:15px">
+<span class="stat-badge">77 functions</span>
+<span class="stat-badge">1,770 lines</span>
+<span class="stat-badge">PNG/JPEG</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Image processing: load/save PNG/JPEG, filters (blur, sharpen, edge detect), resizing, rotation, color manipulation.</p>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import image
+
+// Load image
+let img = image.load("photo.jpg")?
+
+// Apply filters
+let blurred = image.blur(img, radius: 5.0)
+let grayscale = image.to_grayscale(blurred)
+
+// Resize
+let resized = image.resize(grayscale, 800, 600)
+
+// Save
+image.save(resized, "output.png")?</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← All Modules</a> | <a href="en_image-tr.html">🇹🇷 Turkish</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>परिचय - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="en_toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/intro.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="berk-programlama-dili"><a class="header" href="#berk-programlama-dili">बर्क प्रोग्रामिंग भाषा</a></h1>
+<p><strong>बर्क</strong>, दुनिया में पहली बार सच्चे द्विभाषी वाक्यविन्यास (तुर्की/अंग्रेजी) के साथ डिज़ाइन किया गया,<strong>एम्बेडेड सिस्टम और एआई/एमएल उत्पादन</strong>यह एक उच्च-प्रदर्शन सिस्टम प्रोग्रामिंग भाषा है जिसके लिए अनुकूलित किया गया है<strong>सी/सी++ स्तर का प्रदर्शन</strong>यह 19 विभिन्न लक्ष्य प्लेटफार्मों (ARM Cortex-M, RISC-V, ESP32, x64/ARM डेस्कटॉप, WebAssembly) पर उत्पादकता प्रदान करता है।</p>
+<h2 id="-neden-berk-adı-seçilmiştir"><a class="header" href="#-neden-berk-adı-seçilmiştir">📖 बर्क नाम क्यों चुना गया?</a></h2>
+<h3 id="Öztürkçe-kökeni-güçlü-muhkem-sağlam"><a class="header" href="#Öztürkçe-kökeni-güçlü-muhkem-sağlam">इज़टर्क उत्पत्ति: "मजबूत, मजबूत, ठोस"</a></h3>
+<p><strong>बर्क</strong>शब्द Öztürk में<strong>"मजबूत, टिकाऊ, मजबूत और ठोस"</strong>इसका मतलब है कि ये गुण प्रोग्रामिंग भाषा के तकनीकी लक्ष्यों के साथ सीधे संरेखित होते हैं: मेमोरी सुरक्षा, टाइप सिस्टम शुद्धता, मजबूत कंपाइलर आर्किटेक्चर और स्थिर प्रदर्शन।</p>
+<h3 id="arapçadan-gelen-anlamı-Şimşek"><a class="header" href="#arapçadan-gelen-anlamı-Şimşek">अरबी से अर्थ: "बिजली"</a></h3>
+<p>तुर्की में एक और अर्थ पाया जाता है **"बिजली"**। यह अर्थ BERK भाषा की गति, प्रदर्शन और चपलता के दृष्टिकोण को दर्शाता है: LLVM, C++-स्तर के प्रदर्शन और अनुकूलित कर्नेल आर्किटेक्चर पर आधारित तेज़ संकलन।</p>
+<h3 id="anlamların-birleşimi"><a class="header" href="#anlamların-birleşimi">अर्थों का संयोजन</a></h3>
+<p>बर्क, दोनों तुर्की मूल के हैं<strong>मजबूती</strong>अवधारणा के साथ-साथ आधुनिक तकनीक की दुनिया में भी<strong>गति और चपलता</strong>यह अवधारणाओं को मिलाकर एक मजबूत ब्रांड पहचान बनाता है।</p>
+<h3 id="uluslararası-alanda"><a class="header" href="#uluslararası-alanda">अंतरराष्ट्रीय स्तर की</a></h3>
+<p>बर्क,<strong>परे-कुशल रनटाइम कर्नेल</strong>(रनटाइम कोर परे दक्षता)।</p>
+<hr>
+<h2 id="-İndirme-ve-kurulum"><a class="header" href="#-İndirme-ve-kurulum">📥 डाउनलोड और इंस्टालेशन</a></h2>
+<h3 id="windows-x64-v100"><a class="header" href="#windows-x64-v100">विंडोज़ x64 (v1.0.0)</a></h3>
+<p><strong>नवीनतम संस्करण:</strong>बर्क v1.0.0 (2 दिसंबर, 2025)<br>
+<strong>आयाम:</strong>~3.8 एमबी (3 फ़ाइलें)<br>
+<strong>प्लैटफ़ॉर्म:</strong>विंडोज़ 10/11 (64-बिट)</p>
+<h4 id="-indirme-linkleri"><a class="header" href="#-indirme-linkleri">🔗 डाउनलोड लिंक</a></h4>
+<ul>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/BERK-lang.exe">⬇️ BERK-lang.exe डाउनलोड करें</a></strong>- कंपाइलर (2.2 एमबी)</li>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/berk-lsp.exe">⬇️ berk-lsp.exe डाउनलोड करें</a></strong>- भाषा सर्वर (1.2 एमबी)</li>
+<li><strong><a href="https://github.com/ArslantasM/berk_pages/releases/download/v1.0.0/berk-repl.exe">⬇️ berk-repl.exe डाउनलोड करें</a></strong>- आरईपीएल (464 केबी)</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📚 दस्तावेज़ीकरण (पीडीएफ)</a></strong>-पूरी गाइड</li>
+<li><strong><a href="https://arslantasm.github.io/berk_pages/">📖 ऑनलाइन बुकलेट</a></strong>- इंटरैक्टिव दस्तावेज़ीकरण</li>
+</ul>
+<h4 id="kurulum"><a class="header" href="#kurulum">स्थापित करना</a></h4>
+<pre><code class="language-powershell"># 1. BERK-lang.exe'yi indirin
+# 2. İstediğiniz bir klasöre kopyalayın (örn: C:\BERK)
+# 3. PATH'e ekleyin:
+$env:PATH += ";C:\BERK"
+
+# Test edin
+BERK-lang --version
+</code></pre>
+<h4 id="hızlı-başlangıç"><a class="header" href="#hızlı-başlangıç">त्वरित शुरुआत</a></h4>
+<p><strong>विकल्प 1: इंटरएक्टिव आरईपीएल (त्वरित परीक्षण)</strong></p>
+<pre><code class="language-bash"># REPL'i başlatın
+BERK-lang repl
+
+# Kod yazın and Enter'a basın - anında çalışır!
+&gt;&gt;&gt; print("Merhaba, BERK!")
+Merhaba, BERK!
+
+&gt;&gt;&gt; let x = 5 + 3
+&gt;&gt;&gt; print(x * 2)
+16
+</code></pre>
+<p><strong>विकल्प 2: संकलन (मूल निष्पादन योग्य)</strong></p>
+<pre><code class="language-bash"># İlk programınızı yazın (merhaba.berk)
+function main() -&gt; int
+do
+    print("Merhaba, BERK!")
+    return 0
+end
+
+# LLVM ile native kod üretin
+BERK-lang compile merhaba.berk -o merhaba.exe
+
+# Çalıştırın (artık bağımsız executable)
+.\merhaba.exe
+</code></pre>
+<p><strong>विकल्प 3: JIT चलाना (संकलन + चलाएँ)</strong></p>
+<pre><code class="language-bash"># Direkt çalıştır (arka planda LLVM JIT)
+BERK-lang run merhaba.berk
+</code></pre>
+<h3 id="diğer-platformlar"><a class="header" href="#diğer-platformlar">अन्य प्लेटफार्म</a></h3>
+<p><strong>लिनक्स और macOS:</strong>स्रोत कोड से संकलन आवश्यक है.</p>
+<pre><code class="language-bash"># Rust toolchain kurulumu
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derleyin
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+</code></pre>
+<hr>
+<h2 id="-berki-Özel-kılan-Özellikler"><a class="header" href="#-berki-Özel-kılan-Özellikler">🌟 विशेषताएँ जो बर्क को विशेष बनाती हैं</a></h2>
+<h3 id="-gömülü-sistemler-ve-aiml-için-optimize"><a class="header" href="#-gömülü-sistemler-ve-aiml-için-optimize">🔧 एंबेडेड सिस्टम और एआई/एमएल के लिए अनुकूलित</a></h3>
+<p>बर्क,<strong>एम्बेडेड सिस्टम और कृत्रिम बुद्धिमत्ता उत्पादन</strong>यह एक ऐसी भाषा है जिसके लिए डिज़ाइन किया गया है:</p>
+<ul>
+<li><strong>बेयर-मेटल प्रोग्रामिंग</strong>: आरटीओएस के बिना सीधी हार्डवेयर पहुंच</li>
+<li><strong>एआरएम कॉर्टेक्स-एम/आरआईएससी-वी सपोर्ट</strong>: लोकप्रिय MCU जैसे STM32, ESP32, नॉर्डिक nRF</li>
+<li><strong>न्यूनतम रनटाइम</strong>: 2-5 केबी मेमोरी ओवरहेड, महत्वपूर्ण अनुप्रयोगों के लिए आदर्श</li>
+<li><strong>एआई/एमएल अनुमान</strong>: ONNX रनटाइम एकीकरण, एज एआई के लिए अनुकूलित लाइब्रेरी</li>
+<li><strong>उच्च प्रदर्शन कंप्यूटिंग</strong>: SIMD, वैश्वीकरण, शून्य-लागत सार</li>
+<li><strong>वास्तविक समय की गारंटी</strong>: नियतात्मक समय, व्यवधान प्रबंधन, डीएमए समर्थन</li>
+<li><strong>पार संकलन</strong>: डेस्कटॉप से ​​एकल कमांड के साथ एआरएम/आरआईएससी-वी लक्ष्यों को संकलित करना</li>
+</ul>
+<h3 id="-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#-dünyada-İlk-gerçek-Çift-dilli-syntax">🌍 विश्व का पहला: सच्चा द्विभाषी सिंटेक्स</a></h3>
+<p>प्रोग्रामिंग भाषाओं में पहली बार,<strong>एक ही कंपाइलर में</strong>आप तुर्की और अंग्रेजी दोनों कीवर्ड के साथ कोड लिख सकते हैं। यह सिर्फ अनुवाद नहीं है, यह भाषा की अंतर्निहित विशेषता है।</p>
+<h3 id="-ccrust-seviyesinde-performans"><a class="header" href="#-ccrust-seviyesinde-performans">⚡ सी/सी++/जंग स्तर प्रदर्शन + एआई/एमएल अनुकूलन</a></h3>
+<ul>
+<li><strong>एलएलवीएम बैकएंड</strong>: मूल कोड पीढ़ी के साथ शून्य लागत सार</li>
+<li><strong>बेंचमार्क परिणाम</strong>: C++ के साथ 98-100% प्रदर्शन समानता</li>
+<li><strong>एआई/एमएल कार्यभार</strong>: ONNX के साथ TensorFlow/PyTorch मॉडल का अनुमान (एज डिवाइस)</li>
+<li><strong>SIMD/वेक्टरीकरण</strong>: AVX2, NEON, RISC-V वेक्टर एक्सटेंशन समर्थन</li>
+<li><strong>स्मृति दक्षता</strong>: मैनुअल नियंत्रण + सुरक्षा गारंटी, एम्बेडेड के लिए महत्वपूर्ण</li>
+<li><strong>अनुकूलन स्तर</strong>: O0-O3 + LTO (लिंक-टाइम ऑप्टिमाइज़ेशन) के बीच आक्रामक अनुकूलन</li>
+<li><strong>एंबेडेड एमएल</strong>: TinyML, परिमाणीकरण, मॉडल संपीड़न समर्थन</li>
+</ul>
+<h3 id="-rules-based-ai-yaklaşımı"><a class="header" href="#-rules-based-ai-yaklaşımı">🧠 नियम-आधारित एआई दृष्टिकोण + एमएल उत्पादन</a></h3>
+<p>संकलक,<strong>नियम आधारित कृत्रिम बुद्धिमत्ता</strong>तकनीकों का उपयोग करना:</p>
+<ul>
+<li>बुद्धिमान त्रुटि का पता लगाना और अनुशंसाएँ (एआई-संचालित त्रुटि पुनर्प्राप्ति)</li>
+<li>कोड अनुकूलन निर्णय (एमएल-निर्देशित अनुकूलन)</li>
+<li>प्रकार अनुमान और विश्लेषण (स्थैतिक विश्लेषण + अनुमान)</li>
+<li>सिमेंटिक विश्लेषण के साथ गुणवत्ता आश्वासन</li>
+</ul>
+<p><strong>एआई/एमएल उत्पादन पाइपलाइन:</strong></p>
+<ul>
+<li><strong>मॉडल प्रशिक्षण</strong>: Python/PyTorch, ONNX निर्यात के साथ प्रशिक्षण</li>
+<li><strong>मॉडल अनुकूलन</strong>: परिमाणीकरण (INT8/INT16), छंटाई, आसवन</li>
+<li><strong>धार परिनियोजन</strong>: एआरएम कॉर्टेक्स-एम, ईएसपी32, आरआईएससी-वी पर अनुमान</li>
+<li><strong>वास्तविक समय अनुमान</strong>: &lt;10 एमएस विलंबता, एम्बेडेड उपकरणों पर एआई</li>
+<li><strong>टिनीएमएल समर्थन</strong>: TensorFlow Lite, ONNX रनटाइम एकीकरण</li>
+<li><strong>हार्डवेयर एक्सिलरेशन</strong>: एनपीयू, डीएसपी, जीपीयू ऑफलोडिंग (मेटल, सीयूडीए, वल्कन)</li>
+</ul>
+<h3 id="-bilimsel-hesaplama-kütüphaneleri-stdlib-v094"><a class="header" href="#-bilimsel-hesaplama-kütüphaneleri-stdlib-v094">🔬 व्यापक मानक पुस्तकालय (stdlib v0.9.4)</a></h3>
+<p><strong>75 मॉड्यूल</strong>(42 एसटीडीलिब + 33 एचएएल),<strong>4100+ फ़ंक्शन</strong>, <strong>1140KB</strong>कोड:</p>
+<ul>
+<li><strong>वैज्ञानिक गणना</strong>: गणित, लाइनलग, सांख्यिकी, ऑप्टिम, भौतिकी, जटिल, यादृच्छिक</li>
+<li><strong>एंबेडेड सिस्टम (एचएएल)</strong>: 33 मॉड्यूल - GPIO, UART, SPI, I2C, वाईफाई, ब्लूटूथ, टाइमर, DMA</li>
+<li><strong>7 प्लेटफार्म समर्थन</strong>: ESP32, STM32F4, RP2040, nRF52, GD32, Nuvoton, Arduino</li>
+<li><strong>वेब और डेटा</strong>: http, json, xml, yaml, csv, sqlite, async</li>
+<li><strong>ग्राफ़िक्स और गेमप्ले</strong>: जीयूआई, ग्राफिक्स, ऑडियो, छवि, फिजिक्स2डी, कैड3डी</li>
+<li><strong>NumPy/SciPy/जूलिया</strong>स्तरीय वैज्ञानिक कंप्यूटिंग</li>
+</ul>
+<h3 id="-19-farklı-hedef-platform"><a class="header" href="#-19-farklı-hedef-platform">🚀 19 विभिन्न लक्ष्य प्लेटफार्म (एम्बेडेड-प्रथम)</a></h3>
+<p>क्रॉस-संकलन समर्थन:</p>
+<ul>
+<li><strong>एंबेडेड (प्राथमिकता)</strong>: एआरएम कॉर्टेक्स-एम0/एम3/एम4/एम7, आरआईएससी-वी (32/64-बिट), एवीआर, ईएसपी32/ईएसपी8266, नॉर्डिक एनआरएफ52/एनआरएफ53</li>
+<li><strong>डेस्कटॉप</strong>: विंडोज़ (x64/ARM), Linux (x64/ARM/RISC-V), macOS (इंटेल/Apple सिलिकॉन)</li>
+<li><strong>गतिमान</strong>: एंड्रॉइड (ARM/x86), iOS (ARM64)</li>
+<li><strong>वेबअसेंबली</strong>: ब्राउज़र और सर्वर (WASI)</li>
+<li><strong>बादल</strong>: AWS लैम्ब्डा, Azure फ़ंक्शंस, Google क्लाउड रन</li>
+<li><strong>IoT प्लेटफार्म</strong>: रास्पबेरी पाई, बीगलबोन, एनवीडिया जेटसन (एज एआई)</li>
+</ul>
+<p><strong>समर्थित एमसीयू परिवार:</strong>एसटीएम32, ईएसपी32, नॉर्डिक एनआरएफ, माइक्रोचिप एसएएम, टीआई एमएसपी430, सीफाइव हाईफाइव, केंड्रीटे के210</p>
+<h3 id="-son-derece-kolay-Öğrenme"><a class="header" href="#-son-derece-kolay-Öğrenme">📚सीखना बेहद आसान</a></h3>
+<ul>
+<li><strong>सहज सिंटेक्स</strong>: पायथन की सरलता + जंग की शक्ति</li>
+<li><strong>तुर्की दस्तावेज़ीकरण</strong>: 70+ पृष्ठों की व्यापक मार्गदर्शिका</li>
+<li><strong>त्रुटि संदेश साफ़ करें</strong>: समाधान सुझावों के साथ</li>
+<li><strong>सीखने की अवस्था</strong>: 1-2 सप्ताह में उत्पादक बनें</li>
+</ul>
+<h3 id="-gömülü-sistem-kabiliyeti"><a class="header" href="#-gömülü-sistem-kabiliyeti">🔧 उन्नत एंबेडेड सिस्टम क्षमता</a></h3>
+<ul>
+<li><strong>बेयर-मेटल प्रोग्रामिंग</strong>: हार्डवेयर नियंत्रण (GPIO, UART, SPI, I2C) बिना RTOS के</li>
+<li><strong>आरटीओएस एकीकरण</strong>: FreeRTOS, Zephyr, RIOT-OS के साथ निर्बाध रूप से काम करता है</li>
+<li><strong>एचएएल सार</strong>: प्लेटफ़ॉर्म-अज्ञेयवादी हार्डवेयर परत (एआरएम, आरआईएससी-वी, एवीआर)</li>
+<li><strong>हैंडलिंग में व्यवधान</strong>: जीरो-ओवरहेड इंटरप्ट हैंडलर, नेस्टेड इंटरप्ट</li>
+<li><strong>डीएमए समर्थन</strong>: डायरेक्ट मेमोरी एक्सेस, एसिंक्रोनस डेटा ट्रांसफर</li>
+<li><strong>बिजली प्रबंधन</strong>: स्लीप मोड, कम-शक्ति अनुकूलन, बैटरी चालित उपकरण</li>
+<li><strong>न्यूनतम रनटाइम</strong>: 2-5 केबी ओवरहेड, 8-बिट एमसीयू पर भी काम करता है</li>
+<li><strong>बूटलोडर समर्थन</strong>: ओटीए अपडेट, सुरक्षित बूट, फर्मवेयर साइनिंग</li>
+</ul>
+<h2 id="neden-berk"><a class="header" href="#neden-berk">बर्क क्यों?</a></h2>
+<h3 id="-akademisyenler-ve-araştırmacılar-İçin"><a class="header" href="#-akademisyenler-ve-araştırmacılar-İçin">🎯 शिक्षाविदों और शोधकर्ताओं के लिए</a></h3>
+<ul>
+<li><strong>वैज्ञानिक गणना</strong>: NumPy/SciPy/MATLAB स्तर की लाइब्रेरी</li>
+<li><strong>प्रदर्शन</strong>: सी++ गति, पायथन सहजता</li>
+<li><strong>reproducibility</strong>: नियतात्मक संकलन, प्रतिलिपि प्रस्तुत करने योग्य निर्माण</li>
+<li><strong>प्रकाशित करना</strong>: तुर्की अकादमिक प्रकाशनों के लिए आदर्श</li>
+</ul>
+<h3 id="-sektör-profesyonelleri-İçin"><a class="header" href="#-sektör-profesyonelleri-İçin">💼उद्योग पेशेवरों के लिए</a></h3>
+<ul>
+<li><strong>उत्पादन के लिए तैयार</strong>: प्रदर्शन सी/सी++/रस्ट से तुलनीय</li>
+<li><strong>क्रॉस-प्लेटफॉर्म</strong>: सिंगल कोडबेस, 19 प्लेटफॉर्म</li>
+<li><strong>रख-रखाव</strong>: पढ़ने योग्य कोड, आसान रिफैक्टरिंग</li>
+<li><strong>अंतर</strong>: सी/सी++ एफएफआई, मौजूदा सिस्टम में एकीकरण</li>
+<li><strong>प्रभावी लागत</strong>: कम बग, तेज़ विकास</li>
+</ul>
+<h3 id="-eğitimciler-ve-Öğrenciler-İçin"><a class="header" href="#-eğitimciler-ve-Öğrenciler-İçin">🎓शिक्षकों और छात्रों के लिए</a></h3>
+<ul>
+<li><strong>तुर्की सामग्री</strong>: मूल भाषा में प्रोग्रामिंग सीखना</li>
+<li><strong>आधुनिक अवधारणाएँ</strong>: प्रकार सुरक्षा, पैटर्न मिलान, त्रुटि प्रबंधन</li>
+<li><strong>आसान रास्ता</strong>: पायथन, ब्रिज से C++ तक आने के लिए स्वाभाविक</li>
+<li><strong>व्यावहारिक उदाहरण</strong>: वास्तविक दुनिया के अनुप्रयोग</li>
+</ul>
+<h3 id="1-dünyada-İlk-gerçek-Çift-dilli-syntax"><a class="header" href="#1-dünyada-İlk-gerçek-Çift-dilli-syntax">1. <strong>दुनिया का पहला: सच्चा द्विभाषी सिंटेक्स</strong></a></h3>
+<pre><code class="language-berk">// Türkçe
+function selamla(isim: yazı) -&gt; yazı
+do
+    return "Merhaba, " + isim + "!"
+end
+
+// English (aynı derleyici!)
+function greet(name: string) -&gt; string
+do
+    return "Hello, " + name + "!"
+end
+
+// Karışık kullanım bile mümkün
+function hesapla(sayı: int) -&gt; int
+do
+    if sayı &gt; 0
+        return sayı * 2
+    else
+        return 0
+    end
+end
+</code></pre>
+<h3 id="2-modern-ve-güvenli"><a class="header" href="#2-modern-ve-güvenli">2. <strong>आधुनिक और सुरक्षित</strong></a></h3>
+<ul>
+<li>✅ शक्तिशाली प्रकार की प्रणाली</li>
+<li>✅ मेमोरी सुरक्षा</li>
+<li>✅ अशक्त सुरक्षा</li>
+<li>✅ पैटर्न मिलान</li>
+<li>✅ त्रुटि प्रबंधन</li>
+</ul>
+<h3 id="3-yüksek-performans--llvm-backend"><a class="header" href="#3-yüksek-performans--llvm-backend">3. <strong>उच्च प्रदर्शन + एलएलवीएम बैकएंड</strong></a></h3>
+<ul>
+<li>मूल कोड पीढ़ी<strong>C++ के साथ 98-100% प्रदर्शन समानता</strong></li>
+<li>19 विभिन्न आर्किटेक्चर के लिए समर्थन (x64, ARM, RISC-V, WebAssembly, ...)</li>
+<li>अनुकूलन स्तर (O0-O3)</li>
+<li>क्रॉस-संकलन -<strong>एक कोड, 19 प्लेटफार्म</strong></li>
+<li>शून्य-लागत सार</li>
+<li>इनलाइन असेंबली समर्थन</li>
+</ul>
+<h3 id="4-bilimsel-hesaplama-stdlib-v094"><a class="header" href="#4-bilimsel-hesaplama-stdlib-v094">4. <strong>व्यापक मानक पुस्तकालय (stdlib v0.9.4)</strong></a></h3>
+<pre><code class="language-berk">use linalg, stats, optim
+
+// Linear Algebra
+let A = linalg.matris_oluştur([[1, 2], [3, 4]])
+let B = linalg.matris_çarp(A, linalg.transpose(A))
+let (L, U) = linalg.lu_ayrıştır(A)
+
+// İstatistik
+let veri = [1.2, 2.3, 3.4, 4.5, 5.6]
+let ort = stats.avg(veri)
+let std = stats.standart_sapma(veri)
+let (r, p) = stats.korelasyon(x, y)
+
+// Optimizasyon
+let minimum = optim.gradient_descent(function, x0, öğrenme=0.01)
+let sonuç = optim.bfgs(maliyet, başlangıç)
+</code></pre>
+<h3 id="4-geliştirici-dostu"><a class="header" href="#4-geliştirici-dostu">4. <strong>डेवलपर अनुकूल</strong></a></h3>
+<ul>
+<li>व्यापक दस्तावेज़ीकरण (<strong>70+ पृष्ठ, तुर्की</strong>)</li>
+<li>त्रुटि संदेश साफ़ करें (सुझाए गए समाधानों के साथ)</li>
+<li>वीएस कोड प्लगइन (सिंटैक्स हाइलाइटिंग, स्वत: पूर्ण, डिबगिंग)</li>
+<li>आरईपीएल (इंटरैक्टिव शेल) - त्वरित परीक्षण</li>
+<li>समृद्ध परीक्षण अवसंरचना</li>
+<li><strong>आसान सीखना</strong>: 1-2 सप्ताह के साथ उत्पादक</li>
+</ul>
+<h2 id="hızlı-başlangıç-1"><a class="header" href="#hızlı-başlangıç-1">त्वरित शुरुआत</a></h2>
+<h3 id="kurulum-1"><a class="header" href="#kurulum-1">स्थापित करना</a></h3>
+<pre><code class="language-bash"># Rust toolchain gerekli
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# BERK'u derle
+git clone https://github.com/ArslantasM/berk
+cd berk/berk-lang
+cargo build --release --features llvm
+
+# PATH'e ekle
+export PATH="$PWD/target/release:$PATH"
+</code></pre>
+<h3 id="İlk-programınız"><a class="header" href="#İlk-programınız">आपका पहला कार्यक्रम</a></h3>
+<pre><code class="language-berk">// merhaba.berk
+function main() -&gt; int
+do
+    print("Merhaba, BERK!")
+    return 0
+end
+</code></pre>
+<pre><code class="language-bash"># Derle ve çalıştır
+BERK-lang merhaba.berk -o merhaba.exe
+./merhaba.exe
+# Çıktı: Merhaba, BERK!
+</code></pre>
+<h2 id="bu-kitap-hakkında"><a class="header" href="#bu-kitap-hakkında">इस पुस्तक के बारे में</a></h2>
+<p>यह पुस्तक बर्क प्रोग्रामिंग भाषा सीखने के लिए एक व्यापक संसाधन है।<a href="https://doc.rust-lang.org/book/">जंग लगी किताब</a>शपथ<a href="https://docs.python.org/">पायथन दस्तावेज़ीकरण</a>जैसे संसाधनों के सर्वोत्तम पहलुओं को एक साथ लाकर इसे तैयार किया गया है।</p>
+<h3 id="hedef-kitle"><a class="header" href="#hedef-kitle">लक्ष्य समूह</a></h3>
+<ul>
+<li>प्रोग्रामिंग में शुरुआती</li>
+<li>अनुभवी डेवलपर्स</li>
+<li>सिस्टम प्रोग्रामर</li>
+<li>डेवलपर्स तुर्की सामग्री की तलाश में हैं</li>
+</ul>
+<h3 id="kitabı-nasıl-kullanmalısınız"><a class="header" href="#kitabı-nasıl-kullanmalısınız">आपको पुस्तक का उपयोग कैसे करना चाहिए?</a></h3>
+<ol>
+<li><strong>अनुक्रमिक वाचन</strong>: हमारा सुझाव है कि आप इसे शुरू से अंत तक क्रम से पढ़ें।</li>
+<li><strong>उदाहरण आज़माएँ</strong>: प्रत्येक उदाहरण को अपने कंप्यूटर पर चलाएँ</li>
+<li><strong>अभ्यास</strong>: प्रत्येक अध्याय के अंत में अभ्यास करें</li>
+<li><strong>संदर्भ</strong>: जब भी आपको आवश्यकता हो, संदर्भ अनुभागों पर वापस लौटें</li>
+</ol>
+<h2 id="dil-felsefesi"><a class="header" href="#dil-felsefesi">भाषा का दर्शन</a></h2>
+<p>बर्क के बुनियादी डिजाइन सिद्धांत:</p>
+<h3 id="1-erişilebilirlik"><a class="header" href="#1-erişilebilirlik">1. <strong>अभिगम्यता</strong></a></h3>
+<p>तुर्की कीवर्ड के लिए धन्यवाद, प्रोग्रामिंग में प्रवेश उन लोगों के लिए आसान हो गया है जो अंग्रेजी नहीं बोलते हैं।</p>
+<h3 id="2-güvenlik"><a class="header" href="#2-güvenlik">2. <strong>सुरक्षा</strong></a></h3>
+<p>संकलन समय पर स्मृति त्रुटियों को पकड़ता है। यह रनटाइम त्रुटियों को कम करता है।</p>
+<h3 id="3-performans"><a class="header" href="#3-performans">3. <strong>प्रदर्शन</strong></a></h3>
+<p>एलएलवीएम बैकएंड की बदौलत यह सी/सी++ स्तर का प्रदर्शन प्रदान करता है।</p>
+<h3 id="4-okunabilirlik"><a class="header" href="#4-okunabilirlik">4. <strong>स्पष्टता</strong></a></h3>
+<p>स्पष्ट और समझने योग्य वाक्यविन्यास। इसे कोड लिखने के बजाय कोड पढ़ने के लिए अनुकूलित किया गया है।</p>
+<h3 id="5-İnterop"><a class="header" href="#5-İnterop">5. <strong>इंटरॉप</strong></a></h3>
+<p>C/C++ पुस्तकालयों के साथ संगत। यह मौजूदा पारिस्थितिकी तंत्र में एकीकृत हो सकता है।</p>
+<h2 id="Öne-Çıkan-Özellikler"><a class="header" href="#Öne-Çıkan-Özellikler">हाइलाइट</a></h2>
+<h3 id="modern-type-system"><a class="header" href="#modern-type-system">आधुनिक प्रकार की प्रणाली</a></h3>
+<pre><code class="language-berk">let x: int = 42
+let isim: yazı = "Ahmet"
+let aktif: bool = true
+let sayılar: List&lt;int&gt; = [1, 2, 3]
+let nokta: Tuple&lt;int, int&gt; = (10, 20)
+</code></pre>
+<h3 id="pattern-matching"><a class="header" href="#pattern-matching">पैटर्न मिलान</a></h3>
+<pre><code class="language-berk">match case mesaj
+    case "başarılı":
+        print("İşlem tamamlandı!")
+    case "hata":
+        print("Bir hata oluştu!")
+    case _:
+        print("Bilinmeyen case")
+end
+</code></pre>
+<h3 id="string-İşlemleri-utf-8"><a class="header" href="#string-İşlemleri-utf-8">स्ट्रिंग ऑपरेशंस (UTF-8)</a></h3>
+<pre><code class="language-berk">let mesaj = "Merhaba Dünya! 🌍"
+let len = len(mesaj)
+let birleşik = "Hello " + "World"
+</code></pre>
+<h3 id="hata-yönetimi"><a class="header" href="#hata-yönetimi">त्रुटि प्रबंधन</a></h3>
+<pre><code class="language-berk">try
+    let dosya = aç("data.txt")
+    print(input(dosya))
+catch hata
+    print("Dosya açılamadı: " + hata)
+end
+</code></pre>
+<h2 id="derleyici-mimarisi"><a class="header" href="#derleyici-mimarisi">संकलक वास्तुकला</a></h2>
+<p>बर्क कंपाइलर की एक आधुनिक संरचना है:</p>
+<pre><code>Kaynak Kod (.berk)
+    ↓
+Lexer (Token Üretimi)
+    ↓
+Parser (AST Oluşturma)
+    ↓
+Semantic Analysis (Tip Kontrolü)
+    ↓
+CFG Analysis (Dataflow Analysis)
+    ↓
+IR Generation (BERK IR)
+    ↓
+IR Optimization (O0-O3)
+    ↓
+LLVM IR Generation
+    ↓
+Machine Code (.exe/.o)
+</code></pre>
+<h3 id="proje-durumu"><a class="header" href="#proje-durumu">परियोजना की स्थिति</a></h3>
+<p><strong>वर्तमान संस्करण:</strong>v1.0.0<br>
+<strong>आखिरी अपडेट:</strong>18 नवंबर 2025<br>
+<strong>परिस्थिति:</strong>सक्रिय विकास</p>
+<h3 id="tamamlanan-Özellikler-"><a class="header" href="#tamamlanan-Özellikler-">संपूर्ण सुविधाएँ ✅</a></h3>
+<ul>
+<li>लेक्सर और पार्सर (100%)</li>
+<li>प्रकार प्रणाली (100%)</li>
+<li>एलएलवीएम बैकएंड (100%)</li>
+<li>सीएफजी विश्लेषण (100%)</li>
+<li>आईआर अनुकूलक (100%)</li>
+<li>आरईपीएल (100%)</li>
+<li>वीएस कोड एक्सटेंशन (100%)</li>
+</ul>
+<h3 id="devam-eden-Çalışmalar"><a class="header" href="#devam-eden-Çalışmalar">चल रहे अध्ययन</a></h3>
+<ul>
+<li>रनटाइम लाइब्रेरी</li>
+<li>मानक पुस्तकालय</li>
+<li>पैकेज प्रबंधक</li>
+<li>डिबगर एकीकरण</li>
+</ul>
+<p>विस्तृत रोड मैप के लिए<a href="./hi_en_roadmap.html">रोड मैप</a>पेज देखें.</p>
+<h2 id="topluluk-ve-katkı"><a class="header" href="#topluluk-ve-katkı">समुदाय और योगदान</a></h2>
+<p>बर्क एक खुला स्रोत परियोजना है और योगदान का स्वागत है!</p>
+<ul>
+<li><strong>गिटहब:</strong> <a href="https://github.com/ArslantasM/berk">अर्सलैंटासएम/बर्क</a></li>
+<li><strong>समस्याएँ:</strong>बग रिपोर्ट और सुविधा अनुरोध</li>
+<li><strong>चर्चाएँ:</strong>सामुदायिक चर्चाएँ</li>
+<li><strong>योगदान:</strong> <a href="./contributing/hi_en_code.html">योगदान मार्गदर्शिका</a></li>
+</ul>
+<h2 id="ek-kaynaklar"><a class="header" href="#ek-kaynaklar">अतिरिक्त संसाधन</a></h2>
+<ul>
+<li><a href="https://github.com/ArslantasM/berk">गिटहब रिपॉजिटरी</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=BERK.berk-lang">वीएस कोड एक्सटेंशन</a></li>
+<li><a href="./hi_en_changelog.html">चैंज</a></li>
+<li><a href="./hi_en_faq.html">अक्सर पूछे जाने वाले प्रश्न</a></li>
+</ul>
+<hr>
+<p><strong>क्या आप तैयार हैं?</strong> <a href="./hi_en_installation.html">स्थापित करना</a>आइए अनुभाग से शुरू करें!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="en_installation.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="en_installation.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

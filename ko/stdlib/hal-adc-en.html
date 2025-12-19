@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::adc - 아날로그-디지털 변환기 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #3498db;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📊 상태::adc</h1>
+<p>아날로그-디지털 변환기 - 아날로그 신호 변환</p>
+<div style="margin-top:15px">
+<span class="stat-badge">400줄</span>
+<span class="stat-badge">~25개 기능</span>
+<span class="stat-badge">12비트 ADC</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>ADC(Analog-to-Digital Converter) 모듈은 아날로그 신호를 디지털 숫자로 변환하는 모듈입니다. 센서 판독, 온도 측정, 배터리 전압 제어와 같은 애플리케이션에 사용됩니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>6-16비트 분해능(장치에 따라 다름)</li>
+<li>다중 ADC 채널(최대 19개)</li>
+<li>단일/연속 변환</li>
+<li>DMA 지원</li>
+<li>내부 온도 센서</li>
+<li>내부 전압 기준</li>
+<li>아날로그 워치독</li>
+<li>구성 가능한 샘플링 시간</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::adc, hal::gpio
+
+// ADC initialization
+adc.clock_enable()
+let adc1 = adc.init(adc.ADC1, do
+    resolution: adc.RESOLUTION_12BIT,
+    align: adc.ALIGN_RIGHT
+end)
+
+// GPIO setup for analog input
+let ain = gpio.pin_init(gpio.PORT_A, 0, do
+    mode: gpio.MODE_ANALOG,
+    pull: gpio.PULL_NONE
+end)
+
+// Configure channel
+adc.channel_config(adc1, adc.CHANNEL_0, do
+    sampling_time: adc.SAMPLETIME_480CYCLES
+end)
+
+// Read value
+adc.start(adc1)
+let value = adc.read(adc1)
+io.println("ADC: " + value.yazıya())</code></pre>
+
+<div class="example-box">
+<h3>💡 예 1: 온도 센서</h3>
+<pre><code>import hal::adc, hal::gpio, hal::core
+
+function sıcaklık_oku() -&gt; float do
+    // ADC setup
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    end)
+    
+    // GPIO for analog input (PA0)
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_ANALOG,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // Configure channel
+    adc.channel_config(adc1, adc.CHANNEL_0, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Read multiple samples and average
+    let toplam = 0.0
+    let samples = 10
+    
+    each i forde 0..samples for do
+        adc.start(adc1)
+        let raw = adc.read(adc1)
+        toplam += raw.float()
+        core.delay_ms(10)
+    end
+    
+    let ortalama = toplam / samples.float()
+    
+    // Convert to voltage (3.3V reference, 12-bit)
+    let voltage = ortalama * 3.3 / 4095.0
+    
+    // LM35 sensor: 10mV/°C
+    let temp = voltage * 100.0
+    
+    return temp
+end
+
+function ana() do
+    core.system_init()
+    core.clock_config(72_000_000)
+    
+    loop do
+        let temp = sıcaklık_oku()
+        io.println("Sıcaklık: {:.1f}°C".formatla(temp))
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 2: 배터리 전압 모니터</h3>
+<pre><code>import hal::adc, hal::gpio
+
+function batarya_voltaj_oku() -&gt; float do
+    // Voltage divider: Battery -&gt; 10K -&gt; ADC -&gt; 10K -&gt; GND
+    // Max input: 6.6V (for 3.3V ADC)
+    
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    end)
+    
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 1, do
+        mode: gpio.MODE_ANALOG,
+        pull: gpio.PULL_NONE
+    end)
+    
+    adc.channel_config(adc1, adc.CHANNEL_1, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Read 100 samples for accuracy
+    let toplam = 0
+    each i forde 0..100 for do
+        adc.start(adc1)
+        toplam += adc.read(adc1)
+    end
+    
+    let ortalama = toplam / 100
+    let voltage = (ortalama.float() / 4095.0) * 3.3
+    
+    // Apply voltage divider ratio (2:1)
+    let battery_voltage = voltage * 2.0
+    
+    return battery_voltage
+end
+
+function batarya_durumu(voltage: float) -&gt; str do
+    if voltage &gt; 4.1 ise return "Tam"
+    else if voltage &gt; 3.7 ise return "İyi"
+    else if voltage &gt; 3.5 ise return "Orta"
+    else return "Düşük"
+end
+
+function ana() do
+    core.system_init()
+    
+    loop do
+        let v = batarya_voltaj_oku()
+        let durum = batarya_durumu(v)
+        io.println("Batarya: {:.2f}V [{}]".formatla(v, durum))
+        core.delay_ms(5000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 3: DMA를 갖춘 다중 채널 ADC</h3>
+<pre><code>import hal::adc, hal::dma, hal::gpio
+
+const CHANNELS = 4
+
+function adc_dma_init() -&gt; adc.Handle do
+    // GPIO setup for 4 analog inputs (PA0-PA3)
+    gpio.clock_enable(gpio.PORT_A)
+    each i forde 0..CHANNELS for do
+        gpio.pin_init(gpio.PORT_A, i, do
+            mode: gpio.MODE_ANALOG,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    // ADC setup
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT,
+        scan_mode: true,
+        continuous: true
+    end)
+    
+    // Configure channels
+    adc.channel_config(adc1, adc.CHANNEL_0, do rank: 1 end)
+    adc.channel_config(adc1, adc.CHANNEL_1, do rank: 2 end)
+    adc.channel_config(adc1, adc.CHANNEL_2, do rank: 3 end)
+    adc.channel_config(adc1, adc.CHANNEL_3, do rank: 4 end)
+    
+    return adc1
+end
+
+let adc_buffer: [int; CHANNELS] = [0, 0, 0, 0]
+
+function ana() do
+    core.system_init()
+    let adc1 = adc_dma_init()
+    
+    // DMA setup for continuous ADC transfer
+    dma.clock_enable()
+    let dma_ch = dma.init(dma.DMA1_CH1, do
+        direction: dma.PERIPH_TO_MEMORY,
+        periph_addr: adc.data_register(adc1),
+        memory_addr: adc_buffer.adres(),
+        buffer_size: CHANNELS,
+        periph_inc: false,
+        memory_inc: true,
+        periph_size: dma.SIZE_16BIT,
+        memory_size: dma.SIZE_16BIT,
+        circular: true,
+        priority: dma.PRIORITY_HIGH
+    end)
+    
+    // Start DMA and ADC
+    dma.start(dma_ch)
+    adc.start_dma(adc1)
+    
+    // Main loop - data is automatically updated by DMA
+    loop do
+        io.println("Kanal 0: {}  Kanal 1: {}  Kanal 2: {}  Kanal 3: {}".formatla(
+            adc_buffer[0], adc_buffer[1], adc_buffer[2], adc_buffer[3]
+        ))
+        core.delay_ms(500)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 4: 아날로그 워치독(전압 모니터)</h3>
+<pre><code>import hal::adc, hal::gpio, hal::int
+
+const THRESHOLD_LOW = 1500   // ~1.2V
+const THRESHOLD_HIGH = 3000  // ~2.4V
+
+let alarm_triggered = false
+
+function adc_watchdog_handler() do
+    alarm_triggered = true
+    io.println("⚠️ UYARI: Voltaj threshold dışında!")
+end
+
+function ana() do
+    core.system_init()
+    
+    // GPIO setup
+    gpio.clock_enable(gpio.PORT_A)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_ANALOG,
+        pull: gpio.PULL_NONE
+    end)
+    
+    // ADC setup
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    end)
+    
+    adc.channel_config(adc1, adc.CHANNEL_0, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Configure analog watchdog
+    adc.watchdog_enable(adc1, do
+        channel: adc.CHANNEL_0,
+        low_threshold: THRESHOLD_LOW,
+        high_threshold: THRESHOLD_HIGH
+    end)
+    
+    // Enable interrupt
+    adc.interrupt_enable(adc1, adc.WATCHDOG_INT)
+    int.register_handler(int.ADC1_IRQ, adc_watchdog_handler)
+    int.enable_irq(int.ADC1_IRQ)
+    
+    // Start continuous conversion
+    adc.start_continuous(adc1)
+    
+    loop do
+        if alarm_triggered ise do
+            alarm_triggered = false
+            let value = adc.read(adc1)
+            let voltage = (value.float() / 4095.0) * 3.3
+            io.println("Voltaj: {:.2f}V [ALARM]".formatla(voltage))
+        end
+        core.delay_ms(100)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예 5: 내부 온도 센서</h3>
+<pre><code>import hal::adc
+
+function cpu_sicaklik_oku() -&gt; float do
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT
+    end)
+    
+    // Enable internal temperature sensor
+    adc.enable_temp_sensor()
+    
+    // Configure internal channel (usually CH16)
+    adc.channel_config(adc1, adc.CHANNEL_TEMP, do
+        sampling_time: adc.SAMPLETIME_480CYCLES  // Long sampling for accuracy
+    end)
+    
+    // Read multiple samples
+    let toplam = 0
+    each i forde 0..10 for do
+        adc.start(adc1)
+        toplam += adc.read(adc1)
+        core.delay_ms(5)
+    end
+    
+    let ortalama = toplam / 10
+    
+    // STM32 formula: Temp = (V25 - Vsense) / Avg_Slope + 25
+    // Typical: V25 = 1.43V (@ 25°C), Avg_Slope = 4.3mV/°C
+    let voltage = (ortalama.float() / 4095.0) * 3.3
+    let temp = ((1.43 - voltage) / 0.0043) + 25.0
+    
+    return temp
+end
+
+function ana() do
+    core.system_init()
+    
+    loop do
+        let temp = cpu_sicaklik_oku()
+        io.println("CPU Sıcaklığı: {:.1f}°C".formatla(temp))
+        
+        // Thermal management
+        if temp &gt; 80.0 ise do
+            io.println("⚠️ UYARI: Yüksek sıcaklık!")
+            // Reduce clock speed or take action
+        end
+        
+        core.delay_ms(2000)
+    end
+end</code></pre>
+</div>
+
+<h2>📦 유형 및 열거형</h2>
+<pre><code>// ADC Instance
+enum Instance {
+    ADC1, ADC2, ADC3
+}
+
+// Resolution
+enum Resolution {
+    RESOLUTION_6BIT,   // 6-bit (fastest)
+    RESOLUTION_8BIT,   // 8-bit
+    RESOLUTION_10BIT,  // 10-bit
+    RESOLUTION_12BIT   // 12-bit (highest accuracy)
+}
+
+// Data Alignment
+enum Alignment {
+    ALIGN_RIGHT,  // Right-aligned (default)
+    ALIGN_LEFT    // Left-aligned
+}
+
+// Sampling Time
+enum SamplingTime {
+    SAMPLETIME_3CYCLES,
+    SAMPLETIME_15CYCLES,
+    SAMPLETIME_28CYCLES,
+    SAMPLETIME_56CYCLES,
+    SAMPLETIME_84CYCLES,
+    SAMPLETIME_112CYCLES,
+    SAMPLETIME_144CYCLES,
+    SAMPLETIME_480CYCLES  // Longest (most accurate)
+}
+
+// ADC Channels
+const CHANNEL_0 = 0
+const CHANNEL_1 = 1
+// ... up to CHANNEL_18
+const CHANNEL_TEMP = 16     // Internal temperature sensor
+const CHANNEL_VREFINT = 17  // Internal voltage reference
+const CHANNEL_VBAT = 18     // VBAT/2
+
+struct Config do
+    resolution: Resolution,
+    align: Alignment,
+    scan_mode: bool,      // Multi-channel scan
+    continuous: bool,      // Continuous conversion
+    dma_mode: bool,        // DMA enable
+    external_trigger: Optional[Trigger]
+end</code></pre>
+
+<h2>⚙️ 기능</h2>
+
+<h3>초기화</h3>
+<pre><code>function clock_enable()
+// Enable ADC clock
+
+function init(instance: Instance, config: Config) -&gt; Handle
+// Initialize ADC with configuration
+
+function deinit(handle: Handle)
+// Deinitialize ADC
+
+function calibrate(handle: Handle) -&gt; Result[None, Error]
+// Run ADC calibration (recommended at startup)</code></pre>
+
+<h3>채널 구성</h3>
+<pre><code>function channel_config(handle: Handle, channel: int, config: ChannelConfig)
+// Configure ADC channel
+
+struct ChannelConfig do
+    sampling_time: SamplingTime,
+    rank: Optional[int]  // For scan mode (1-16)
+end</code></pre>
+
+<h3>전환 제어</h3>
+<pre><code>function start(handle: Handle)
+// Start single conversion
+
+function start_continuous(handle: Handle)
+// Start continuous conversion
+
+function stop(handle: Handle)
+// Stop conversion
+
+function read(handle: Handle) -&gt; int
+// Read conversion result (blocking)
+
+function read_nonblocking(handle: Handle) -&gt; Optional[int]
+// Read conversion result (non-blocking)
+
+function is_conversion_complete(handle: Handle) -&gt; bool
+// Check if conversion is complete</code></pre>
+
+<h3>DMA 지원</h3>
+<pre><code>function start_dma(handle: Handle, buffer: &amp;mut [int])
+// Start ADC with DMA transfer
+
+function stop_dma(handle: Handle)
+// Stop DMA transfer
+
+function data_register(handle: Handle) -&gt; *const u32
+// Get ADC data register address for DMA</code></pre>
+
+<h3>아날로그 워치독</h3>
+<pre><code>function watchdog_enable(handle: Handle, config: WatchdogConfig)
+// Enable analog watchdog
+
+struct WatchdogConfig do
+    channel: int,
+    low_threshold: int,
+    high_threshold: int
+end
+
+function watchdog_disable(handle: Handle)
+// Disable analog watchdog</code></pre>
+
+<h3>내부 센서</h3>
+<pre><code>function enable_temp_sensor()
+// Enable internal temperature sensor
+
+function disable_temp_sensor()
+// Disable internal temperature sensor
+
+function enable_vrefint()
+// Enable internal voltage reference
+
+function read_vrefint() -&gt; float
+// Read internal reference voltage (typically 1.2V)</code></pre>
+
+<h3>인터럽트</h3>
+<pre><code>function interrupt_enable(handle: Handle, interrupt: Interrupt)
+// Enable ADC interrupt
+
+enum Interrupt {
+    EOC,        // End of conversion
+    JEOC,       // Injected end of conversion
+    WATCHDOG,   // Analog watchdog
+    OVERRUN     // Overrun
+}
+
+function interrupt_disable(handle: Handle, interrupt: Interrupt)
+// Disable ADC interrupt</code></pre>
+
+<h2>⚡ 성능 팁</h2>
+<ul>
+<li><strong>샘플링 시간:</strong>샘플링 시간이 길수록 감도는 높아지지만 속도는 느려집니다.</li>
+<li><strong>구경 측정:</strong>시작 시마다 calibrate()를 실행합니다.</li>
+<li><strong>평균화:</strong>노이즈를 줄이기 위한 평균 10-100개 샘플</li>
+<li><strong>DMA 사용법:</strong>다중 채널 읽기에서 CPU 부하 감소</li>
+<li><strong>연속 모드:</strong>고속 예제 사용</li>
+<li><strong>입력 임피던스:</strong>고임피던스 소스의 샘플링 시간 늘리기</li>
+</ul>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li>ADC를 사용하기 전에<code data-no-translate="true">clock_enable()</code>부르다</li>
+<li>GPIO용 아날로그 핀은 MODE_ANALOG를 사용합니다.</li>
+<li>최대 입력 전압: VREF+(보통 3.3V)</li>
+<li>입력 임피던스: &lt;50kΩ 권장</li>
+<li>변환 시간 = 샘플링 시간 + 12사이클(12비트)</li>
+<li>내부 온도 센서 ±2°C 감도</li>
+<li>DMA 사용 시 순환 버퍼 사용</li>
+<li>Watchdog은 하나의 채널만 시청할 수 있습니다.</li>
+</ul>
+
+<h2>🔬 정확성과 진실성</h2>
+<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%">
+<tbody><tr style="background:#3498db;color:white">
+<th>해결</th><th>레벨</th><th>스테퍼(3.3V)</th><th>전환 시간</th>
+</tr>
+<tr><td>6비트</td><td>64</td><td>51.6mV</td><td>~1μs</td></tr>
+<tr><td>8비트</td><td>256</td><td>12.9mV</td><td>~1.5μs</td></tr>
+<tr><td>10비트</td><td>1024</td><td>3.2mV</td><td>~2μs</td></tr>
+<tr><td>12비트</td><td>4096</td><td>0.8mV</td><td>~3μs</td></tr>
+</tbody></table>
+
+<h2>🎯 신청 시나리오</h2>
+<ul>
+<li><strong>센서 판독:</strong>온도, 압력, 습도 센서</li>
+<li><strong>배터리 모니터:</strong>Li-Po/Li-Ion 전압 모니터링</li>
+<li><strong>오디오 처리:</strong>마이크 입력(고속 샘플링)</li>
+<li><strong>조이스틱/전위차계:</strong>아날로그 위치 제어</li>
+<li><strong>전류 센서:</strong>INA219/ACS712와 같은 센서</li>
+<li><strong>광 센서:</strong>LDR, 포토다이오드 판독값</li>
+</ul>
+
+<h2>📚 플랫폼 지원</h2>
+<ul>
+<li><strong>STM32 F1:</strong>12비트, 2 ADC(72MHz)</li>
+<li><strong>STM32F4:</strong>12비트, 3 ADC(84MHz)</li>
+<li><strong>STM32F7:</strong>12비트, 3 ADC(216MHz)</li>
+<li><strong>STM32 H7:</strong>16비트, 3 ADC(400MHz)</li>
+<li><strong>ESP32:</strong>12비트, 2 ADC(240MHz)</li>
+<li><strong>GD32VF103:</strong>12비트, ADC 2개(RISC-V)</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code>- 아날로그 핀 구성</li>
+<li><code data-no-translate="true">hal::dma</code>- 다중 채널을 위한 DMA 전송</li>
+<li><code data-no-translate="true">hal::timer</code>- 외부 트리거 소스</li>
+<li><code data-no-translate="true">hal::dac</code>- 디지털-아날로그 변환</li>
+</ul>
+
+<h2>📖 참고자료</h2>
+<ul>
+<li>STM32 RM0008 - 참조 설명서(ADC 섹션)</li>
+<li>AN2834 - 최고의 ADC 정확도를 얻는 방법</li>
+<li>AN3116 - STM32 ADC 모드 및 애플리케이션</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL 모듈</a> | 
+<a href="ko_index-tr.html">모든 모듈</a> | 
+<a href="../ko_index-tr.html">홈 페이지</a>
+</p>
+</main>
+</div>
+
+
+    let toplam = 0
+    each i forde 0..100 for do
+        adc.start(adc1)
+        toplam += adc.read(adc1)
+    end
+    
+    let ortalama = toplam / 100
+    
+    // Convert to actual voltage (accounting for divider)
+    let adc_voltage = ortalama.float() * 3.3 / 4095.0
+    let battery_voltage = adc_voltage * 2.0  // Voltage divider ratio
+    
+    return battery_voltage
+end
+
+function ana() do
+    loop do
+        let vbat = batarya_voltaj_oku()
+        let percent = ((vbat - 3.0) / (4.2 - 3.0) * 100.0).max(0.0).min(100.0)
+        
+        io.println("Batarya: {:.2f}V ({:.0f}%)".formatla(vbat, percent))
+        
+        if vbat &lt; 3.3 ise do
+            io.println("⚠️ DÜŞÜK BATARYA!")
+        end
+        
+        core.delay_ms(5000)
+    end
+end
+
+
+<div class="example-box">
+<h3>💡 Example 3: Multi-Channel Data Logger</h3>
+<pre><code>import hal::adc, hal::gpio, hal::time
+
+struct SensorData do
+    timestamp: time.Instant,
+    channel0: float,  // Temperature
+    channel1: float,  // Light sensor
+    channel2: float,  // Humidity
+    channel3: float   // Pressure
+end
+
+function adc_init_multi() -&gt; adc.Handle do
+    adc.clock_enable()
+    
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        align: adc.ALIGN_RIGHT,
+        scan_mode: true,  // Enable scan mode
+        continuous: true   // Continuous conversion
+    end)
+    
+    // Setup GPIO pins for 4 channels
+    gpio.clock_enable(gpio.PORT_A)
+    each i forde 0..4 for do
+        gpio.pin_init(gpio.PORT_A, i, do
+            mode: gpio.MODE_ANALOG,
+            pull: gpio.PULL_NONE
+        end)
+    end
+    
+    // Configure channels
+    each i forde 0..4 for do
+        adc.channel_config(adc1, i, do
+            sampling_time: adc.SAMPLETIME_480CYCLES,
+            rank: i + 1  // Scan sequence
+        end)
+    end
+    
+    return adc1
+end
+
+function sensör_oku(adc1: adc.Handle) -&gt; SensorData do
+    // Start conversion
+    adc.start(adc1)
+    
+    // Read all channels
+    let readings = []
+    each i forde 0..4 for do
+        readings.push(adc.read(adc1))
+    end
+    
+    // Convert to physical values
+    return SensorData do
+        timestamp: time.now(),
+        channel0: readings[0].float() * 3.3 / 4095.0 * 100.0,  // Temp (°C)
+        channel1: readings[1].float() * 100.0 / 4095.0,         // Light (%)
+        channel2: readings[2].float() * 100.0 / 4095.0,         // Humidity (%)
+        channel3: readings[3].float() * 3.3 / 4095.0 * 50.0     // Pressure (kPa)
+    end
+end
+
+function main() do
+    let adc1 = adc_init_multi()
+    let log_dosyası = fs.aç("sensor_log.csv", "w")?
+    
+    log_dosyası.print("timestamp,temp,light,humidity,pressure\n")?
+    
+    loop do
+        let data = sensör_oku(adc1)
+        
+        let line = "{},{:.1f},{:.1f},{:.1f},{:.1f}\n".formatla(
+            data.timestamp.yazıya(),
+            data.channel0,
+            data.channel1,
+            data.channel2,
+            data.channel3
+        )
+        
+        log_dosyası.print(line)?
+        log_dosyası.sync()?  // Flush to disk
+        
+        io.println("Logged: Temp={:.1f}°C Light={:.0f}%".formatla(
+            data.channel0, data.channel1
+        ))
+        
+        core.delay_ms(10000)  // Log every 10 seconds
+    end
+end</code></pre>
+</div>
+
+<h2>📦 ADC Resolution</h2>
+<pre><code>const RESOLUTION_6BIT = 6    // 64 levels
+const RESOLUTION_8BIT = 8    // 256 levels
+const RESOLUTION_10BIT = 10  // 1024 levels
+const RESOLUTION_12BIT = 12  // 4096 levels (most common)
+const RESOLUTION_14BIT = 14  // 16384 levels
+const RESOLUTION_16BIT = 16  // 65536 levels</code></pre>
+
+<h2>⚙️ Sampling Time</h2>
+<pre><code>// Longer sampling = better accuracy, slower conversion
+const SAMPLETIME_3CYCLES = 3
+const SAMPLETIME_15CYCLES = 15
+const SAMPLETIME_28CYCLES = 28
+const SAMPLETIME_56CYCLES = 56
+const SAMPLETIME_84CYCLES = 84
+const SAMPLETIME_112CYCLES = 112
+const SAMPLETIME_144CYCLES = 144
+const SAMPLETIME_480CYCLES = 480  // Maximum accuracy</code></pre>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li>ADC input voltage: 0V - 3.3V (VDDA)</li>
+<li>Voltage divider kullanarak yüksek voltajları ölçebilirsiniz</li>
+<li>Analog gürültüyü azaltmak for filtreleme structn (averaging)</li>
+<li>DMA kullanarak CPU yükünü azaltabilirsiniz</li>
+<li>Internal temperature sensor calibration gerektirir</li>
+<li>ADC reference voltage (VREF+) stabil olmalı</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::gpio</code> - Analog pin configuration</li>
+<li><code data-no-translate="true">hal::dma</code> - DMA transfers</li>
+<li><code data-no-translate="true">hal::dac</code> - Digital-to-Analog conversion</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-tr.html">← HAL Modülleri</a> | 
+<a href="ko_index-tr.html">Tüm Modüller</a>
+</p>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

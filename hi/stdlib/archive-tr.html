@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>पुरालेख - ज़िप/टीएआर पुरालेख | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 पुरालेख</h1>
+<p>ज़िप/टीएआर पुरालेख समर्थन - संपीड़न और निष्कर्षण</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350 पंक्तियाँ</span>
+<span class="stat-badge">~25 कार्य</span>
+<span class="stat-badge">ज़िप/टीएआर</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>पुरालेख मॉड्यूल ज़िप और टीएआर प्रारूपों में संग्रह निर्माण और निष्कर्षण प्रदान करता है। DEFLATE gzip और bzip2 संपीड़न का समर्थन करता है।</p>
+
+<h2>🚀 उपयोग</h2>
+<pre><code>import archive
+
+// Create ZIP
+let zip = archive.new_zip()
+zip.add_file("data.txt", "path/to/data.txt")?
+zip.add_memory("config.json", "{}")?
+zip.save("output.zip")?
+
+// Extract
+archive.unzip("archive.zip", "output_dir")?
+
+// Quick functions
+archive.zip_directory("my_folder", "backup.zip")?</code></pre>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">compression</code>- संपीड़न एल्गोरिदम</li>
+<li><code data-no-translate="true">fs</code>-फ़ाइल संचालन</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="hi_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

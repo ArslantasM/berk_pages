@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>एनएलपी - प्राकृतिक भाषा प्रसंस्करण - बर्क प्रोग्रामिंग भाषा</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <style>
+            .module-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; margin: -20px -20px 30px -20px; border-radius: 8px; }
+            .module-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px; }
+            .stat-badge { background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; text-align: center; }
+            .function-group { margin: 30px 0; padding: 20px; background: var(--sidebar-bg); border-radius: 8px; border-left: 4px solid var(--links); }
+            .example-box { background: var(--sidebar-bg); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        </style>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_en_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/berk-language" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <div class="module-header">
+                        <h1>एनएलपी - प्राकृतिक भाषा प्रसंस्करण</h1>
+                        <p>BERT, टोकनेज़र, NER और पाठ विश्लेषण उपकरण</p>
+                        <div class="module-stats">
+                            <div class="stat-badge"><div style="font-size:2em">बर्ट</div><div>एंबेडिंग</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">5</div><div>टोकनाइज़र</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">नेर</div><div>इकाई</div></div>
+                            <div class="stat-badge"><div style="font-size:2em">बहुभाषी</div><div>सहायता</div></div>
+                        </div>
+                    </div>
+
+                    <h2>सिंहावलोकन</h2>
+                    <p>एनएलपी मॉड्यूल टेक्स्ट प्रोसेसिंग, एम्बेडिंग, नामित इकाई पहचान और भावना विश्लेषण के लिए उपकरण प्रदान करता है।</p>
+
+                    <h2>टोकनाइजेशन</h2>
+
+                    <div class="example-box">
+                        <h3>बीपीई टोकनाइज़र</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// Pre-trained tokenizer yükle
+let tokenizer = Tokenizer::yükle("bert-base-uncased")?;
+
+let text = "BERK programlama dili çok güçlü!";
+let tokens = tokenizer.encode(text);
+
+print("Tokens: {:?}", tokens.ids);
+print("Token texts: {:?}", tokens.tokens);
+
+// Decode
+let decoded = tokenizer.decode(tokens.ids);
+print("Decoded: {}", decoded);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>कस्टम टोकनाइज़र</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// Kendi tokenizer'ınızı eğitin
+let trainer = TokenizerTrainer::new(
+    vocab_size: 30000,
+    special_tokens: ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"]
+);
+
+// Corpus üzerinde eğit
+let corpus = [
+    "BERK dili sistem programlama for idealdir.",
+    "Rust'tan ilham alınmış modern bir dildir.",
+    // ...
+];
+
+let tokenizer = trainer.train(corpus)?;
+tokenizer.save("tokenizer.json")?;
+</code></pre>
+                    </div>
+
+                    <h2>बर्ट एंबेडिंग</h2>
+
+                    <div class="example-box">
+                        <h3>वाक्य एंबेडिंग</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// BERT model yükle
+let bert = BERT::yükle(
+    model: "bert-base-multilingual-cased",
+    device: "cuda"
+)?;
+
+let sentences = [
+    "BERK programlama dili",
+    "Rust benzeri syntax",
+    "Modern and güvenli"
+];
+
+// Embeddings receive
+let embeddings = bert.encode(sentences)?;
+print("Shape: {:?}", embeddings.shape());  // [3, 768]
+
+// Similarity hesapla
+let sim_01 = cosine_similarity(embeddings[0], embeddings[1]);
+print("Benzerlik: {:.4f}", sim_01);
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>फाइन-ट्यूनिंग बर्ट</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+use ai/nn;
+use ai/optim;
+
+// BERT + Classification head
+sınıf SentimentClassifier {
+    let bert: BERT;
+    let classifier: Linear;
+    
+    function new(num_classes: int) -&gt; SentimentClassifier do
+        let bert = BERT::yükle("bert-base-uncased")?;
+        let classifier = Linear::new(768, num_classes);
+        
+        return SentimentClassifier { bert, classifier };
+    end
+    
+    function ileri(let kendi, input_ids: Tensor) -&gt; Tensor do
+        let bert_output = kendi.bert.ileri(input_ids);
+        let cls_token = bert_output[:, 0, :];  // [CLS] token
+        return kendi.classifier.ileri(cls_token);
+    end
+}
+
+// Eğitim
+let model = SentimentClassifier::new(num_classes: 3);
+let optimizer = AdamW::new(model.parametreler(), lr: 2e-5);
+
+her epoch in range(3) for do
+    her batch in train_loader for do
+        let logits = model.ileri(batch.input_ids);
+        let loss = cross_entropy(logits, batch.labels);
+        
+        optimizer.sıfırla();
+        loss.geri();
+        optimizer.adım();
+    end
+end
+</code></pre>
+                    </div>
+
+                    <h2>नामित इकाई मान्यता (एनईआर)</h2>
+
+                    <div class="example-box">
+                        <h3>इकाई का पता लगाना</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// Pre-trained NER model
+let ner = NER::yükle("bert-base-ner")?;
+
+let text = "Ahmet Ankara'da Microsoft'ta çalışıyor.";
+let entities = ner.predict(text)?;
+
+her entity in entities for do
+    print!("{}: {} ({})", 
+            entity.text, 
+            entity.label, 
+            entity.confidence);
+end
+
+// Çıktı:
+// Ahmet: PERSON (0.98)
+// Ankara: LOCATION (0.95)
+// Microsoft: ORGANIZATION (0.97)
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>कस्टम एनईआर प्रशिक्षण</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// NER model tanımla
+let model = NER::new(
+    base_model: "bert-base-cased",
+    labels: ["O", "B-PER", "I-PER", "B-LOC", "I-LOC", "B-ORG", "I-ORG"]
+);
+
+// Training data
+let train_data = [
+    NERExample {
+        text: "John lives in New York",
+        labels: ["B-PER", "O", "O", "B-LOC", "I-LOC"]
+    },
+    // ...
+];
+
+// Eğit
+let trainer = NERTrainer::new(model, optimizer);
+trainer.train(train_data, epochs: 5)?;
+</code></pre>
+                    </div>
+
+                    <h2>भावना विश्लेषण</h2>
+
+                    <div class="example-box">
+                        <h3>भावना विश्लेषण</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let analyzer = SentimentAnalyzer::yükle("tr-sentiment")?;
+
+let reviews = [
+    "Bu ürün harika, çok beğendim!",
+    "Berbat bir deneyim, tavsiye etmem.",
+    "Fena not, idare eder."
+];
+
+her review in reviews for do
+    let sentiment = analyzer.predict(review)?;
+    print!("{}: {} (güven: {:.2f})", 
+            review, 
+            sentiment.label,  // "Pozitif", "Negatif", "Nötr"
+            sentiment.score);
+end
+</code></pre>
+                    </div>
+
+                    <h2>पाठ निर्माण</h2>
+
+                    <div class="example-box">
+                        <h3>जीपीटी-शैली पीढ़ी</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let generator = TextGenerator::yükle("gpt2-turkish")?;
+
+let prompt = "BERK programlama dili";
+let generated = generator.generate(
+    prompt: prompt,
+    max_length: 100,
+    temperature: 0.8,
+    top_k: 50,
+    top_p: 0.95,
+    num_return_sequences: 3
+)?;
+
+her (i, text) in generated.enumerate() for do
+    print!("Varyasyon {}: {}", i+1, text);
+end
+</code></pre>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>किरण खोज</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let generated = generator.generate(
+    prompt: "Derin öğrenme",
+    max_length: 50,
+    num_beams: 5,        // Beam search
+    early_stopping: true,
+    no_repeat_ngram_size: 3
+)?;
+
+print("{}", generated);
+</code></pre>
+                    </div>
+
+                    <h2>प्रश्न उत्तर</h2>
+
+                    <div class="example-box">
+                        <h3>निष्कर्षण QA</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let qa_model = QA::yükle("bert-large-qa")?;
+
+let context = "BERK, Rust'tan ilham domain modern bir sistem programlama dilidir. \
+                     Bellek güvenliği and performans odaklı tasarlanmıştır.";
+
+let question = "BERK hangi dilden ilham alır?";
+
+let answer = qa_model.predict(
+    question: question,
+    context: context
+)?;
+
+print("Cevap: {}", answer.text);      // "Rust"
+print("Güven: {:.2f}", answer.score); // 0.95
+print("Span: {:?}", answer.span);     // (6, 10)
+</code></pre>
+                    </div>
+
+                    <h2>पाठ वर्गीकरण</h2>
+
+                    <div class="function-group">
+                        <h3>मल्टी-लेबल वर्गीकरण</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let classifier = TextClassifier::new(
+    base_model: "bert-base-uncased",
+    labels: ["teknoloji", "spor", "politika", "ekonomi"],
+    multi_label: true
+);
+
+let text = "Apple new iPhone modelini tanıttı. Hisse fiyatları yükseldi.";
+let predictions = classifier.predict(text)?;
+
+her pred in predictions for do
+    if pred.score &gt; 0.5 then do
+        print!("{}: {:.2f}", pred.label, pred.score);
+    end
+end
+// Çıktı:
+// teknoloji: 0.92
+// ekonomi: 0.78
+</code></pre>
+                    </div>
+
+                    <h2>भाषा का पता लगाना</h2>
+
+                    <div class="example-box">
+                        <h3>भाषा का पता लगाना</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let detector = LanguageDetector::new();
+
+let texts = [
+    "Bu bir Türkçe cümledir.",
+    "This is an English sentence.",
+    "Dies ist ein deutscher Satz.",
+    "これは日本語の文です。"
+];
+
+her text in texts for do
+    let lang = detector.detect(text)?;
+    print!("{}: {}", lang.code, text);
+end
+</code></pre>
+                    </div>
+
+                    <h2>टेक्स्ट प्रीप्रोसेसिंग</h2>
+
+                    <div class="function-group">
+                        <h3>सफाई और सामान्यीकरण</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+let processor = TextProcessor::new();
+
+// Pipeline oluştur
+processor
+    .lowercase()
+    .remove_punctuation()
+    .remove_stopwords(lang: "tr")
+    .stem(algorithm: "snowball")
+    .remove_urls()
+    .remove_emails();
+
+let text = "BERK'i https://berk-lang.org adresinden indirebilirsiniz! İletişim: info@berk.com";
+let cleaned = processor.process(text);
+
+print!("{}", cleaned);
+// Çıktı: "berk adres indir iletisim"
+</code></pre>
+                    </div>
+
+                    <h2>शब्द एम्बेडिंग</h2>
+
+                    <div class="example-box">
+                        <h3>Word2Vec और फास्टटेक्स्ट</h3>
+                        <pre><code class="language-berk">use ai/nlp;
+
+// Pre-trained embeddings yükle
+let w2v = Word2Vec::yükle("fasttext-tr-300d")?;
+
+// Kelime vektörü receive
+let vec = w2v.get_vector("bilgisayar")?;
+print!("Vektör boyutu: {}", vec.len());  // 300
+
+// En yakın kelimeler
+let similar = w2v.most_similar("programlama", top_k: 5)?;
+her (word, similarity) in similar for do
+    print!("{}: {:.4f}", word, similarity);
+end
+
+// Analoji: kral - erkek + kadın = ?
+let result = w2v.analogy("kral", "erkek", "kadın")?;
+print!("Analoji sonucu: {}", result);  // "kraliçe"
+</code></pre>
+                    </div>
+
+                    <h2>प्रदर्शन मेट्रिक्स</h2>
+
+                    <table>
+                        <thead>
+                            <tr><th>नमूना</th><th>पैरामीटर</th><th>अनुमान (एमएस)</th><th>उपयोग</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>बर्ट-बेस</td><td>110एम</td><td>~40</td><td>सामान्य प्रयोजन एनएलपी</td></tr>
+                            <tr><td>बर्ट-बड़े</td><td>340M</td><td>~140</td><td>उच्च सटीकता</td></tr>
+                            <tr><td>डिस्टिलबर्ट</td><td>66एम</td><td>~20</td><td>त्वरित अनुमान</td></tr>
+                            <tr><td>रोबर्टा</td><td>125एम</td><td>~45</td><td>SOTA प्रदर्शन</td></tr>
+                            <tr><td>GPT-2 छोटा</td><td>117एम</td><td>~50</td><td>पाठ पीढ़ी</td></tr>
+                            <tr><td>T5-आधार</td><td>220M</td><td>~80</td><td>Seq2seq कार्य</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2>एपीआई संदर्भ</h2>
+
+                    <div class="function-group">
+                        <h3>टोकनाइज़र क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yükle(model: dizgi) -&gt; Tokenizer</code>- पूर्व-प्रशिक्षित टोकननाइज़र</li>
+                            <li><code data-no-translate="true">encode(text: dizgi) -&gt; Encoding</code>- टोकनयुक्त पाठ</li>
+                            <li><code data-no-translate="true">decode(ids: [int]) -&gt; dizgi</code>- डिकोड टोकन आईडी</li>
+                            <li><code data-no-translate="true">encode_batch(texts: [dizgi]) -&gt; [Encoding]</code>- बैच एन्कोडिंग</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>बर्ट क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yükle(model: dizgi, ...) -&gt; BERT</code>- BERT मॉडल लोड करें</li>
+                            <li><code data-no-translate="true">encode(texts: [dizgi]) -&gt; Tensor</code>- वाक्य एम्बेडिंग</li>
+                            <li><code data-no-translate="true">ileri(input_ids: Tensor) -&gt; BertOutput</code>- अग्रवर्ती पारण</li>
+                        </ul>
+                    </div>
+
+                    <div class="function-group">
+                        <h3>एनईआर क्लास</h3>
+                        <ul>
+                            <li><code data-no-translate="true">yükle(model: dizgi) -&gt; NER</code>- एनईआर मॉडल लोड करें</li>
+                            <li><code data-no-translate="true">predict(text: dizgi) -&gt; [Entity]</code>- इकाई का पता लगाना</li>
+                            <li><code data-no-translate="true">predict_batch(texts: [dizgi]) -&gt; [[Entity]]</code></li>
+                        </ul>
+                    </div>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                        <a rel="prev" href="../stdlib/hi_en_ai-vision.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+
+                        <a rel="next prefetch" href="../stdlib/hi_en_ai-rl.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                <a rel="prev" href="../stdlib/hi_en_ai-vision.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+
+                <a rel="next prefetch" href="../stdlib/hi_en_ai-rl.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+        </nav>
+
+    </div>
+
+
+
+
+    <script>
+        window.playground_copyable = true;
+    </script>
+
+
+    <script src="../elasticlunr.min.js"></script>
+    <script src="../mark.min.js"></script>
+    <script src="../searcher.js"></script>
+
+    <script src="../clipboard.min.js"></script>
+    <script src="../highlight.js"></script>
+    <script src="../book.js"></script>
+
+    <!-- Custom JS scripts -->
+
+
+
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

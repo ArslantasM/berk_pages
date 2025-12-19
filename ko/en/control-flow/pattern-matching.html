@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>패턴 매칭 - BERK 프로그래밍 언어</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, güvenli ve iki dilli (Türkçe/İngilizce) sistem programlama dili">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="목차 전환" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="테마 변경" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="검색(`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../ko_en_print.html" title="이 책을 인쇄하세요" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="저장소로 이동" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/control-flow/pattern-matching.md" title="수정 제안" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="pattern-matching"><a class="header" href="#pattern-matching">패턴 매칭</a></h1>
+<p>고급 매칭 및 가치 파괴.</p>
+<h2 id="temel-match"><a class="header" href="#temel-match">기본 경기</a></h2>
+<pre><code class="language-berk">let sayı = 2
+
+match sayı {
+    1 =&gt; print("bir"),
+    2 =&gt; print("iki"),
+    3 =&gt; print("üç"),
+    _ =&gt; print("diğer")
+}
+</code></pre>
+<p>영어:</p>
+<pre><code class="language-berk">match number {
+    1 =&gt; print("one"),
+    2 =&gt; print("two"),
+    _ =&gt; print("other")
+}
+</code></pre>
+<h2 id="match-expression"><a class="header" href="#match-expression">일치 표현식</a></h2>
+<p>값을 반환할 수 있습니다.</p>
+<pre><code class="language-berk">let mesaj = match sayı {
+    1 =&gt; "bir",
+    2 =&gt; "iki",
+    3 =&gt; "üç",
+    _ =&gt; "bilinmeyen"
+}
+</code></pre>
+<h2 id="result-matching"><a class="header" href="#result-matching">결과 매칭</a></h2>
+<pre><code class="language-berk">function split(a: number, b: number) -&gt; Sonuç&lt;number, string&gt; {
+    if b == 0 {
+        return Err "Sıfıra bölme"
+    }
+    return Ok a / b
+}
+
+let sonuç = split(10, 2)
+
+match sonuç {
+    Ok(değer) =&gt; print("Sonuç: ", değer),
+    Err(mesaj) =&gt; print("HATA: ", mesaj)
+}
+</code></pre>
+<h2 id="option-matching"><a class="header" href="#option-matching">옵션 매칭</a></h2>
+<pre><code class="language-berk">let değer: Seçenek&lt;number&gt; = Some(42)
+
+match değer {
+    Some(x) =&gt; print("Değer: ", x),
+    Hiç =&gt; print("Değer yok")
+}
+</code></pre>
+<h2 id="tuple-destructuring"><a class="header" href="#tuple-destructuring">튜플 구조해제</a></h2>
+<pre><code class="language-berk">let nokta = (3, 4)
+
+match nokta {
+    (0, 0) =&gt; print("Orijin"),
+    (x, 0) =&gt; print("X ekseni: ", x),
+    (0, y) =&gt; print("Y ekseni: ", y),
+    (x, y) =&gt; print("Nokta: (", x, ", ", y, ")")
+}
+</code></pre>
+<h2 id="list-patterns"><a class="header" href="#list-patterns">패턴 나열</a></h2>
+<pre><code class="language-berk">let List = [1, 2, 3]
+
+match List {
+    [] =&gt; print("Boş List"),
+    [x] =&gt; print("Tek eleman: ", x),
+    [x, y] =&gt; print("İki eleman: ", x, ", ", y),
+    [first, ...geri_kalan] =&gt; {
+        print("İlk: ", first)
+        print("Geri kalan: ", geri_kalan)
+    }
+}
+</code></pre>
+<h2 id="struct-patterns"><a class="header" href="#struct-patterns">구조체 패턴</a></h2>
+<pre><code class="language-berk">type Kişi = struct {
+    ad: string,
+    yaş: number
+}
+
+let kişi = Kişi { ad: "Ahmet", yaş: 30 }
+
+match kişi {
+    Kişi { ad: "Ahmet", yaş } =&gt; {
+        print("Ahmet, ", yaş, " yaşında")
+    },
+    Kişi { ad, yaş: 18..25 } =&gt; {
+        print(ad, " genç")
+    },
+    _ =&gt; print("Diğer")
+}
+</code></pre>
+<h2 id="range-patterns"><a class="header" href="#range-patterns">범위 패턴</a></h2>
+<pre><code class="language-berk">let yaş = 25
+
+match yaş {
+    0..12 =&gt; print("Çocuk"),
+    13..17 =&gt; print("Genç"),
+    18..64 =&gt; print("Yetişkin"),
+    65.. =&gt; print("Yaşlı")
+}
+</code></pre>
+<h2 id="guards-koşullar"><a class="header" href="#guards-koşullar">가드(조건)</a></h2>
+<pre><code class="language-berk">let sayı = 15
+
+match sayı {
+    x if x &lt; 0 =&gt; print("Negatif"),
+    x if x % 2 == 0 =&gt; print("Çift"),
+    x if x % 2 == 1 =&gt; print("Tek"),
+    _ =&gt; print("Bilinmeyen")
+}
+</code></pre>
+<h2 id="multiple-patterns"><a class="header" href="#multiple-patterns">다중 패턴</a></h2>
+<pre><code class="language-berk">match char_at {
+    to' | to' | 'ı' | 'i' | 'o' | 'ö' | 'u' | 'ü' =&gt; {
+        print("Sesli harf")
+    },
+    _ =&gt; print("Ünssüz harf")
+}
+</code></pre>
+<h2 id="nested-patterns"><a class="header" href="#nested-patterns">중첩 패턴</a></h2>
+<pre><code class="language-berk">type Mesaj = enum {
+    Metin(string),
+    number(number),
+    Çoklu(Liste&lt;Mesaj&gt;)
+}
+
+let mesaj = Çoklu([Metin("hello"), number(42)])
+
+match mesaj {
+    Metin(s) =&gt; print("Metin: ", s),
+    number(n) =&gt; print("number: ", n),
+    Çoklu([Metin(s), number(n)]) =&gt; {
+        print("Metin and sayı: ", s, ", ", n)
+    },
+    _ =&gt; print("Diğer")
+}
+</code></pre>
+<h2 id="wildcard-patterns"><a class="header" href="#wildcard-patterns">와일드카드 패턴</a></h2>
+<pre><code class="language-berk">// Tam wildcard
+match değer {
+    _ =&gt; print("Herhangi bir şey")
+}
+
+// Kısmi wildcard
+match tuple {
+    (_, 0) =&gt; print("Y sıfır"),
+    (0, _) =&gt; print("X sıfır"),
+    (_, _) =&gt; print("Diğer")
+}
+</code></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">모범 사례</a></h2>
+<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ 즐길 거리</a></h3>
+<pre><code class="language-berk">// Exhaustive matching (tüm durumlar)
+match sonuç {
+    Ok(x) =&gt; işle(x),
+    Err(e) =&gt; hata_işle(e)
+    // _ gerekli not, tüm durumlar kapsıyor
+}
+
+// Anlamlı let isimleri
+match kullanıcı {
+    Kişi { ad: kullanıcı_adı, yaş: kullanıcı_yaşı } =&gt; {
+        // ...
+    }
+}
+</code></pre>
+<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ 피해야 할 것</a></h3>
+<pre><code class="language-berk">// Çok karmaşık iç içe pattern
+match değer {
+    A(B(C(D(x)))) =&gt; ...  // Okunabilir not
+}
+
+// Gereksiz wildcard
+match x {
+    _ =&gt; ...  // Tüm durumları yok sayıyor
+}
+</code></pre>
+<h2 id="Örnekler"><a class="header" href="#Örnekler">예</a></h2>
+<h3 id="json-parser"><a class="header" href="#json-parser">JSON 파서</a></h3>
+<pre><code class="language-berk">type Json = enum {
+    Null,
+    Bool(Boolean),
+    Number(number),
+    String(string),
+    Array(Liste&lt;Json&gt;),
+    Object(Harita&lt;string, Json&gt;)
+}
+
+function stringify(json: Json) -&gt; string {
+    match json {
+        Null =&gt; "null",
+        Bool(b) =&gt; b ? "true" : "false",
+        Number(n) =&gt; n.to_string(),
+        String(s) =&gt; "\""+s+"\"",
+        Array(arr) =&gt; "[" + arr.map(stringify).join(",") + "]",
+        Object(obj) =&gt; "{...}"
+    }
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../control-flow/ko_en_loops.html" class="mobile-nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../functions/ko_en_index.html" class="mobile-nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../control-flow/ko_en_loops.html" class="nav-chapters previous" title="이전 장" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../functions/ko_en_index.html" class="nav-chapters next" title="다음 장" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

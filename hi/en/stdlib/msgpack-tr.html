@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>संदेशपैक - संदेशपैक क्रमबद्धता | बर्क v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e67e22 0%,#d35400 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #e67e22;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📦 संदेशपैक</h1>
+<p>मैसेजपैक बाइनरी सीरियलाइज़ेशन - कॉम्पैक्ट और तेज़</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~500 पंक्तियाँ</span>
+<span class="stat-badge">~40 कार्य</span>
+<span class="stat-badge">30-50% छोटा</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>मैसेजपैक एक बाइनरी क्रमांकन प्रारूप है जो JSON से 30-50% छोटा और 2-3x तेज़ है। नेटवर्क प्रोटोकॉल, कैश सिस्टम और आईपीसी के लिए आदर्श।</p>
+
+<h2>🔑 मुख्य विशेषताएं</h2>
+<ul>
+<li>JSON से 30-50% छोटा आकार</li>
+<li>2-3x तेज़ क्रमबद्धता/डीसेरिएलाइज़ेशन</li>
+<li>टाइप-सुरक्षित एन्कोडिंग/डिकोडिंग</li>
+<li>पूर्णांक, फ़्लोट्स, स्ट्रिंग्स, बाइनरी, सरणियाँ, मानचित्र</li>
+<li>शून्य/शून्य मान समर्थन</li>
+<li>एक्सटेंशन प्रकार</li>
+<li>स्ट्रीमिंग एपीआई</li>
+<li>जहां संभव हो शून्य-प्रतिलिपि</li>
+</ul>
+
+<h2>🚀 त्वरित शुरुआत</h2>
+<pre><code>import msgpack
+
+// Serialize
+let data = do
+    name: "Alice",
+    age: 30,
+    scores: [95, 87, 92]
+end
+
+let bytes = msgpack.encode(data)
+io.println("Encoded: {} bytes", bytes.len())
+
+// Deserialize
+let decoded = msgpack.decode(bytes)?
+io.println("Name: {}", decoded["name"])</code></pre>
+
+<div class="example-box">
+<h3>💡 उदाहरण: मैसेजपैक के साथ रेडिस-स्टाइल कैश</h3>
+<pre><code>import msgpack, redis, time
+
+struct CacheEntry[T] do
+    value: T,
+    expires_at: time.Instant
+end
+
+struct MessagePackCache do
+    redis: redis.Client
+end
+
+function cache_new(redis_url: yazı) -&gt; Sonuç[MessagePackCache, Err] do
+    return Ok(MessagePackCache do
+        redis: redis.connect(redis_url)?
+    end)
+end
+
+function cache_set[T](cache: MessagePackCache, key: yazı, value: T, ttl_secs: sayı) 
+    -&gt; Sonuç[None, Err] do
+    // Wrap with expiry
+    let entry = CacheEntry do
+        value: value,
+        expires_at: time.now() + time.seconds(ttl_secs)
+    end
+    
+    // Serialize with MessagePack (much smaller than JSON)
+    let bytes = msgpack.encode(entry)
+    
+    // Store in Redis
+    cache.redis.setex(key, ttl_secs, bytes)?
+    
+    return Ok(None)
+end
+
+function cache_get[T](cache: MessagePackCache, key: yazı) 
+    -&gt; Sonuç[İsteğe_Bağlı[T], Err] do
+    // Get from Redis
+    let bytes = cache.redis.get(key)?
+    
+    if bytes.is_none() then do
+        return Ok(None)
+    end
+    
+    // Deserialize
+    let entry: CacheEntry[T] = msgpack.decode(bytes.unwrap())?
+    
+    // Check expiry
+    if time.now() &gt; entry.expires_at then do
+        cache.redis.del(key)?
+        return Ok(None)
+    end
+    
+    return Ok(Some(entry.value))
+end
+
+// Kullanım
+function main() do
+    let cache = cache_new("redis://localhost:6379")?
+    
+    // Store user data
+    let user = do
+        id: 123,
+        name: "Alice",
+        email: "alice@example.com",
+        roles: ["admin", "user"]
+    end
+    
+    cache_set(cache, "user:123", user, 3600)?  // 1 hour TTL
+    
+    // Retrieve
+    let cached_user = cache_get(cache, "user:123")?
+    if cached_user.is_some() then do
+        io.println("Cache hit: {}", cached_user.unwrap().name)
+    end
+end</code></pre>
+</div>
+
+<h2>📊आकार तुलना</h2>
+<pre><code>// Test data
+let data = do
+    users: [
+        do id: 1, name: "Alice", age: 30, active: true end,
+        do id: 2, name: "Bob", age: 25, active: true end,
+        do id: 3, name: "Charlie", age: 35, active: false end
+    ]
+end
+
+// JSON: 189 bytes
+let json_bytes = json.encode(data)
+io.println("JSON: {} bytes", json_bytes.len())
+
+// MessagePack: 98 bytes (48% smaller!)
+let msgpack_bytes = msgpack.encode(data)
+io.println("MessagePack: {} bytes", msgpack_bytes.len())
+io.println("Savings: {}%", (1.0 - msgpack_bytes.len().kesir() / json_bytes.len().kesir()) * 100.0)</code></pre>
+
+<h2>🔗संबंधित मॉड्यूल</h2>
+<ul>
+<li><code data-no-translate="true">json</code>- JSON क्रमांकन</li>
+<li><code data-no-translate="true">redis</code>- रेडिस कैश</li>
+<li><code data-no-translate="true">network</code>- बाइनरी प्रोटोकॉल</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← सभी मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

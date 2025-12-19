@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>gui - GUI 프레임워크 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🖼️gui - GUI 프레임워크</h1>
+<p>창, 버튼, 라벨, TextField, 레이아웃, 이벤트</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">169</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">1,636</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">54KB</div><div>너</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import gui
+
+// Create application
+let app = gui.app_create("Merhaba BERK")
+
+// Window
+let pencere = gui.window_create("İlk GUI Uygulamam", 400, 300)
+
+// Widgets
+let label = gui.label_create("Merhaba Dünya!")
+let button = gui.button_create("Tıkla Beni")
+let text_field = gui.textfield_create()
+
+// Event handler
+gui.button_on_click(button, function() do
+    let String = gui.textfield_get_text(text_field)
+    gui.label_set_text(label, "Merhaba " + String + "!")
+end)
+
+// Layout
+let vbox = gui.vbox_create()
+gui.vbox_add(vbox, label)
+gui.vbox_add(vbox, text_field)
+gui.vbox_add(vbox, button)
+
+gui.window_set_content(pencere, vbox)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+<h2>📚 위젯</h2>
+<ul>
+<li><strong>컨테이너:</strong>윈도우, VBox, HBox, 그리드, 스택, ScrollArea</li>
+<li><strong>입력:</strong>버튼, TextField, TextArea, 체크박스, RadioButton, 슬라이더, ComboBox</li>
+<li><strong>표시하다:</strong>라벨, 이미지, ProgressBar, 구분 기호</li>
+<li><strong>메뉴:</strong>MenuBar, 메뉴, MenuItem, ContextMenu</li>
+<li><strong>대화상자:</strong>MessageBox, FileDialog, ColorPicker</li>
+<li><strong>고급의:</strong>TabView, TreeView, TableView, 캔버스</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>할일 신청</h3>
+<pre><code>import gui, collections
+
+let app = gui.app_create("Todo App")
+let pencere = gui.window_create("Yapılacaklar", 600, 400)
+
+// Data model
+let todos = collections.vec_new()
+
+// UI elements
+let text_field = gui.textfield_create()
+gui.textfield_set_placeholder(text_field, "Yeni task...")
+
+let add_button = gui.button_create("Ekle")
+let todo_list = gui.vbox_create()
+
+// "Add" button handler
+gui.button_on_click(add_button, function() do
+    let text = gui.textfield_get_text(text_field)
+    
+    if text.len() &gt; 0 then do
+        // Create todo item
+        let item_box = gui.hbox_create()
+        
+        let checkbox = gui.checkbox_create(text)
+        let delete_btn = gui.button_create("Sil")
+        
+        // Checkbox handler
+        gui.checkbox_on_toggle(checkbox, function(checked) do
+            if checked then do
+                gui.checkbox_set_style(checkbox, "text-decoration: line-through")
+            end else do
+                gui.checkbox_set_style(checkbox, "")
+            end
+        end)
+        
+        // Delete handler
+        gui.button_on_click(delete_btn, function() do
+            gui.vbox_remove(todo_list, item_box)
+        end)
+        
+        gui.hbox_add(item_box, checkbox)
+        gui.hbox_add(item_box, delete_btn)
+        gui.vbox_add(todo_list, item_box)
+        
+        gui.textfield_set_text(text_field, "")
+    end
+end)
+
+// Layout
+let input_box = gui.hbox_create()
+gui.hbox_add(input_box, text_field)
+gui.hbox_add(input_box, add_button)
+
+let main_box = gui.vbox_create()
+gui.vbox_add(main_box, input_box)
+gui.vbox_add(main_box, gui.separator_create())
+gui.vbox_add(main_box, todo_list)
+
+gui.window_set_content(pencere, main_box)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+</div>
+<div class="example-box">
+<h3>이미지 뷰어</h3>
+<pre><code>import gui, image, fs
+
+let app = gui.app_create("Image Viewer")
+let pencere = gui.window_create("Resim Görüntüleyici", 800, 600)
+
+// UI
+let image_widget = gui.image_create()
+let open_button = gui.button_create("Resim Aç")
+let prev_button = gui.button_create("◀ Önceki")
+let next_button = gui.button_create("Sonraki ▶")
+
+let images = []
+let current_index = 0
+
+function load_image(path: yazı) do
+    let img = image.load(path)
+    gui.image_set_data(image_widget, img)
+    gui.window_set_title(pencere, "Image Viewer - " + path)
+end
+
+// File picker
+gui.button_on_click(open_button, function() do
+    let dialog = gui.filedialog_create()
+    gui.filedialog_set_filters(dialog, ["*.png", "*.jpg", "*.jpeg"])
+    
+    let seçilen = gui.filedialog_show(dialog)
+    if seçilen then do
+        let dizin = fs.path_dirname(seçilen)
+        images = fs.dizin_listele(dizin)
+        images = images.filtrele(function(f) do
+            return f.bitiyor_mu(".png") or f.bitiyor_mu(".jpg")
+        end)
+        
+        current_index = images.index_of(fs.path_basename(seçilen))
+        load_image(seçilen)
+    end
+end)
+
+// Navigation
+gui.button_on_click(prev_button, function() do
+    if current_index &gt; 0 then do
+        current_index = current_index - 1
+        load_image(images[current_index])
+    end
+end)
+
+gui.button_on_click(next_button, function() do
+    if current_index &lt; images.len() - 1 then do
+        current_index = current_index + 1
+        load_image(images[current_index])
+    end
+end)
+
+// Layout
+let button_box = gui.hbox_create()
+gui.hbox_add(button_box, open_button)
+gui.hbox_add(button_box, prev_button)
+gui.hbox_add(button_box, next_button)
+
+let main_box = gui.vbox_create()
+gui.vbox_add(main_box, button_box)
+gui.vbox_add(main_box, image_widget)
+
+gui.window_set_content(pencere, main_box)
+gui.window_show(pencere)
+gui.app_run(app)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

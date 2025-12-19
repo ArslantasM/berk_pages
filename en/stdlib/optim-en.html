@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>optim - Optimization | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ optim</h1>
+<p>Optimization Algorithms</p>
+<div style="margin-top:15px">
+<span class="stat-badge">23 functions</span>
+<span class="stat-badge">875 lines</span>
+<span class="stat-badge">gradient-based</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>Optimization algorithms: gradient descent, Newton, BFGS, simulated annealing, genetic algorithms.</p>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import optim
+
+function f(x: float) -&gt; float do
+    return (x - 2.0) * (x - 2.0)
+end
+
+let result = optim.minimize(f, 0.0)?
+println("Minimum at x = {}", result.x)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-en.html">← All Modules</a> | <a href="en_optim-tr.html">🇹🇷 Turkish</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

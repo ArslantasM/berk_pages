@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>hal::dma - Direct Memory Access | BERK Embedded</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid#c0392b;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>💾 state::dma</h1>
+<p>Direct Memory Access - High Performance Data Transfer</p>
+<div style="margin-top:15px">
+<span class="stat-badge">391 lines</span>
+<span class="stat-badge">~15 functions</span>
+<span class="stat-badge">Zero-Copy</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>DMA (Direct Memory Access) allows data transfer between memory and peripherals without CPU intervention. It is used for high speed data transfer with modules such as ADC, USART, SPI.</p>
+
+<h2>🔑 Key Features</h2>
+<ul>
+<li>Memory-to-memory transfers</li>
+<li>Peripheral-to-memory transfers</li>
+<li>Memory-to-peripheral transfers</li>
+<li>Circular/Normal mode</li>
+<li>Priority levels (4)</li>
+<li>8/16/32-bit data width</li>
+<li>Transfer complete interrupts</li>
+<li>Multiple channels/streams</li>
+</ul>
+
+<h2>🚀 Quick Start</h2>
+<pre><code>import hal::dma
+
+// Memory-to-memory transfer
+let src = [1, 2, 3, 4, 5]
+let dst = [0; 5]
+
+let dma_ch = dma.init(dma.DMA1, dma.CH1, do
+    direction: dma.M2M,  // Memory to Memory
+    src_increment: true,
+    dst_increment: true,
+    data_size: dma.SIZE_8BIT
+end)
+
+dma.transfer(dma_ch, src.as_ptr(), dst.as_ptr(), 5)
+dma.wait(dma_ch)  // Wait for completion</code></pre>
+
+<div class="example-box">
+<h3>💡 Example: ADC with DMA (Continuous Sampling)</h3>
+<pre><code>import hal::dma, hal::adc
+
+const SAMPLE_COUNT = 1000
+
+let adc_buffer = [0u16; SAMPLE_COUNT]
+
+function adc_dma_init() do
+    // Initialize ADC
+    adc.clock_enable()
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: true,
+        dma_enable: true
+    end)
+    
+    adc.channel_config(adc1, adc.CHANNEL_0, do
+        sampling_time: adc.SAMPLETIME_480CYCLES
+    end)
+    
+    // Setup DMA
+    dma.clock_enable(dma.DMA2)
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.P2M,  // Peripheral to Memory
+        src_address: adc.get_data_register(adc1),
+        dst_address: adc_buffer.as_ptr(),
+        data_count: SAMPLE_COUNT,
+        src_increment: false,  // Same ADC register
+        dst_increment: true,   // Increment buffer
+        circular: true,        // Continuous sampling
+        data_size: dma.SIZE_16BIT,
+        priority: dma.PRIORITY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+end
+
+function calculate_average() -&gt; kesir do
+    let sum = 0
+    her sample in adc_buffer for do
+        sum += sample
+    end
+    return sum.kesir() / SAMPLE_COUNT.kesir()
+end
+
+function main() do
+    adc_dma_init()
+    
+    for do
+        let avg = calculate_average()
+        let voltage = avg * 3.3 / 4095.0
+        io.println("Average voltage: {:.3f}V".formatla(voltage))
+        core.delay_ms(1000)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: USART TX with DMA</h3>
+<pre><code>import hal::dma, hal::usart
+
+let dma_complete = false
+
+function dma_complete_callback() do
+    dma_complete = true
+end
+
+function usart_dma_send(uart: usart.Handle, data: yazı) -&gt; Sonuç[None, Err] do
+    // Setup DMA for USART TX
+    let dma_ch = dma.init(dma.DMA1, dma.CH4, do
+        direction: dma.M2P,  // Memory to Peripheral
+        src_address: data.as_ptr(),
+        dst_address: usart.get_tx_register(uart),
+        data_count: data.len(),
+        src_increment: true,
+        dst_increment: false,  // Same USART register
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM,
+        callback: dma_complete_callback
+    end)
+    
+    dma_complete = false
+    dma.start(dma_ch)
+    
+    // Enable USART DMA mode
+    usart.enable_dma_tx(uart)
+    
+    // Wait for completion
+    for dma_complete else do
+        core.delay_ms(1)
+    end
+    
+    return Ok(None)
+end
+
+function main() do
+    let uart = usart.init(usart.USART1, do
+        baud_rate: 115200
+    end)
+    
+    usart_dma_send(uart, "Hello from DMA!\n")?
+    io.println("DMA transfer complete!")
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Memory-to-Memory Fast Copy</h3>
+<pre><code>import hal::dma
+
+function fast_memcpy(dest: *let u8, src: *u8, size: sayı) do
+    // DMA memory-to-memory is much faster than CPU copy
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.M2M,  // Memory to Memory
+        src_address: src,
+        dst_address: dest,
+        data_count: size,
+        src_increment: true,
+        dst_increment: true,
+        data_size: dma.SIZE_32BIT,  // 32-bit for efficiency
+        priority: dma.PRIORITY_VERY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+end
+
+function main() do
+    // Large buffer copy test
+    const SIZE = 10000
+    let src_buffer = [0u8; SIZE]
+    let dst_buffer = [0u8; SIZE]
+    
+    // Fill source with test data
+    her i in 0..SIZE for do
+        src_buffer[i] = (i % 256).u8()
+    end
+    
+    // Benchmark
+    let start = core.uptime_us()
+    fast_memcpy(dst_buffer.as_mut_ptr(), src_buffer.as_ptr(), SIZE)
+    let elapsed = core.uptime_us() - start
+    
+    io.println("DMA copy {}KB in {}pow", SIZE/1024, elapsed)
+    io.println("Speed: {:.2f}MB/s", SIZE.kesir() / elapsed.kesir())
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: Double Buffer (Ping-Pong)</h3>
+<pre><code>import hal::dma, hal::adc
+
+const BUFFER_SIZE = 512
+
+let buffer_a = [0u16; BUFFER_SIZE]
+let buffer_b = [0u16; BUFFER_SIZE]
+let current_buffer = 0
+
+function buffer_half_complete() do
+    // Buffer A is full, start processing while DMA fills B
+    process_samples(buffer_a)
+    current_buffer = 1
+end
+
+function buffer_complete() do
+    // Buffer B is full, start processing while DMA fills A
+    process_samples(buffer_b)
+    current_buffer = 0
+end
+
+function process_samples(buffer: []u16) do
+    let max_val = 0u16
+    her sample in buffer for do
+        if sample &gt; max_val then max_val = sample
+    end
+    io.println("Max value: {}", max_val)
+end
+
+function adc_double_buffer_init() do
+    // Init ADC
+    let adc1 = adc.init(adc.ADC1, do
+        resolution: adc.RESOLUTION_12BIT,
+        continuous: true,
+        dma_enable: true
+    end)
+    
+    // DMA double buffer mode
+    let dma_ch = dma.init(dma.DMA2, dma.STREAM0, do
+        direction: dma.P2M,
+        src_address: adc.get_data_register(adc1),
+        dst_address_0: buffer_a.as_ptr(),  // Ping buffer
+        dst_address_1: buffer_b.as_ptr(),  // Pong buffer
+        data_count: BUFFER_SIZE,
+        circular: true,
+        double_buffer: true,
+        src_increment: false,
+        dst_increment: true,
+        data_size: dma.SIZE_16BIT,
+        half_complete_callback: buffer_half_complete,
+        complete_callback: buffer_complete
+    end)
+    
+    dma.start(dma_ch)
+    adc.start(adc1)
+end
+
+function main() do
+    adc_double_buffer_init()
+    
+    // Process in background via interrupts
+    for do
+        core.sleep()  // CPU sleeps while DMA works
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: SPI Display with DMA Burst</h3>
+<pre><code>import hal::dma, hal::spi, hal::gpio
+
+// Display framebuffer (128x64 OLED = 1024 bytes)
+const WIDTH = 128
+const HEIGHT = 64
+let framebuffer = [0u8; (WIDTH * HEIGHT) / 8]
+
+function display_update() do
+    // CS low
+    gpio.pin_write(gpio.PORT_A, 4, gpio.LOW)
+    
+    // Command: set column/page address
+    spi.write_byte(spi1, 0x00)  // Command mode
+    
+    // DMA burst transfer entire framebuffer
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM3, do
+        direction: dma.M2P,
+        src_address: framebuffer.as_ptr(),
+        dst_address: spi.get_data_register(spi1),
+        data_count: framebuffer.len(),
+        src_increment: true,
+        dst_increment: false,
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_HIGH
+    end)
+    
+    dma.start(dma_ch)
+    dma.wait(dma_ch)
+    
+    // CS high
+    gpio.pin_write(gpio.PORT_A, 4, gpio.HIGH)
+end
+
+function draw_pixel(x: sayı, y: sayı, color: bool) do
+    let byte_index = x + (y / 8) * WIDTH
+    let bit_index = y % 8
+    
+    if color then do
+        framebuffer[byte_index] |= (1 &lt;&lt; bit_index)
+    end yoksa do
+        framebuffer[byte_index] &amp;= ~(1 &lt;&lt; bit_index)
+    end
+end
+
+function main() do
+    // Draw test pattern
+    her x in 0..WIDTH for do
+        her y in 0..HEIGHT for do
+            draw_pixel(x, y, (x + y) % 2 == 0)
+        end
+    end
+    
+    // Fast DMA update (instead of slow SPI byte-by-byte)
+    display_update()  // ~8ms with DMA vs 100ms+ without
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 Example: USART RX with DMA Circular Buffer</h3>
+<pre><code>import hal::dma, hal::usart
+
+const RX_BUFFER_SIZE = 256
+let rx_buffer = [0u8; RX_BUFFER_SIZE]
+let read_pos = 0
+
+function uart_dma_rx_init(uart: usart.Handle) do
+    // DMA in circular mode for continuous RX
+    let dma_ch = dma.init(dma.DMA1, dma.STREAM5, do
+        direction: dma.P2M,
+        src_address: usart.get_rx_register(uart),
+        dst_address: rx_buffer.as_ptr(),
+        data_count: RX_BUFFER_SIZE,
+        src_increment: false,
+        dst_increment: true,
+        circular: true,  // Never stops, wraps around
+        data_size: dma.SIZE_8BIT,
+        priority: dma.PRIORITY_MEDIUM
+    end)
+    
+    usart.enable_dma_rx(uart)
+    dma.start(dma_ch)
+end
+
+function available() -&gt; sayı do
+    // Get DMA write position
+    let write_pos = RX_BUFFER_SIZE - dma.get_counter(dma_ch)
+    
+    if write_pos &gt;= read_pos then do
+        return write_pos - read_pos
+    end yoksa do
+        return RX_BUFFER_SIZE - read_pos + write_pos
+    end
+end
+
+function read_byte() -&gt; Seçenek[u8] do
+    if available() &gt; 0 then do
+        let data = rx_buffer[read_pos]
+        read_pos = (read_pos + 1) % RX_BUFFER_SIZE
+        return Some(data)
+    end
+    return None
+end
+
+function main() do
+    let uart = usart.init(usart.USART1, do
+        baud_rate: 115200
+    end)
+    
+    uart_dma_rx_init(uart)
+    
+    for do
+        if available() &gt; 0 then do
+            eşle read_byte() do
+                Some(byte) =&gt; io.print("{:c}", byte),
+                None =&gt; {}
+            end
+        end
+        core.delay_ms(10)
+    end
+end</code></pre>
+</div>
+
+<h2>⚙️ DMA Configuration Types</h2>
+<pre><code>// DMA Direction
+enum Direction {
+    P2M,  // Peripheral to Memory (ADC, USART RX)
+    M2P,  // Memory to Peripheral (USART TX, DAC)
+    M2M   // Memory to Memory (fast copy)
+}
+
+// Data Size
+enum DataSize {
+    SIZE_8BIT,   // Byte
+    SIZE_16BIT,  // Half-word
+    SIZE_32BIT   // Word
+}
+
+// Priority
+enum Priority {
+    LOW,
+    MEDIUM,
+    HIGH,
+    VERY_HIGH
+}
+
+// DMA Configuration
+struct DMAConfig do
+    direction: Direction,
+    src_address: *u8,
+    dst_address: *u8,
+    data_count: sayı,
+    src_increment: bool,
+    dst_increment: bool,
+    circular: bool,
+    data_size: DataSize,
+    priority: Priority,
+    double_buffer: bool,         // Optional
+    dst_address_1: *u8,          // For double buffer
+    half_complete_callback: fn(), // Optional
+    complete_callback: fn()       // Optional
+end</code></pre>
+
+<h2>📚 DMA Functions</h2>
+<pre><code>// DMA channel initialization
+function init(dma: DMAInstance, channel: Channel, config: DMAConfig) -&gt; Handle
+
+// Transfer control
+function start(handle: Handle)
+function stop(handle: Handle)
+function wait(handle: Handle)  // Blocking wait
+function is_complete(handle: Handle) -&gt; bool
+
+// Status queries
+function get_counter(handle: Handle) -&gt; sayı  // Remaining transfers
+function get_current_buffer(handle: Handle) -&gt; sayı  // 0 or 1 (double buffer)
+
+// Advanced
+function transfer(handle: Handle, src: *u8, dst: *u8, count: sayı)
+function circular_transfer(handle: Handle, src: *u8, dst: *u8, count: sayı)
+
+// Clock control
+function clock_enable(dma: DMAInstance)
+function clock_disable(dma: DMAInstance)</code></pre>
+
+<h2>⚡ Performance Tips</h2>
+<ul>
+<li><strong>32-bit transfers</strong>: 4x faster than 8-bit for aligned data</li>
+<li><strong>circular mode</strong>: Zero overhead for continuous streaming (ADC, USART)</li>
+<li><strong>Double buffer</strong>: Process one buffer while filling the other (zero data loss)</li>
+<li><strong>priority</strong>: Set VERY_HIGH for time-critical transfers</li>
+<li><strong>burst mode</strong>: Use for large block transfers (framebuffers, files)</li>
+</ul>
+
+<h2>📊 DMA Usage Scenarios</h2>
+<table style="width:100%;border-collapse:collapse">
+<tbody><tr style="background:var(--sidebar-bg)">
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Scenario</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Direction</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">mode</th>
+<th style="padding:10px;border:1px solid var(--sidebar-fg)">Advantage</th>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">ADC Continuous Sampling</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">P2M</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">circular</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">CPU-free data acquisition</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">USART High-Speed ​​TX</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Non-blocking transmission</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">SPI Display Update</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">10-20x faster refresh</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Audio Streaming</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2P (DAC)</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Double Buffer</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Glitch-free playback</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Large Buffer Copy</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">M2M</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Normal</td>
+<td style="padding:8px;border:1px solid var(--sidebar-fg)">Hardware acceleration</td>
+</tr>
+</tbody></table>
+
+<h2>🖥️ Platform Support</h2>
+<ul>
+<li><strong>STM32F1</strong>: DMA1 (7 channels), DMA2 (5 channels)</li>
+<li><strong>STM32F4</strong>: DMA1/DMA2 (8 streams each, FIFO support)</li>
+<li><strong>STM32L4</strong>: DMA1/DMA2 (7 channels each, low-power)</li>
+<li><strong>GD32</strong>: Compatible with STM32 DMA architecture</li>
+<li><strong>ESP32</strong>: GDMA (general purpose DMA)</li>
+</ul>
+
+<h2>⚠️ Important Notes</h2>
+<ul>
+<li><strong>Memory Alignment</strong>: DMA buffers must be in RAM (not flash/peripheral memory)</li>
+<li><strong>Circular Mode</strong>: Used for infinite loop, ADC/USART streaming ideal</li>
+<li><strong>Enable NVIC</strong>: NVIC must be enabled when using DMA interrupt</li>
+<li><strong>Double Buffer</strong>: Use ping-pong buffering for zero data loss</li>
+<li><strong>Buffer Safety</strong>: Buffer should not be modified during DMA transfer</li>
+<li><strong>Cache Coherency</strong>: Cache invalidation is required on STM32F7/H7</li>
+<li><strong>Data Width</strong>: Use SIZE_32BIT for 32-bit aligned data (4x faster)</li>
+<li><strong>priority</strong>: Arbitration occurs when multiple DMAs are used with the same priority.</li>
+</ul>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">hal::adc</code>- ADC with DMA (continuous sampling)</li>
+<li><code data-no-translate="true">hal::dac</code>- DAC with DMA (waveform generation)</li>
+<li><code data-no-translate="true">hal::usart</code>- UART with DMA (high-speed serial)</li>
+<li><code data-no-translate="true">hal::spi</code>- SPI with DMA (display, SD card)</li>
+<li><code data-no-translate="true">hal::i2c</code>- I2C with DMA (sensor reading)</li>
+<li><code data-no-translate="true">hal::int</code>- DMA interrupts (NVIC configuration)</li>
+<li><code data-no-translate="true">hal::timer</code>- Timer-triggered DMA</li>
+</ul>
+
+<h2>📖 References</h2>
+<ul>
+<li><a href="https://www.st.com/resource/en/application_note/dm00046011.pdf">AN4031: Using STM32 DMA Controller</a></li>
+<li><a href="https://www.st.com/resource/en/application_note/dm00272912.pdf">AN4943: DMA in STM32F7</a></li>
+<li>Reference Manual: DMA Controller (DMA) chapter</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← HAL Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

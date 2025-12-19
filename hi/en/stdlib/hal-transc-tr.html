@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>hal::transc - आरएफ ट्रांससीवर्स | बर्क</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#3498db 0%,#2980b9 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🎵 राज्य::ट्रांससी</h1>
+<p>आरएफ ट्रांसीवर और वायरलेस संचार</p>
+<div style="margin-top:15px">
+<span class="stat-badge">366 पंक्तियाँ</span>
+<span class="stat-badge">एनआरएफ24/लोरा</span>
+</div>
+</div>
+
+<h2>📖अवलोकन</h2>
+<p>आरएफ ट्रांसीवर ड्राइवर: nRF24L01, लोरा, ब्लूटूथ।</p>
+
+<h2>🚀 उपयोग</h2>
+<pre><code>import hal::transc
+
+// Initialize nRF24L01
+let nrf = transc.nrf24_init(do
+    ce_pin: gpio.PA0,
+    csn_pin: gpio.PA1,
+    spi: spi1,
+    channel: 76,
+    data_rate: transc.DR_2MBPS
+end)
+
+// Send packet
+transc.nrf24_send(nrf, [0x01, 0x02, 0x03])
+
+// Receive packet
+if data = transc.nrf24_receive(nrf, 100) then do
+    io.println("Received: {:?}", data)
+end
+
+// LoRa module
+let lora = transc.lora_init(do
+    frequency: 915_000_000,  // 915 MHz
+    bandwidth: transc.BW_125KHZ,
+    spreading_factor: 7
+end)
+
+transc.lora_send(lora, "Hello LoRa!")</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">← एचएएल मॉड्यूल</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

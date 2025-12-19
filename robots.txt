@@ -1,0 +1,201 @@
+# BERK Programming Language Documentation
+# https://arslantasm.github.io/berk_pages/
+# A modern, safe, bilingual (Turkish/English) systems programming language
+
+# ============================================
+# GENERAL ACCESS
+# ============================================
+User-agent: *
+Allow: /
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# ============================================
+# SITEMAP
+# ============================================
+Sitemap: https://arslantasm.github.io/berk_pages/sitemap.xml
+
+# ============================================
+# AI / LLM CRAWLERS - FULL ACCESS
+# ============================================
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic (Claude)
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google AI
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Google-InspectionTool
+Allow: /
+
+# Microsoft / Copilot
+User-agent: Bingbot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+User-agent: MicrosoftPreview
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# AI Search Engines
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+
+# Other AI Crawlers
+User-agent: Diffbot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: omgilibot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: ImagesiftBot
+Allow: /
+
+User-agent: Webzio-Extended
+Allow: /
+
+User-agent: Timpibot
+Allow: /
+
+User-agent: VelenPublicWebCrawler
+Allow: /
+
+User-agent: Scrapy
+Allow: /
+
+User-agent: friendly_spider
+Allow: /
+
+# ============================================
+# SEARCH ENGINE CRAWLERS
+# ============================================
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Sogou
+Allow: /
+
+User-agent: Exabot
+Allow: /
+
+User-agent: ia_archiver
+Allow: /
+
+# ============================================
+# LLMs.txt REFERENCE
+# ============================================
+# For AI assistants and LLMs, a comprehensive
+# documentation index is available at:
+# https://arslantasm.github.io/berk_pages/llms.txt
+#
+# This file contains:
+# - Complete documentation structure
+# - All 61 standard library modules
+# - 11 AI/ML modules
+# - 33 HAL (Hardware Abstraction Layer) modules
+# - Bilingual keyword reference
+# - Code examples
+# - Multi-language support (TR, EN, KO, HI)
+
+# ============================================
+# DOCUMENTATION STRUCTURE
+# ============================================
+# Main: /
+# English: /en/
+# Korean: /ko/
+# Hindi: /hi/
+# Standard Library: /stdlib/
+# Compiler: /compiler/
+# Tools: /tools/
+# Examples: /examples/
+# Reference: /reference/
+
+# ============================================
+# DISALLOW PATTERNS
+# ============================================
+# No pages are disallowed - full access for all crawlers
+
+# ============================================
+# HOST
+# ============================================
+Host: arslantasm.github.io

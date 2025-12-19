@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="hi" class="rust sidebar-visible" dir="ltr"><head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>लूप्स - बर्क प्रोग्रामिंग लैंग्वेज</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Modern, safe, and bilingual (Türkçe/İngilizce) systems programming language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="सामग्री तालिका टॉगल करें" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="विषय को परिवर्तित करें" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="खोजें (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">BERK Programlama Dili</h1>
+
+                    <div class="right-buttons">
+                        <a href="../hi_print.html" title="इस पुस्तक को छापें" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk" title="भंडार जाओ" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/ArslantasM/berk/edit/main/berk-lang/book/src/control-flow/loops.md" title="एक संपादन का सुझाव दें" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="döngüler"><a class="header" href="#döngüler">छोरों</a></h1>
+<p>लूप संरचनाओं के लिए दोहराए जाने वाले संचालन।</p>
+<h2 id="for-döngüsü-range"><a class="header" href="#for-döngüsü-range">लूप के लिए (रेंज)</a></h2>
+<pre><code class="language-berk">// 0'dan 4'e kadar (5 hariç)
+loop i 0'dan 5'e {
+    print(i)  // 0, 1, 2, 3, 4
+}
+
+// 0'dan 5'e kadar (5 dahil)
+loop i 0'dan 6'ya kadar {
+    print(i)  // 0, 1, 2, 3, 4, 5
+}
+
+// Tersden sayma
+loop i 10'dan 0'a {
+    print(i)  // 10, 9, 8, ..., 1
+}
+
+// Adım boyutu
+loop i 0'dan 10'a adım 2 {
+    print(i)  // 0, 2, 4, 6, 8
+}
+</code></pre>
+<p>अंग्रेजी वाक्यविन्यास:</p>
+<pre><code class="language-berk">for i from 0 to 5 {
+    print(i)
+}
+
+for i from 0 to 5 inclusive {
+    print(i)
+}
+</code></pre>
+<h2 id="for-each-döngüsü"><a class="header" href="#for-each-döngüsü">प्रत्येक लूप के लिए</a></h2>
+<pre><code class="language-berk">variable sayılar = [1, 2, 3, 4, 5]
+
+loop sayı sayılarda {
+    print(sayı)
+}
+
+// İndeks ile
+loop (indeks, değer) sayılarda {
+    print(indeks, ": ", değer)
+}
+</code></pre>
+<p>अंग्रेज़ी:</p>
+<pre><code class="language-berk">for num in numbers {
+    print(num)
+}
+
+for (index, value) in numbers {
+    print(index, ": ", value)
+}
+</code></pre>
+<h2 id="while-döngüsü"><a class="header" href="#while-döngüsü">जबकि लूप</a></h2>
+<pre><code class="language-berk">variable sayaç = 0
+
+while sayaç &lt; 5 {
+    print(sayaç)
+    sayaç += 1
+}
+</code></pre>
+<p>अंग्रेज़ी:</p>
+<pre><code class="language-berk">var counter = 0
+
+while counter &lt; 5 {
+    print(counter)
+    counter += 1
+}
+</code></pre>
+<h2 id="do-while-döngüsü"><a class="header" href="#do-while-döngüsü">डू-व्हाइल लूप</a></h2>
+<p>कम से कम एक बार काम करता है:</p>
+<pre><code class="language-berk">variable x = 0
+
+do {
+    print(x)
+    x += 1
+} while x &lt; 5
+</code></pre>
+<h2 id="sonsuz-loop"><a class="header" href="#sonsuz-loop">अंतहीन पाश</a></h2>
+<pre><code class="language-berk">loop {
+    // Sonsuz loop
+    if koşul {
+        break  // Çıkış
+    }
+}
+</code></pre>
+<h2 id="break-and-continue"><a class="header" href="#break-and-continue">तोड़ो और जारी रखो</a></h2>
+<h3 id="break-break"><a class="header" href="#break-break">तोड़ना</a></h3>
+<p>लूप से बाहर निकलें:</p>
+<pre><code class="language-berk">loop i 0'dan 10'a {
+    if i == 5 {
+        break  // loop durur
+    }
+    print(i)  // 0, 1, 2, 3, 4
+}
+</code></pre>
+<h3 id="continue-continue"><a class="header" href="#continue-continue">जारी रखें (जारी रखें)</a></h3>
+<p>अगले पुनरावृत्ति पर जाएँ:</p>
+<pre><code class="language-berk">loop i 0'from 10'a {
+    if i % 2 == 0 {
+        continue  // Çift sayıları atla
+    }
+    print(i)  // 1, 3, 5, 7, 9 (tek sayılar)
+}
+</code></pre>
+<h2 id="İç-İçe-döngüler"><a class="header" href="#İç-İçe-döngüler">स्थिर फंदा</a></h2>
+<pre><code class="language-berk">loop i 1'from 4'e {
+    loop j 1'from 4'e {
+        print(i * j, " ", sonlandırma: "")
+    }
+    print()  // Yeni satır
+}
+// Çıktı:
+// 1 2 3
+// 2 4 6
+// 3 6 9
+</code></pre>
+<p>टैग किया गया ब्रेक:</p>
+<pre><code class="language-berk">dış: loop i 0'from 5'e {
+    iç: loop j 0'from 5'e {
+        if i * j &gt; 10 {
+            break dış  // Dış döngüden çık
+        }
+        print(i, "*", j, "=", i*j)
+    }
+}
+</code></pre>
+<h2 id="loop-ile-koleksiyonlar"><a class="header" href="#loop-ile-koleksiyonlar">लूप के साथ संग्रह</a></h2>
+<h3 id="liste-Üzerinde"><a class="header" href="#liste-Üzerinde">सूची में</a></h3>
+<pre><code class="language-berk">variable meyveler = ["elma", "armut", "kiraz"]
+
+loop meyve meyvelerde {
+    print(meyve)
+}
+
+// Filtreleme
+loop meyve meyvelerde {
+    if meyve.uzunluk &gt; 4 {
+        print(meyve)
+    }
+}
+</code></pre>
+<h3 id="map-Üzerinde"><a class="header" href="#map-Üzerinde">मानचित्र पर</a></h3>
+<pre><code class="language-berk">variable yaşlar = {
+    "Ahmet": 25,
+    "Mehmet": 30,
+    "Ayşe": 28
+}
+
+loop (isim, yaş) yaşlarda {
+    print(isim, ": ", yaş)
+}
+</code></pre>
+<h3 id="range-ile"><a class="header" href="#range-ile">रेंज के साथ</a></h3>
+<pre><code class="language-berk">// 1'den 10'a (10 dahil)
+loop x [1..10]'da {
+    print(x)
+}
+
+// Filtreli range
+loop x [1..20]'de {
+    if x % 3 == 0 {
+        print(x)  // 3'e bölünenler
+    }
+}
+</code></pre>
+<h2 id="iterator-metodları"><a class="header" href="#iterator-metodları">पुनरावर्तक विधियाँ</a></h2>
+<pre><code class="language-berk">variable sayılar = [1, 2, 3, 4, 5]
+
+// Map
+variable kareler = sayılar.eşle(x =&gt; x * x)
+
+// Filter
+variable çiftler = sayılar.filtrele(x =&gt; x % 2 == 0)
+
+// Reduce
+variable sum = sayılar.azalt((a, b) =&gt; a + b)
+
+// ForEach
+sayılar.herbiri(x =&gt; print(x))
+</code></pre>
+<h2 id="best-practices"><a class="header" href="#best-practices">सर्वोत्तम प्रथाएं</a></h2>
+<h3 id="-yapılması-gerekenler"><a class="header" href="#-yapılması-gerekenler">✅ करने योग्य कार्य</a></h3>
+<pre><code class="language-berk">// Anlamlı variable isimleri
+loop öğrenci öğrencilerde {
+    işle(öğrenci)
+}
+
+// For-each tercih edin
+variable List = [1, 2, 3]
+loop eleman listede {  // İyi
+    print(eleman)
+}
+
+// Iterator metodları kullanın
+variable sonuç = sayılar
+    .filtrele(x =&gt; x &gt; 0)
+    .eşle(x =&gt; x * 2)
+    .azalt((a, b) =&gt; a + b)
+</code></pre>
+<h3 id="-kaçınılması-gerekenler"><a class="header" href="#-kaçınılması-gerekenler">❌ परहेज करने योग्य बातें</a></h3>
+<pre><code class="language-berk">// Manuel indeks yönetimi
+loop i 0'from List.len'a {
+    print(List[i])  // Kötü
+}
+// Bunun yerine:
+loop eleman listede {
+    print(eleman)  // İyi
+}
+
+// Sonsuz loop tuzakları
+while true {  // Tehlikeli
+    // Çıkış koşulu olmadan
+}
+
+// Gereksiz iç içe döngüler
+// O(n²) or daha kötü karmaşıklık
+</code></pre>
+<h2 id="Examples"><a class="header" href="#Examples">उदाहरण</a></h2>
+<h3 id="fibonacci"><a class="header" href="#fibonacci">फाइबोनैचि</a></h3>
+<pre><code class="language-berk">function fibonacci(n: number) -&gt; Liste&lt;number&gt; {
+    variable sonuç = [0, 1]
+    
+    loop i 2'from n'ye {
+        variable sonraki = sonuç[i-1] + sonuç[i-2]
+        sonuç.push(sonraki)
+    }
+    
+    geri return sonuç
+}
+</code></pre>
+<h3 id="asal-sayılar"><a class="header" href="#asal-sayılar">प्रमुख संख्या</a></h3>
+<pre><code class="language-berk">function asal_mi(n: number) -&gt; Boolean {
+    if n &lt; 2 {
+        geri return false
+    }
+    
+    loop i 2'from n'ye {
+        if i * i &gt; n {
+            break
+        }
+        if n % i == 0 {
+            geri return false
+        }
+    }
+    
+    geri return true
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../control-flow/hi_if-else.html" class="mobile-nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../control-flow/hi_pattern-matching.html" class="mobile-nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../control-flow/hi_if-else.html" class="nav-chapters previous" title="पिछला अध्याय" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../control-flow/hi_pattern-matching.html" class="nav-chapters next" title="अगला अध्याय" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    
+
+    <script src="lang-switcher.js"></script>
+</body></html>

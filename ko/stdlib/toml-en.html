@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>toml - TOML 파서 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#9b59b6 0%,#8e44ad 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚙️ 톰엘</h1>
+<p>TOML v1.0.0 파서</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~350줄</span>
+<span class="stat-badge">~30가지 기능</span>
+<span class="stat-badge">v1.0.0</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>구성 파일용 TOML(Tom's Obvious Minimal Language) 파서. 문자열, 정수, 부동 소수점, 부울, 배열 및 테이블을 지원하여 인간 친화적입니다.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import toml
+
+let config = toml.parse("
+    [database]
+    host = \"localhost\"
+    port = 5432
+    
+    [server]
+    bind = \"0.0.0.0:8080\"
+    workers = 4
+")?
+
+let host = config.get("database.host")?
+let port = config.get_int("database.port")?
+println("DB: {}:{}", host, port)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a> | <a href="ko_toml-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

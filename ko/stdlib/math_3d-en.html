@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>math_3d - 3D 수학 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📐 수학_3D</h1>
+<p>3D 벡터 및 행렬 수학</p>
+<div style="margin-top:15px">
+<span class="stat-badge">63가지 기능</span>
+<span class="stat-badge">593줄</span>
+<span class="stat-badge">심드</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>그래픽을 위한 3D 수학: 벡터, 행렬, 쿼터니언, 변환, 카메라 작업.</p>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import math_3d as m3
+
+let v1 = m3.vec3(1.0, 0.0, 0.0)
+let v2 = m3.vec3(0.0, 1.0, 0.0)
+let cross = m3.cross(v1, v2)
+
+let mat = m3.perspective(45.0, 16.0/9.0, 0.1, 100.0)</code></pre>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-en.html">← 모든 모듈</a> | <a href="ko_math_3d-tr.html">🇹🇷 터키어</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>pdf - PDF Document Creation | BERK v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>📄 pdf</h1>
+<p>PDF Document Creation &amp; Manipulation</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~400 lines</span>
+<span class="stat-badge">~35 functions</span>
+<span class="stat-badge">PDF 1.7</span>
+</div>
+</div>
+
+<h2>📖 Overview</h2>
+<p>The PDF module provides programmatically PDF document creation and manipulation. It supports text, shapes, images and multi-page documentation.</p>
+
+<h2>🚀 Usage</h2>
+<pre><code>import pdf
+
+// Create PDF
+let doc = pdf.new()
+doc.set_title("My Document")
+doc.set_author("BERK")
+
+// Add page
+let page = doc.add_page(pdf.A4)
+page.text(100, 700, "Hello PDF!", 12)
+
+// Save
+doc.save("output.pdf")?</code></pre>
+
+<h2>🔗 Related Modules</h2>
+<ul>
+<li><code data-no-translate="true">image</code>- Image embedding</li>
+<li><code data-no-translate="true">graphics</code>- Drawing shapes</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← All Modules</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

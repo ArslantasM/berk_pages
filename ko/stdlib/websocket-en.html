@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>websocket - WebSocket 프로토콜 | 버크 v1.0.0</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#16a085 0%,#1abc9c 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #16a085;padding:20px;margin:20px 0;border-radius:4px}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔌웹소켓</h1>
+<p>WebSocket 프로토콜 - 실시간 양방향 통신</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~800줄</span>
+<span class="stat-badge">~45개 기능</span>
+<span class="stat-badge">RFC 6455</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>WebSocket 모듈은 RFC 6455를 준수하는 모든 기능을 갖춘 WebSocket 클라이언트 및 서버를 제공합니다. 실시간 채팅, 실시간 알림, 멀티플레이어 게임 및 IoT에 이상적입니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>RFC 6455 준수</li>
+<li>클라이언트 및 서버 지원</li>
+<li>텍스트 및 바이너리 메시지</li>
+<li>핑/퐁 킵얼라이브</li>
+<li>메시지 조각화</li>
+<li>UTF-8 검증</li>
+<li>우아하고 가까운 악수</li>
+<li>이벤트 기반 API</li>
+</ul>
+
+<h2>🚀 빠른 시작 - 클라이언트</h2>
+<pre><code>import websocket olarakws
+
+function main() do
+    // Connect
+    let client = ws.connect("ws://localhost:8080")?
+    
+    // Event handlers
+    client.on_open(|| do
+        io.println("Connected!")
+    end)
+    
+    client.on_message(|msg| do
+        io.println("Received: {}", msg.text())
+    end)
+    
+    // Send message
+    client.send_text("Hello Server!")?
+    
+    // Keep alive
+    client.run()
+end</code></pre>
+
+<div class="example-box">
+<h3>💡 예: 실시간 채팅 서버</h3>
+<pre><code>import websocket olarakws, thread, collections
+
+struct ChatServer do
+    clients: Map[int, ws.Connection],
+    next_id: int
+end
+
+function chat_server_new() -&gt; ChatServer do
+    ChatServer do
+        clients: Map.new(),
+        next_id: 1
+    end
+end
+
+function broadcast(server: ChatServer, message: str, sender_id: int) do
+    each (id, client) in server.clients for do
+        if id != sender_id  do
+            client.send_text(message).ok()
+        end
+    end
+end
+
+function handle_client(server: ChatServer, conn: ws.Connection, client_id: int) do
+    io.println("Client {} connected", client_id)
+    
+    // Welcome message
+    conn.send_text("Welcome to chat! Your ID: {}".formatla(client_id))?
+    
+    // Announce to others
+    broadcast(server, "User {} joined".formatla(client_id), client_id)
+    
+    // Message loop
+    loop do
+        let msg = conn.receive()?
+        
+        match msg.opcode do
+            ws.TEXT =&gt; do
+                let text = msg.text()
+                io.println("[{}] {}", client_id, text)
+                
+                // Broadcast to all
+                let broadcast_msg = "[{}] {}".formatla(client_id, text)
+                broadcast(server, broadcast_msg, client_id)
+            end,
+            
+            ws.CLOSE =&gt; do
+                io.println("Client {} disconnected", client_id)
+                server.clients.remove(client_id)
+                broadcast(server, "User {} left".formatla(client_id), client_id)
+                kır
+            end,
+            
+            ws.PING =&gt; do
+                conn.send_pong(msg.data)?
+            end,
+            
+            _ =&gt; do end
+        end
+    end
+end
+
+function main() do
+    let server = chat_server_new()
+    let ws_server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Chat server listening on ws://localhost:8080")
+    
+    loop do
+        // Accept new connections
+        let conn = ws_server.accept()?
+        
+        let client_id = server.next_id
+        server.next_id += 1
+        server.clients.insert(client_id, conn.clone())
+        
+        // Spawn thread for each client
+        thread.spawn(|| do
+            handle_client(server, conn, client_id)
+        end)
+    end
+end</code></pre>
+</div>
+
+<div class="example-box">
+<h3>💡 예: 라이브 대시보드(데이터 스트리밍)</h3>
+<pre><code>import websocket olarakws, time, thread, json
+
+struct SystemStats do
+    cpu_usage: float,
+    memory_usage: float,
+    disk_usage: float,
+    timestamp: time.Instant
+end
+
+function collect_stats() -&gt; SystemStats do
+    SystemStats do
+        cpu_usage: sys.cpu_usage(),
+        memory_usage: sys.memory_usage(),
+        disk_usage: sys.disk_usage(),
+        timestamp: time.now()
+    end
+end
+
+function stream_stats_to_client(conn: ws.Connection) do
+    io.println("Dashboard client connected")
+    
+    loop do
+        // Collect system stats
+        let stats = collect_stats()
+        
+        // Send as JSON
+        let json_data = json.encode(stats)
+        
+        match conn.send_text(json_data) do
+            Ok(_) =&gt; do end,
+            Error(_) =&gt; do
+                io.println("Client disconnected")
+                kır
+            end
+        end
+        
+        // Update every second
+        thread.sleep_ms(1000)
+    end
+end
+
+function main() do
+    let server = ws.listen("0.0.0.0:8080")?
+    
+    io.println("Dashboard server: ws://localhost:8080")
+    
+    loop do
+        let conn = server.accept()?
+        
+        thread.spawn(|| do
+            stream_stats_to_client(conn)
+        end)
+    end
+end
+
+// HTML Client
+// &lt;script&gt;
+//   const ws = new WebSocket('ws://localhost:8080');
+//   ws.onmessage = (e) =&gt; {
+//     const stats = JSON.parse(e.data);
+//     document.getElementById('cpu').textContent = stats.cpu_usage + '%';
+//     document.getElementById('memory').textContent = stats.memory_usage + '%';
+//   };
+// &lt;/script&gt;</code></pre>
+</div>
+
+<h2>🎮 사용 사례</h2>
+<ul>
+<li>실시간 채팅 애플리케이션</li>
+<li>실시간 알림</li>
+<li>멀티플레이어 게임</li>
+<li>주식/암호화폐 가격 피드</li>
+<li>IoT 디바이스 통신</li>
+<li>공동 편집</li>
+<li>라이브 대시보드</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><code data-no-translate="true">http</code>- HTTP 업그레이드</li>
+<li><code data-no-translate="true">network</code>-소켓 작업</li>
+<li><code data-no-translate="true">json</code>- 메시지 직렬화</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

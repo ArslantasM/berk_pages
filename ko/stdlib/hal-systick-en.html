@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>hal::systick - 시스템 틱 타이머 | 버크 임베디드</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#1abc9c 0%,#16a085 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #1abc9c;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⏱️ 상태::systick</h1>
+<p>시스템 틱 타이머 - RTOS 및 지연을 위한 밀리초 타임베이스</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~240줄</span>
+<span class="stat-badge">~10가지 기능</span>
+<span class="stat-badge">ARM Cortex-M</span>
+</div>
+</div>
+
+<h2>📖 개요</h2>
+<p>SysTick은 ARM Cortex-M 아키텍처에서 사용할 수 있는 24비트 시스템 타이머입니다. 일반적으로 1ms 틱 인터럽트를 생성하는 데 사용되며 RTOS(실시간 운영 체제) 스케줄러의 기초를 형성합니다. 또한 ms 기반 지연 기능과 가동 시간 카운터도 사용됩니다.</p>
+
+<h2>🔑 주요 기능</h2>
+<ul>
+<li>24비트 다운 카운터(0xFFFFFF)</li>
+<li>구성 가능한 틱 속도(보통 1ms)</li>
+<li>예외/인터럽트 생성</li>
+<li>CPU 클록 또는 외부 클록에서 소스 제공</li>
+<li>낮은 오버헤드 타이밍</li>
+<li>RTOS 스케줄러 타임베이스</li>
+<li>밀리초 지연 기능</li>
+<li>가동 시간 카운터</li>
+</ul>
+
+<h2>🚀 빠른 시작</h2>
+<pre><code>import hal::systick, hal::core
+
+let g_tick_count: u64 = 0
+
+// SysTick interrupt handler
+@interrupt
+function SysTick_Handler() do
+    g_tick_count += 1
+end
+
+function main() do
+    // 72 MHz CPU, 1ms tick
+    systick.init(72000000 / 1000)  // 1ms period
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Now delay_ms() works
+    loop do
+        io.println("Uptime: " + g_tick_count.yazıya() + " ms")
+        systick.delay_ms(1000)
+    end
+end</code></pre>
+
+<h2>📦 유형 및 열거형</h2>
+<pre><code>// Clock Source
+enum ClockSource {
+    EXTERNAL,  // External clock (HCLK/8)
+    PROCESSOR  // Processor clock (HCLK)
+}
+
+struct SysTickConfig do
+    reload_value: int,      // 24-bit (0 - 0xFFFFFF)
+    clock_source: ClockSource,
+    interrupt_enable: bool
+end</code></pre>
+
+<h2>💡 예 1: 밀리초 지연 구현</h2>
+<div class="example-box">
+<h3>차단 지연 및 비차단 시간 초과</h3>
+<pre><code>import hal::systick
+
+let g_ticks: sayacı64 = 0
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+// Blocking delay
+function delay_ms(ms: int) do
+    let start = g_ticks
+    loop (g_ticks - start) &lt; ms.to_u64() for do
+        // Wait
+    end
+end
+
+// Non-blocking timeout
+struct Timeout do
+    start: sayı64,
+    duration: sayı64
+end
+
+function timeout_start(ms: int) -&gt; Timeout do
+    return Timeout do
+        start: g_ticks,
+        duration: ms.to_u64()
+    end
+end
+
+function timeout_expired(timeout: Timeout) -&gt; bool do
+    return (g_ticks - timeout.start) &gt;= timeout.duration
+end
+
+// Kullanım örneği
+function main_loop() do
+    let timeout = timeout_start(5000)  // 5 saniye
+    
+    loop do
+        // Non-blocking işlemler
+        process_data()
+        
+        if timeout_expired(timeout)  do
+            io.println("5 saniye geçti!")
+            timeout = timeout_start(5000)  // Reset
+        end
+    end
+end</code></pre>
+</div>
+
+<h2>💡 예시 2: 간단한 RTOS 스케줄러</h2>
+<div class="example-box">
+<h3>SysTick을 사용한 협력적 멀티태스킹</h3>
+<pre><code>import hal::systick
+
+struct Task do
+    function: Fonksiyon(),
+    period_ms: int,
+    son_calistirma: sayı64
+end
+
+let g_ticks: sayı64 = 0
+let g_tasks: Dizi[Task] = []
+
+@interrupt
+function SysTick_Handler() do
+    g_ticks += 1
+end
+
+function task_register(func: Fonksiyon(), period_ms: int) do
+    g_tasks.push(Task do
+        function: func,
+        period_ms: period_ms,
+        son_calistirma: 0
+    end)
+end
+
+function scheduler_run() do
+    loop do
+        her task in g_tasks for do
+            let elapsed = g_ticks - task.son_calistirma
+            
+            if elapsed &gt;= task.period_ms.to_u64()  do
+                // Task zamanı geldi
+                task.function()
+                task.son_calistirma = g_ticks
+            end
+        end
+    end
+end
+
+// Example tasklar
+function led_blink_task() do
+    gpio.pin_toggle(LED_PIN)
+end
+
+function sensor_read_task() do
+    let temp = sensor.read_temperature()
+    io.println("Sıcaklık: " + temp.yazıya())
+end
+
+function main() do
+    systick.init(72000000 / 1000)  // 1ms
+    systick.enable_interrupt()
+    systick.enable()
+    
+    // Register tasks
+    task_register(led_blink_task, 500)      // 500ms period
+    task_register(sensor_read_task, 1000)   // 1000ms period
+    
+    // Run scheduler
+    scheduler_run()
+end</code></pre>
+</div>
+
+<h2>💡 예 3: 성능 프로파일링</h2>
+<div class="example-box">
+<h3>함수 실행 시간 측정</h3>
+<pre><code>import hal::systick
+
+function micros() -&gt; sayı64 do
+    // SysTick counts down from reload value
+    let reload = systick.get_reload()
+    let current = systick.get_value()
+    
+    // Calculate microseconds
+    let ticks_elapsed = reload - current
+    let us_per_tick = 1000 / reload  // Assuming 1ms period
+    
+    return (g_ticks * 1000) + (ticks_elapsed * us_per_tick).to_u64()
+end
+
+function profile_start() -&gt; sayı64 do
+    return micros()
+end
+
+function profile_end(start: sayı64) -&gt; sayı64 do
+    return micros() - start
+end
+
+// Kullanım
+function slow_function() do
+    for i in 0..1000 for do
+        math.sqrt(i.float())
+    end
+end
+
+function main() do
+    systick.init(72000)  // 1ms
+    systick.enable()
+    
+    let start = profile_start()
+    slow_function()
+    let duration = profile_end(start)
+    
+    io.println("Süre: " + duration.yazıya() + " μs")
+end</code></pre>
+</div>
+
+<h2>📊 API 참조</h2>
+
+<h3>초기화</h3>
+<pre><code>function init(reload_value: int)  // 24-bit max
+function deinit()
+function enable()
+function disable()</code></pre>
+
+<h3>구성</h3>
+<pre><code>function enable_interrupt()
+function disable_interrupt()
+function set_clock_source(source: ClockSource)
+function get_reload() -&gt; int
+function set_reload(value: int)</code></pre>
+
+<h3>상태</h3>
+<pre><code>function get_value() -&gt; int  // Current counter value
+function get_calib() -&gt; int  // Calibration value
+function has_reference() -&gt; bool</code></pre>
+
+<h3>공익사업</h3>
+<pre><code>function delay_ms(ms: int)
+function delay_us(pow: int)
+function get_ticks() -&gt; sayı64</code></pre>
+
+<h2>⚙️ 플랫폼 지원</h2>
+<table>
+<tbody><tr><th>플랫폼</th><th>클럭 소스</th><th>최대 재장전</th><th>정도</th></tr>
+<tr><td>피질-M0</td><td>HCLK, HCLK/8</td><td>0xFFFFFF(16.7M)</td><td>1사이클</td></tr>
+<tr><td>피질-M3</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1사이클</td></tr>
+<tr><td>피질-M4</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1사이클</td></tr>
+<tr><td>피질-M7</td><td>HCLK, HCLK/8</td><td>0xFFFFFF</td><td>1사이클</td></tr>
+</tbody></table>
+
+<h2>💡 모범 사례</h2>
+<ul>
+<li><strong>틱율:</strong>RTOS에 대한 1ms 산업 표준</li>
+<li><strong>인터럽트 우선순위:</strong>SysTick은 일반적으로 우선순위가 가장 낮습니다(15).</li>
+<li><strong>핸들러 기간:</strong>인터럽트 핸들러는 최소(&lt;10μs)로 유지되어야 합니다.</li>
+<li><strong>오버플로 처리:</strong>64비트 카운터를 사용하여 오버플로 방지</li>
+<li><strong>전력 최적화:</strong>RTOS(틱리스 유휴 모드)를 고려하세요.</li>
+<li><strong>디버그 정지:</strong>디버그 중에 SysTick을 중지할 수 있습니다.</li>
+</ul>
+
+<h2>⚠️ 중요 사항</h2>
+<ul>
+<li>24비트 카운터: 최대 다시 로드 값 0xFFFFFF(16,777,215)</li>
+<li>재로드에 1ms = 72MHz에서 72000</li>
+<li>인터럽트 핸들러의 긴 처리(컨텍스트 전환 오버헤드)</li>
+<li>인터럽트에 대한 원자적 연산을 비활성화해야 할 수도 있음</li>
+</ul>
+
+<h2>🔗 관련 모듈</h2>
+<ul>
+<li><a href="ko_hal-timer-en.html">상태::타이머</a>- 장기간 동안의 하드웨어 타이머</li>
+<li><a href="ko_hal-nvic-en.html">상태::nvic</a>- 인터럽트 컨트롤러 구성</li>
+<li><a href="ko_hal-power-en.html">상태::전력</a>- 틱없는 유휴 통합</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="ko_hal-index-en.html">← HAL 모듈</a> | 
+<a href="ko_hal-systick-en.html">🇬🇧 터키어</a>
+</p>
+</main>
+</div>
+
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>

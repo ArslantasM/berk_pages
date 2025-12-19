@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>정규식 - 정규식 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>🔍 정규식 – 정규식</h1>
+<p>패턴 일치, 캡처 그룹, 교체</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">38</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">645</div><div>윤곽</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">20KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import regex
+
+// Pattern compile
+let re = regex.compile(r"\d+")
+
+// Match
+if regex.is_match(re, "42") then do
+    print("Eşleşti!")
+end
+
+// Find
+let match = regex.find(re, "Yaşım 25, senin 30")
+print(match.text())  // "25"
+
+// Find all
+let tüm_eşleşmeler = regex.find_all(re, "10, 20, 30")
+her m in tüm_eşleşmeler for do
+    print(m.text())  // "10", "20", "30"
+end
+
+// Capture groups
+let email_re = regex.compile(r"(\w+)@(\w+\.\w+)")
+let cap = regex.captures(email_re, "ali@example.com")
+print(cap.get(1))  // "ali"
+print(cap.get(2))  // "example.com"
+
+// Replace
+let new = regex.replace(re, "Yaşım 25", "XX")
+print(new)  // "Yaşım XX"</code></pre>
+<h2>📚특징</h2>
+<ul>
+<li>PCRE(Perl 호환 정규식)</li>
+<li>캡처 그룹, 명명된 그룹</li>
+<li>앞을 내다봐, 뒤를 돌아봐</li>
+<li>플래그: 대소문자 구분, 여러 줄, 점자</li>
+<li>유니코드 지원</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>이메일 검증 및 구문 분석</h3>
+<pre><code>import regex
+
+let email_pattern = regex.compile(r"^(?P<user>[a-zA-Z0-9._%+-]+)@(?P<domain>[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$")
+
+function email_geçerli_mi(email: yazı) -&gt; bool do
+    return regex.is_match(email_pattern, email)
+end
+
+function email_parse(email: yazı) -&gt; Seçenek do
+    let caps = regex.captures(email_pattern, email)
+    
+    if caps then do
+        return Some(do
+            "user": caps.name("user"),
+            "domain": caps.name("domain")
+        end)
+    end else do
+        return Hiç
+    end
+end
+
+// Test
+let emails = [
+    "ali@example.com",
+    "invalid.email",
+    "test@sub.domain.com"
+]
+
+her email in emails for do
+    if email_geçerli_mi(email) then do
+        let parsed = email_parse(email)
+        print(email + " -&gt; " + parsed.değer()["user"] + " @ " + parsed.değer()["domain"])
+    end else do
+        print(email + " -&gt; Geçersiz")
+    end
+end</domain></user></code></pre>
+</div>
+<div class="example-box">
+<h3>마크다운 파서(간단)</h3>
+<pre><code>import regex
+
+function markdown_to_html(markdown: yazı) -&gt; yazı do
+    let html = markdown
+    
+    // Headers (# Header -&gt; <h1>Header</h1>)
+    html = regex.replace_all(
+        regex.compile(r"^### (.+)$", MULTILINE),
+        html,
+        "<h3>$1</h3>"
+    )
+    html = regex.replace_all(
+        regex.compile(r"^## (.+)$", MULTILINE),
+        html,
+        "<h2>$1</h2>"
+    )
+    html = regex.replace_all(
+        regex.compile(r"^# (.+)$", MULTILINE),
+        html,
+        "<h1>$1</h1>"
+    )
+    
+    // Bold (**bold** -&gt; <strong>bold</strong>)
+    html = regex.replace_all(
+        regex.compile(r"\*\*(.+?)\*\*"),
+        html,
+        "<strong>$1</strong>"
+    )
+    
+    // Italic (*italic* -&gt; <em>italic</em>)
+    html = regex.replace_all(
+        regex.compile(r"\*(.+?)\*"),
+        html,
+        "<em>$1</em>"
+    )
+    
+    // Links ([text](url) -&gt; <a href="url">text</a>)
+    html = regex.replace_all(
+        regex.compile(r"\[([^\]]+)\]\(([^\)]+)\)"),
+        html,
+        "<a href="\&quot;$2\&quot;">$1</a>"
+    )
+    
+    // Code (`code` -&gt; <code>code</code>)
+    html = regex.replace_all(
+        regex.compile(r"`([^`]+)`"),
+        html,
+        "<code>$1</code>"
+    )
+    
+    // Paragraphs
+    html = regex.replace_all(
+        regex.compile(r"\n\n"),
+        html,
+        "<p></p><p>"
+    )
+    html = "</p><p>" + html + "</p>"
+    
+    dön html
+son
+
+değişken md = "# BERK
+## Modern Sistem Programlama
+
+**BERK** *çok hızlı* bir dildir.
+
+Daha fazla bilgi için [dokümantasyon](https://berk-lang.org) sayfasına bakın.
+
+`yazdır(\"Merhaba Dünya!\")` komutu ile başlayın."
+
+değişken html = markdown_to_html(md)
+yazdır(html)</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="en_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

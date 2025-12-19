@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<title>async - 비동기 프로그래밍 | 버크 표준립</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.module-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:20px}
+.stat-badge{background:rgba(255,255,255,0.2);padding:10px;border-radius:5px;text-align:center}
+.example-box{background:var(--sidebar-bg);padding:20px;border-radius:8px;margin:20px 0}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1200px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>⚡ async - 비동기 프로그래밍</h1>
+<p>비동기/대기, 약속, 미래, 런타임, 작업 스케줄러</p>
+<div class="module-stats">
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">71</div><div>기능</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">969</div><div>선</div></div>
+<div class="stat-badge"><div style="font-size:2em;font-weight:bold">29KB</div><div>차원</div></div>
+</div>
+</div>
+<h2>🚀 빠른 시작</h2>
+<pre><code>import async, http
+
+// async function tanımı
+async function veri_getir(url: yazı) -&gt; Sonuç do
+    let yanıt = await http.get(url)
+    if yanıt.case == 200 then do
+        return Ok(yanıt.gövde)
+    end else do
+        return Err("HTTP " + yanıt.case.yazıya())
+    end
+end
+
+// Paralel çalıştırma
+async function paralel_istekler() do
+    let görevler = [
+        veri_getir("https://api.example.com/users"),
+        veri_getir("https://api.example.com/posts"),
+        veri_getir("https://api.example.com/comments")
+    ]
+    
+    let sonuçlar = await async.all(görevler)
+    
+    her sonuç in sonuçlar for do
+        print("Veri alındı: " + sonuç.len().yazıya() + " byte")
+    end
+end
+
+// Ana async runtime
+async.run(paralel_istekler())</code></pre>
+<h2>📚 특징</h2>
+<ul>
+<li><strong>비동기/대기:</strong>JavaScript 및 Rust 스타일 비동기 구문</li>
+<li><strong>실행 시간:</strong>도쿄에서 영감을 받은 비동기 실행기</li>
+<li><strong>작업 스케줄러:</strong>작업을 훔치는 멀티스레드 스케줄러</li>
+<li><strong>채널:</strong>mpsc, 방송, 원샷</li>
+<li><strong>유용:</strong>시간 초과, 선택, 참가, 경주</li>
+</ul>
+<h2>💡 예</h2>
+<div class="example-box">
+<h3>비동기 HTTP 서버</h3>
+<pre><code>import async, http, json
+
+async function handle_request(istek: HttpIstek) -&gt; HttpYanit do
+    if istek.yol == "/api/users" then do
+        // Simulate DB query
+        await async.sleep(100)
+        
+        let users = [
+            {"id": 1, "name": "Ali"},
+            {"id": 2, "name": "Ayşe"}
+        ]
+        
+        return http.yanıt(200, json.stringify(users))
+    end else do
+        return http.yanıt(404, "Not Found")
+    end
+end
+
+async function sunucu_başlat() do
+    let sunucu = http.sunucu("127.0.0.1:8080")
+    print("Server listening on http://127.0.0.1:8080")
+    
+    for do
+        let istek = await sunucu.sleep()
+        
+        // Her isteği ayrı task'ta işle
+        async.spawn(async do
+            let yanıt = await handle_request(istek)
+            await sunucu.gönder(yanıt)
+        end)
+    end
+end
+
+async.run(sunucu_başlat())</code></pre>
+</div>
+<div class="example-box">
+<h3>동시작업 관리</h3>
+<pre><code>import async
+
+async function download_file(url: yazı, dosya: yazı) -&gt; Sonuç do
+    print("İndirme başladı: " + dosya)
+    
+    // Simulate download
+    await async.sleep(random.range(1000, 3000))
+    
+    print("İndirme tamamlandı: " + dosya)
+    return Ok(dosya)
+end
+
+async function download_with_timeout(url: yazı, dosya: yazı, timeout_ms: int) -&gt; Sonuç do
+    let sonuç = await async.timeout(
+        download_file(url, dosya),
+        timeout_ms
+    )
+    
+    if sonuç.hata_mı() then do
+        print("Timeout: " + dosya)
+    end
+    
+    return sonuç
+end
+
+async function batch_download() do
+    let dosyalar = [
+        ("https://example.com/file1.pdf", "file1.pdf"),
+        ("https://example.com/file2.pdf", "file2.pdf"),
+        ("https://example.com/file3.pdf", "file3.pdf")
+    ]
+    
+    // Maksimum 2 eşzamanlı indirme
+    let semaphore = async.semaphore_new(2)
+    let görevler = []
+    
+    her (url, dosya) in dosyalar for do
+        let task = async.spawn(async do
+            let izin = await semaphore.acquire()
+            let sonuç = await download_with_timeout(url, dosya, 5000)
+            semaphore.release(izin)
+            return sonuç
+        end)
+        görevler.push(task)
+    end
+    
+    let sonuçlar = await async.all(görevler)
+    print("Tüm indirmeler tamamlandı: " + sonuçlar.len().yazıya())
+end
+
+async.run(batch_download())</code></pre>
+</div>
+<p style="text-align:center;margin-top:40px">
+<a href="ko_index-tr.html">← 모든 모듈</a>
+</p>
+</main>
+</div>
+
+    <script src="lang-switcher.js"></script>
+</body></html>

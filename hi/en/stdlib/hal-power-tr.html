@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>HAL::पावर - पावर प्रबंधन | बर्क एंबेडेड</title>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/general.css">
+<style>
+.module-header{background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);color:white;padding:40px 20px;margin:-20px -20px 30px -20px;border-radius:8px}
+.stat-badge{display:inline-block;background:rgba(255,255,255,0.2);padding:5px 15px;border-radius:20px;margin:5px;font-size:0.9em}
+.example-box{background:var(--sidebar-bg);border-left:4px solid #2ecc71;padding:20px;margin:20px 0;border-radius:4px}
+.example-box h3{margin-top:0;color:var(--fg)}
+.warning{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:15px 0;color:#856404}
+</style>
+</head>
+<body>
+<div id="content" class="content" style="max-width:1000px;margin:0 auto;padding:20px">
+<main>
+<div class="module-header">
+<h1>राज्य::शक्ति</h1>
+<p>पावर प्रबंधन - अल्ट्रा लो पावर मोड</p>
+<div style="margin-top:15px">
+<span class="stat-badge">~420 पंक्तियाँ</span>
+<span class="stat-badge">~20 कार्य</span>
+<span class="stat-badge">एसटीएम32/जीडी32</span>
+</div>
+</div>
+
+<h2>सिंहावलोकन</h2>
+<p>एम्बेडेड सिस्टम में ऊर्जा दक्षता के लिए पावर मॉड्यूल महत्वपूर्ण है। यह स्लीप, स्टॉप और स्टैंडबाय मोड के साथ बिजली की खपत को माइक्रोएम्पीयर तक कम कर देता है। यह बैटरी चालित IoT उपकरणों, पहनने योग्य उपकरणों और लंबे समय तक चलने वाले सेंसर नेटवर्क के लिए अपरिहार्य है।</p>
+
+<h2>प्रमुख विशेषताऐं</h2>
+<ul>
+<li><strong>स्लीप मोड:</strong>सीपीयू बंद हो गया है, परिधीय चालू हो गए हैं (रन मोड -&gt; स्लीप ~1-2 एमएस)</li>
+<li><strong>स्टॉप मोड:</strong>सभी घड़ियाँ बंद कर दी गई हैं, SRAM संरक्षित है (&lt;1 μA विशिष्ट)</li>
+<li><strong>आधार रीति:</strong>बैकअप डोमेन (~0.3 μA) को छोड़कर सब कुछ बंद है</li>
+<li><strong>वोल्टेज स्केलिंग:</strong>1.8V से 3.6V तक गतिशील वोल्टेज समायोजन</li>
+<li><strong>पीवीडी (प्रोग्रामेबल वोल्टेज डिटेक्टर):</strong>कम वोल्टेज की चेतावनी</li>
+<li><strong>बैकअप डोमेन:</strong>RTC + 4KB बैकअप SRAM (स्टैंडबाय में संरक्षित)</li>
+<li><strong>वेकअप स्रोत:</strong>RTC अलार्म, EXTI, USART, USB, टैम्पर</li>
+<li><strong>नियामक मोड:</strong>मुख्य/निम्न-शक्ति नियामक चयन</li>
+</ul>
+
+<h2>त्वरित शुरुआत</h2>
+<pre><code>import hal::power, hal::rcc
+
+// Sleep Mode (WFI - Wait For Interrupt)
+power.enter_sleep_mode(do
+    mode: power.SLEEP_ON_EXIT
+end)
+
+// Stop Mode (ultra low power)
+power.enter_stop_mode(do
+    regulator: power.REGULATOR_LOW_POWER,
+    wakeup_source: power.WAKEUP_RTC
+end)
+
+// Restore clocks after wakeup from Stop
+rcc.sysclk_restore()
+
+// Standby Mode (lowest power)
+power.enter_standby_mode(do
+    wakeup_pin: power.WAKEUP_PIN1,
+    rtc_alarm: true
+end)</code></pre>
+
+<h2>प्रकार और एनुम</h2>
+<pre><code>// Power Modes
+enum PowerMode {
+    RUN,       // Normal operation
+    SLEEP,     // CPU stopped, peripherals active
+    STOP,      // All clocks stopped, SRAM retained
+    STANDBY    // Only backup domain active
+}
+
+// Regulator Modes
+enum Regulator {
+    REGULATOR_MAIN,       // Main regulator (faster wakeup)
+    REGULATOR_LOW_POWER   // Low-power regulator (lower current)
+}
+
+// Wakeup Sources
+enum WakeupSource {
+    WAKEUP_PIN1,  // PA0
+    WAKEUP_PIN2,  // PC13
+    WAKEUP_RTC,   // RTC alarm
+    WAKEUP_TAMPER,
+    WAKEUP_RESET
+}
+
+// Voltage Scaling
+enum VoltageScale {
+    SCALE_1,  // 1.8V (high performance, 168 MHz)
+    SCALE_2,  // 1.5V (medium, 144 MHz)
+    SCALE_3   // 1.2V (low power, 120 MHz)
+}
+
+struct PowerConfig do
+    mode: PowerMode,
+    regulator: Regulator,
+    wakeup_source: WakeupSource,
+    flash_power_down: mantık = true,
+    low_power_deepsleep: mantık = true
+end</code></pre>
+
+<h2>उदाहरण 1: स्लीप मोड - आवधिक सेंसर रीडिंग</h2>
+<div class="example-box">
+<h3>समस्या: हर 1 सेकंड में एक सेंसर को पढ़ना और ऊर्जा की बचत करना</h3>
+<pre><code>import hal::power, hal::rtc, hal::adc, hal::gpio
+
+function sensor_sistemi_init() do
+    // RTC wakeup timer (1 Hz)
+    rtc.init(do
+        clock_source: rtc.LSI,
+        async_prescaler: 127,
+        sync_prescaler: 249  // 32 kHz / 128 / 250 = 1 Hz
+    end)
+    
+    rtc.set_wakeup_timer(do
+        period: 1,  // 1 second
+        callback: sensor_oku_handler
+    end)
+    
+    // ADC for temperature sensor
+    adc.init(adc.ADC1, do
+        resolution: adc.RES_12BIT,
+        channel: adc.CH_TEMP
+    end)
+end
+
+let sensor_veri: Dizi<kesir> = []
+
+function sensor_oku_handler() do
+    // Woke up from sleep!
+    
+    // Read temperature
+    let temp = adc.read_single(adc.ADC1, adc.CH_TEMP)
+    let celsius = (temp * 3.3 / 4096.0 - 0.76) / 0.0025 + 25.0
+    
+    sensor_veri.push(celsius)
+    
+    // Log every 10 readings
+    if (sensor_veri.len &gt;= 10) do
+        let avg = sensor_veri.topla() / sensor_veri.len kayıt kesir
+        io.yazdir_satır("Avg temp: " + avg.metne() + " C")
+        sensor_veri.temizle()
+    end
+end
+
+function main() do
+    sensor_sistemi_init()
+    
+    io.yazdir_satır("Entering sleep mode with RTC wakeup...")
+    
+    for do
+        // Enter sleep mode (CPU stops, RTC continues)
+        power.enter_sleep_mode(do
+            mode: power.SLEEP_WFI
+        end)
+        
+        // Wakes up here on RTC interrupt
+        // sensor_oku_handler() already executed
+    end
+end</kesir></code></pre>
+<p><strong>बिजली की खपत:</strong>स्लीप मोड ~1-2 एमए (परिधीय सक्रिय), रन मोड ~20 एमए। औसत ~2 एमए (90% नींद, 10% सक्रिय)।</p>
+</div>
+
+<h2>उदाहरण 2: स्टॉप मोड - बटन वेकअप (अल्ट्रा लो पावर)</h2>
+<div class="example-box">
+<h3>समस्या: बटन दबाए जाने तक न्यूनतम बिजली की खपत</h3>
+<pre><code>import hal::power, hal::exti, hal::gpio, hal::rcc
+
+function dusuk_guc_init() do
+    // PA0 -&gt; Wakeup button (external interrupt)
+    gpio.pin_init(gpio.PORT_A, 0, do
+        mode: gpio.MODE_INPUT,
+        pull: gpio.PULL_DOWN
+    end)
+    
+    exti.init(0, do
+        trigger: exti.TRIGGER_RISING,
+        mode: exti.MODE_EVENT  // Event mode for wakeup
+    end)
+    
+    // Disable unnecessary peripherals
+    rcc.periph_clock_disable(rcc.PERIPH_TIM2)
+    rcc.periph_clock_disable(rcc.PERIPH_TIM3)
+    rcc.periph_clock_disable(rcc.PERIPH_USART2)
+end
+
+function main() do
+    dusuk_guc_init()
+    
+    io.yazdir_satır("System initialized")
+    io.yazdir_satır("Entering Stop Mode (press button to wake up)...")
+    
+    // Flash power down for extra savings
+    power.flash_power_down_enable()
+    
+    // Enter Stop Mode
+    power.enter_stop_mode(do
+        regulator: power.REGULATOR_LOW_POWER,
+        entry: power.ENTRY_WFE  // Wait For Event
+    end)
+    
+    // *** WOKE UP HERE ***
+    
+    // Restore system clock (Stop mode uses HSI/8)
+    rcc.sysclk_restore()
+    
+    // Re-enable flash
+    power.flash_power_down_disable()
+    
+    io.yazdir_satır("Woke up from Stop Mode!")
+    
+    // Do work
+    led_blink(5)
+    
+    // Go back to sleep
+    io.yazdir_satır("Entering Stop Mode again...")
+    // (loop or jump to stop entry)
+end</code></pre>
+<p><strong>बिजली की खपत:</strong>स्टॉप मोड &lt;1 μA (STM32L4), ~10 μA (STM32F4)। जागने का समय ~5-10 μs.</p>
+</div>
+
+<h2>उदाहरण 3: स्टैंडबाय मोड - आरटीसी अलार्म वेकअप (सबसे गहरी नींद)</h2>
+<div class="example-box">
+<h3>समस्या: 1 घंटे सोने और जागने पर SRAM खो जाता है लेकिन बैकअप डोमेन संरक्षित रहता है</h3>
+<pre><code>import hal::power, hal::rtc, hal::backup
+
+const MAGIC_NUMBER: sayı = 0xDEADBEEF
+
+function standby_sistemi_init() do
+    // Enable backup domain access
+    power.backup_access_enable()
+    
+    // RTC configuration (LSE for accuracy)
+    rtc.init(do
+        clock_source: rtc.LSE,  // External 32.768 kHz crystal
+        hour_format: rtc.FORMAT_24H
+    end)
+    
+    // Check if woke up from standby
+    if power.get_flag(power.FLAG_STANDBY) do
+        io.yazdir_satır("Woke up from Standby!")
+        power.clear_flag(power.FLAG_STANDBY)
+        
+        // Check backup register
+        let magic = backup.read_register(0)
+        if (magic == MAGIC_NUMBER) do
+            let wake_count = backup.read_register(1)
+            wake_count = wake_count + 1
+            backup.write_register(1, wake_count)
+            
+            io.yazdir_satır("Wakeup count: " + wake_count.metne())
+        end
+    yoksa do
+        io.yazdir_satır("Fresh boot, initializing...")
+        backup.write_register(0, MAGIC_NUMBER)
+        backup.write_register(1, 0)
+    end
+end
+
+function standby_ile_uyku(saat: sayı) do
+    // Set RTC alarm (wake up after N hours)
+    let simdiki_zaman = rtc.get_time()
+    let alarm_zaman = rtc.Time do
+        hour: (simdiki_zaman.hour + saat) % 24,
+        minute: simdiki_zaman.minute,
+        second: simdiki_zaman.second
+    end
+    
+    rtc.set_alarm(rtc.ALARM_A, alarm_zaman)
+    
+    // Enable wakeup pin as backup
+    power.wakeup_pin_enable(power.WAKEUP_PIN1)
+    
+    io.yazdir_satır("Entering Standby for " + saat.metne() + " hours...")
+    io.yazdir_satır("(All RAM will be lost, only backup registers preserved)")
+    
+    // Enter Standby Mode
+    power.enter_standby_mode()
+    
+    // *** NEVER RETURNS - FULL SYSTEM RESET ON WAKEUP ***
+end
+
+function main() do
+    standby_sistemi_init()
+    
+    // Do some work
+    io.yazdir_satır("Doing important work...")
+    led_blink(3)
+    
+    // Sleep for 1 hour
+    standby_ile_uyku(1)
+end</code></pre>
+<p><strong>बिजली की खपत:</strong>स्टैंडबाय मोड ~0.3-2 μA. 1 घंटे की नींद = 0.0003 mAh. 1000 एमएएच बैटरी के साथ 380+ वर्ष!</p>
+</div>
+
+<h2>उदाहरण 4: गतिशील प्रदर्शन के लिए वोल्टेज स्केलिंग</h2>
+<div class="example-box">
+<h3>समस्या: उच्च प्रदर्शन की आवश्यकता होने पर स्केल 1 का उपयोग करना, कम शक्ति होने पर स्केल 3 का उपयोग करना</h3>
+<pre><code>import hal::power, hal::rcc
+
+enum PerformanceMode {
+    HIGH_PERF,   // 168 MHz
+    NORMAL,      // 120 MHz
+    LOW_POWER    // 80 MHz
+}
+
+function set_performance_mode(mode: PerformanceMode) do
+    eşleştir mode do
+        PerformanceMode.HIGH_PERF =&gt; do
+            // Voltage Scale 1 (1.8V)
+            power.set_voltage_scaling(power.SCALE_1)
+            
+            // PLL config for 168 MHz (HSE 8 MHz)
+            rcc.pll_config(do
+                source: rcc.PLL_HSE,
+                pllm: 8,
+                plln: 336,
+                pllp: 2,
+                pllq: 7
+            end)
+            
+            rcc.sysclk_set(rcc.SYSCLK_PLL, 168_000_000)
+            
+            io.yazdir_satır("High Performance: 168 MHz, ~100 mA")
+        end,
+        
+        PerformanceMode.NORMAL =&gt; do
+            // Voltage Scale 2 (1.5V)
+            power.set_voltage_scaling(power.SCALE_2)
+            
+            rcc.pll_config(do
+                source: rcc.PLL_HSE,
+                pllm: 8,
+                plln: 240,
+                pllp: 2,
+                pllq: 5
+            end)
+            
+            rcc.sysclk_set(rcc.SYSCLK_PLL, 120_000_000)
+            
+            io.yazdir_satır("Normal: 120 MHz, ~60 mA")
+        end,
+        
+        PerformanceMode.LOW_POWER =&gt; do
+            // Voltage Scale 3 (1.2V)
+            power.set_voltage_scaling(power.SCALE_3)
+            
+            rcc.sysclk_set(rcc.SYSCLK_HSI, 16_000_000)
+            
+            io.yazdir_satır("Low Power: 16 MHz, ~10 mA")
+        end
+    end
+end
+
+function main() do
+    // Start in low power
+    set_performance_mode(PerformanceMode.LOW_POWER)
+    
+    for do
+        // Idle state
+        power.enter_sleep_mode(do mode: power.SLEEP_WFI end)
+        
+        // Check if high-performance task needed
+        if heavy_computation_requested() do
+            set_performance_mode(PerformanceMode.HIGH_PERF)
+            perform_fft_analysis()
+            set_performance_mode(PerformanceMode.LOW_POWER)
+        end
+    end
+end</code></pre>
+<p><strong>निष्कर्ष:</strong>गतिशील स्केलिंग के साथ, औसत बिजली की खपत 40-60% कम हो जाती है।</p>
+</div>
+
+<h2>एपीआई संदर्भ</h2>
+<h3>पावर मोड</h3>
+<pre><code>// Sleep mode entry
+function enter_sleep_mode(mode: SleepMode)
+
+// Stop mode entry
+function enter_stop_mode(config: StopConfig)
+
+// Standby mode entry
+function enter_standby_mode()
+
+// Wakeup configuration
+function wakeup_pin_enable(pin: WakeupPin)
+function wakeup_pin_disable(pin: WakeupPin)
+
+// Voltage scaling
+function set_voltage_scaling(scale: VoltageScale)
+function get_voltage_scaling() -&gt; VoltageScale
+
+// PVD (Programmable Voltage Detector)
+function pvd_enable(level: PVDLevel)
+function pvd_disable()
+
+// Backup domain
+function backup_access_enable()
+function backup_access_disable()
+
+// Flags
+function get_flag(flag: PowerFlag) -&gt; mantık
+function clear_flag(flag: PowerFlag)
+
+// Flash power control
+function flash_power_down_enable()
+function flash_power_down_disable()</code></pre>
+
+<div class="warning">
+<strong>महत्वपूर्ण टिप्पणियाँ:</strong>
+<ul>
+<li><strong>स्टॉप मोड वेकअप:</strong>घड़ी का स्रोत HSI/8 पर वापस आ जाता है, sysclk_restore() आवश्यक है</li>
+<li><strong>स्टैंडबाय वेकअप:</strong>पूर्ण सिस्टम रीसेट, सभी SRAM खो गया है (बैकअप डोमेन को छोड़कर)</li>
+<li><strong>डिबग सीमाएँ:</strong>स्टॉप/स्टैंडबाय मोड में डिबगर डिस्कनेक्ट हो गया</li>
+<li><strong>परिधीय अवस्था:</strong>परिधीय स्थिति को स्टॉप मोड में संरक्षित किया जाता है, स्टैंडबाय में खो दिया जाता है</li>
+</ul>
+</div>
+
+<h2>प्लेटफार्म समर्थन</h2>
+<table>
+<tbody><tr>
+<th>प्लैटफ़ॉर्म</th>
+<th>स्लीप करंट</th>
+<th>करंट रोकें</th>
+<th>स्टैंडबाय करंट</th>
+</tr>
+<tr>
+<td>STM32F1</td>
+<td>1.5एमए</td>
+<td>22μA</td>
+<td>2μA</td>
+</tr>
+<tr>
+<td>STM32F4</td>
+<td>2.1एमए</td>
+<td>11μA</td>
+<td>1.8μA</td>
+</tr>
+<tr>
+<td>एसटीएम32एल4</td>
+<td>0.9mA</td>
+<td>0.6μA</td>
+<td>0.3μA</td>
+</tr>
+<tr>
+<td>STM32H7</td>
+<td>4एमए</td>
+<td>50μA</td>
+<td>6μA</td>
+</tr>
+</tbody></table>
+
+<h2>सर्वोत्तम प्रथाएं</h2>
+<ul>
+<li> <strong>परिधीय समापन:</strong>रुकने से पहले अप्रयुक्त बाह्य उपकरणों को अक्षम करें</li>
+<li> <strong>GPIO कम पावर:</strong>फ़्लोटिंग पिन इनपुट+पुल कॉन्फ़िगर करें</li>
+<li> <strong>बैकअप डोमेन का उपयोग करें:</strong>स्टैंडबाय में स्थायी डेटा के लिए बैकअप रजिस्टर</li>
+<li> <strong>आरटीसी अंशांकन:</strong>एलएसआई सहनशीलता 5%, एलएसई का उपयोग करें (सटीक समय)</li>
+<li> <strong>डिबग न करें:</strong>डिबगर स्टॉप/स्टैंडबाय मोड में काम नहीं करता है</li>
+<li> <strong>SRAM पर भरोसा न करें:</strong>SRAM स्टैंडबाय में खो गया है, बैकअप डोमेन पर महत्वपूर्ण डेटा लिखें</li>
+</ul>
+
+<h2>संबंधित मॉड्यूल</h2>
+<ul>
+<li><a href="en_hal-rtc-tr.html">राज्य::rtc</a>- वेकअप टाइमर कॉन्फ़िगरेशन</li>
+<li><a href="en_hal-exti-tr.html">राज्य::exti</a>- बाहरी वेकअप स्रोत</li>
+<li><a href="en_hal-rcc-tr.html">राज्य::आरसीसी</a>- स्टॉप के बाद घड़ी की बहाली</li>
+<li><a href="en_hal-gpio-tr.html">राज्य::gpio</a>- कम-शक्ति पिन कॉन्फ़िगरेशन</li>
+</ul>
+
+<p style="text-align:center;margin-top:40px">
+<a href="en_hal-index-tr.html">एचएएल मॉड्यूल</a> | 
+<a href="en_hal-power-en.html">अंग्रेज़ी</a>
+</p>
+</main>
+</div>
+
+
+    <script src="lang-switcher.js"></script>
+</body></html>
