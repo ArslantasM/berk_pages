@@ -98,6 +98,31 @@ BERK-lang.exe **83 MB** boyutundadır. Bu büyüklüğün nedenleri:
 
 **Not:** Tek bir executable olarak tüm bağımlılıklar dahil - harici DLL gerekmez!
 
+## Dokümantasyon Güncellemeleri (19 Aralık 2025)
+
+### Temizlik ve Düzeltmeler
+
+#### 1. `en_` Prefixli Dosyaların Silinmesi
+- **815 dosya** silindi
+- Eski İngilizce çeviri denemeleri (`en_intro.html`, `en_toc.js` vb.) kaldırıldı
+- Artık dil yapısı:
+  - 🇹🇷 Türkçe: Ana dizin (`intro.html`, `basics/syntax.html`)
+  - 🇬🇧 İngilizce: `/en/` klasörü
+  - 🇰🇷 Korece: `/ko/` klasörü
+  - 🇮🇳 Hintçe: `/hi/` klasörü
+
+#### 2. Dil Seçici Düzeltmesi
+- `index.html` güncellendi
+- İngilizce bağlantı: `en_intro.html` → `en/intro.html`
+
+#### 3. HAL Dosyalarındaki Navigasyon Düzeltmesi
+- **228 dosya** düzeltildi (stdlib/hal-*.html)
+- Fazla `</main></div>` kapanış etiketleri kaldırıldı
+- Navigasyon okları (← →) artık doğru konumda
+- Tüm diller etkilendi: Türkçe, İngilizce, Korece, Hintçe
+
+---
+
 ## Bilinen Sorunlar
 
 - Dosya boyutu GitHub'ın önerilen 50 MB limitinin üzerinde (ancak çalışıyor)
