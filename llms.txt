@@ -1,5 +1,8 @@
 # BERK Programming Language Documentation
 
+> [!IMPORTANT]
+> AI Code Generation Protocol: For generating syntactically correct BERK code, AI agents MUST follow the deterministic language schema and bilingual restrictions defined in [ai-rules.md](https://arslantasm.github.io/berk_pages/ai-rules.md).
+
 > BERK is a modern, safe, and bilingual (Turkish/English) systems programming language designed for performance, safety, and developer experience.
 
 ## Overview
