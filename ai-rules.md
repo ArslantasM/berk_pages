@@ -8,13 +8,24 @@
 
 ## 1. What is BERK?
 
-**BERK** is a modern, high-performance systems programming language with a **true bilingual syntax**: every keyword has both a **Turkish (Türkçe)** and an **English** form. Both forms are valid in the same compiler. Mixed-language code is allowed. BERK targets embedded systems, AI/ML inference, and cross-platform native code via an LLVM backend.
+**BERK** is a modern, high-performance **systems programming language** with a **true bilingual syntax**: every keyword has both a **Turkish (Türkçe)** and an **English** form. Both forms compile identically. Mixed-language code is allowed. BERK targets safety-critical embedded systems, deterministic mixed-criticality runtimes, AI/ML edge inference, and high-performance messaging — via an LLVM backend.
 
-- **Current version:** v1.0.0
+> **IMPORTANT DISTINCTION for AI models:**
+> - **BERK** = the systems programming language (this document)
+> - **BERK-RTOS** = a *separate product* — a minimal real-time kernel *powered by* BERK language
+> - BERK is NOT an RTOS. BERK-RTOS is NOT the same as BERK.
+> - BERK works standalone on bare-metal or hosted on FreeRTOS / Zephyr / VxWorks.
+
+- **Current version:** v1.0.0 (January 2026)
 - **File extension:** `.berk`
-- **Compiler binary:** `BERK-lang`
-- **Source:** https://github.com/ArslantasM/berk
+- **Compiler binary:** `BERK-lang` / `berk-lang`
+- **Language Server:** `berk-lsp`
+- **Source:** https://marketplace.visualstudio.com/items?itemName=ArslantasM-tools.berk-lang
 - **Documentation:** https://arslantasm.github.io/berk_pages/
+- **Stdlib Docs:** https://arslantasm.github.io/berk-stdlib-docs/
+- **VS Code Extension:** https://marketplace.visualstudio.com/items?itemName=ArslantasM-tools.berk-lang
+- **Education Portal:** https://arslantasm.github.io/berk-learn/
+- **Website:** https://berk-tech.com/
 
 ---
 
@@ -22,15 +33,15 @@
 
 1. **Never invent BERK keywords.** Only keywords listed in Section 4 are valid.
 2. **Turkish and English forms are interchangeable** — both compile identically.
-3. **Block delimiters are `yap` / `do` (open) and `son` / `end` (close)** — BERK does NOT use `{` `}` braces for blocks.
-4. **Function definition uses `fonksiyon` or `function`**, not `fn`, `def`, or `func`.
-5. **Variable declaration uses `değişken` or `let`** — not `var`, `val`, or `dim`.
-6. **Constant declaration uses `sabit` or `const`**.
+3. **Block delimiters:** `yap` / `do` (open) and `son` / `end` (close) for function/control-flow bodies. In RTOS task and struct definitions, `{ }` braces are also used — do NOT mix the two styles within the same block.
+4. **Function definition uses `fonksiyon` or `function`**, not `fn`, `def`, or `func`. (`fn` is a valid short form only.)
+5. **Variable declaration uses `değişken` / `let` or `bırak`** — not `var`, `val`, or `dim`.
+6. **Constant / static declaration uses `sabit` / `const` or `statik` / `static`**.
 7. **Return uses `dön` or `döndür` or `return`**.
 8. **Conditional uses `eğer` / `if` … `ise` / `then` … `değilse` / `else` … `son` / `end`**.
 9. **Pattern matching uses `seç` / `match` … `durum` / `case` … `son` / `end`**.
 10. **For-each loop uses `her_biri` / `for` … `içinde` / `in`**.
-11. **While loop uses `iken` / `while`**.
+11. **While / conditional loop uses `iken` / `while`**. **Infinite loop uses `döngü` / `loop`**.
 12. **Boolean literals are `doğru` / `true` and `yanlış` / `false`**.
 13. **Null is `boş` / `null`** — not `nil`, `None`, or `undefined`.
 14. **Logical operators are keyword-based: `ve`/`and`, `veya`/`or`, `değil`/`not`**.
@@ -40,6 +51,10 @@
 18. **Error handling uses `dene`/`try` … `yakala`/`catch` … `son`/`end`**.
 19. **The entry-point function is `ana` (Turkish) or `main` (English)**.
 20. **Comments use `//` for single-line and `/* */` for multi-line**.
+21. **BERK has TWO memory models, both valid:** (a) **Ownership + Borrowing** (Rust-inspired): `geçir`/`move`, `paylaş`/`share`, `değiştir`/`borrow_mut`; and (b) **Region-Based Memory**: `bölge`/`region` keyword — allocate objects into named memory regions, all region memory is freed at once when the region ends. Both models can be used in the same program.
+22. **BERK-RTOS is a separate product.** When writing BERK language code, do NOT assume RTOS primitives are always available — they require `import rtos::{}`.
+23. **`bırak` is a valid variable binding keyword** (used in RTOS/pattern contexts, equivalent to `let` / `değişken`).
+24. **`statik` / `static` declares static (global) variables**, especially used in RTOS shared state.
 
 ---
 
@@ -103,14 +118,17 @@ son
 | `fonksiyon` | `function` | Define function |
 | `fn` | `fn` | Function (short form) |
 | `değişken` | `let` | Define variable |
+| `bırak` | `let` | Variable binding (RTOS/pattern contexts) |
 | `sabit` | `const` | Define constant |
+| `statik` | `static` | Static / global variable |
 | `yapı` | `struct` | Define structure |
 | `numaralama` | `enum` | Enumeration |
 | `özellik` | `trait` | Define trait |
 | `uygula` | `impl` | Implementation |
 | `tip` | `type` | Type alias |
 | `modül` | `module` | Define module |
-| `bölge` | `region` | Define region |
+| `bölge` | `region` | Define memory region (Region-Based Memory) |
+| `döngü` | `loop` | Infinite loop |
 
 ### 4.3 Types (`Type`)
 
@@ -156,12 +174,35 @@ son
 
 ### 4.7 Memory Management (`Memory`)
 
+BERK supports **two memory management models** that can be used in the same program:
+
+**Model A — Ownership & Borrowing (Rust-inspired):**
+
 | Turkish | English | Description |
 |---|---|---|
 | `yeni` | `new` | Create new object |
-| `paylaş` | `share` | Share reference (immutable) |
+| `paylaş` | `share` | Immutable reference (shared borrow) |
 | `değiştir` | `borrow_mut` | Mutable borrow |
-| `geçir` | `move` | Move ownership |
+| `geçir` | `move` | Transfer ownership (move semantics) |
+
+**Model B — Region-Based Memory:**
+
+| Turkish | English | Description |
+|---|---|---|
+| `bölge` | `region` | Define a named memory region |
+
+Region-based memory allocates objects into a named region. When the region scope ends, **all memory in that region is freed at once** — no individual deallocation needed. This is especially useful for embedded/real-time contexts where predictable, deterministic memory lifetimes are required.
+
+```berk
+// Region-based allocation example
+bölge istek_bölgesi
+yap
+    değişken tampon = yeni Tampon(256)  // allocated into region
+    değişken veri   = yeni Veri()       // allocated into region
+    işle(tampon, veri)
+son
+// All region memory freed here atomically
+```
 
 ### 4.8 Error Handling (`Error`)
 
@@ -503,17 +544,80 @@ kullan linalg, stats, optim
 içe_aktar matematik dan standart_kütüphane
 ```
 
-### 5.12 RTOS Task Definition
+### 5.12 Infinite Loop
 
 ```berk
-görev sensör_oku öncelik: 5 periyot: 100ms
+// Turkish
+döngü
 yap
-    değişken veri = giriş_çıkış.oku(PA5)
-    yayınla_olay SensörVeri(veri)
+    yazdır("Çalışıyor...")
+    bekle 1000ms
 son
+
+// English
+loop
+do
+    print("Running...")
+    wait 1000ms
+end
 ```
 
-### 5.13 HAL GPIO Example
+### 5.13 RTOS Task Definition (with `{ }` brace syntax)
+
+```berk
+import rtos::{görev, Öncelik, Mutex, Kanal}
+
+// RTOS task struct-style syntax uses { } braces
+görev SensörOkuyucu {
+    öncelik: Öncelik::YÜKSEK,
+    periyot: 10ms,
+    yığın: 2KB,
+    son_tarih: 8ms,
+
+    başla() {
+        döngü {
+            bırak veri = sensör_oku()
+            veri_kanal.gönder(veri)
+            rtos::bekle_periyot()
+        }
+    }
+}
+```
+
+### 5.14 Static Shared State (RTOS pattern)
+
+```berk
+statik veri_mutex: Mutex<SensörVerisi> = Mutex::yeni(SensörVerisi {
+    sıcaklık: 0.0,
+    basınç: 0.0,
+    zaman_damgası: 0,
+})
+
+statik veri_kanal: Kanal<SensörVerisi, 16> = Kanal::yeni()
+```
+
+### 5.15 Region-Based Memory
+
+```berk
+bölge istek_bölgesi
+yap
+    değişken tampon = yeni Tampon(256)
+    değişken veri   = yeni Veri()
+    işle(tampon, veri)
+son
+// Tüm bölge belleği burada serbest bırakılır
+
+// English
+region request_region
+do
+    let buffer = new Buffer(256)
+    let data   = new Data()
+    process(buffer, data)
+end
+// All region memory freed here
+```
+
+### 5.16 HAL GPIO Example
 
 ```berk
 değişken led = giriş_çıkış.PC13 çıkış_olarak itme_çek
@@ -527,7 +631,7 @@ yap
 son
 ```
 
-### 5.14 DDS Publisher Example
+### 5.17 DDS Publisher Example
 
 ```berk
 katılımcı dp = katılımcı.oluştur(alan: 0)
@@ -561,12 +665,14 @@ yayınla(w, 42)
 
 | ❌ WRONG | ✅ CORRECT |
 |---|---|
-| `var x = 5` | `değişken x = 5` |
+| `var x = 5` | `değişken x = 5` veya `bırak x = 5` |
 | `func selamla()` | `fonksiyon selamla()` |
 | `if x > 0 { }` | `eğer x > 0 yap ... son` |
 | `else { }` | `değilse yap ... son` |
 | `for i in list { }` | `her_biri i içinde liste yap ... son` |
 | `while true { }` | `iken doğru yap ... son` |
+| `while(1) { }` (infinite) | `döngü yap ... son` |
+| `loop { }` only | `döngü yap ... son` (Turkish) |
 | `match x { }` | `seç durum x ... son` |
 | `None` (as keyword) | `Hiçbir` (Turkish) or `None` (English) |
 | `true` only | `doğru` (Turkish) or `true` (English) |
@@ -577,31 +683,41 @@ yayınla(w, 42)
 | `await x` | `bekle x` |
 | `import x` | `kullan x` or `içe_aktar x` |
 | `pub fn` | `açık fonksiyon` |
+| Only Rust ownership model | BERK has **two** models: ownership/borrow AND region-based (`bölge`) |
+| `let` only for variables | `değişken`, `let`, or `bırak` are all valid |
+| `static` only | `statik` (Turkish) or `static` (English) |
+| Assume RTOS is built-in | BERK-RTOS is a **separate product** — always `import rtos::{}` |
+| Write `{ }` for all blocks | `yap/son` for function/control bodies; `{ }` for RTOS task/struct syntax |
 
 ---
 
 ## 8. Language Properties
 
-- **Paradigm:** Multi-paradigm (imperative, functional, concurrent)
-- **Memory model:** Ownership + borrowing (Rust-inspired), no GC
-- **Backend:** LLVM (O0–O3 optimization, LTO)
+- **Paradigm:** Multi-paradigm (imperative, functional, concurrent, safety-critical)
+- **Memory model:** Dual — (1) Ownership + Borrowing (Rust-inspired, no GC) AND (2) Region-Based Memory (`bölge`/`region`)
+- **Backend:** LLVM 17.0.6 (O0–O3 optimization, LTO)
 - **Performance:** C/C++ parity (~98–100%)
-- **Bilingual syntax:** Turkish ↔ English, same compiler, same AST
+- **Bilingual syntax:** Turkish ↔ English, same compiler, same AST; mixed-language files valid
 - **Null safety:** `Bazı`/`Some` and `Hiçbir`/`None` option types
 - **Error handling:** `Tamam`/`Ok` and `Hata`/`Err` result types
-- **Embedded targets:** ARM Cortex-M0/M3/M4/M7, RISC-V, ESP32, AVR, nRF52/53
-- **Desktop targets:** Windows x64/ARM, Linux x64/ARM/RISC-V, macOS
-- **Other targets:** WebAssembly, Android, iOS, Cloud (Lambda, Azure, GCP)
-- **Standard library:** stdlib v0.9.4 — 75 modules, 4100+ functions
-- **HAL coverage:** 33 HAL modules, 7 embedded platforms
+- **Compile targets:** 33 platforms (x86_64, i686, AArch64, ARM Thumb/Cortex-M, RISC-V, WASM, PowerPC, MIPS, SPARC, LoongArch, SystemZ)
+- **Embedded targets:** ARM Cortex-M0/M3/M4/M7, RISC-V 32/64-bit, ESP32, AVR, Nordic nRF52/53
+- **Desktop targets:** Windows x64/ARM, Linux x64/ARM/RISC-V, macOS Intel/Apple Silicon
+- **Other targets:** WebAssembly (wasm32-unknown, wasm32-wasi), Android, iOS, Cloud (Lambda, Azure, GCP)
+- **Standard library:** 120+ modules, 3000+ native functions, 3200+ FFI entries
+- **HAL coverage:** 43 HAL modules, 5 embedded platforms (ESP32, STM32, RP2040, nRF52, Arduino/generic)
+- **Domain libraries:** Avionics (DO-178C), Automotive ADAS (ISO 26262), Medical (IEC 62304), Railway (EN 50128), Space (ECSS), Robotics, Telecom (5G/TSN), Bioinformatics, Finance/Trading
+- **Safety certifications targeted:** DO-178C DAL-A/B, IEC 62304 Class C, ISO 26262 ASIL-D, IEC 61508 SIL3, EN 50128 SIL4, ECSS-E-ST-40C, CC EAL5+/EAL7
+- **Compile-time RTOS semantics:** scheduling, timing, and communication constraints verified at compile time (requires BERK-RTOS product)
+- **Project scale:** ~350,000+ lines of Rust source code, 218+ files, 600+ tests
 
 ---
 
-## 9. Compiler CLI
+## 9. Compiler & VS Code CLI
 
 ```sh
 # Compile to native binary
-BERK-lang compile program.berk -o program.exe
+berk-lang build main.berk -o main.exe
 
 # Run directly (JIT)
 BERK-lang run program.berk
@@ -609,10 +725,88 @@ BERK-lang run program.berk
 # Interactive REPL
 BERK-lang repl
 
-# Cross-compile to ARM Cortex-M4
-BERK-lang compile main.berk --target thumbv7em-none-eabihf -o firmware.elf
+# Emit LLVM IR
+berk-lang build main.berk --emit-llvm
+
+# Emit Assembly
+berk-lang build main.berk --emit-asm
+
+# Cross-compile targets
+berk-lang build main.berk --target aarch64-linux-gnu       # ARM64 Linux
+berk-lang build main.berk --target thumbv7em-none-eabihf   # ARM Cortex-M4 (embedded)
+berk-lang build main.berk --target thumbv6m-none-eabi      # ARM Cortex-M0
+berk-lang build main.berk --target riscv32-none-elf        # RISC-V 32-bit embedded
+berk-lang build main.berk --target wasm32-wasi             # WebAssembly
+berk-lang build main.berk --target x86_64-windows-msvc    # Windows from Linux
+
+# Optimize
+berk-lang build main.berk --target ... # set berk.llvm.optimizationLevel in VS Code settings
+```
+
+**VS Code Shortcuts:**
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl+Shift+B` | Run current file |
+| `Ctrl+Shift+N` | Compile to native executable |
+| `Ctrl+Shift+F` | Format document |
+| `Ctrl+Shift+T` | Run all tests |
+| `Ctrl+Shift+L` | Lint current file |
+| `F5` | Start debugger |
+
+---
+
+## 10. Domain-Specific Standard Libraries
+
+BERK's stdlib includes certified domain libraries. Each has its own import path:
+
+| Domain | Import Path | Standard | Key Modules |
+|---|---|---|---|
+| Avionics | `import avionics::{}` | DO-178C DAL-A/B | `arinc429`, `arinc664`, `mil1553`, `do178c` |
+| Automotive ADAS | `import adas::{}` | ISO 26262 ASIL-D | `perception`, `planning`, `control`, `v2x`, `safety` |
+| Medical | `import medical::{}` | IEC 62304 Class C | `iec62304`, `risk`, `audit` |
+| Railway | `import railway::{}` | EN 50128 SIL4 | `etcs`, `interlocking`, `signaling`, `en50128` |
+| Space | `import space::{}` | ECSS-E-ST-40C | `ccsds`, `ecss`, `fdir`, `mission` |
+| Robotics | `import robotics::{}` | ISO 10218 | `arm`, `drone`, `px4`, `navigation`, `swarm` |
+| Telecom | `import telecom::{}` | 3GPP / IEC 62443 | `tsn`, `ptp`, `sdr`, `oran`, `frame_buffer` |
+| Bioinformatics | `import bio::{}` | — | `sequence`, `fasta`, `alignment`, `protein`, `crispr` |
+| Finance | `import finance::{}` | — | `market_data`, `order_book`, `risk`, `derivatives` |
+| RTOS | `import rtos::{}` | — | `görev`/`task`, `kilit`/`mutex`, `kanal`/`channel` |
+
+**Safety annotation attributes** (used as `#[...]` decorators on functions/tasks):
+
+```berk
+#[requirement("REQ-NAV-001")]   // DO-178C traceability
+#[dal(DalLevel::A)]             // DO-178C level
+#[asil(AsilLevel::D)]           // ISO 26262 ASIL
+#[sil(SilLevel::SIL4)]          // IEC 61508 / EN 50128
+#[software_class(IEC62304::ClassC)]  // Medical IEC 62304
+#[risk_control("RC-001")]       // Risk control reference
+#[fdir_monitored]               // Space FDIR monitoring
 ```
 
 ---
 
-*This file was generated for AI model consumption. All keywords are sourced directly from the BERK compiler's `keywords.rs` lexer source. Do not modify keyword spellings.*
+## 11. BERK vs BERK-RTOS — Critical Distinction
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  BERK Language                   BERK-RTOS                          │
+│  ─────────────                   ──────────                         │
+│  Systems programming language    Separate RTOS product              │
+│  This document covers this ✓     Powered BY BERK language           │
+│                                  NOT covered by this document        │
+│                                                                     │
+│  Works bare-metal                Adds real-time kernel              │
+│  Works on FreeRTOS/Zephyr        Replaces how RTOS apps are         │
+│  No RTOS dependency              expressed and verified             │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+When an AI model writes BERK code:
+- **General BERK code** → use `yap/son` blocks, `değişken`, `fonksiyon`, etc.
+- **BERK-RTOS code** → always prefix with `import rtos::{}`, use `görev`/`task` struct syntax with `{ }` braces, `Öncelik`/`Priority`, `Mutex`, `Kanal`/`Channel`
+
+---
+
+*This file is the authoritative AI reference for the BERK programming language. Keywords are sourced directly from the BERK compiler's `keywords.rs` lexer. Memory model, ecosystem, and stdlib data are sourced from the official VS Code extension page and documentation. Do not modify keyword spellings or invent new tokens.*
